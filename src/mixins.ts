@@ -33,7 +33,7 @@ function getMixins ({
   CancelToken,
 }: {
   props?: object
-  onSuccess?: () => any
+  onSuccess?: Function
   CancelToken?: any
 }): object {
   props = {
@@ -297,7 +297,7 @@ function getMixins ({
        */
       retrieve__ (
         afterRetrieve?: (rowData: object) => any,
-        beforeRetrieve?: () => any
+        beforeRetrieve?: Function
       ) {
         // 仅查看和编辑才调用
         if (!['r', 'u'].includes(this.row__.status)) {
@@ -342,7 +342,7 @@ function getMixins ({
        * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
        * @return {function} 提交表单接口调用
        */
-      submit__ (paramHandler?: (() => any) | object | FormData) {
+      submit__ (paramHandler?: (Function) | object | FormData) {
         let param = this.row__.data
         if (paramHandler) {
           if (paramHandler instanceof Function) {
