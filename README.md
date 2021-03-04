@@ -1,6 +1,6 @@
 # admate / 管理后台伴侣
 
-管理后台伴侣的目标是以最快最简洁的方式开发管理后台页面
+`admate` 的目标是以最快最简洁的方式开发管理后台页面
 
 并在此基础上确保灵活可配 避免过度封装
 
@@ -16,11 +16,23 @@
 $ yarn add admate
 ```
 
+## 搭配代码生成器使用
+
+:one: 在 `VSCode` 插件市场搜索 `yapi2code` 并安装
+
+:two: 打开命令面板（`F1`） 输入 `yapi2code` 运行
+
+<br/>
+
 ## mixins
 
 页面公共逻辑混入
 
-通过 `getMixins` 方法获取 `mixins`
+::: danger  
+mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
+:::
+
+获取实例：调用 `getMixins()`
 
 `mixins` 集成了一些什么功能？
 
@@ -44,7 +56,10 @@ $ yarn add admate
 import Vue from 'vue'
 import { CancelToken } from 'axios'
 import { getMixins } from 'admate'
+
 let mixins = getMixins({
+  // 全局配置
+
   //  接口参数、返回值格式定制化
   props: {
     // [列表查询接口] 页码字段名
@@ -63,14 +78,20 @@ let mixins = getMixins({
     // [单条查询接口] 返回值中数据所在位置
     r: 'data'
   },
+
+  // 调用接口正常返回时的钩子
   onSuccess () {
     Vue.prototype.$message.success('操作成功')
   },
+
+  // 用于切换页面时中断请求
   CancelToken,
+
 })
+
+// 对mixins进行补充 如加入computed
 mixins = {
   ...mixins,
-  // mixins补充
   computed: {
     ...mixins.computed,
     ...mapGetters([
@@ -78,6 +99,7 @@ mixins = {
     ]),
   }
 }
+
 export { mixins }
 ```
 
@@ -98,11 +120,174 @@ export default {
 
 <br/>
 
+### 生命周期
+
+#### 查询单条时
+
+```js
+/**
+ * @param {function} afterRetrieve - 钩子：查询单条之后
+ *        {object} rowData - 查询单条接口返回数据
+ * @param {function} beforeRetrieve - 钩子：查询单条之前
+ * @return {function} 查询单条接口调用
+ */
+
+this.retrieve__(afterRetrieve, beforeRetrieve)
+```
+
+> `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
+
+```html
+<!-- 修改查询单条接口返回值示例 -->
+
+<FormDialog
+  :retrieve="() => retrieve__(
+    rowData => {
+
+      // 同步修改：
+      rowData.status = 1
+      
+      // 异步修改：
+      this.$POST().then(res => {
+        this.row__.data.status = 1
+      })
+      
+    },
+    () => {
+      // 在查询单条记录之前做点什么...
+    }
+  )"
+/>
+```
+
+<br/>
+
+#### 提交表单时
+
+```js
+/**
+ * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
+ * @return {function} 提交表单接口调用
+ */
+
+this.submit__(paramHandler)
+```
+
+> `submit__` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
+
+```html
+<!-- 在新增时增加一个参数示例 -->
+
+<FormDialog
+  :submit="() => submit__(
+    // 参数可以是 function 或 object|FormData
+    // function 会在表单校验通过后、接口调用前执行
+    // object|FormData 会被用作接口参数
+    () => {
+      // 在提交之前搞点事情...
+      if (row__.status === 'c') {
+        row__.data.status = 1
+      }
+    }).then(() => {
+      // 在提交之后搞点事情...
+    }).catch(() => {
+      return {
+        close: false
+      }
+    })
+  "
+/>
+```
+
+<br/>
+
+#### 查询列表时
+
+`getList__` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
+
+`init__`：你可以在 `methods` 中定义一个 `init__` 方法来取代 `getList__`
+
+```js
+methods: {
+  /**
+   * @param {string} intention - 调用意图 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus'
+   * @param {object} res - 接口返回值
+   */
+  init__(intention, res)
+  {
+    // 在查询列表之前搞点事情...
+    this.getList__(res => {
+      // 在查询列表之后搞点事情...
+      // res为查询列表接口返回值
+    })
+  }
+}
+```
+
+<br/>
+
+### 表单状态
+
+`this.row__.status`
+
+可能的值：
+
+- `'c'` 新增
+- `'r'` 查看
+- `'u'` 编辑
+- `''` 关闭
+
+<br/>
+
+### 列表参数
+
+```this.list__.filter```
+
+**给列表参数绑定默认值**
+
+```js
+data()
+{
+  return {
+    list__: {
+      filter: {
+        pageSize: 15, // 覆盖默认值10
+        status: 1 // 新增的
+      }
+    }
+  }
+}
+```
+
+<br/>
+
+### 表单数据
+
+```this.row__.data```
+
+**给表单数据绑定默认值**
+
+```js
+data()
+{
+  return {
+    row__: {
+      data: {
+        arr: [],
+        num: 100
+      }
+    },
+  }
+}
+```
+
+<br/>
+
 ## apiGenerator
 
 根据接口前缀自动生成增删查改接口调用
 
-通过 `getApiGenerator` 方法获取 `apiGenerator`
+获取实例：调用 `getApiGenerator` 方法
 
 ### 初始化
 
@@ -110,8 +295,12 @@ export default {
 // main.js
 
 import { getApiGenerator } from 'admate'
-const apiGenerator = getApiGenerator({ 
-  // 如axios实例
+import request from '@/utils/request'
+
+const apiGenerator = getApiGenerator({
+  // 全局配置
+
+  // axios实例
   request,
 
   // 接口后缀默认值
@@ -145,6 +334,7 @@ const apiGenerator = getApiGenerator({
     },
   }
 })
+
 export { apiGenerator }
 ```
 
@@ -164,9 +354,9 @@ export default {
 }
 ```
 
-::: tip  
-如果某个接口的前缀不是somepage，可以在后缀前添加斜线
-:::
+### 覆盖统一前缀
+
+如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
 
 ```js
 data()
@@ -183,20 +373,89 @@ data()
 
 将得到：
 
-- /somepage/create
-- /somepage/update
-- /somepage/delete
-- /somepage/queryForPage
-- /somepage/updateStatus
-- **/anotherpage/selectOne**
+- `/somepage/create`
+- `/somepage/update`
+- `/somepage/delete`
+- `/somepage/queryForPage`
+- `/somepage/updateStatus`
+- `/anotherpage/selectOne`
 
 <br/>
 
-::: tip  
-如果想直接使用列表中的单条数据（而不是调用接口）
-:::
+### 增删查改
 
-`r__` 和 `u__`：
+#### 查询列表
+
+```js
+/**
+ * @param {function} callback - 回调函数
+ *        {object} res - 接口返回值
+ */
+
+this.getList__()
+```
+
+#### 查询单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.r__()
+```
+
+#### 新增单条
+
+```this.c__()```
+
+#### 编辑单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.u__()
+```
+
+#### 删除单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.d__()
+```
+
+#### 变更单条状态
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.updateStatus__()
+```
+
+<br/>
+
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
+- `'config'`：将参数1仅用于请求配置
+
+<br/>
+
+### 不调用查询单条接口
+
+对于 `r__` 和 `u__` 支持直接使用列表中的单条数据（而不是调用接口）
 
 1. 第一个参数：不再传接口参数 将列表中的行数据直接传入
 2. 第二个参数：传 `'data'` [详细说明](#useFor)
@@ -213,6 +472,48 @@ data()
 
 <br/>
 
+### RESTful
+
+如果接口地址需要进行动态拼接
+
+```vue
+
+<template>
+  <el-table-column label="操作" align="center">
+    <template slot-scope="{row}">
+      <AuthButton @click="r__(row,'config')" name="查看"/>
+      <AuthButton @click="u__(row,'config')" name="编辑"/>
+    </template>
+  </el-table-column>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      api__: apiGenerator('/somepage', {
+
+        // 方式1
+        url: {
+          r: row => 'module/' + row.id,
+        },
+
+        // 方式2
+        config: {
+          r (row) {
+            return {
+              url: 'module/' + row.id
+            }
+          },
+        }
+
+      })
+    }
+  }
+}
+</script>
+```
+
 <br/>
 
 ## axiosShortcut
@@ -221,15 +522,127 @@ data()
 
 通过 `getAxiosShortcut` 方法获取 `axiosShortcut`
 
+<br/>
+
 ### 初始化
 
 ```js
 import Vue from 'vue'
 import { getAxiosShortcut } from 'admate'
-const axiosShortcut = getAxiosShortcut({ request })
+import request from '@/utils/request'
+
+const axiosShortcut = getAxiosShortcut({
+  // 全局配置
+
+  // axios实例
+  request
+})
 for (let k in axiosShortcut) {
   Vue.prototype[k] = axiosShortcut[k]
 }
+```
+
+<br/>
+
+### AJAX
+
+快捷方式
+
+- `GET`
+- `POST`
+- `PATCH`
+- `PUT`
+- `DELETE`
+- `HEAD`
+
+```js
+/**
+ * @param {string} url - 接口地址
+ * @param {object} data - 接口参数
+ * @param {object} config - axios配置
+ * @return {Promise<object>} 接口返回值
+ */
+
+this.POST()
+```
+
+::: tip  
+屏蔽了GET和POST请求参数属性不一致的差异
+
+过滤掉参数中无效的值（null | NaN | undefined）
+
+有时候参数所绑定的对象中会存在一些临时属性 而这些属性是不应该提交到后端的 我们约定这些临时变量以双下划线__开头 __开头的属性会被过滤掉
+:::
+
+<br/>
+
+### 上传
+
+> 请求体类型为 multipart/form-data
+
+```js
+/**
+ * @param {string} url - 接口地址
+ * @param {object} data - 接口参数
+ * @param {object} config - axios配置
+ * @return {Promise<object>} 接口返回值
+ */
+
+this.POST.upload()
+```
+
+::: tip  
+示例中的 `POST` 可替换为其他请求方式
+:::
+
+<br/>
+
+### 下载
+
+**ajax请求方式**
+
+```js
+/**
+ * @param {string} url - 接口地址
+ * @param {object} data - 接口参数
+ * @param {object} config - axios配置
+ * @return {Promise<object>} 接口返回值
+ */
+
+this.POST.download()
+```
+
+::: tip  
+示例中的 `POST` 可替换为其他请求方式
+:::
+
+**地址栏请求方式**
+
+```js
+/**
+ * @param {string} url - 接口地址
+ * @param {object} data - 接口参数
+ * @param {object} config - axios配置
+ */
+
+this.DOWNLOAD()
+```
+
+<br/>
+
+**给上传/下载添加全局回调**
+
+> 上传/下载本质上还是调用axios实例 所以在axios实例的响应拦截器中判断即可
+
+```js
+request.interceptors.response.use(
+  response => {
+    // download
+    if (response.config.responseType === 'blob') {
+      console.log('导出成功')
+    }
+  },
+)
 ```
 
 <br/>
@@ -254,11 +667,14 @@ Object.keys(filters).map(key => {
 })
 ```
 
+<br/>
+
 ### key2label__
 
 数据字典转义
 
 ```html
+
 <el-table-column>
   <template slot-scope="{row}">
     {{row.type | key2label__(dict.type)}}
@@ -308,278 +724,4 @@ this.key2label__('1', [
 ```html
 
 <FormDialog :title="row__.status | dialogTitle__({ c: '注册' })"/>
-```
-
-<br/>
-
-## 生命周期
-
-### 查询单条记录时
-
-dataGetter__(afterRetrieve, beforeRetrieve)
-
-- afterRetrieve
-
-  > 查询单条记录之后
-
-  > 参数：查询单条记录的返回值
-
-  > 你可以在这个钩子中修改单条查询接口的返回值
-
-- beforeRetrieve
-
-  > 查询单条记录之前
-
-  `html
-  <FormDialog 
-    :dataGetter="() => dataGetter__(
-      resData => {
-        // 在查询单条记录之后做点什么...
-        // 比如将返回值中status的值修改为1：
-  
-        // 同步修改：
-        resData.status = 1
-        
-        // 异步修改：
-        this.$POST().then(res => {
-          this.row__.data.status = 1
-        })
-      },
-      () => {
-        // 在查询单条记录之前做点什么...
-      }
-    )"
-  />
-  `
-
-<br/>
-
-### 提交表单时
-
-submit__(paramHandler)
-
-```html
-<!--在新增时增加一个参数示例-->
-<FormDialog
-  :submit="() => submit__(
-    // 参数可以是一个函数或一个对象
-    // 函数会在表单校验通过后、接口调用前执行，对象会被用作接口参数
-    () => {
-      // 在提交之前做点什么...
-      if (row__.status === 'c') {
-        row__.data.status = 1
-      }
-    }).then(() => {
-      // 在提交之后做点什么...
-    }).catch(() => {
-      return {
-        close: false
-      }
-    })
-  "
-/>
-```
-
-<br/>
-
-### 查询列表时
-
-init__
-
-> 在页面初始化、查询参数改变、单条增删查改时getList__会被调用
-
-> 你可以在methods中定义一个init__方法来取代getList__
-
-```js
-methods: {
-  init__(intention, res)
-  {
-    // intention可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus'
-    // res：'c' 'r' 'u' 'd' 'updateStatus' 时的接口返回值
-
-    // 在获取列表之前搞点事情...
-    this.getList__(res => {
-      // 在获取列表之后搞点事情...
-      // res为列表接口返回值
-    })
-  }
-}
-```
-
-<br/>
-
-## 表单状态
-
-`this.row__.status`
-
-可能的值：
-
-- `'c'` 新增
-- `'r'` 查看
-- `'u'` 编辑
-- `''` 关闭
-
-<br/>
-
-## 初始值定义
-
-```js
-data () {
-  return {
-    // 表单绑定对象
-    row__: {
-      data: {
-        arr: [],
-        num: 100
-      }
-    },
-    // 列表过滤参数
-    list__: {
-      filter: {
-        pageSize: 15, // 覆盖默认值10
-        status: 1 // 新增的
-      }
-    }
-  }
-}
-```
-
-<br/>
-
-## 手动刷新列表
-
-```js
-this.getList__()
-```
-
-<br/>
-
-## 发起请求
-
-快捷方式
-
-- `GET`
-- `POST`
-- `PATCH`
-- `PUT`
-- `DELETE`
-- `HEAD`
-
-```ts
-this.POST(url, data?, config?)
-```
-
-::: tip  
-屏蔽了GET和POST请求参数属性不一致的差异
-
-过滤掉参数中无效的值（null | NaN | undefined）
-
-有时候参数所绑定的对象中会存在一些临时属性 而这些属性是不应该提交到后端的 我们约定这些临时变量以双下划线__开头 __开头的属性会被过滤掉
-:::
-
-<br/>
-
-### 上传
-
-```js
-this.POST.upload(url, data ?, config ?)
-```
-
-::: tip  
-示例中的 `POST` 可替换为其他请求方式
-:::
-
-> 请求体类型为 multipart/form-data
-
-<br/>
-
-### 下载
-
-**ajax请求方式**
-
-```js
-this.POST.download(url, data ?, config ?)
-```
-
-::: tip  
-示例中的 `POST` 可替换为其他请求方式
-:::
-
-**地址栏请求方式**
-
-```js
-this.DOWNLOAD(url, data?, config?)
-```
-
-<br/>
-
-**给上传/下载添加全局回调**
-
-> 上传/下载本质上还是调用request 所以在request的响应拦截器中判断即可
-
-```js
-request.interceptors.response.use(
-  response => {
-    // download
-    if (response.config.responseType === 'blob') {
-      succeed({
-        titleText: '导出成功',
-        timer: 5000
-      })
-    }
-  },
-)
-```
-
-<br/>
-
-## RESTful
-
-如果接口是动态拼接式（如RESTful风格）
-
-`r__` `u__` `d__` `updateStatus__` 均支持第二个参数 以指定第一个参数的用途
-
-<a id="useFor"/>
-
-第二个参数的可选值：
-
-- `'param'`：将第一个参数用作请求参数（默认）
-- `'data'`：将第一个参数直接用作表单数据（不调用单条查询接口）
-- `'config'`：将第一个参数仅用于请求配置
-
-示例
-
-```vue
-<template>
-  <el-table-column label="操作" align="center">
-    <template slot-scope="{row}">
-      <AuthButton @click="r__(row,'config')" name="查看"/>
-      <AuthButton @click="u__(row,'config')" name="编辑"/>
-    </template>
-  </el-table-column>
-</template>
-
-<script>
-export default {
-  data () {
-    return {
-      api__: apiGenerator('/somepage', {
-        // 方式1
-        url: {
-          r: row => 'module/' + row.id,
-        },
-
-        // 方式2
-        config: {
-          r (row) {
-            return {
-              url: 'module/' + row.id
-            }
-          },
-        }
-      })
-    }
-  }
-}
-</script>
 ```

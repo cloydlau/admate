@@ -6,6 +6,10 @@
   "version": "0.0.1",
   "private": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloydlau/admate"
+  },
   "main": "dist/admate.umd.min.js",
   "scripts": {
     "build": "rollup -c",

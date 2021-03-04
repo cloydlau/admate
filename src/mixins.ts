@@ -33,7 +33,7 @@ function getMixins ({
   CancelToken,
 }: {
   props?: object
-  onSuccess?: () => void
+  onSuccess?: () => any
   CancelToken?: any
 }): object {
   props = {
@@ -157,7 +157,11 @@ function getMixins ({
       Object.assign(this.$data, getInitData())
     },
     methods: {
-      getList__ (callback) {
+      /**
+       * @param {function} callback - 回调函数
+       *        {object} res - 接口返回值
+       */
+      getList__ (callback?: (args: object) => any) {
         this.list__.loading = true
         this.list__.data.length = 0
         this.api__.list(this.list__.filter, 'param', {
@@ -191,7 +195,14 @@ function getMixins ({
         this.row__.status = 'c'
         this.row__.show = true
       },
-      r__ (obj: object | FormData, objIs = this.api__.r === false ? 'data' : 'param') {
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      r__ (
+        obj: object | FormData,
+        objIs = 'param'
+      ) {
         this.row__.objIs = objIs
         if (objIs === 'data') {
           if (!(isPlainObject(obj))) {
@@ -207,7 +218,14 @@ function getMixins ({
         this.row__.status = 'r'
         this.row__.show = true
       },
-      u__ (obj: object | FormData, objIs = this.api__.r === false ? 'data' : 'param') {
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      u__ (
+        obj: object | FormData,
+        objIs = 'param'
+      ) {
         this.row__.objIs = objIs
         if (objIs === 'data') {
           if (!(isPlainObject(obj))) {
@@ -223,7 +241,14 @@ function getMixins ({
         this.row__.status = 'u'
         this.row__.show = true
       },
-      d__ (obj: object | FormData, objIs = 'param') {
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      d__ (
+        obj: object | FormData,
+        objIs = 'param'
+      ) {
         this.row__.objIs = objIs
         if (!(isPlainObject(obj) || obj instanceof FormData)) {
           throw Error(prefix + 'd__的第一个参数的类型仅能为object|FormData')
@@ -244,7 +269,14 @@ function getMixins ({
           this.list__.loading = false
         })
       },
-      updateStatus__ (obj: object | FormData, objIs = 'param') {
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      updateStatus__ (
+        obj: object | FormData,
+        objIs = 'param'
+      ) {
         this.row__.objIs = objIs
         if (!(isPlainObject(obj) || obj instanceof FormData)) {
           throw Error(prefix + 'updateStatus__的第一个参数的类型仅能为object|FormData')
@@ -257,9 +289,15 @@ function getMixins ({
           this.list__.loading = false
         })
       },
-      dataGetter__ (
-        afterRetrieve?: (rowData: object) => void,
-        beforeRetrieve?: () => void
+      /**
+       * @param {function} afterRetrieve - 钩子：查询单条之后
+       *        {object} rowData - 查询单条接口返回数据
+       * @param {function} beforeRetrieve - 钩子：查询单条之前
+       * @return {function} 查询单条接口调用
+       */
+      retrieve__ (
+        afterRetrieve?: (rowData: object) => any,
+        beforeRetrieve?: () => any
       ) {
         // 仅查看和编辑才调用
         if (!['r', 'u'].includes(this.row__.status)) {
@@ -300,13 +338,17 @@ function getMixins ({
           this.row__.cancelToken = null
         })
       },
-      submit__ (beforeSubmitting?: (() => void) | object | FormData) {
+      /**
+       * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
+       * @return {function} 提交表单接口调用
+       */
+      submit__ (paramHandler?: (() => any) | object | FormData) {
         let param = this.row__.data
-        if (beforeSubmitting) {
-          if (beforeSubmitting instanceof Function) {
-            beforeSubmitting()
-          } else if (isPlainObject(beforeSubmitting) || beforeSubmitting instanceof FormData) {
-            param = beforeSubmitting
+        if (paramHandler) {
+          if (paramHandler instanceof Function) {
+            paramHandler()
+          } else if (isPlainObject(paramHandler) || paramHandler instanceof FormData) {
+            param = paramHandler
           } else {
             console.error(prefix + 'submit__的参数类型仅能为function|object|FormData')
           }
