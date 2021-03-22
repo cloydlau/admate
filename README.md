@@ -1,8 +1,8 @@
 # admate / 管理后台伴侣
 
-`admate` 的目标是以最快最简洁的方式开发管理后台页面
+`admate` 的目标是以快速简洁的方式开发管理后台页面
 
-并在此基础上确保灵活可配 避免过度封装
+并在此基础上确保灵活可配 避免过度封装（opinionated）
 
 <br/>
 
@@ -141,7 +141,7 @@ this.retrieve__(afterRetrieve, beforeRetrieve)
 <!-- 修改查询单条接口返回值示例 -->
 
 <FormDialog
-  :retrieve="() => retrieve__(
+        :retrieve="() => retrieve__(
     rowData => {
 
       // 同步修改：
@@ -179,7 +179,7 @@ this.submit__(paramHandler)
 <!-- 在新增时增加一个参数示例 -->
 
 <FormDialog
-  :submit="() => submit__(
+        :submit="() => submit__(
     // 参数可以是 function 或 object|FormData
     // function 会在表单校验通过后、接口调用前执行
     // object|FormData 会被用作接口参数
@@ -255,6 +255,25 @@ data()
         status: 1 // 新增的
       }
     }
+  }
+}
+```
+
+<br/>
+
+### 列表加载状态
+
+```this.list__.loading```
+
+```js
+methods: {
+  xxx()
+  {
+    this.list__.loading = true
+    this.POST('')
+    .finally(() => {
+      this.list__.loading = false
+    })
   }
 }
 ```
@@ -636,12 +655,12 @@ this.DOWNLOAD()
 
 ```js
 request.interceptors.response.use(
-  response => {
-    // download
-    if (response.config.responseType === 'blob') {
-      console.log('导出成功')
-    }
-  },
+        response => {
+          // download
+          if (response.config.responseType === 'blob') {
+            console.log('导出成功')
+          }
+        },
 )
 ```
 
