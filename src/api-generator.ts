@@ -38,10 +38,10 @@ export default function getApiGenerator ({
   formData,
 }: {
   request: (args: any) => Promise<any>,
-  config: config,
-  url: url,
-  method: method,
-  formData: string[],
+  config?: config,
+  url?: url,
+  method?: method,
+  formData?: string[],
 }): (module: string, config?: object) => object {
   const globalRequest = request
 
@@ -90,12 +90,12 @@ export default function getApiGenerator ({
     method,
     formData,
   }: {
-    request: (args: any) => Promise<any>,
-    config: config,
-    url: url,
-    method: method,
-    formData: string[],
-  }) {
+    request?: (args: any) => Promise<any>,
+    config?: config,
+    url?: url,
+    method?: method,
+    formData?: string[],
+  } = {}) {
     // 保证module不为null
     module = module || ''
 
