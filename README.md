@@ -205,7 +205,7 @@ this.submit__(paramHandler)
 
 `getList__` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
 
-`init__`：你可以在 `methods` 中定义一个 `init__` 方法来取代 `getList__`
+`onGettingList__`：你可以在 `methods` 中定义一个 `onGettingList__` 方法来取代 `getList__`
 
 ```js
 methods: {
@@ -213,7 +213,7 @@ methods: {
    * @param {string} intention - 调用意图 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus'
    * @param {object} res - 接口返回值
    */
-  init__(intention, res)
+  onGettingList__(intention, res)
   {
     // 在查询列表之前搞点事情...
     this.getList__(res => {

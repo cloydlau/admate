@@ -94,7 +94,7 @@ function getMixins ({
       if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
         this.row__.initData = cloneDeep(this.row__.data)
       }
-      typeof this.init__ === 'function' ? this.init__('init') : this.getList__()
+      typeof this.onGettingList__ === 'function' ? this.onGettingList__('init') : this.getList__()
     },
     mounted () {
       // fixing: 没有声明的筛选参数无法重置
@@ -119,11 +119,11 @@ function getMixins ({
                 // 如果改变的不是页码 页码重置为1
                 if (this.list__.prevPageNo === newVal[pageNoField]) {
                   this.list__.filter[pageNoField] === 1 ?
-                    (typeof this.init__ === 'function' ? this.init__('filterChange') : this.getList__()) :
+                    (typeof this.onGettingList__ === 'function' ? this.onGettingList__('filterChange') : this.getList__()) :
                     this.list__.filter[pageNoField] = 1
                 } else {
                   // 刷新列表
-                  typeof this.init__ === 'function' ? this.init__('pageNoChange') : this.getList__()
+                  typeof this.onGettingList__ === 'function' ? this.onGettingList__('pageNoChange') : this.getList__()
                 }
                 this.list__.prevPageNo = newVal[pageNoField]
               }
@@ -257,12 +257,12 @@ function getMixins ({
         this.api__.d(obj, objIs).then(res => {
           if (this.list__.data?.length === 1) {
             if (this.list__.filter[this.props__.pageNo] === 1) {
-              typeof this.init__ === 'function' ? this.init__('d', res) : this.getList__()
+              typeof this.onGettingList__ === 'function' ? this.onGettingList__('d', res) : this.getList__()
             } else {
               this.list__.filter[this.props__.pageNo]--
             }
           } else {
-            typeof this.init__ === 'function' ? this.init__('d', res) : this.getList__()
+            typeof this.onGettingList__ === 'function' ? this.onGettingList__('d', res) : this.getList__()
           }
           onSuccess?.()
         }).finally(e => {
@@ -283,7 +283,7 @@ function getMixins ({
         }
         this.list__.loading = true
         this.api__.updateStatus(obj, objIs).then(res => {
-          typeof this.init__ === 'function' ? this.init__('updateStatus', res) : this.getList__()
+          typeof this.onGettingList__ === 'function' ? this.onGettingList__('updateStatus', res) : this.getList__()
           onSuccess?.()
         }).finally(e => {
           this.list__.loading = false
@@ -356,7 +356,7 @@ function getMixins ({
         return this.api__[this.row__.status](param).then(res => {
           this.row__.obj = {}
           this.row__.objIs = null
-          typeof this.init__ === 'function' ? this.init__(this.row__.status, res) : this.getList__()
+          typeof this.onGettingList__ === 'function' ? this.onGettingList__(this.row__.status, res) : this.getList__()
           onSuccess?.()
         })
       },
