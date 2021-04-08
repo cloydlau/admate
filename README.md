@@ -79,7 +79,7 @@ let mixins = getMixins({
     r: 'data'
   },
 
-  // 获取列表代理
+  // 获取列表代理 详见生命周期-查询列表时
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -115,7 +115,16 @@ export default {
   mixins: [mixins],
   data () {
     return {
-      props__: {} // 注意双下划线结尾
+      props__: {}, // 注意双下划线结尾
+    }
+  },
+  methods: {
+    // 注意双下划线结尾
+    getListProxy__ (motive, res) {
+      this.getList__()
+      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+        this.$message.success('操作成功')
+      }
     }
   }
 }
