@@ -162,38 +162,41 @@ function getMixins ({
       Object.assign(this.$data, getInitData())
     },
     methods: {
-      /**
-       * @param {function} callback - 回调函数
-       *        {object} res - 接口返回值
-       */
-      getList__ (callback?: (args: object) => any) {
+      getList__ () {
         this.list__.loading = true
         this.list__.data.length = 0
-        this.api__.list(this.list__.filter, 'param', {
-          cancelToken: CancelToken && new CancelToken(c => {
-            // executor 函数接收一个 cancel 函数作为参数
-            this.list__.cancelToken = c
+        return new Promise((resolve, reject) => {
+          this.api__.list(this.list__.filter, 'param', {
+            cancelToken: CancelToken && new CancelToken(c => {
+              // executor 函数接收一个 cancel 函数作为参数
+              this.list__.cancelToken = c
+            })
           })
-        }).then(res => {
-          // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
-          // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
-          if (this.props__) {
-            for (let v of this.props__.list) {
-              const list = getPropByPath(res, v)
-              if (list instanceof Array) {
-                this.list__.data = list
-                this.list__.total = getPropByPath(res, this.props__.total)
-                break
+          .then(res => {
+            // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
+            // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
+            if (this.props__) {
+              for (let v of this.props__.list) {
+                const list = getPropByPath(res, v)
+                if (list instanceof Array) {
+                  this.list__.data = list
+                  this.list__.total = getPropByPath(res, this.props__.total)
+                  break
+                }
+              }
+              if (isEmpty(this.list__.data)) {
+                this.list__.total = 0
               }
             }
-            if (isEmpty(this.list__.data)) {
-              this.list__.total = 0
-            }
-          }
-          callback?.(res)
-        }).finally(e => {
-          this.list__.cancelToken = null
-          this.list__.loading = false
+            resolve(res)
+          })
+          .catch(res => {
+            reject(res)
+          })
+          .finally(e => {
+            this.list__.cancelToken = null
+            this.list__.loading = false
+          })
         })
       },
       c__ () {

@@ -80,7 +80,7 @@ let mixins = getMixins({
   },
 
   // 获取列表代理
-  getListProxy (motive) {
+  getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
       this.$message.success('操作成功')
@@ -214,15 +214,17 @@ this.submit__(paramHandler)
 methods: {
   /**
    * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res - 接口返回值
+   * @param {object} res - 调用动机的接口返回值（首次进入页面、列表查询参数改变时为空）
    */
   getListProxy__(motive, res)
   {
-    // 在查询列表之前搞点事情...
-    this.getList__(res => {
-      // 在查询列表之后搞点事情...
-      // res为查询列表接口返回值
+    // 在查询列表之前做点什么...
+    this.getList__()
+    .then(res => {
+      // 在查询列表之后做点什么...
     })
+    .catch(res => {})
+    .finally()
   }
 }
 ```
