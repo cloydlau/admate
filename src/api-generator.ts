@@ -10,6 +10,8 @@ type url = {
   d?: string | ((objForConfig: object) => string),
   list?: string | ((objForConfig: object) => string),
   updateStatus?: string | ((objForConfig: object) => string),
+  enable?: string | ((objForConfig: object) => string),
+  disable?: string | ((objForConfig: object) => string),
 }
 
 type method = {
@@ -19,6 +21,8 @@ type method = {
   d?: string,
   list?: string,
   updateStatus?: string,
+  enable?: string,
+  disable?: string,
 }
 
 type config = {
@@ -28,6 +32,8 @@ type config = {
   d?: object | ((objForConfig: object) => object),
   list?: object | ((objForConfig: object) => object),
   updateStatus?: object | ((objForConfig: object) => object),
+  enable?: object | ((objForConfig: object) => object),
+  disable?: object | ((objForConfig: object) => object),
 }
 
 export default function getApiGenerator ({
@@ -52,6 +58,8 @@ export default function getApiGenerator ({
     d: {},
     list: {},
     updateStatus: {},
+    enable: {},
+    disable: {},
     ...config
   }
 
@@ -62,6 +70,8 @@ export default function getApiGenerator ({
     d: 'delete',
     list: 'queryForPage',
     updateStatus: 'updateStatus',
+    enable: 'enable',
+    disable: 'disable',
     ...url,
   }
 
@@ -72,6 +82,8 @@ export default function getApiGenerator ({
     d: 'POST',
     list: 'POST',
     updateStatus: 'POST',
+    enable: 'POST',
+    disable: 'POST',
     ...method
   }
 
@@ -171,6 +183,24 @@ export default function getApiGenerator ({
           method: method.updateStatus,
           ...objIs === 'param' && { data: formData.includes('updateStatus') ? jsonToFormData(obj) : obj },
           ...typeof instanceConfig.updateStatus === 'function' ? instanceConfig.updateStatus(obj) : instanceConfig.updateStatus,
+          ...config,
+        })
+      },
+      enable: (obj, objIs = 'param', config) => {
+        return request({
+          url: getUrl(url.enable, obj),
+          method: method.enable,
+          ...objIs === 'param' && { data: formData.includes('enable') ? jsonToFormData(obj) : obj },
+          ...typeof instanceConfig.enable === 'function' ? instanceConfig.enable(obj) : instanceConfig.enable,
+          ...config,
+        })
+      },
+      disable: (obj, objIs = 'param', config) => {
+        return request({
+          url: getUrl(url.disable, obj),
+          method: method.disable,
+          ...objIs === 'param' && { data: formData.includes('disable') ? jsonToFormData(obj) : obj },
+          ...typeof instanceConfig.disable === 'function' ? instanceConfig.disable(obj) : instanceConfig.disable,
           ...config,
         })
       },

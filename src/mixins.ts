@@ -29,11 +29,11 @@ function getInitData () {
 
 function getMixins ({
   props,
-  onSuccess,
+  getListProxy,
   CancelToken,
 }: {
   props?: object
-  onSuccess?: Function
+  getListProxy?: Function
   CancelToken?: any
 }): object {
   props = {
@@ -44,6 +44,8 @@ function getMixins ({
     r: 'data',
     ...props
   }
+
+  getListProxy = getListProxy || this.getList__
 
   return {
     data () {
@@ -85,6 +87,9 @@ function getMixins ({
       if (!(this.props__.list instanceof Array)) {
         this.props__.list = [this.props__.list]
       }
+
+      this.getListProxy__ = this.getListProxy__ || getListProxy
+
       this.list__.filter = {
         [this.props__.pageNo]: 1,
         [this.props__.pageSize]: this.list__.filter[this.props__.pageSize] || 10,
@@ -94,7 +99,7 @@ function getMixins ({
       if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
         this.row__.initData = cloneDeep(this.row__.data)
       }
-      typeof this.onGettingList__ === 'function' ? this.onGettingList__('init') : this.getList__()
+      this.getListProxy__('init')
     },
     mounted () {
       // fixing: 没有声明的筛选参数无法重置
@@ -119,11 +124,11 @@ function getMixins ({
                 // 如果改变的不是页码 页码重置为1
                 if (this.list__.prevPageNo === newVal[pageNoField]) {
                   this.list__.filter[pageNoField] === 1 ?
-                    (typeof this.onGettingList__ === 'function' ? this.onGettingList__('filterChange') : this.getList__()) :
+                    this.getListProxy__('filterChange') :
                     this.list__.filter[pageNoField] = 1
                 } else {
                   // 刷新列表
-                  typeof this.onGettingList__ === 'function' ? this.onGettingList__('pageNoChange') : this.getList__()
+                  this.getListProxy__('pageNoChange')
                 }
                 this.list__.prevPageNo = newVal[pageNoField]
               }
@@ -257,14 +262,13 @@ function getMixins ({
         this.api__.d(obj, objIs).then(res => {
           if (this.list__.data?.length === 1) {
             if (this.list__.filter[this.props__.pageNo] === 1) {
-              typeof this.onGettingList__ === 'function' ? this.onGettingList__('d', res) : this.getList__()
+              this.getListProxy__('d', res)
             } else {
               this.list__.filter[this.props__.pageNo]--
             }
           } else {
-            typeof this.onGettingList__ === 'function' ? this.onGettingList__('d', res) : this.getList__()
+            this.getListProxy__('d', res)
           }
-          onSuccess?.()
         }).finally(e => {
           this.list__.loading = false
         })
@@ -283,8 +287,43 @@ function getMixins ({
         }
         this.list__.loading = true
         this.api__.updateStatus(obj, objIs).then(res => {
-          typeof this.onGettingList__ === 'function' ? this.onGettingList__('updateStatus', res) : this.getList__()
-          onSuccess?.()
+          this.getListProxy__('updateStatus', res)
+        }).finally(e => {
+          this.list__.loading = false
+        })
+      },
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      enable__ (
+        obj: object | FormData,
+        objIs = 'param') {
+        this.row__.objIs = objIs
+        if (!(isPlainObject(obj) || obj instanceof FormData)) {
+          throw Error(prefix + 'enable__的第一个参数的类型仅能为object|FormData')
+        }
+        this.list__.loading = true
+        this.api__.enable(obj, objIs).then(res => {
+          this.getListProxy__('enable', res)
+        }).finally(e => {
+          this.list__.loading = false
+        })
+      },
+      /**
+       * @param {object|FormData} obj - 必传
+       * @param {string} objIs - 指定参数1的用途 默认'param'
+       */
+      disable__ (
+        obj: object | FormData,
+        objIs = 'param') {
+        this.row__.objIs = objIs
+        if (!(isPlainObject(obj) || obj instanceof FormData)) {
+          throw Error(prefix + 'disable__的第一个参数的类型仅能为object|FormData')
+        }
+        this.list__.loading = true
+        this.api__.disable(obj, objIs).then(res => {
+          this.getListProxy__('disable', res)
         }).finally(e => {
           this.list__.loading = false
         })
@@ -356,8 +395,7 @@ function getMixins ({
         return this.api__[this.row__.status](param).then(res => {
           this.row__.obj = {}
           this.row__.objIs = null
-          typeof this.onGettingList__ === 'function' ? this.onGettingList__(this.row__.status, res) : this.getList__()
-          onSuccess?.()
+          this.getListProxy__(this.row__.status, res)
         })
       },
     }
