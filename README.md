@@ -1,14 +1,14 @@
-# admate / 管理后台伴侣
+# Admate / 管理后台伴侣
 
-`admate` 的目标是以快速简洁的方式开发管理后台页面
+`Admate` 的目标是以快速简洁的方式开发管理后台页面
 
 并在此基础上确保灵活可配 避免过度封装（opinionated）
 
-<br/>
+<br>
 
 ## Installation
 
-<br/>
+<br>
 
 ![NPM](https://nodei.co/npm/admate.png)
 
@@ -22,7 +22,7 @@ $ yarn add admate
 
 :two: 打开命令面板（`F1`） 输入 `yapi2code` 运行
 
-<br/>
+<br>
 
 ## mixins
 
@@ -79,9 +79,12 @@ let mixins = getMixins({
     r: 'data'
   },
 
-  // 调用接口正常返回时的钩子
-  onSuccess () {
-    Vue.prototype.$message.success('操作成功')
+  // 获取列表代理
+  getListProxy (motive) {
+    this.getList__()
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+      this.$message.success('操作成功')
+    }
   },
 
   // 用于切换页面时中断请求
@@ -118,7 +121,7 @@ export default {
 }
 ```
 
-<br/>
+<br>
 
 ### 生命周期
 
@@ -141,7 +144,7 @@ this.retrieve__(afterRetrieve, beforeRetrieve)
 <!-- 修改查询单条接口返回值示例 -->
 
 <FormDialog
-        :retrieve="() => retrieve__(
+  :retrieve="() => retrieve__(
     rowData => {
 
       // 同步修改：
@@ -160,7 +163,7 @@ this.retrieve__(afterRetrieve, beforeRetrieve)
 />
 ```
 
-<br/>
+<br>
 
 #### 提交表单时
 
@@ -179,7 +182,7 @@ this.submit__(paramHandler)
 <!-- 在新增时增加一个参数示例 -->
 
 <FormDialog
-        :submit="() => submit__(
+  :submit="() => submit__(
     // 参数可以是 function 或 object|FormData
     // function 会在表单校验通过后、接口调用前执行
     // object|FormData 会被用作接口参数
@@ -199,21 +202,21 @@ this.submit__(paramHandler)
 />
 ```
 
-<br/>
+<br>
 
 #### 查询列表时
 
 `getList__` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
 
-`onGettingList__`：你可以在 `methods` 中定义一个 `onGettingList__` 方法来取代 `getList__`
+`getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
 
 ```js
 methods: {
   /**
-   * @param {string} intention - 调用意图 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus'
+   * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    * @param {object} res - 接口返回值
    */
-  onGettingList__(intention, res)
+  getListProxy__(motive, res)
   {
     // 在查询列表之前搞点事情...
     this.getList__(res => {
@@ -224,7 +227,7 @@ methods: {
 }
 ```
 
-<br/>
+<br>
 
 ### 表单状态
 
@@ -237,7 +240,7 @@ methods: {
 - `'u'` 编辑
 - `''` 关闭
 
-<br/>
+<br>
 
 ### 列表参数
 
@@ -259,7 +262,7 @@ data()
 }
 ```
 
-<br/>
+<br>
 
 ### 列表加载状态
 
@@ -278,7 +281,7 @@ methods: {
 }
 ```
 
-<br/>
+<br>
 
 ### 表单数据
 
@@ -300,7 +303,7 @@ data()
 }
 ```
 
-<br/>
+<br>
 
 ## apiGenerator
 
@@ -330,6 +333,8 @@ const apiGenerator = getApiGenerator({
     d: 'delete',                  // 单条删除
     list: 'queryForPage',         // 列表查询
     updateStatus: 'updateStatus', // 单条状态变更
+    enable: 'enable',             // 状态启用
+    disable: 'enable',            // 状态停用
   },
 
   // 请求方式 默认全POST
@@ -340,6 +345,8 @@ const apiGenerator = getApiGenerator({
     d: 'POST',
     list: 'POST',
     updateStatus: 'POST',
+    enable: 'POST',
+    disable: 'POST',
   },
 
   // 提交方式 默认空数组（全json） 可以在这里指定接口使用formData
@@ -399,7 +406,7 @@ data()
 - `/somepage/updateStatus`
 - `/anotherpage/selectOne`
 
-<br/>
+<br>
 
 ### 增删查改
 
@@ -462,7 +469,29 @@ this.d__()
 this.updateStatus__()
 ```
 
-<br/>
+#### 启用单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.enable__()
+```
+
+#### 停用单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+
+this.disable__()
+```
+
+<br>
 
 **参数2的可选值：**
 
@@ -470,7 +499,35 @@ this.updateStatus__()
 - `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
 - `'config'`：将参数1仅用于请求配置
 
-<br/>
+<br>
+
+### 单条状态变更
+
+状态变更的两种方式：
+
+- 调用同一个接口，传参指定新的状态：使用 `updateStatus`
+
+```html
+
+<el-table-column label="操作" align="center">
+  <template slot-scope="{row:{id,status}}">
+    <AuthButton @click="updateStatus__({id,status:status^1})" :name="['启用', '停用'][status]"/>
+  </template>
+</el-table-column>
+```
+
+- 启用和停用是独立的两个接口：使用 `enable` 和 `disable`
+
+```html
+
+<el-table-column label="操作" align="center">
+  <template slot-scope="{row:{id,status}}">
+    <AuthButton @click="[enable__,disable__][status]({id})" :name="['启用', '停用'][status]"/>
+  </template>
+</el-table-column>
+```
+
+<br>
 
 ### 不调用查询单条接口
 
@@ -489,7 +546,7 @@ this.updateStatus__()
 </el-table-column>
 ```
 
-<br/>
+<br>
 
 ### RESTful
 
@@ -533,7 +590,7 @@ export default {
 </script>
 ```
 
-<br/>
+<br>
 
 ## axiosShortcut
 
@@ -541,7 +598,7 @@ export default {
 
 通过 `getAxiosShortcut` 方法获取 `axiosShortcut`
 
-<br/>
+<br>
 
 ### 初始化
 
@@ -561,7 +618,7 @@ for (let k in axiosShortcut) {
 }
 ```
 
-<br/>
+<br>
 
 ### AJAX
 
@@ -593,7 +650,7 @@ this.POST()
 有时候参数所绑定的对象中会存在一些临时属性 而这些属性是不应该提交到后端的 我们约定这些临时变量以双下划线__开头 __开头的属性会被过滤掉
 :::
 
-<br/>
+<br>
 
 ### 上传
 
@@ -614,7 +671,7 @@ this.POST.upload()
 示例中的 `POST` 可替换为其他请求方式
 :::
 
-<br/>
+<br>
 
 ### 下载
 
@@ -647,7 +704,7 @@ this.POST.download()
 this.DOWNLOAD()
 ```
 
-<br/>
+<br>
 
 **给上传/下载添加全局回调**
 
@@ -655,16 +712,16 @@ this.DOWNLOAD()
 
 ```js
 request.interceptors.response.use(
-        response => {
-          // download
-          if (response.config.responseType === 'blob') {
-            console.log('导出成功')
-          }
-        },
+  response => {
+    // download
+    if (response.config.responseType === 'blob') {
+      console.log('导出成功')
+    }
+  },
 )
 ```
 
-<br/>
+<br>
 
 ## filters
 
@@ -686,7 +743,7 @@ Object.keys(filters).map(key => {
 })
 ```
 
-<br/>
+<br>
 
 ### key2label__
 
@@ -721,7 +778,7 @@ this.key2label__('1', [
 ], 'id/name') // 'a'
 ```
 
-<br/>
+<br>
 
 ### dialogTitle__
 
