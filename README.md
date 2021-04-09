@@ -146,7 +146,7 @@ this.retrieve__
 > `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
 
 ```vue
-<!-- 修改查询单条接口返回值示例 -->
+<!-- 示例：修改接口返回值 -->
 
 <template>
   <FormDialog :retrieve="retrieve"/>
@@ -202,7 +202,7 @@ export default {
 ```js
 /**
  * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
- * @return {function} 提交表单接口调用
+ * @return {Promise} 提交表单接口调用
  */
 
 this.submit__(paramHandler)
@@ -211,7 +211,7 @@ this.submit__(paramHandler)
 > `submit__` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
 
 ```vue
-<!-- 在新增时增加一个参数示例 -->
+<!-- 示例：修改提交参数 -->
 
 <template>
   <FormDialog :submit="submit"/>
@@ -221,24 +221,64 @@ this.submit__(paramHandler)
 export default {
   methods: {
     submit () {
+      // 在提交之前做点什么（无论表单校验是否通过）...
       return this.submit__(
-        // 参数可以是 function 或 object|FormData
-        // function 会在表单校验通过后、接口调用前执行
-        // object|FormData 会被用作接口参数
         () => {
-          // 在提交之前搞点事情...
+          // 在提交之前做点什么（表单校验通过后）...
           if ('c' === this.row__.status) {
             this.row__.data.status = 1
           }
         })
       .then(() => {
-        // 在提交之后搞点事情...
+        // 在提交成功后做点什么...
       })
-      .catch(() => {
+    }
+  }
+}
+</script>
+```
+
+```vue
+<!-- 示例：指定提交参数 -->
+
+<template>
+  <FormDialog :submit="submit"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    submit () {
+      return this.submit__({
+        ...this.row__.data,
+        status: 1
+      })
+    }
+  }
+}
+</script>
+```
+
+```vue
+<!-- 示例：额外的校验 自行控制表单的关闭 -->
+
+<template>
+  <FormDialog :submit="submit"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    submit () {
+      let valid = false
+      if (valid) {
+        return this.submit__()
+      } else {
+        this.warning__('校验失败')
         return {
           close: false
         }
-      })
+      }
     }
   }
 }

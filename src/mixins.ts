@@ -379,7 +379,7 @@ function getMixins ({
       },
       /**
        * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
-       * @return {function} 提交表单接口调用
+       * @return {Promise} 提交表单接口调用
        */
       submit__ (paramHandler?: (Function) | object | FormData) {
         let param = this.row__.data
