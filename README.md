@@ -145,9 +145,8 @@ this.retrieve__
 
 > `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
 
-**修改查询单条接口返回值示例**
-
 ```vue
+<!-- 修改查询单条接口返回值示例 -->
 
 <template>
   <FormDialog :retrieve="retrieve"/>
@@ -172,9 +171,8 @@ export default {
 </script>
 ```
 
-**在查询单条记录之前做点什么**
-
 ```vue
+<!-- 在查询单条记录之前做点什么 -->
 
 <template>
   <FormDialog :retrieve="retrieve"/>
@@ -212,28 +210,39 @@ this.submit__(paramHandler)
 
 > `submit__` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
 
-```html
+```vue
 <!-- 在新增时增加一个参数示例 -->
 
-<FormDialog
-  :submit="() => submit__(
-    // 参数可以是 function 或 object|FormData
-    // function 会在表单校验通过后、接口调用前执行
-    // object|FormData 会被用作接口参数
-    () => {
-      // 在提交之前搞点事情...
-      if (row__.status === 'c') {
-        row__.data.status = 1
-      }
-    }).then(() => {
-      // 在提交之后搞点事情...
-    }).catch(() => {
-      return {
-        close: false
-      }
-    })
-  "
-/>
+<template>
+  <FormDialog :submit="submit"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    submit () {
+      return this.submit__(
+        // 参数可以是 function 或 object|FormData
+        // function 会在表单校验通过后、接口调用前执行
+        // object|FormData 会被用作接口参数
+        () => {
+          // 在提交之前搞点事情...
+          if ('c' === this.row__.status) {
+            this.row__.data.status = 1
+          }
+        })
+      .then(() => {
+        // 在提交之后搞点事情...
+      })
+      .catch(() => {
+        return {
+          close: false
+        }
+      })
+    }
+  }
+}
+</script>
 ```
 
 <br>
