@@ -715,7 +715,6 @@ for (let k in axiosShortcut) {
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-
 this.POST()
 ```
 
@@ -740,7 +739,6 @@ this.POST()
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-
 this.POST.upload()
 ```
 
@@ -761,7 +759,6 @@ this.POST.upload()
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-
 this.POST.download()
 ```
 
@@ -777,7 +774,6 @@ this.POST.download()
  * @param {object} data - 接口参数
  * @param {object} config - axios配置
  */
-
 this.DOWNLOAD()
 ```
 
