@@ -138,37 +138,44 @@ export default {
 
 ```js
 /**
- * @param {function} afterRetrieve - 钩子：查询单条之后
- *        {object} rowData - 查询单条接口返回数据
- * @param {function} beforeRetrieve - 钩子：查询单条之前
- * @return {function} 查询单条接口调用
+ * @return {Promise} 查询单条接口调用
  */
-
-this.retrieve__(afterRetrieve, beforeRetrieve)
+this.retrieve__
 ```
 
 > `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
 
+**修改查询单条接口返回值示例**
+
 ```html
-<!-- 修改查询单条接口返回值示例 -->
 
 <FormDialog
-  :retrieve="() => retrieve__(
-    rowData => {
+  :retrieve="() => retrieve__()
+    .then(
+      /**
+       * @param {object} rowData - 单条数据
+       */
+      rowData => {
+        row__.data.status = 1
+      }
+    )"
+/>
+```
 
-      // 同步修改：
-      rowData.status = 1
-      
-      // 异步修改：
-      this.$POST().then(res => {
-        this.row__.data.status = 1
-      })
-      
-    },
-    () => {
-      // 在查询单条记录之前做点什么...
+**在查询单条记录之前做点什么**
+
+```html
+
+<FormDialog
+  :retrieve="() => {
+    // retrieve方法在FormDialog打开时会被调用 包括新增时
+    // retrieve__帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
+    if ('c' !== row.status) {
+      // 在查询单条记录之前做点什么
     }
-  )"
+    
+    return retrieve__()
+  }"
 />
 ```
 

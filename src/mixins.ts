@@ -332,52 +332,49 @@ function getMixins ({
         })
       },
       /**
-       * @param {function} afterRetrieve - 钩子：查询单条之后
-       *        {object} rowData - 查询单条接口返回数据
-       * @param {function} beforeRetrieve - 钩子：查询单条之前
-       * @return {function} 查询单条接口调用
+       * @return {Promise} 查询单条接口调用
        */
-      retrieve__ (
-        afterRetrieve?: (rowData: object) => any,
-        beforeRetrieve?: Function
-      ) {
+      retrieve__ () {
         // 仅查看和编辑才调用
         if (!['r', 'u'].includes(this.row__.status)) {
           return
         }
 
-        beforeRetrieve?.()
-
-        return this.api__.r?.(
-          this.row__.obj,
-          this.row__.objIs,
-          {
-            cancelToken: CancelToken && new CancelToken(c => {
-              // executor 函数接收一个 cancel 函数作为参数
-              this.row__.cancelToken = c
+        return new Promise((resolve, reject) => {
+          this.api__.r(
+            this.row__.obj,
+            this.row__.objIs,
+            {
+              cancelToken: CancelToken && new CancelToken(c => {
+                // executor 函数接收一个 cancel 函数作为参数
+                this.row__.cancelToken = c
+              })
             })
-          })
-        .then(res => {
-          const rowData = getPropByPath(res, this.props__.r)
-          // 坑：
-          /*
-            let obj = { a: 1 }
-            obj = {
-              ...obj,
-              ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
-                obj.x = 1
-              })()
+          .then(res => {
+            const rowData = getPropByPath(res, this.props__.r)
+            // 坑：
+            /*
+              let obj = { a: 1 }
+              obj = {
+                ...obj,
+                ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
+                  obj.x = 1
+                })()
+              }
+            */
+            resolve(rowData)
+            // 将接口返回值混入row__.data
+            this.row__.data = {
+              ...this.row__.data,
+              ...rowData
             }
-          */
-          afterRetrieve?.(rowData)
-          // 将接口返回值混入row__.data
-          this.row__.data = {
-            ...this.row__.data,
-            ...rowData
-          }
-        })
-        .finally(() => {
-          this.row__.cancelToken = null
+          })
+          .catch(e => {
+            reject(e)
+          })
+          .finally(() => {
+            this.row__.cancelToken = null
+          })
         })
       },
       /**
