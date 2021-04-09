@@ -27,6 +27,35 @@ function getInitData () {
   }
 }
 
+function argsHandler (obj, objIs, motive) {
+  const isRorU = ['r', 'u'].includes(motive)
+  switch (objIs) {
+    case 'param':
+      if (!(isPlainObject(obj) || obj instanceof FormData)) {
+        throw Error(`${prefix} ${motive}__的第一个参数的类型需为 object|FormData`)
+      }
+      break
+    case 'config':
+      break
+    case 'data':
+      if (!isRorU) {
+        throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' 'config' 之一`)
+      }
+      if (!(isPlainObject(obj))) {
+        throw Error(`${prefix}'直接使用列表数据时 ${motive}__的第一个参数的类型需为 object'`)
+      }
+      break
+    default:
+      throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' ${isRorU ? 'data ' : ''}'config' 之一`)
+  }
+  this.row__.obj = objIs === 'data' ? cloneDeep(obj) : obj
+  this.row__.objIs = objIs
+  if (isRorU) {
+    this.row__.status = motive
+    this.row__.show = true
+  }
+}
+
 function getMixins ({
   props,
   getListProxy,
@@ -211,20 +240,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        this.row__.objIs = objIs
-        if (objIs === 'data') {
-          if (!(isPlainObject(obj))) {
-            throw Error(prefix + '直接使用列表数据时 r__的第一个参数的类型需为object')
-          }
-          this.row__.obj = cloneDeep(obj)
-        } else {
-          if (objIs === 'param' && !(isPlainObject(obj) || obj instanceof FormData)) {
-            throw Error(prefix + 'r__的第一个参数的类型需为object|FormData')
-          }
-          this.row__.obj = obj
-        }
-        this.row__.status = 'r'
-        this.row__.show = true
+        argsHandler(obj, objIs, 'r')
       },
       /**
        * @param {object|FormData} obj - 必传
@@ -234,20 +250,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        this.row__.objIs = objIs
-        if (objIs === 'data') {
-          if (!(isPlainObject(obj))) {
-            throw Error(prefix + '直接使用列表数据时 u__的第一个参数的类型需为object')
-          }
-          this.row__.obj = cloneDeep(obj)
-        } else {
-          if (objIs === 'param' && !(isPlainObject(obj) || obj instanceof FormData)) {
-            throw Error(prefix + 'u__的第一个参数的类型需为object|FormData')
-          }
-          this.row__.obj = obj
-        }
-        this.row__.status = 'u'
-        this.row__.show = true
+        argsHandler(obj, objIs, 'u')
       },
       /**
        * @param {object|FormData} obj - 必传
@@ -257,10 +260,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        this.row__.objIs = objIs
-        if (!(isPlainObject(obj) || obj instanceof FormData)) {
-          throw Error(prefix + 'd__的第一个参数的类型仅能为object|FormData')
-        }
+        argsHandler(obj, objIs, 'd')
         this.list__.loading = true
         this.api__.d(obj, objIs).then(res => {
           if (this.list__.data?.length === 1) {
@@ -284,10 +284,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        this.row__.objIs = objIs
-        if (!(isPlainObject(obj) || obj instanceof FormData)) {
-          throw Error(prefix + 'updateStatus__的第一个参数的类型仅能为object|FormData')
-        }
+        argsHandler(obj, objIs, 'updateStatus')
         this.list__.loading = true
         this.api__.updateStatus(obj, objIs).then(res => {
           this.getListProxy__('updateStatus', res)
@@ -301,11 +298,9 @@ function getMixins ({
        */
       enable__ (
         obj: object | FormData,
-        objIs = 'param') {
-        this.row__.objIs = objIs
-        if (!(isPlainObject(obj) || obj instanceof FormData)) {
-          throw Error(prefix + 'enable__的第一个参数的类型仅能为object|FormData')
-        }
+        objIs = 'param'
+      ) {
+        argsHandler(obj, objIs, 'enable')
         this.list__.loading = true
         this.api__.enable(obj, objIs).then(res => {
           this.getListProxy__('enable', res)
@@ -319,11 +314,9 @@ function getMixins ({
        */
       disable__ (
         obj: object | FormData,
-        objIs = 'param') {
-        this.row__.objIs = objIs
-        if (!(isPlainObject(obj) || obj instanceof FormData)) {
-          throw Error(prefix + 'disable__的第一个参数的类型仅能为object|FormData')
-        }
+        objIs = 'param'
+      ) {
+        argsHandler(obj, objIs, 'disable')
         this.list__.loading = true
         this.api__.disable(obj, objIs).then(res => {
           this.getListProxy__('disable', res)
