@@ -147,36 +147,54 @@ this.retrieve__
 
 **修改查询单条接口返回值示例**
 
-```html
+```vue
 
-<FormDialog
-  :retrieve="() => retrieve__()
-    .then(
-      /**
-       * @param {object} rowData - 单条数据
-       */
-      rowData => {
-        row__.data.status = 1
-      }
-    )"
-/>
+<template>
+  <FormDialog :retrieve="retrieve"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    retrieve () {
+      return this.retrieve__()
+      ?.then( // 新增时 retrieve__返回为空 需要判空
+        /**
+         * @param {object} rowData - 单条数据
+         */
+        rowData => {
+          this.row__.data.status = 1
+        }
+      )
+    }
+  }
+}
+</script>
 ```
 
 **在查询单条记录之前做点什么**
 
-```html
+```vue
 
-<FormDialog
-  :retrieve="() => {
-    // retrieve方法在FormDialog打开时会被调用 包括新增时
-    // retrieve__帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
-    if ('c' !== row.status) {
-      // 在查询单条记录之前做点什么
+<template>
+  <FormDialog :retrieve="retrieve"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    retrieve () {
+      // retrieve方法在FormDialog打开时会被调用 包括新增时
+      // retrieve__帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
+      if ('c' !== this.row__.status) {
+        // 在查询单条记录之前做点什么
+      }
+
+      return this.retrieve__()
     }
-    
-    return retrieve__()
-  }"
-/>
+  }
+}
+</script>
 ```
 
 <br>
