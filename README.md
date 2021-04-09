@@ -204,7 +204,6 @@ export default {
  * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
  * @return {Promise} 提交表单接口调用
  */
-
 this.submit__(paramHandler)
 ```
 
@@ -502,7 +501,6 @@ data()
  * @param {function} callback - 回调函数
  *        {object} res - 接口返回值
  */
-
 this.getList__()
 ```
 
@@ -513,7 +511,6 @@ this.getList__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.r__()
 ```
 
@@ -528,7 +525,6 @@ this.r__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.u__()
 ```
 
@@ -539,7 +535,6 @@ this.u__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.d__()
 ```
 
@@ -550,7 +545,6 @@ this.d__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.updateStatus__()
 ```
 
@@ -561,7 +555,6 @@ this.updateStatus__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.enable__()
 ```
 
@@ -572,7 +565,6 @@ this.enable__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-
 this.disable__()
 ```
 
