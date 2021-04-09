@@ -140,7 +140,7 @@ export default {
 /**
  * @return {Promise} 查询单条接口调用
  */
-this.retrieve__
+this.retrieve__()
 ```
 
 > `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
