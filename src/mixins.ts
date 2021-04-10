@@ -27,7 +27,7 @@ function getInitData () {
   }
 }
 
-function argsHandler (obj, objIs, motive) {
+function argsHandler (obj, objIs, motive, row__) {
   const isRorU = ['r', 'u'].includes(motive)
   switch (objIs) {
     case 'param':
@@ -48,11 +48,13 @@ function argsHandler (obj, objIs, motive) {
     default:
       throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' ${isRorU ? 'data ' : ''}'config' 之一`)
   }
-  this.row__.obj = objIs === 'data' ? cloneDeep(obj) : obj
-  this.row__.objIs = objIs
+
+  row__.obj = objIs === 'data' ? cloneDeep(obj) : obj
+  row__.objIs = objIs
+
   if (isRorU) {
-    this.row__.status = motive
-    this.row__.show = true
+    row__.status = motive
+    row__.show = true
   }
 }
 
@@ -240,7 +242,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'r')
+        argsHandler(obj, objIs, 'r', this.row__)
       },
       /**
        * @param {object|FormData} obj - 必传
@@ -250,7 +252,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'u')
+        argsHandler(obj, objIs, 'u', this.row__)
       },
       /**
        * @param {object|FormData} obj - 必传
@@ -260,7 +262,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'd')
+        argsHandler(obj, objIs, 'd', this.row__)
         this.list__.loading = true
         this.api__.d(obj, objIs).then(res => {
           if (this.list__.data?.length === 1) {
@@ -284,7 +286,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'updateStatus')
+        argsHandler(obj, objIs, 'updateStatus', this.row__)
         this.list__.loading = true
         this.api__.updateStatus(obj, objIs).then(res => {
           this.getListProxy__('updateStatus', res)
@@ -300,7 +302,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'enable')
+        argsHandler(obj, objIs, 'enable', this.row__)
         this.list__.loading = true
         this.api__.enable(obj, objIs).then(res => {
           this.getListProxy__('enable', res)
@@ -316,7 +318,7 @@ function getMixins ({
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'disable')
+        argsHandler(obj, objIs, 'disable', this.row__)
         this.list__.loading = true
         this.api__.disable(obj, objIs).then(res => {
           this.getListProxy__('disable', res)
