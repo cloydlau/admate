@@ -16,6 +16,145 @@
 $ yarn add admate
 ```
 
+### 系统集成
+
+参考管理后台脚手架 `admin-cli`
+
+### 局部引入
+
+1. 安装依赖
+
+```bash
+yarn add admate kikimore element-form-verify
+```
+
+2. 初始化
+
+```js
+// @/utils/admate.js
+
+import Vue from 'vue'
+import { mapGetters } from 'vuex'
+import request from '@/utils/request'
+
+/**
+ * mixins
+ */
+import { CancelToken } from 'axios'
+import { getMixins } from 'admate'
+let mixins = getMixins({
+  getListProxy (motive) {
+    this.getList__()
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+      this.$message.success('操作成功')
+    }
+  },
+  CancelToken
+})
+mixins = {
+  ...mixins,
+  // mixins补充
+  computed: {
+    ...mixins.computed,
+    ...mapGetters([
+      'dict',
+    ]),
+  }
+}
+export { mixins }
+
+/**
+ * apiGenerator
+ */
+import { getApiGenerator } from 'admate'
+const apiGenerator = getApiGenerator({ request })
+export { apiGenerator }
+
+/**
+ * axiosShortcut
+ */
+import { getAxiosShortcut } from 'admate'
+const axiosShortcut = getAxiosShortcut({ request })
+for (let k in axiosShortcut) {
+  Vue.prototype[k] = axiosShortcut[k]
+}
+
+/**
+ * filters
+ */
+import { filters } from 'admate'
+Object.keys(filters).map(key => {
+  Vue.filter(key, filters[key])
+  if (!Vue.prototype[key]) {
+    Object.defineProperty(Vue.prototype, key, {
+      value: filters[key]
+    })
+  }
+})
+
+/**
+ * 注册指令表单校验
+ */
+import ElementFormVerify from 'element-form-verify'
+Vue.use(ElementFormVerify)
+
+/**
+ * [AuthButton] show属性
+ */
+import router from '../router'
+import store from '../store'
+export const showAuthButton = name => {
+  let authButtons = store.getters?.authButtons?.[router.currentRoute.path] || []
+
+  // 分解连缀的权限词, 例如: ['启用/停用'] 拆分成: ['启用','停用']
+  authButtons.forEach((item, index) => {
+    const splitArr = item.split('/')
+    if (splitArr.length > 1) {
+      authButtons.splice(index, 1)
+      splitArr.forEach(key => {
+        authButtons.push(key)
+      })
+    }
+  })
+  return authButtons.includes(name)
+}
+```
+
+::: warning  
+`showAuthButton` 是判断权限按钮是否显示的逻辑 根据你的系统需求自行修改
+:::
+
+3. 页面使用
+
+```vue
+<!-- xxx.vue -->
+
+<template>
+  <!-- AuthButton示例 -->
+  <AuthButton name="新增" :show="showAuthButton"/>
+</template>
+
+<script>
+import { apiGenerator, mixins, showAuthButton } from '@/utils/admate.js'
+import 'kikimore/dist/style.css'
+import { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag, Swal } from 'kikimore'
+const { success, info, warning, error, confirm } = Swal
+
+export default {
+  mixins: [mixins],
+  components: { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag },
+  data () {
+    return {
+      api__: apiGenerator('xxx'),
+      showAuthButton,
+    }
+  },
+}
+</script>
+```
+
+<br>
+
 ## 搭配代码生成器使用
 
 :one: 在 `VSCode` 插件市场搜索 `yapi2code` 并安装
