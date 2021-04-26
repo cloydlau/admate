@@ -1,4 +1,4 @@
-export function key2label__ (value: any, arr: object[], props = 'dataValue/dataName') {
+export function key2label (value: any, arr: object[], props = 'dataValue/dataName') {
   if (arr) {
     const [key, label] = props.split('/')
     let result = arr.filter(v => v[key] === value)
@@ -12,7 +12,7 @@ export function key2label__ (value: any, arr: object[], props = 'dataValue/dataN
   }
 }
 
-export function dialogTitle__ (value: string, catalog?: object) {
+export function dialogTitle (value: string, catalog?: object) {
   return value ? {
     c: '新增',
     r: '查看',

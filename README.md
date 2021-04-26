@@ -957,7 +957,7 @@ Object.keys(filters).map(key => {
 
 <br>
 
-### key2label__
+### key2label
 
 数据字典转义
 
@@ -965,7 +965,7 @@ Object.keys(filters).map(key => {
 
 <el-table-column>
   <template slot-scope="{row}">
-    {{row.type | key2label__(dict.type)}}
+    {{row.type | $key2label(dict.type)}}
   </template>
 </el-table-column>
 ```
@@ -979,12 +979,12 @@ Object.keys(filters).map(key => {
  * @param {string} 自定义id和name对应的属性名 默认为'dataValue/dataName'
  * @return {Any} id对应的name
  */
-this.key2label__('1', [
+this.$key2label('1', [
   { dataValue: '1', dataName: 'a' },
   { dataValue: '2', dataName: 'b' },
 ]) // 'a'
 
-this.key2label__('1', [
+this.$key2label('1', [
   { id: '1', name: 'a' },
   { id: '2', name: 'b' },
 ], 'id/name') // 'a'
@@ -992,13 +992,13 @@ this.key2label__('1', [
 
 <br>
 
-### dialogTitle__
+### dialogTitle
 
 表单对话框标题
 
 ```html
 
-<FormDialog :title="row__.status | dialogTitle__"/>
+<FormDialog :title="row__.status | $dialogTitle"/>
 ```
 
 默认对应关系：
@@ -1011,5 +1011,5 @@ this.key2label__('1', [
 
 ```html
 
-<FormDialog :title="row__.status | dialogTitle__({ c: '注册' })"/>
+<FormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
 ```

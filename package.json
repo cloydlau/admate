@@ -3,7 +3,7 @@
   "displayName": "管理后台伴侣",
   "description": "Mate of admin management system",
   "author": "cloydlau",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -21,25 +21,25 @@
     "ri": "npm run clean && pnpm i"
   },
   "dependencies": {
-    "kayran": "^0.0.2",
+    "kayran": "^0.1.0",
     "lodash-es": "^4.17.21",
     "qs": "^6.10.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
+    "@babel/core": "^7.13.16",
     "@babel/preset-env": "^7.13.15",
     "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "codecov": "^3.8.1",
     "jest": "^26.6.3",
-    "rollup": "^2.45.1",
+    "rollup": "^2.45.2",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^26.5.4",
+    "ts-jest": "^26.5.5",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   },

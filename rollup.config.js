@@ -18,7 +18,7 @@ export default [
         name,
         file: pkg.main,
         format: 'umd',
-        sourcemap: false,
+        sourcemap: true,
       },
     ],
     plugins: [
