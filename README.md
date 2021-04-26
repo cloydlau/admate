@@ -12,10 +12,6 @@
 
 ![NPM](https://nodei.co/npm/admate.png)
 
-``` bash
-$ yarn add admate
-```
-
 ### 系统集成
 
 参考管理后台脚手架 `admin-cli`
@@ -85,11 +81,9 @@ for (let k in axiosShortcut) {
 import { filters } from 'admate'
 Object.keys(filters).map(key => {
   Vue.filter(key, filters[key])
-  if (!Vue.prototype[key]) {
-    Object.defineProperty(Vue.prototype, key, {
-      value: filters[key]
-    })
-  }
+  Object.defineProperty(Vue.prototype, `$${key}`, {
+    value: filters[key]
+  })
 })
 
 /**
