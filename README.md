@@ -79,10 +79,11 @@ for (let k in axiosShortcut) {
  * filters
  */
 import { filters } from 'admate'
-Object.keys(filters).map(key => {
-  Vue.filter(key, filters[key])
-  Object.defineProperty(Vue.prototype, `$${key}`, {
-    value: filters[key]
+Object.keys(filters).map(filter => {
+  const key = `$${filter}`
+  Vue.filter(key, filters[filter])
+  Object.defineProperty(Vue.prototype, key, {
+    value: filters[filter]
   })
 })
 
@@ -171,7 +172,7 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 
 - 获取列表、增删查改、状态启停用等管理后台页面标配
 - 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
-- 切换到下一个页面时如果存在未完成的请求 自动终止该请求调用
+- 离开页面时 如果存在未完成的请求 自动终止该请求调用
 - 删除当前分页最后一条记录时 自动切换至上一页（如果当前不在第一页）
 - 节流控制表格筛选的接口触发频率
 
@@ -941,10 +942,11 @@ request.interceptors.response.use(
 
 ```js
 import { filters } from 'admate'
-Object.keys(filters).map(key => {
-  Vue.filter(key, filters[key])
+Object.keys(filters).map(filter => {
+  const key = `$${filter}`
+  Vue.filter(key, filters[filter])
   Object.defineProperty(Vue.prototype, key, {
-    value: filters[key]
+    value: filters[filter]
   })
 })
 ```
