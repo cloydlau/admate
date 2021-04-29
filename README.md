@@ -181,7 +181,7 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 ::: warning  
 `mixins`
 中所有的变量均按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
-**以$_admate_开头**命名 避免和你的代码冲突
+**以$_admate_开头**命名 避免和你的代码及其它mixins中的内容冲突
 :::
 
 ### 初始化
@@ -493,7 +493,7 @@ methods: {
   xxx()
   {
     this.$_admate_list.loading = true
-    this.POST('')
+    this.$POST('')
     .finally(() => {
       this.$_admate_list.loading = false
     })
@@ -827,7 +827,9 @@ const axiosShortcut = getAxiosShortcut({
   request
 })
 for (let k in axiosShortcut) {
-  Vue.prototype[k] = axiosShortcut[k]
+  Object.defineProperty(Vue.prototype, `$${k}`, {
+    value: axiosShortcut[k]
+  })
 }
 ```
 
@@ -851,7 +853,7 @@ for (let k in axiosShortcut) {
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.POST()
+this.$POST()
 ```
 
 ::: tip  
@@ -875,7 +877,7 @@ this.POST()
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.POST.upload()
+this.$POST.upload()
 ```
 
 ::: tip  
@@ -895,7 +897,7 @@ this.POST.upload()
  * @param {object} config - axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.POST.download()
+this.$POST.download()
 ```
 
 ::: tip  
@@ -910,7 +912,7 @@ this.POST.download()
  * @param {object} data - 接口参数
  * @param {object} config - axios配置
  */
-this.DOWNLOAD()
+this.$DOWNLOAD()
 ```
 
 <br>
