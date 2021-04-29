@@ -40,7 +40,7 @@ import { CancelToken } from 'axios'
 import { getMixins } from 'admate'
 let mixins = getMixins({
   getListProxy (motive) {
-    this.getList__()
+    this.$_admate_getList()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
       this.$message.success('操作成功')
     }
@@ -140,7 +140,7 @@ export default {
   components: { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag },
   data () {
     return {
-      api__: apiGenerator('xxx'),
+      $_admate_api: apiGenerator('xxx'),
       showAuthButton,
     }
   },
@@ -179,7 +179,9 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
   ...
 
 ::: warning  
-`mixins` 中所有的 `data` 和 `methods` 均以**双下划线结尾**命名 避免和你的代码冲突
+`mixins`
+中所有的变量均按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
+**以$_admate_开头**命名 避免和你的代码冲突
 :::
 
 ### 初始化
@@ -215,7 +217,7 @@ let mixins = getMixins({
 
   // 获取列表代理 详见生命周期-查询列表时
   getListProxy (motive, res) {
-    this.getList__()
+    this.$_admate_getList()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
       this.$message.success('操作成功')
     }
@@ -249,13 +251,13 @@ export default {
   mixins: [mixins],
   data () {
     return {
-      props__: {}, // 注意双下划线结尾
+      $_admate_props: {}, // 注意双下划线结尾
     }
   },
   methods: {
     // 注意双下划线结尾
-    getListProxy__ (motive, res) {
-      this.getList__()
+    $_admate_getListProxy (motive, res) {
+      this.$_admate_getList()
       if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
         this.$message.success('操作成功')
       }
@@ -274,10 +276,10 @@ export default {
 /**
  * @return {Promise} 查询单条接口调用
  */
-this.retrieve__()
+this.$_admate_retrieve()
 ```
 
-> `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
+> `$_admate_retrieve` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
 
 ```vue
 <!-- 示例：修改接口返回值 -->
@@ -290,13 +292,13 @@ this.retrieve__()
 export default {
   methods: {
     retrieve () {
-      return this.retrieve__()
+      return this.$_admate_retrieve()
       ?.then( // 新增时 retrieve__返回为空 需要判空
         /**
          * @param {object} rowData - 单条数据
          */
         rowData => {
-          this.row__.data.status = 1
+          this.$_admate_row.data.status = 1
         }
       )
     }
@@ -318,11 +320,11 @@ export default {
     retrieve () {
       // retrieve方法在FormDialog打开时会被调用 包括新增时
       // retrieve__帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
-      if ('c' !== this.row__.status) {
+      if ('c' !== this.$_admate_row.status) {
         // 在查询单条记录之前做点什么
       }
 
-      return this.retrieve__()
+      return this.$_admate_retrieve()
     }
   }
 }
@@ -338,10 +340,10 @@ export default {
  * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
  * @return {Promise} 提交表单接口调用
  */
-this.submit__(paramHandler)
+this.$_admate_submit(paramHandler)
 ```
 
-> `submit__` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
+> `$_admate_submit` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
 
 ```vue
 <!-- 示例：修改提交参数 -->
@@ -355,11 +357,11 @@ export default {
   methods: {
     submit () {
       // 在提交之前做点什么（无论表单校验是否通过）...
-      return this.submit__(
+      return this.$_admate_submit(
         () => {
           // 在提交之前做点什么（表单校验通过后）...
-          if ('c' === this.row__.status) {
-            this.row__.data.status = 1
+          if ('c' === this.$_admate_row.status) {
+            this.$_admate_row.data.status = 1
           }
         })
       .then(() => {
@@ -382,8 +384,8 @@ export default {
 export default {
   methods: {
     submit () {
-      return this.submit__({
-        ...this.row__.data,
+      return this.$_admate_submit({
+        ...this.$_admate_row.data,
         status: 1
       })
     }
@@ -405,7 +407,7 @@ export default {
     submit () {
       let valid = false
       if (valid) {
-        return this.submit__()
+        return this.$_admate_submit()
       } else {
         this.$Swal.warning('校验失败')
         return {
@@ -422,9 +424,9 @@ export default {
 
 #### 查询列表时
 
-`getList__` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
+`$_admate_getList` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
 
-`getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
+`$_admate_getListProxy`：你可以在 `methods` 中定义一个 `$_admate_getListProxy` 方法来代理 `$_admate_getList`
 
 ```js
 methods: {
@@ -432,10 +434,10 @@ methods: {
    * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    * @param {object} res - 调用动机的接口返回值（首次进入页面、列表查询参数改变时为空）
    */
-  getListProxy__(motive, res)
+  $_admate_getListProxy(motive, res)
   {
     // 在查询列表之前做点什么...
-    this.getList__()
+    this.$_admate_getList()
     .then(res => {
       // 在查询列表之后做点什么...
     })
@@ -449,7 +451,7 @@ methods: {
 
 ### 表单状态
 
-`this.row__.status`
+`this.$_admate_row.status`
 
 可能的值：
 
@@ -462,7 +464,7 @@ methods: {
 
 ### 列表参数
 
-```this.list__.filter```
+```this.$_admate_list.filter```
 
 **给列表参数绑定默认值**
 
@@ -470,7 +472,7 @@ methods: {
 data()
 {
   return {
-    list__: {
+    $_admate_list: {
       filter: {
         pageSize: 15, // 覆盖默认值10
         status: 1 // 新增的
@@ -484,16 +486,16 @@ data()
 
 ### 列表加载状态
 
-```this.list__.loading```
+```this.$_admate_list.loading```
 
 ```js
 methods: {
   xxx()
   {
-    this.list__.loading = true
+    this.$_admate_list.loading = true
     this.POST('')
     .finally(() => {
-      this.list__.loading = false
+      this.$_admate_list.loading = false
     })
   }
 }
@@ -503,7 +505,7 @@ methods: {
 
 ### 表单数据
 
-```this.row__.data```
+```this.$_admate_row.data```
 
 **给表单数据绑定默认值**
 
@@ -511,7 +513,7 @@ methods: {
 data()
 {
   return {
-    row__: {
+    $_admate_row: {
       data: {
         arr: [],
         num: 100
@@ -590,7 +592,7 @@ import { apiGenerator } from '@/main'
 export default {
   data () {
     return {
-      api__: apiGenerator('/somepage', {
+      $_admate_api: apiGenerator('/somepage', {
         // 全局配置中的所有配置项均支持局部配置
       })
     }
@@ -606,7 +608,7 @@ export default {
 data()
 {
   return {
-    api__: apiGenerator('/somepage', {
+    $_admate_api: apiGenerator('/somepage', {
       url: {
         r: '/anotherpage/selectOne',
       },
@@ -635,7 +637,7 @@ data()
  * @param {function} callback - 回调函数
  *        {object} res - 接口返回值
  */
-this.getList__()
+this.$_admate_getList()
 ```
 
 #### 查询单条
@@ -645,12 +647,12 @@ this.getList__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.r__()
+this.$_admate_r()
 ```
 
 #### 新增单条
 
-```this.c__()```
+```this.$_admate_c()```
 
 #### 编辑单条
 
@@ -659,7 +661,7 @@ this.r__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.u__()
+this.$_admate_u()
 ```
 
 #### 删除单条
@@ -669,7 +671,7 @@ this.u__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.d__()
+this.$_admate_d()
 ```
 
 #### 变更单条状态
@@ -679,7 +681,7 @@ this.d__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.updateStatus__()
+this.$_admate_updateStatus()
 ```
 
 #### 启用单条
@@ -689,7 +691,7 @@ this.updateStatus__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.enable__()
+this.$_admate_enable()
 ```
 
 #### 停用单条
@@ -699,7 +701,7 @@ this.enable__()
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
  */
-this.disable__()
+this.$_admate_disable()
 ```
 
 <br>
@@ -708,7 +710,7 @@ this.disable__()
 
 - `'param'`：将参数1用作请求参数（默认）
 - `'config'`：将参数1仅用于请求配置
-- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）（仅 `r__` 和 `u__` 可用）
+- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）（仅 `$_admate_r` 和 `$_admate_u` 可用）
 
 <br>
 
@@ -722,7 +724,7 @@ this.disable__()
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <AuthButton @click="updateStatus__({id,status:status^1})" :name="['启用', '停用'][status]"/>
+    <AuthButton @click="$_admate_updateStatus({id,status:status^1})" :name="['启用', '停用'][status]"/>
   </template>
 </el-table-column>
 ```
@@ -733,7 +735,7 @@ this.disable__()
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <AuthButton @click="[enable__,disable__][status]({id})" :name="['启用', '停用'][status]"/>
+    <AuthButton @click="[$_admate_enable,$_admate_disable][status]({id})" :name="['启用', '停用'][status]"/>
   </template>
 </el-table-column>
 ```
@@ -742,7 +744,7 @@ this.disable__()
 
 ### 不调用查询单条接口
 
-对于 `r__` 和 `u__` 支持直接使用列表中的单条数据（而不是调用接口）
+对于 `$_admate_r` 和 `$_admate_u` 支持直接使用列表中的单条数据（而不是调用接口）
 
 1. 第一个参数：不再传接口参数 将列表中的行数据直接传入
 2. 第二个参数：传 `'data'`
@@ -751,8 +753,8 @@ this.disable__()
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row}">
-    <AuthButton @click="r__(row,'data')" name="查看"/>
-    <AuthButton @click="u__(row,'data')" name="编辑"/>
+    <AuthButton @click="$_admate_r(row,'data')" name="查看"/>
+    <AuthButton @click="$_admate_u(row,'data')" name="编辑"/>
   </template>
 </el-table-column>
 ```
@@ -768,8 +770,8 @@ this.disable__()
 <template>
   <el-table-column label="操作" align="center">
     <template slot-scope="{row}">
-      <AuthButton @click="r__(row,'config')" name="查看"/>
-      <AuthButton @click="u__(row,'config')" name="编辑"/>
+      <AuthButton @click="$_admate_r(row,'config')" name="查看"/>
+      <AuthButton @click="$_admate_u(row,'config')" name="编辑"/>
     </template>
   </el-table-column>
 </template>
@@ -778,7 +780,7 @@ this.disable__()
 export default {
   data () {
     return {
-      api__: apiGenerator('/somepage', {
+      $_admate_api: apiGenerator('/somepage', {
 
         // 方式1
         url: {
@@ -994,7 +996,7 @@ this.$key2label('1', [
 
 ```html
 
-<FormDialog :title="row__.status | $dialogTitle"/>
+<FormDialog :title="$_admate_row.status | $dialogTitle"/>
 ```
 
 默认对应关系：
@@ -1007,5 +1009,5 @@ this.$key2label('1', [
 
 ```html
 
-<FormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
+<FormDialog :title="$_admate_row.status | $dialogTitle({ c: '注册' })"/>
 ```
