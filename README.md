@@ -183,13 +183,13 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 ### 命名规则
 
 ::: warning  
-`mixins` 中所有的 property 均已**双下划线结尾**命名，以避免与业务代码冲突
+`mixins` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
 
 为什么 `admate`
 没有按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
 中指导的以 `$_yourPluginName_` 开头命名？
 
-- `admate` 中接管了部分 data，data 是不允许这样命名的：
+- `admate` 中含有 data，data 是不允许这样命名的：
 
   <span style="color:red">[Vue warn]: Property "$_admate_list" must be accessed with "$data.$_admate_list" because
   properties starting with "$" or "_" are not proxied in the Vue instance to prevent conflicts with Vue internals.
