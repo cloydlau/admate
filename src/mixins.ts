@@ -5,8 +5,8 @@ const prefix = `[${name}] `
 
 function getInitData () {
   return {
-    $_admate_props: null,
-    $_admate_list: {
+    props__: null,
+    list__: {
       data: [],
       loading: false,
       total: 0,
@@ -14,7 +14,7 @@ function getInitData () {
       prevPageNo: 1,
       cancelToken: null
     },
-    $_admate_row: {
+    row__: {
       loading: false,
       show: false,
       data: {},
@@ -27,34 +27,34 @@ function getInitData () {
   }
 }
 
-function argsHandler (obj, objIs, motive, $_admate_row) {
+function argsHandler (obj, objIs, motive, row__) {
   const isRorU = ['r', 'u'].includes(motive)
   switch (objIs) {
     case 'param':
       if (!(isPlainObject(obj) || obj instanceof FormData)) {
-        throw Error(`${prefix} $_admate_${motive}的第一个参数的类型需为 object|FormData`)
+        throw Error(`${prefix} ${motive}__的第一个参数的类型需为 object|FormData`)
       }
       break
     case 'config':
       break
     case 'data':
       if (!isRorU) {
-        throw Error(`${prefix}' $_admate_${motive}的第二个参数需为 'param' 'config' 之一`)
+        throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' 'config' 之一`)
       }
       if (!(isPlainObject(obj))) {
-        throw Error(`${prefix}'直接使用列表数据时 $_admate_${motive}的第一个参数的类型需为 object'`)
+        throw Error(`${prefix}'直接使用列表数据时 ${motive}__的第一个参数的类型需为 object'`)
       }
       break
     default:
-      throw Error(`${prefix}' $_admate_${motive}的第二个参数需为 'param' ${isRorU ? 'data ' : ''}'config' 之一`)
+      throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' ${isRorU ? 'data ' : ''}'config' 之一`)
   }
 
-  $_admate_row.obj = objIs === 'data' ? cloneDeep(obj) : obj
-  $_admate_row.objIs = objIs
+  row__.obj = objIs === 'data' ? cloneDeep(obj) : obj
+  row__.objIs = objIs
 
   if (isRorU) {
-    $_admate_row.status = motive
-    $_admate_row.show = true
+    row__.status = motive
+    row__.show = true
   }
 }
 
@@ -76,23 +76,23 @@ function getMixins ({
     ...props
   }
 
-  getListProxy = getListProxy || this.$_admate_getList
+  getListProxy = getListProxy || this.getList__
 
   return {
     data () {
       return cloneDeep(getInitData())
     },
     watch: {
-      async '$_admate_row.show' (newVal) {
+      async 'row__.show' (newVal) {
         if (!newVal) {
           // 如果弹框readonly状态在弹框关闭动画结束之前改变 将导致弹框的按钮显隐错乱
           setTimeout(() => {
-            this.$_admate_row.status = ''
+            this.row__.status = ''
           }, 300)
 
-          this.$_admate_row.data = cloneDeep(this.$_admate_row.initData)
+          this.row__.data = cloneDeep(this.row__.initData)
           this.$refs.rowForm && this.$refs.rowForm.clearValidate()
-          this.$_admate_row.loading = false
+          this.row__.loading = false
         }
       }
     },
@@ -104,33 +104,33 @@ function getMixins ({
     created () {
       // 混入对象的钩子将在组件自身钩子之前调用
 
-      if (!this.$_admate_api) {
-        throw new Error(prefix + 'data中未找到$_admate_api')
+      if (!this.api__) {
+        throw new Error(prefix + 'data中未找到api__')
       }
 
       /**
        * 初始化接口参数、返回值格式
        */
-      this.$_admate_props = {
+      this.props__ = {
         ...props,
-        ...this.$_admate_props
+        ...this.props__
       }
-      if (!(this.$_admate_props.list instanceof Array)) {
-        this.$_admate_props.list = [this.$_admate_props.list]
-      }
-
-      this.$_admate_getListProxy = this.$_admate_getListProxy || getListProxy
-
-      this.$_admate_list.filter = {
-        [this.$_admate_props.pageNo]: 1,
-        [this.$_admate_props.pageSize]: this.$_admate_list.filter[this.$_admate_props.pageSize] || 10,
-        ...this.$_admate_list.filter
+      if (!(this.props__.list instanceof Array)) {
+        this.props__.list = [this.props__.list]
       }
 
-      if (Object.getOwnPropertyNames(this.$_admate_row.data).length > 0) {
-        this.$_admate_row.initData = cloneDeep(this.$_admate_row.data)
+      this.getListProxy__ = this.getListProxy__ || getListProxy
+
+      this.list__.filter = {
+        [this.props__.pageNo]: 1,
+        [this.props__.pageSize]: this.list__.filter[this.props__.pageSize] || 10,
+        ...this.list__.filter
       }
-      this.$_admate_getListProxy('init')
+
+      if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
+        this.row__.initData = cloneDeep(this.row__.data)
+      }
+      this.getListProxy__('init')
     },
     mounted () {
       // fixing: 没有声明的筛选参数无法重置
@@ -139,29 +139,29 @@ function getMixins ({
         Array.from(this.$refs.listFilter.fields, (v: any) => v.labelFor)?.map(v => {
           obj[v] = undefined
         })
-        this.$_admate_list.filter = {
+        this.list__.filter = {
           ...obj,
-          ...this.$_admate_list.filter,
+          ...this.list__.filter,
         }
       }
 
-      this.$watch('$_admate_list.filter', newVal => {
-        if (!this.$_admate_getListThrottle) {
-          this.$_admate_getListThrottle = throttle(() => {
+      this.$watch('list__.filter', newVal => {
+        if (!this.getListThrottle__) {
+          this.getListThrottle__ = throttle(() => {
             const callback = valid => {
               if (valid) {
-                const pageNoField = this.$_admate_props.pageNo
+                const pageNoField = this.props__.pageNo
 
                 // 如果改变的不是页码 页码重置为1
-                if (this.$_admate_list.prevPageNo === newVal[pageNoField]) {
-                  this.$_admate_list.filter[pageNoField] === 1 ?
-                    this.$_admate_getListProxy('filterChange') :
-                    this.$_admate_list.filter[pageNoField] = 1
+                if (this.list__.prevPageNo === newVal[pageNoField]) {
+                  this.list__.filter[pageNoField] === 1 ?
+                    this.getListProxy__('filterChange') :
+                    this.list__.filter[pageNoField] = 1
                 } else {
                   // 刷新列表
-                  this.$_admate_getListProxy('pageNoChange')
+                  this.getListProxy__('pageNoChange')
                 }
-                this.$_admate_list.prevPageNo = newVal[pageNoField]
+                this.list__.prevPageNo = newVal[pageNoField]
               }
             }
             if (this.$refs.listFilter) {
@@ -176,15 +176,15 @@ function getMixins ({
           })
         }
 
-        this.$_admate_getListThrottle()
+        this.getListThrottle__()
       }, {
         deep: true
       })
     },
     destroyed () {
       // 页面销毁时如果还有查询请求 中止掉
-      this.$_admate_list.cancelToken?.()
-      this.$_admate_row.cancelToken?.()
+      this.list__.cancelToken?.()
+      this.row__.cancelToken?.()
       /*    let initData = getInitData()
           for (let k in this.$data) {
             // delete this[k]
@@ -193,30 +193,30 @@ function getMixins ({
       Object.assign(this.$data, getInitData())
     },
     methods: {
-      $_admate_getList () {
-        this.$_admate_list.loading = true
-        this.$_admate_list.data.length = 0
+      getList__ () {
+        this.list__.loading = true
+        this.list__.data.length = 0
         return new Promise((resolve, reject) => {
-          this.$_admate_api.list(this.$_admate_list.filter, 'param', {
+          this.api__.list(this.list__.filter, 'param', {
             cancelToken: CancelToken && new CancelToken(c => {
               // executor 函数接收一个 cancel 函数作为参数
-              this.$_admate_list.cancelToken = c
+              this.list__.cancelToken = c
             })
           })
           .then(res => {
-            // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.$_admate_props为空
-            // 不能采用给this.$_admate_props赋初值来解决 因为自定义的全局props会被该初值覆盖
-            if (this.$_admate_props) {
-              for (let v of this.$_admate_props.list) {
+            // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
+            // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
+            if (this.props__) {
+              for (let v of this.props__.list) {
                 const list = getPropByPath(res, v)
                 if (list instanceof Array) {
-                  this.$_admate_list.data = list
-                  this.$_admate_list.total = getPropByPath(res, this.$_admate_props.total)
+                  this.list__.data = list
+                  this.list__.total = getPropByPath(res, this.props__.total)
                   break
                 }
               }
-              if (isEmpty(this.$_admate_list.data)) {
-                this.$_admate_list.total = 0
+              if (isEmpty(this.list__.data)) {
+                this.list__.total = 0
               }
             }
             resolve(res)
@@ -225,128 +225,128 @@ function getMixins ({
             reject(res)
           })
           .finally(e => {
-            this.$_admate_list.cancelToken = null
-            this.$_admate_list.loading = false
+            this.list__.cancelToken = null
+            this.list__.loading = false
           })
         })
       },
-      $_admate_c () {
-        this.$_admate_row.status = 'c'
-        this.$_admate_row.show = true
+      c__ () {
+        this.row__.status = 'c'
+        this.row__.show = true
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_r (
+      r__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'r', this.$_admate_row)
+        argsHandler(obj, objIs, 'r', this.row__)
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_u (
+      u__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'u', this.$_admate_row)
+        argsHandler(obj, objIs, 'u', this.row__)
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_d (
+      d__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'd', this.$_admate_row)
-        this.$_admate_list.loading = true
-        this.$_admate_api.d(obj, objIs).then(res => {
-          if (this.$_admate_list.data?.length === 1) {
-            if (this.$_admate_list.filter[this.$_admate_props.pageNo] === 1) {
-              this.$_admate_getListProxy('d', res)
+        argsHandler(obj, objIs, 'd', this.row__)
+        this.list__.loading = true
+        this.api__.d(obj, objIs).then(res => {
+          if (this.list__.data?.length === 1) {
+            if (this.list__.filter[this.props__.pageNo] === 1) {
+              this.getListProxy__('d', res)
             } else {
-              this.$_admate_list.filter[this.$_admate_props.pageNo]--
+              this.list__.filter[this.props__.pageNo]--
             }
           } else {
-            this.$_admate_getListProxy('d', res)
+            this.getListProxy__('d', res)
           }
         }).finally(e => {
-          this.$_admate_list.loading = false
+          this.list__.loading = false
         })
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_updateStatus (
+      updateStatus__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'updateStatus', this.$_admate_row)
-        this.$_admate_list.loading = true
-        this.$_admate_api.updateStatus(obj, objIs).then(res => {
-          this.$_admate_getListProxy('updateStatus', res)
+        argsHandler(obj, objIs, 'updateStatus', this.row__)
+        this.list__.loading = true
+        this.api__.updateStatus(obj, objIs).then(res => {
+          this.getListProxy__('updateStatus', res)
         }).finally(e => {
-          this.$_admate_list.loading = false
+          this.list__.loading = false
         })
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_enable (
+      enable__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'enable', this.$_admate_row)
-        this.$_admate_list.loading = true
-        this.$_admate_api.enable(obj, objIs).then(res => {
-          this.$_admate_getListProxy('enable', res)
+        argsHandler(obj, objIs, 'enable', this.row__)
+        this.list__.loading = true
+        this.api__.enable(obj, objIs).then(res => {
+          this.getListProxy__('enable', res)
         }).finally(e => {
-          this.$_admate_list.loading = false
+          this.list__.loading = false
         })
       },
       /**
        * @param {object|FormData} obj - 必传
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
-      $_admate_disable (
+      disable__ (
         obj: object | FormData,
         objIs = 'param'
       ) {
-        argsHandler(obj, objIs, 'disable', this.$_admate_row)
-        this.$_admate_list.loading = true
-        this.$_admate_api.disable(obj, objIs).then(res => {
-          this.$_admate_getListProxy('disable', res)
+        argsHandler(obj, objIs, 'disable', this.row__)
+        this.list__.loading = true
+        this.api__.disable(obj, objIs).then(res => {
+          this.getListProxy__('disable', res)
         }).finally(e => {
-          this.$_admate_list.loading = false
+          this.list__.loading = false
         })
       },
       /**
        * @return {Promise} 查询单条接口调用
        */
-      $_admate_retrieve () {
+      retrieve__ () {
         // 仅查看和编辑才调用
-        if (!['r', 'u'].includes(this.$_admate_row.status)) {
+        if (!['r', 'u'].includes(this.row__.status)) {
           return
         }
 
         return new Promise((resolve, reject) => {
-          this.$_admate_api.r(
-            this.$_admate_row.obj,
-            this.$_admate_row.objIs,
+          this.api__.r(
+            this.row__.obj,
+            this.row__.objIs,
             {
               cancelToken: CancelToken && new CancelToken(c => {
                 // executor 函数接收一个 cancel 函数作为参数
-                this.$_admate_row.cancelToken = c
+                this.row__.cancelToken = c
               })
             })
           .then(res => {
-            const rowData = getPropByPath(res, this.$_admate_props.r)
+            const rowData = getPropByPath(res, this.props__.r)
             // 坑：
             /*
               let obj = { a: 1 }
@@ -358,9 +358,9 @@ function getMixins ({
               }
             */
             resolve(rowData)
-            // 将接口返回值混入$_admate_row.data
-            this.$_admate_row.data = {
-              ...this.$_admate_row.data,
+            // 将接口返回值混入row__.data
+            this.row__.data = {
+              ...this.row__.data,
               ...rowData
             }
           })
@@ -368,7 +368,7 @@ function getMixins ({
             reject(e)
           })
           .finally(() => {
-            this.$_admate_row.cancelToken = null
+            this.row__.cancelToken = null
           })
         })
       },
@@ -376,21 +376,21 @@ function getMixins ({
        * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
        * @return {Promise} 提交表单接口调用
        */
-      $_admate_submit (paramHandler?: (Function) | object | FormData) {
-        let param = this.$_admate_row.data
+      submit__ (paramHandler?: (Function) | object | FormData) {
+        let param = this.row__.data
         if (paramHandler) {
           if (paramHandler instanceof Function) {
             paramHandler()
           } else if (isPlainObject(paramHandler) || paramHandler instanceof FormData) {
             param = paramHandler
           } else {
-            console.error(prefix + '$_admate_submit的参数类型仅能为function|object|FormData')
+            console.error(prefix + 'submit__的参数类型仅能为function|object|FormData')
           }
         }
-        return this.$_admate_api[this.$_admate_row.status](param).then(res => {
-          this.$_admate_row.obj = {}
-          this.$_admate_row.objIs = null
-          this.$_admate_getListProxy(this.$_admate_row.status, res)
+        return this.api__[this.row__.status](param).then(res => {
+          this.row__.obj = {}
+          this.row__.objIs = null
+          this.getListProxy__(this.row__.status, res)
         })
       },
     }
