@@ -308,12 +308,12 @@ export default {
     retrieve () {
       return this.retrieve__()
       ?.then( // 新增时 retrieve__返回为空 需要判空
-          /**
-           * @param {object} rowData - 单条数据
-           */
-          rowData => {
-            this.row__.data.status = 1
-          }
+        /**
+         * @param {object} rowData - 单条数据
+         */
+        rowData => {
+          this.row__.data.status = 1
+        }
       )
     }
   }
@@ -372,12 +372,12 @@ export default {
     submit () {
       // 在提交之前做点什么（无论表单校验是否通过）...
       return this.submit__(
-          () => {
-            // 在提交之前做点什么（表单校验通过后）...
-            if ('c' === this.row__.status) {
-              this.row__.data.status = 1
-            }
-          })
+        () => {
+          // 在提交之前做点什么（表单校验通过后）...
+          if ('c' === this.row__.status) {
+            this.row__.data.status = 1
+          }
+        })
       .then(() => {
         // 在提交成功后做点什么...
       })
@@ -494,6 +494,41 @@ data()
     }
   }
 }
+```
+
+::: danger  
+如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 bug）
+:::
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-form ref="listFilter" :model="list__.filter" inline>
+    <el-form-item prop="effect">
+      <el-checkbox
+        v-model="list__.filter.effect"
+        label="生效"
+        border
+      />
+    </el-form-item>
+    <el-button @click="()=>{$refs.listFilter.resetFields()}">重置</el-button>
+  </el-form>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      list__: {
+        filter: {
+          effect: null
+        }
+      }
+    }
+  },
+}
+</script>
 ```
 
 <br>
