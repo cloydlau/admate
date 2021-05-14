@@ -29,6 +29,7 @@ yarn add admate kikimore element-form-verify
 ```js
 // @/utils/admate.js
 
+import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import request from '@/utils/request'
@@ -118,6 +119,28 @@ export const showAuthButton = name => {
 ::: warning  
 `showAuthButton` 是判断权限按钮是否显示的逻辑 根据你的系统需求自行修改
 :::
+
+```css
+/* @/utils/admate.css */
+/* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要 */
+
+.p-20px {
+    padding: 20px;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.my-20px {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+```
 
 3. 页面使用
 
