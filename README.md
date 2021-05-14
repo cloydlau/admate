@@ -78,9 +78,11 @@ export { apiGenerator }
  */
 import { getAxiosShortcut } from 'admate'
 const axiosShortcut = getAxiosShortcut({ request })
-for (let k in axiosShortcut) {
-  Vue.prototype[k] = axiosShortcut[k]
-}
+const $axiosShortcut = Object.keys(axiosShortcut).reduce((total, currentValue) => {
+  total[`$${currentValue}`] = axiosShortcut[currentValue]
+  return total
+}, {})
+export { $axiosShortcut }
 
 /**
  * filters
@@ -90,7 +92,7 @@ const $filters = Object.keys(filters).reduce((total, currentValue) => {
   total[`$${currentValue}`] = filters[currentValue]
   return total
 }, {})
-export { $filters as filters }
+export { $filters }
 
 /**
  * [AuthButton] show属性
@@ -151,7 +153,7 @@ export const showAuthButton = name => {
 </template>
 
 <script>
-import { apiGenerator, mixins, filters, showAuthButton } from '@/utils/admate'
+import { mixins, apiGenerator, $filters, $axiosShortcut, showAuthButton } from '@/utils/admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
@@ -159,13 +161,18 @@ const { success, info, warning, error, confirm } = Swal
 export default {
   mixins: [mixins],
   components: { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag },
-  filters,
+  filters: {
+    ...$filters
+  },
   data () {
     return {
       api__: apiGenerator('xxx'),
       showAuthButton,
     }
   },
+  methods: {
+    ...$axiosShortcut,
+  }
 }
 </script>
 ```
