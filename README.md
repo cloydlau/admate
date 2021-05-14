@@ -35,6 +35,12 @@ import { mapGetters } from 'vuex'
 import request from '@/utils/request'
 
 /**
+ * 全局注册指令表单校验
+ */
+import ElementFormVerify from 'element-form-verify'
+Vue.use(ElementFormVerify)
+
+/**
  * mixins
  */
 import { CancelToken } from 'axios'
@@ -80,19 +86,11 @@ for (let k in axiosShortcut) {
  * filters
  */
 import { filters } from 'admate'
-Object.keys(filters).map(filter => {
-  const key = `$${filter}`
-  Vue.filter(key, filters[filter])
-  Object.defineProperty(Vue.prototype, key, {
-    value: filters[filter]
-  })
-})
-
-/**
- * 注册指令表单校验
- */
-import ElementFormVerify from 'element-form-verify'
-Vue.use(ElementFormVerify)
+const $filters = Object.keys(filters).reduce((total, currentValue) => {
+  total[`$${currentValue}`] = filters[currentValue]
+  return total
+}, {})
+export { $filters as filters }
 
 /**
  * [AuthButton] show属性
@@ -149,11 +147,11 @@ export const showAuthButton = name => {
 
 <template>
   <!-- AuthButton示例 -->
-  <AuthButton name="新增" :show="showAuthButton"/>
+  <AuthButton :show="showAuthButton" name="新增"/>
 </template>
 
 <script>
-import { apiGenerator, mixins, showAuthButton } from '@/utils/admate.js'
+import { apiGenerator, mixins, filters, showAuthButton } from '@/utils/admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
@@ -161,6 +159,7 @@ const { success, info, warning, error, confirm } = Swal
 export default {
   mixins: [mixins],
   components: { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag },
+  filters,
   data () {
     return {
       api__: apiGenerator('xxx'),
