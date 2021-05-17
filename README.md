@@ -153,7 +153,7 @@ export const showAuthButton = name => {
 </template>
 
 <script>
-import { mixins, apiGenerator, $filters, $axiosShortcut, showAuthButton } from '@/utils/admate'
+import { mixins, apiGenerator, showAuthButton, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
