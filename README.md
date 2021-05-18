@@ -603,6 +603,69 @@ data()
 
 <br>
 
+### 特例：页面无筛选、无表格，默认弹出编辑框
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <div class="p-20px w-full">
+    <FormDialog
+      :show.sync="row__.show"
+      :title="row__.status | $dialogTitle"
+      v-model="row__.data"
+      :retrieve="retrieve__"
+      :submit="submit__"
+      ref="formDialog"
+      :show-close="false"
+      :modal="false"
+      class="relative"
+    >
+      <template #el-form>
+
+      </template>
+      <div slot="footer" class="text-right pt-50px">
+        <el-button
+          type="primary"
+          @click="formDialog.confirm"
+          :loading="formDialog.submitting"
+        >
+          保 存
+        </el-button>
+      </div>
+    </FormDialog>
+  </div>
+</template>
+
+<script>
+import { mixins, apiGenerator } from '@/utils/init'
+
+export default {
+  mixins: [mixins],
+  mounted () {
+    this.formDialog = this.$refs.formDialog
+  },
+  data () {
+    return {
+      api__: apiGenerator(''),
+      formDialog: {},
+    }
+  },
+  methods: {
+    getListProxy__ (motive) {
+      if (motive === 'init') {
+        this.u__({})
+      } else {
+        this.$Swal.success('操作成功').then(() => {
+          this.u__({})
+        })
+      }
+    }
+  }
+}
+</script>
+```
+
 ## apiGenerator
 
 根据接口前缀自动生成增删查改接口调用
