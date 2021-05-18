@@ -31,3 +31,5 @@ tsconfig.json
 demo/
 coverage/
 tests/
+/dist/*.html
+/*.html
