@@ -1,5 +1,5 @@
-import { isEmpty, getPropByPath } from 'kayran'
-import { throttle, cloneDeep, isPlainObject } from 'lodash-es'
+import { isEmpty } from 'kayran'
+import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
 import { name } from '../package.json'
 const prefix = `[${name}] `
 
@@ -86,9 +86,9 @@ function getMixins ({
       async 'row__.show' (newVal) {
         if (!newVal) {
           // 如果弹框readonly状态在弹框关闭动画结束之前改变 将导致弹框的按钮显隐错乱
-          setTimeout(() => {
-            this.row__.status = ''
-          }, 300)
+          //setTimeout(() => {
+          this.row__.status = ''
+          //}, 300)
 
           this.row__.data = cloneDeep(this.row__.initData)
           this.$refs.rowForm && this.$refs.rowForm.clearValidate()
@@ -114,9 +114,6 @@ function getMixins ({
       this.props__ = {
         ...props,
         ...this.props__
-      }
-      if (!(this.props__.list instanceof Array)) {
-        this.props__.list = [this.props__.list]
       }
 
       this.getListProxy__ = this.getListProxy__ || getListProxy
@@ -148,18 +145,18 @@ function getMixins ({
       this.$watch('list__.filter', newVal => {
         if (!this.getListThrottle__) {
           this.getListThrottle__ = throttle(() => {
-            const callback = valid => {
+            const callback = async valid => {
               if (valid) {
                 const pageNoField = this.props__.pageNo
 
                 // 如果改变的不是页码 页码重置为1
                 if (this.list__.prevPageNo === newVal[pageNoField]) {
                   this.list__.filter[pageNoField] === 1 ?
-                    this.getListProxy__('filterChange') :
+                    await this.getListProxy__('filterChange') :
                     this.list__.filter[pageNoField] = 1
                 } else {
                   // 刷新列表
-                  this.getListProxy__('pageNoChange')
+                  await this.getListProxy__('pageNoChange')
                 }
                 this.list__.prevPageNo = newVal[pageNoField]
               }
@@ -207,11 +204,10 @@ function getMixins ({
             // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
             // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
             if (this.props__) {
-              for (let v of this.props__.list) {
-                const list = getPropByPath(res, v)
-                if (list instanceof Array) {
-                  this.list__.data = list
-                  this.list__.total = getPropByPath(res, this.props__.total)
+              for (let v of at(res, this.props__.list)) {
+                if (Array.isArray(v)) {
+                  this.list__.data = v
+                  this.list__.total = at(res, this.props__.total)[0]
                   break
                 }
               }
@@ -264,15 +260,15 @@ function getMixins ({
       ) {
         argsHandler(obj, objIs, 'd', this.row__)
         this.list__.loading = true
-        this.api__.d(obj, objIs).then(res => {
+        this.api__.d(obj, objIs).then(async res => {
           if (this.list__.data?.length === 1) {
             if (this.list__.filter[this.props__.pageNo] === 1) {
-              this.getListProxy__('d', res)
+              await this.getListProxy__('d', res)
             } else {
               this.list__.filter[this.props__.pageNo]--
             }
           } else {
-            this.getListProxy__('d', res)
+            await this.getListProxy__('d', res)
           }
         }).finally(e => {
           this.list__.loading = false
@@ -288,8 +284,8 @@ function getMixins ({
       ) {
         argsHandler(obj, objIs, 'updateStatus', this.row__)
         this.list__.loading = true
-        this.api__.updateStatus(obj, objIs).then(res => {
-          this.getListProxy__('updateStatus', res)
+        this.api__.updateStatus(obj, objIs).then(async res => {
+          await this.getListProxy__('updateStatus', res)
         }).finally(e => {
           this.list__.loading = false
         })
@@ -304,8 +300,8 @@ function getMixins ({
       ) {
         argsHandler(obj, objIs, 'enable', this.row__)
         this.list__.loading = true
-        this.api__.enable(obj, objIs).then(res => {
-          this.getListProxy__('enable', res)
+        this.api__.enable(obj, objIs).then(async res => {
+          await this.getListProxy__('enable', res)
         }).finally(e => {
           this.list__.loading = false
         })
@@ -320,8 +316,8 @@ function getMixins ({
       ) {
         argsHandler(obj, objIs, 'disable', this.row__)
         this.list__.loading = true
-        this.api__.disable(obj, objIs).then(res => {
-          this.getListProxy__('disable', res)
+        this.api__.disable(obj, objIs).then(async res => {
+          await this.getListProxy__('disable', res)
         }).finally(e => {
           this.list__.loading = false
         })
@@ -346,7 +342,7 @@ function getMixins ({
               })
             })
           .then(res => {
-            const rowData = getPropByPath(res, this.props__.r)
+            const rowData = at(res, this.props__.r)[0]
             // 坑：
             /*
               let obj = { a: 1 }
@@ -376,21 +372,21 @@ function getMixins ({
        * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
        * @return {Promise} 提交表单接口调用
        */
-      submit__ (paramHandler?: (Function) | object | FormData) {
+      async submit__ (paramHandler?: (Function) | object | FormData) {
         let param = this.row__.data
         if (paramHandler) {
           if (paramHandler instanceof Function) {
-            paramHandler()
+            await paramHandler()
           } else if (isPlainObject(paramHandler) || paramHandler instanceof FormData) {
             param = paramHandler
           } else {
             console.error(prefix + 'submit__的参数类型仅能为function|object|FormData')
           }
         }
-        return this.api__[this.row__.status](param).then(res => {
+        return this.api__[this.row__.status](param).then(async res => {
           this.row__.obj = {}
           this.row__.objIs = null
-          this.getListProxy__(this.row__.status, res)
+          await this.getListProxy__(this.row__.status, res)
         })
       },
     }

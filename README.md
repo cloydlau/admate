@@ -406,11 +406,14 @@ export default {
     submit () {
       // 在提交之前做点什么（无论表单校验是否通过）...
       return this.submit__(
-        () => {
+        async () => {
           // 在提交之前做点什么（表单校验通过后）...
           if ('c' === this.row__.status) {
             this.row__.data.status = 1
           }
+
+          // 支持在提交之前等待一个异步操作的完成
+          // await ... 
         })
       .then(() => {
         // 在提交成功后做点什么...
@@ -605,13 +608,13 @@ data()
   }
 }
 ```
-
 <br>
 
-### 特例：页面无筛选、无表格，默认弹出编辑框
+### 特殊页面：无表格，仅有编辑框
+
+场景：表格中只有一条数据，故表格被省略，默认弹出编辑框
 
 ```vue
-<!-- 示例 -->
 
 <template>
   <div class="p-20px w-full">
@@ -629,6 +632,7 @@ data()
       <template #el-form>
 
       </template>
+
       <div slot="footer" class="text-right pt-50px">
         <el-button
           type="primary"
@@ -670,6 +674,8 @@ export default {
 }
 </script>
 ```
+
+<br>
 
 ## apiGenerator
 
