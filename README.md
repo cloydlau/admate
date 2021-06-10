@@ -683,7 +683,7 @@ dialogTitle
 this.retrieve__()
 ```
 
-> `retrieve__` 是针对 `FormDialog` 组件的 `retrieve` 属性定制的方法
+> `retrieve__` 是为 `FormDialog` 组件 `retrieve` 属性定制的方法
 
 ```vue
 <!-- 示例：修改接口返回值 -->
@@ -747,7 +747,7 @@ export default {
 this.submit__(paramHandler)
 ```
 
-> `submit__` 是针对 `FormDialog` 组件的 `submit` 属性定制的方法
+> `submit__` 是为 `FormDialog` 组件 `submit` 属性定制的方法
 
 ```vue
 <!-- 示例：修改提交参数 -->
