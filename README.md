@@ -8,13 +8,13 @@
 
 ## Installation
 
-<br>
-
 ![NPM](https://nodei.co/npm/admate.png)
 
 ### 系统集成
 
 参考管理后台脚手架 `admin-cli`
+
+<br>
 
 ### 局部引入
 
@@ -184,7 +184,7 @@ export default {
 
 <br>
 
-## 搭配代码生成器使用
+### 搭配代码生成器使用
 
 :one: 在 `VSCode` 插件市场搜索 `yapi2code` 并安装
 
@@ -192,29 +192,7 @@ export default {
 
 <br>
 
-## mixins
-
-页面公共逻辑混入
-
-::: danger  
-mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
-:::
-
-获取实例：调用 `getMixins()`
-
-`mixins` 集成了一些什么功能？
-
-- 获取列表、增删查改、状态启停用等管理后台页面标配
-- 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
-- 离开页面时 如果存在未完成的请求 自动终止该请求调用
-- 删除当前分页最后一条记录时 自动切换至上一页（如果当前不在第一页）
-- 节流控制表格筛选的接口触发频率
-
-  ...
-
-<br>
-
-### 命名规则
+## 命名规则
 
 ::: warning  
 `mixins` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
@@ -232,7 +210,29 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 
 <br>
 
-### 初始化
+## 初始化
+
+### mixins
+
+页面公共逻辑混入
+
+::: danger  
+mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
+:::
+
+获取实例：调用 `getMixins()`
+
+`mixins` 集成了一些什么功能？
+
+- 获取表格、增删查改、状态启停用等管理后台页面标配
+- 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
+- 离开页面时 如果存在未完成的请求 自动终止该请求调用
+- 删除当前分页最后一条记录时 自动切换至上一页（如果当前不在第一页）
+- 节流控制表格筛选的接口触发频率
+
+  ...
+
+<br>
 
 ```js
 // main.js
@@ -246,24 +246,24 @@ let mixins = getMixins({
 
   //  接口参数、返回值格式定制化
   props: {
-    // [列表查询接口] 页码字段名
+    // [获取表格接口] 页码字段名
     pageNo: 'pageNo',
 
-    // [列表查询接口] 页容量字段名
+    // [获取表格接口] 页容量字段名
     pageSize: 'pageSize',
 
-    // [列表查询接口] 返回值中列表字段所在位置
+    // [获取表格接口] 返回值中表格字段所在位置
     // 考虑到分页与不分页的返回格式可能是不同的 所以支持传入一个数组 数组会被遍历 直到找到为止
     list: ['data', 'data.records'],
 
-    // [列表查询接口] 返回值中总记录数字段所在位置
+    // [获取表格接口] 返回值中总记录数字段所在位置
     total: 'data.total',
 
     // [单条查询接口] 返回值中数据所在位置
     r: 'data'
   },
 
-  // 获取列表代理 详见生命周期-查询列表时
+  // 获取表格代理 详见生命周期-获取表格时
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -290,7 +290,117 @@ mixins = {
 export { mixins }
 ```
 
-### 局部配置
+<br>
+
+### apiGenerator
+
+根据接口前缀自动生成增删查改接口调用
+
+获取实例：调用 `getApiGenerator` 方法
+
+```js
+// main.js
+
+import { getApiGenerator } from 'admate'
+import request from '@/utils/request'
+
+const apiGenerator = getApiGenerator({
+  // 全局配置
+
+  // axios实例
+  request,
+
+  // 接口后缀默认值
+  url: {
+    c: 'create',                  // 单条新增
+    r: 'queryForDetail',          // 单条查询
+    u: 'update',                  // 单条编辑
+    d: 'delete',                  // 单条删除
+    list: 'queryForPage',         // 获取表格
+    updateStatus: 'updateStatus', // 单条状态变更
+    enable: 'enable',             // 状态启用
+    disable: 'enable',            // 状态停用
+  },
+
+  // 请求方式 默认全POST
+  method: {
+    c: 'POST',
+    r: 'POST',
+    u: 'POST',
+    d: 'POST',
+    list: 'POST',
+    updateStatus: 'POST',
+    enable: 'POST',
+    disable: 'POST',
+  },
+
+  // 提交方式 默认空数组（全json） 可以在这里指定接口使用formData
+  formData: ['c', 'u'],
+
+  // 使用config你可以完全自定义每个接口的请求配置 甚至支持function（从而能够拿到data）
+  config: {
+    c: {},
+    r (data) {
+      return {}
+    },
+  }
+})
+
+export { apiGenerator }
+```
+
+<br>
+
+### axiosShortcut
+
+根据axios实例生成axios实例的调用捷径
+
+通过 `getAxiosShortcut` 方法获取 `axiosShortcut`
+
+```js
+import Vue from 'vue'
+import { getAxiosShortcut } from 'admate'
+import request from '@/utils/request'
+
+const axiosShortcut = getAxiosShortcut({
+  // 全局配置
+
+  // axios实例
+  request
+})
+for (let k in axiosShortcut) {
+  Object.defineProperty(Vue.prototype, `$${k}`, {
+    value: axiosShortcut[k]
+  })
+}
+```
+
+<br>
+
+### filters
+
+管理后台常用filters
+
+::: tip  
+所有过滤器均可当作方法调用
+:::
+
+```js
+import { filters } from 'admate'
+Object.keys(filters).map(filter => {
+  const key = `$${filter}`
+  Vue.filter(key, filters[filter])
+  Object.defineProperty(Vue.prototype, key, {
+    value: filters[filter]
+  })
+})
+```
+
+<br>
+
+## 局部配置
+
+### mixins
 
 ```js
 import { mixins } from '@/main'
@@ -316,9 +426,255 @@ export default {
 
 <br>
 
-### 生命周期
+### apiGenerator
 
-#### 查询单条时
+```js
+import { apiGenerator } from '@/main'
+
+export default {
+  data () {
+    return {
+      api__: apiGenerator('/somepage', {
+        // 全局配置中的所有配置项均支持局部配置
+      })
+    }
+  }
+}
+```
+
+#### 覆盖统一前缀
+
+如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
+
+```js
+data()
+{
+  return {
+    api__: apiGenerator('/somepage', {
+      url: {
+        r: '/anotherpage/selectOne',
+      },
+    })
+  }
+}
+```
+
+将得到：
+
+- `/somepage/create`
+- `/somepage/update`
+- `/somepage/delete`
+- `/somepage/queryForPage`
+- `/somepage/updateStatus`
+- `/anotherpage/selectOne`
+
+<br>
+
+## 表格
+
+### 参数
+
+```this.list__.filter```
+
+**给表格参数绑定默认值**
+
+```js
+data()
+{
+  return {
+    list__: {
+      filter: {
+        pageSize: 15, // 覆盖默认值10
+        status: 1 // 新增的
+      }
+    }
+  }
+}
+```
+
+::: danger  
+如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 bug）
+:::
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-form ref="listFilter" :model="list__.filter" inline>
+    <el-form-item prop="effect">
+      <el-checkbox
+        v-model="list__.filter.effect"
+        label="生效"
+        border
+      />
+    </el-form-item>
+    <el-button @click="()=>{$refs.listFilter.resetFields()}">重置</el-button>
+  </el-form>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      list__: {
+        filter: {
+          effect: null
+        }
+      }
+    }
+  },
+}
+</script>
+```
+
+<br>
+
+### 校验
+
+给绑定表格参数的el-form添加校验逻辑即可，执行 `getList` 之前会自动进行校验，校验失败则不会执行 `getList`
+
+<br>
+
+### 状态
+
+```this.list__.loading```
+
+```js
+methods: {
+  xxx()
+  {
+    this.list__.loading = true
+    this.$POST('')
+    .finally(() => {
+      this.list__.loading = false
+    })
+  }
+}
+```
+
+<br>
+
+### Hook: 获取表格时
+
+`getList__` ：在首次进入页面、获取表格参数改变、单条增删查改后会被调用
+
+`getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
+
+```js
+methods: {
+  /**
+   * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
+   * @param {object} res - 调用动机的接口返回值（首次进入页面、获取表格参数改变时为空）
+   */
+  getListProxy__(motive, res)
+  {
+    // 在获取表格之前做点什么...
+    this.getList__()
+    .then(res => {
+      // 在获取表格之后做点什么...
+    })
+    .catch(res => {})
+    .finally()
+  }
+}
+```
+
+<br>
+
+## 表单
+
+### 数据
+
+```this.row__.data```
+
+**给表单数据绑定默认值**
+
+```js
+data()
+{
+  return {
+    row__: {
+      data: {
+        arr: [],
+        num: 100
+      }
+    },
+  }
+}
+```
+
+<br>
+
+### 校验
+
+给绑定表单参数的el-form添加校验逻辑即可
+
+```vue
+<!-- 示例：额外的校验 自行控制表单的关闭 -->
+
+<template>
+  <FormDialog :submit="submit"/>
+</template>
+
+<script>
+export default {
+  methods: {
+    submit () {
+      let valid = false
+      if (valid) {
+        return this.submit__()
+      } else {
+        this.$Swal.warning('校验失败')
+        return {
+          close: false
+        }
+      }
+    }
+  }
+}
+</script>
+```
+
+<br>
+
+### 状态
+
+`this.row__.status`
+
+可能的值：
+
+- `'c'` 新增
+- `'r'` 查看
+- `'u'` 编辑
+- `''` 关闭
+
+<br>
+
+### 标题
+
+dialogTitle
+
+```html
+
+<FormDialog :title="row__.status | $dialogTitle"/>
+```
+
+默认对应关系：
+
+- c：新增
+- r：查看
+- u：编辑
+
+修改默认值或补充其他：
+
+```html
+
+<FormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
+```
+
+<br>
+
+### Hook: 查询单条时
 
 ```js
 /**
@@ -381,7 +737,7 @@ export default {
 
 <br>
 
-#### 提交表单时
+### Hook: 提交表单时
 
 ```js
 /**
@@ -445,173 +801,9 @@ export default {
 </script>
 ```
 
-```vue
-<!-- 示例：额外的校验 自行控制表单的关闭 -->
-
-<template>
-  <FormDialog :submit="submit"/>
-</template>
-
-<script>
-export default {
-  methods: {
-    submit () {
-      let valid = false
-      if (valid) {
-        return this.submit__()
-      } else {
-        this.$Swal.warning('校验失败')
-        return {
-          close: false
-        }
-      }
-    }
-  }
-}
-</script>
-```
-
 <br>
 
-#### 查询列表时
-
-`getList__` ：在首次进入页面、列表查询参数改变、单条增删查改后会被调用
-
-`getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
-
-```js
-methods: {
-  /**
-   * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res - 调用动机的接口返回值（首次进入页面、列表查询参数改变时为空）
-   */
-  getListProxy__(motive, res)
-  {
-    // 在查询列表之前做点什么...
-    this.getList__()
-    .then(res => {
-      // 在查询列表之后做点什么...
-    })
-    .catch(res => {})
-    .finally()
-  }
-}
-```
-
-<br>
-
-### 表单状态
-
-`this.row__.status`
-
-可能的值：
-
-- `'c'` 新增
-- `'r'` 查看
-- `'u'` 编辑
-- `''` 关闭
-
-<br>
-
-### 列表参数
-
-```this.list__.filter```
-
-**给列表参数绑定默认值**
-
-```js
-data()
-{
-  return {
-    list__: {
-      filter: {
-        pageSize: 15, // 覆盖默认值10
-        status: 1 // 新增的
-      }
-    }
-  }
-}
-```
-
-::: danger  
-如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 bug）
-:::
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <el-form ref="listFilter" :model="list__.filter" inline>
-    <el-form-item prop="effect">
-      <el-checkbox
-        v-model="list__.filter.effect"
-        label="生效"
-        border
-      />
-    </el-form-item>
-    <el-button @click="()=>{$refs.listFilter.resetFields()}">重置</el-button>
-  </el-form>
-</template>
-
-<script>
-export default {
-  data () {
-    return {
-      list__: {
-        filter: {
-          effect: null
-        }
-      }
-    }
-  },
-}
-</script>
-```
-
-<br>
-
-### 列表加载状态
-
-```this.list__.loading```
-
-```js
-methods: {
-  xxx()
-  {
-    this.list__.loading = true
-    this.$POST('')
-    .finally(() => {
-      this.list__.loading = false
-    })
-  }
-}
-```
-
-<br>
-
-### 表单数据
-
-```this.row__.data```
-
-**给表单数据绑定默认值**
-
-```js
-data()
-{
-  return {
-    row__: {
-      data: {
-        arr: [],
-        num: 100
-      }
-    },
-  }
-}
-```
-
-<br>
-
-### 特殊页面：无表格，仅有编辑框
+### 特殊页面：无表格，仅有表单
 
 场景：表格中只有一条数据，故表格被省略，默认弹出编辑框
 
@@ -679,112 +871,9 @@ export default {
 
 <br>
 
-## apiGenerator
+## 增删查改
 
-根据接口前缀自动生成增删查改接口调用
-
-获取实例：调用 `getApiGenerator` 方法
-
-### 初始化
-
-```js
-// main.js
-
-import { getApiGenerator } from 'admate'
-import request from '@/utils/request'
-
-const apiGenerator = getApiGenerator({
-  // 全局配置
-
-  // axios实例
-  request,
-
-  // 接口后缀默认值
-  url: {
-    c: 'create',                  // 单条新增
-    r: 'queryForDetail',          // 单条查询
-    u: 'update',                  // 单条编辑
-    d: 'delete',                  // 单条删除
-    list: 'queryForPage',         // 列表查询
-    updateStatus: 'updateStatus', // 单条状态变更
-    enable: 'enable',             // 状态启用
-    disable: 'enable',            // 状态停用
-  },
-
-  // 请求方式 默认全POST
-  method: {
-    c: 'POST',
-    r: 'POST',
-    u: 'POST',
-    d: 'POST',
-    list: 'POST',
-    updateStatus: 'POST',
-    enable: 'POST',
-    disable: 'POST',
-  },
-
-  // 提交方式 默认空数组（全json） 可以在这里指定接口使用formData
-  formData: ['c', 'u'],
-
-  // 使用config你可以完全自定义每个接口的请求配置 甚至支持function（从而能够拿到data）
-  config: {
-    c: {},
-    r (data) {
-      return {}
-    },
-  }
-})
-
-export { apiGenerator }
-```
-
-### 局部配置
-
-```js
-import { apiGenerator } from '@/main'
-
-export default {
-  data () {
-    return {
-      api__: apiGenerator('/somepage', {
-        // 全局配置中的所有配置项均支持局部配置
-      })
-    }
-  }
-}
-```
-
-### 覆盖统一前缀
-
-如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
-
-```js
-data()
-{
-  return {
-    api__: apiGenerator('/somepage', {
-      url: {
-        r: '/anotherpage/selectOne',
-      },
-    })
-  }
-}
-```
-
-将得到：
-
-- `/somepage/create`
-- `/somepage/update`
-- `/somepage/delete`
-- `/somepage/queryForPage`
-- `/somepage/updateStatus`
-- `/anotherpage/selectOne`
-
-<br>
-
-### 增删查改
-
-#### 查询列表
+### 获取表格
 
 ```js
 /**
@@ -794,7 +883,9 @@ data()
 this.getList__()
 ```
 
-#### 查询单条
+<br>
+
+### 查询单条
 
 ```js
 /**
@@ -804,11 +895,32 @@ this.getList__()
 this.r__()
 ```
 
-#### 新增单条
+#### 不调用查询单条接口
+
+对于 `r__` 和 `u__` 支持直接使用表格中的单条数据（而不是调用接口）
+
+1. 第一个参数：不再传接口参数 将表格中的行数据直接传入
+2. 第二个参数：传 `'data'`
+
+```html
+
+<el-table-column label="操作" align="center">
+  <template slot-scope="{row}">
+    <AuthButton @click="r__(row,'data')" name="查看"/>
+    <AuthButton @click="u__(row,'data')" name="编辑"/>
+  </template>
+</el-table-column>
+```
+
+<br>
+
+### 新增单条
 
 ```this.c__()```
 
-#### 编辑单条
+<br>
+
+### 编辑单条
 
 ```js
 /**
@@ -818,7 +930,9 @@ this.r__()
 this.u__()
 ```
 
-#### 删除单条
+<br>
+
+### 删除单条
 
 ```js
 /**
@@ -828,7 +942,9 @@ this.u__()
 this.d__()
 ```
 
-#### 变更单条状态
+<br>
+
+### 变更单条状态
 
 ```js
 /**
@@ -837,38 +953,6 @@ this.d__()
  */
 this.updateStatus__()
 ```
-
-#### 启用单条
-
-```js
-/**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
- */
-this.enable__()
-```
-
-#### 停用单条
-
-```js
-/**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
- */
-this.disable__()
-```
-
-<br>
-
-**参数2的可选值：**
-
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于请求配置
-- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）（仅 `r__` 和 `u__` 可用）
-
-<br>
-
-### 单条状态变更
 
 状态变更的两种方式：
 
@@ -896,26 +980,37 @@ this.disable__()
 
 <br>
 
-### 不调用查询单条接口
+### 启用单条
 
-对于 `r__` 和 `u__` 支持直接使用列表中的单条数据（而不是调用接口）
-
-1. 第一个参数：不再传接口参数 将列表中的行数据直接传入
-2. 第二个参数：传 `'data'`
-
-```html
-
-<el-table-column label="操作" align="center">
-  <template slot-scope="{row}">
-    <AuthButton @click="r__(row,'data')" name="查看"/>
-    <AuthButton @click="u__(row,'data')" name="编辑"/>
-  </template>
-</el-table-column>
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+this.enable__()
 ```
 
 <br>
 
-### RESTful
+### 停用单条
+
+```js
+/**
+ * @param {object|FormData} obj - 必传
+ * @param {string} objIs - 指定参数1的用途 默认'param'
+ */
+this.disable__()
+```
+
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于请求配置
+- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）（仅 `r__` 和 `u__` 可用）
+
+<br>
+
+## RESTful
 
 如果接口地址需要进行动态拼接
 
@@ -959,35 +1054,7 @@ export default {
 
 <br>
 
-## axiosShortcut
-
-根据axios实例生成axios实例的调用捷径
-
-通过 `getAxiosShortcut` 方法获取 `axiosShortcut`
-
-<br>
-
-### 初始化
-
-```js
-import Vue from 'vue'
-import { getAxiosShortcut } from 'admate'
-import request from '@/utils/request'
-
-const axiosShortcut = getAxiosShortcut({
-  // 全局配置
-
-  // axios实例
-  request
-})
-for (let k in axiosShortcut) {
-  Object.defineProperty(Vue.prototype, `$${k}`, {
-    value: axiosShortcut[k]
-  })
-}
-```
-
-<br>
+## 接口调用
 
 ### AJAX
 
@@ -1088,32 +1155,9 @@ request.interceptors.response.use(
 
 <br>
 
-## filters
+## 数据字典转义
 
-管理后台常用filters
-
-::: tip  
-所有过滤器均可当作方法调用
-:::
-
-### 初始化
-
-```js
-import { filters } from 'admate'
-Object.keys(filters).map(filter => {
-  const key = `$${filter}`
-  Vue.filter(key, filters[filter])
-  Object.defineProperty(Vue.prototype, key, {
-    value: filters[filter]
-  })
-})
-```
-
-<br>
-
-### key2label
-
-数据字典转义
+key2label
 
 ```html
 
@@ -1145,25 +1189,3 @@ this.$key2label('1', [
 ```
 
 <br>
-
-### dialogTitle
-
-表单对话框标题
-
-```html
-
-<FormDialog :title="row__.status | $dialogTitle"/>
-```
-
-默认对应关系：
-
-- c：新增
-- r：查看
-- u：编辑
-
-修改默认值或补充其他：
-
-```html
-
-<FormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
-```
