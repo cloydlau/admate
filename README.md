@@ -224,7 +224,7 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 
 `mixins` 集成了一些什么功能？
 
-- 获取表格、增删查改、状态启停用等管理后台页面标配
+- 查询表格、增删查改、状态启停用等管理后台页面标配
 - 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
 - 离开页面时 如果存在未完成的请求 自动终止该请求调用
 - 删除当前分页最后一条记录时 自动切换至上一页（如果当前不在第一页）
@@ -246,24 +246,24 @@ let mixins = getMixins({
 
   //  接口参数、返回值格式定制化
   props: {
-    // [获取表格接口] 页码字段名
+    // [查询表格接口] 页码字段名
     pageNo: 'pageNo',
 
-    // [获取表格接口] 页容量字段名
+    // [查询表格接口] 页容量字段名
     pageSize: 'pageSize',
 
-    // [获取表格接口] 返回值中表格字段所在位置
+    // [查询表格接口] 返回值中表格字段所在位置
     // 考虑到分页与不分页的返回格式可能是不同的 所以支持传入一个数组 数组会被遍历 直到找到为止
     list: ['data', 'data.records'],
 
-    // [获取表格接口] 返回值中总记录数字段所在位置
+    // [查询表格接口] 返回值中总记录数字段所在位置
     total: 'data.total',
 
     // [单条查询接口] 返回值中数据所在位置
     r: 'data'
   },
 
-  // 获取表格代理 详见生命周期-获取表格时
+  // 查询表格代理 详见生命周期-查询表格时
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -316,7 +316,7 @@ const apiGenerator = getApiGenerator({
     r: 'queryForDetail',          // 单条查询
     u: 'update',                  // 单条编辑
     d: 'delete',                  // 单条删除
-    list: 'queryForPage',         // 获取表格
+    list: 'queryForPage',         // 查询表格
     updateStatus: 'updateStatus', // 单条状态变更
     enable: 'enable',             // 状态启用
     disable: 'enable',            // 状态停用
@@ -472,13 +472,13 @@ data()
 
 ## 表格
 
-### 参数
+### 查询参数
 
-```this.list__.filter```
-
-**给表格参数绑定默认值**
+`this.list__.filter`
 
 ```js
+// 绑定默认值
+
 data()
 {
   return {
@@ -529,15 +529,15 @@ export default {
 
 <br>
 
-### 校验
+### 查询校验
 
 给绑定表格参数的el-form添加校验逻辑即可，执行 `getList` 之前会自动进行校验，校验失败则不会执行 `getList`
 
 <br>
 
-### 状态
+### 加载状态
 
-```this.list__.loading```
+`this.list__.loading`
 
 ```js
 methods: {
@@ -554,9 +554,9 @@ methods: {
 
 <br>
 
-### Hook: 获取表格时
+### Hook: 查询表格时
 
-`getList__` ：在首次进入页面、获取表格参数改变、单条增删查改后会被调用
+`getList__` ：在首次进入页面、查询表格参数改变、单条增删查改后会被调用
 
 `getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
 
@@ -564,14 +564,14 @@ methods: {
 methods: {
   /**
    * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res - 调用动机的接口返回值（首次进入页面、获取表格参数改变时为空）
+   * @param {object} res - 调用动机的接口返回值（首次进入页面、查询表格参数改变时为空）
    */
   getListProxy__(motive, res)
   {
-    // 在获取表格之前做点什么...
+    // 在查询表格之前做点什么...
     this.getList__()
     .then(res => {
-      // 在获取表格之后做点什么...
+      // 在查询表格之后做点什么...
     })
     .catch(res => {})
     .finally()
@@ -583,7 +583,7 @@ methods: {
 
 ## 表单
 
-### 数据
+### 数据对象
 
 ```this.row__.data```
 
@@ -605,7 +605,7 @@ data()
 
 <br>
 
-### 校验
+### 提交校验
 
 给绑定表单参数的el-form添加校验逻辑即可
 
@@ -637,7 +637,7 @@ export default {
 
 <br>
 
-### 状态
+### 表单形态
 
 `this.row__.status`
 
@@ -650,7 +650,7 @@ export default {
 
 <br>
 
-### 标题
+### 表单标题
 
 dialogTitle
 
@@ -674,7 +674,7 @@ dialogTitle
 
 <br>
 
-### Hook: 查询单条时
+### Hook: 打开表单时
 
 ```js
 /**
@@ -803,7 +803,7 @@ export default {
 
 <br>
 
-### 特殊页面：无表格，仅有表单
+### 特殊页面：无表格，仅含表单
 
 场景：表格中只有一条数据，故表格被省略，默认弹出编辑框
 
@@ -873,7 +873,7 @@ export default {
 
 ## 增删查改
 
-### 获取表格
+### 查询表格
 
 ```js
 /**

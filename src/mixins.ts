@@ -143,8 +143,8 @@ function getMixins ({
       }
 
       this.$watch('list__.filter', newVal => {
-        if (!this.getListThrottle__) {
-          this.getListThrottle__ = throttle(() => {
+        if (!this.getListThrottled__) {
+          this.getListThrottled__ = throttle(() => {
             const callback = async valid => {
               if (valid) {
                 const pageNoField = this.props__.pageNo
@@ -173,7 +173,7 @@ function getMixins ({
           })
         }
 
-        this.getListThrottle__()
+        this.getListThrottled__()
       }, {
         deep: true
       })
