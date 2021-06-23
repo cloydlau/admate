@@ -678,7 +678,7 @@ dialogTitle
 
 ```js
 /**
- * @return {Promise} 查询单条接口调用
+ * @return {Promise<any>} 查询单条接口调用 参数为接口返回值
  */
 this.retrieve__()
 ```
@@ -877,8 +877,7 @@ export default {
 
 ```js
 /**
- * @param {function} callback - 回调函数
- *        {object} res - 接口返回值
+ * @return {Promise<any>} 查询表格接口调用 参数为接口返回值
  */
 this.getList__()
 ```
