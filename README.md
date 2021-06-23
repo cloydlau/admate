@@ -24,9 +24,9 @@
 yarn add admate kikimore element-form-verify?
 ```
 
-- [kikimore](https://github.com/cloydlau/kikimore) : admate 会用到其中的一些组件
+- [kikimore](https://github.com/cloydlau/kikimore) : Admate 会用到其中的一些组件
 
-- [element-form-verify](https://github.com/a1067111756/vue-verify/tree/master/element-form-verify) : admate
+- [element-form-verify](https://github.com/a1067111756/vue-verify/tree/master/element-form-verify) : Admate
   默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
 2. 初始化
@@ -197,11 +197,11 @@ export default {
 ::: warning  
 `mixins` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
 
-为什么 `admate`
+为什么 `Admate`
 没有按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
 中指导的以 `$_yourPluginName_` 开头命名？
 
-- `admate` 中含有 data，data 是不允许这样命名的：
+- `Admate` 中含有 data，data 是不允许这样命名的：
 
   <span style="color:red">[Vue warn]: Property "$_admate_list" must be accessed with "$data.$_admate_list" because
   properties starting with "$" or "_" are not proxied in the Vue instance to prevent conflicts with Vue internals.
