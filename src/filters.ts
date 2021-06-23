@@ -1,6 +1,10 @@
-export function key2label (value: any, arr: object[], props = 'dataValue/dataName') {
+export function key2label (
+  value: any,
+  arr: object[],
+  props?: { key?: string, label?: string }
+) {
   if (arr) {
-    const [key, label] = props.split('/')
+    const { key = 'dataValue', label = 'dataName' } = props || {}
     let result = arr.filter(v => v[key] === value)
     if (result.length > 0) {
       return result[0][label]

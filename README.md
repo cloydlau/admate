@@ -1172,10 +1172,10 @@ key2label
 
 ```js
 /**
- * @param {string|Symbol} 需要查询的id
- * @param {array} 由多个`{[id]: '', [name]: ''}`构成的数组
- * @param {string} 自定义id和name对应的属性名 默认为'dataValue/dataName'
- * @return {Any} id对应的name
+ * @param {any} 需要查询的key
+ * @param {object[]} 数据字典数组
+ * @param {object} 配置选项，自定义key和label对应的属性名 默认值为 { key: 'dataValue', label: 'dataName' }
+ * @return {any} key所对应的label
  */
 this.$key2label('1', [
   { dataValue: '1', dataName: 'a' },
@@ -1185,7 +1185,10 @@ this.$key2label('1', [
 this.$key2label('1', [
   { id: '1', name: 'a' },
   { id: '2', name: 'b' },
-], 'id/name') // 'a'
+], {
+  key: 'id',
+  label: 'name'
+}) // 'a'
 ```
 
 <br>
