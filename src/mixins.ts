@@ -89,8 +89,9 @@ function getMixins ({
           //setTimeout(() => {
           this.row__.status = ''
           //}, 300)
-
           this.row__.data = cloneDeep(this.row__.initData)
+          this.row__.obj = {}
+          this.row__.objIs = null
           this.$refs.rowForm && this.$refs.rowForm.clearValidate()
           this.row__.loading = false
         }
@@ -332,40 +333,48 @@ function getMixins ({
         }
 
         return new Promise((resolve, reject) => {
-          this.api__.r(
-            this.row__.obj,
-            this.row__.objIs,
-            {
-              cancelToken: CancelToken && new CancelToken(c => {
-                // executor 函数接收一个 cancel 函数作为参数
-                this.row__.cancelToken = c
-              })
-            })
-          .then(res => {
-            const rowData = at(res, this.props__.r)[0]
-            // 坑：
-            /*
-              let obj = { a: 1 }
-              obj = {
-                ...obj,
-                ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
-                  obj.x = 1
-                })()
-              }
-            */
-            resolve(rowData)
-            // 将接口返回值混入row__.data
+          if (this.row__.objIs === 'data') {
+            resolve(this.row__.obj)
             this.row__.data = {
               ...this.row__.data,
-              ...rowData
+              ...this.row__.obj
             }
-          })
-          .catch(e => {
-            reject(e)
-          })
-          .finally(() => {
-            this.row__.cancelToken = null
-          })
+          } else {
+            this.api__.r(
+              this.row__.obj,
+              this.row__.objIs,
+              {
+                cancelToken: CancelToken && new CancelToken(c => {
+                  // executor 函数接收一个 cancel 函数作为参数
+                  this.row__.cancelToken = c
+                })
+              })
+            .then(res => {
+              const rowData = at(res, this.props__.r)[0]
+              // 坑：
+              /*
+                let obj = { a: 1 }
+                obj = {
+                  ...obj,
+                  ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
+                    obj.x = 1
+                  })()
+                }
+              */
+              resolve(rowData)
+              // 将接口返回值混入row__.data
+              this.row__.data = {
+                ...this.row__.data,
+                ...rowData
+              }
+            })
+            .catch(e => {
+              reject(e)
+            })
+            .finally(() => {
+              this.row__.cancelToken = null
+            })
+          }
         })
       },
       /**
@@ -384,8 +393,6 @@ function getMixins ({
           }
         }
         return this.api__[this.row__.status](param).then(async res => {
-          this.row__.obj = {}
-          this.row__.objIs = null
           await this.getListProxy__(this.row__.status, res)
         })
       },

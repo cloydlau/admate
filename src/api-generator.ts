@@ -138,70 +138,101 @@ export default function getApiGenerator ({
         return request({
           url: getUrl(url.c, obj),
           method: method.c,
-          ...objIs === 'param' && { data: formData.includes('c') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.c === 'function' ? instanceConfig.c(obj) : instanceConfig.c,
+          ...objIs === 'param' && {
+            data: formData.includes('c') ? jsonToFormData(obj) : obj
+          },
+          /**
+           * config优先级：
+           *   1. Admate自身的config
+           *   2. 用户的全局配置
+           *   3. 用户的局部配置
+           *   4. 用户的实例配置
+           */
           ...config,
+          ...typeof instanceConfig.c === 'function' ? instanceConfig.c(obj) : instanceConfig.c,
+          ...objIs === 'config' && obj,
         })
       },
       u: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.u, obj),
           method: method.u,
-          ...objIs === 'param' && { data: formData.includes('u') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.u === 'function' ? instanceConfig.u(obj) : instanceConfig.u,
+          ...objIs === 'param' && {
+            data: formData.includes('u') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.u === 'function' ? instanceConfig.u(obj) : instanceConfig.u,
+          ...objIs === 'config' && obj,
         })
       },
       list: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.list, obj),
           method: method.list,
-          ...objIs === 'param' && { data: formData.includes('list') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.list === 'function' ? instanceConfig.list(obj) : instanceConfig.list,
+          ...objIs === 'param' && {
+            data: formData.includes('list') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.list === 'function' ? instanceConfig.list(obj) : instanceConfig.list,
+          ...objIs === 'config' && obj,
         })
       },
       r: (obj, objIs = 'param', config) => request({
         url: getUrl(url.r, obj),
         method: method.r,
-        ...objIs === 'param' && { data: formData.includes('r') ? jsonToFormData(obj) : obj },
-        ...typeof instanceConfig.r === 'function' ? instanceConfig.r(obj) : instanceConfig.r,
+        ...objIs === 'param' && {
+          data: formData.includes('r') ? jsonToFormData(obj) : obj
+        },
         ...config,
+        ...typeof instanceConfig.r === 'function' ? instanceConfig.r(obj) : instanceConfig.r,
+        ...objIs === 'config' && obj,
       }),
       d: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.d, obj),
           method: method.d,
-          ...objIs === 'param' && { data: formData.includes('d') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.d === 'function' ? instanceConfig.d(obj) : instanceConfig.d,
+          ...objIs === 'param' && {
+            data: formData.includes('d') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.d === 'function' ? instanceConfig.d(obj) : instanceConfig.d,
+          ...objIs === 'config' && obj,
         })
       },
       updateStatus: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.updateStatus, obj),
           method: method.updateStatus,
-          ...objIs === 'param' && { data: formData.includes('updateStatus') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.updateStatus === 'function' ? instanceConfig.updateStatus(obj) : instanceConfig.updateStatus,
+          ...objIs === 'param' && {
+            data: formData.includes('updateStatus') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.updateStatus === 'function' ? instanceConfig.updateStatus(obj) : instanceConfig.updateStatus,
+          ...objIs === 'config' && obj,
         })
       },
       enable: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.enable, obj),
           method: method.enable,
-          ...objIs === 'param' && { data: formData.includes('enable') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.enable === 'function' ? instanceConfig.enable(obj) : instanceConfig.enable,
+          ...objIs === 'param' && {
+            data: formData.includes('enable') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.enable === 'function' ? instanceConfig.enable(obj) : instanceConfig.enable,
+          ...objIs === 'config' && obj,
         })
       },
       disable: (obj, objIs = 'param', config) => {
         return request({
           url: getUrl(url.disable, obj),
           method: method.disable,
-          ...objIs === 'param' && { data: formData.includes('disable') ? jsonToFormData(obj) : obj },
-          ...typeof instanceConfig.disable === 'function' ? instanceConfig.disable(obj) : instanceConfig.disable,
+          ...objIs === 'param' && {
+            data: formData.includes('disable') ? jsonToFormData(obj) : obj
+          },
           ...config,
+          ...typeof instanceConfig.disable === 'function' ? instanceConfig.disable(obj) : instanceConfig.disable,
+          ...objIs === 'config' && obj,
         })
       },
     }
