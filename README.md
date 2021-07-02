@@ -478,6 +478,7 @@ data()
 
 ```js
 // 绑定默认值
+// 默认值将被浅混入（Spread Syntax）
 
 data()
 {
@@ -585,11 +586,12 @@ methods: {
 
 ### 数据对象
 
-```this.row__.data```
-
-**给表单数据绑定默认值**
+`this.row__.data`
 
 ```js
+// 绑定默认值
+// 默认值主要用于表单新增时，查看/编辑时，默认值将与接口返回值进行浅混入（Spread Syntax）
+
 data()
 {
   return {
