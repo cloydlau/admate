@@ -21,13 +21,12 @@
 1. 安装依赖
 
 ```bash
-yarn add admate kikimore element-form-verify?
+yarn add admate kikimore element-verify?
 ```
 
 - [kikimore](https://github.com/cloydlau/kikimore) : Admate 会用到其中的一些组件
 
-- [element-form-verify](https://github.com/a1067111756/vue-verify/tree/master/element-form-verify) : Admate
-  默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
+- `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
 2. 初始化
 
@@ -42,8 +41,8 @@ import request from '@/utils/request'
 /**
  * 全局注册指令表单校验
  */
-import ElementFormVerify from 'element-form-verify'
-Vue.use(ElementFormVerify)
+import ElementVerify from 'element-verify'
+Vue.use(ElementVerify)
 
 /**
  * mixins
