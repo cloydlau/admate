@@ -10,7 +10,7 @@
 
 ![NPM](https://nodei.co/npm/admate.png)
 
-### 全局引入
+### 全局注册
 
 参考管理后台脚手架 `admin-cli`
 
