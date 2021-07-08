@@ -24,7 +24,7 @@
 yarn add admate kikimore element-verify?
 ```
 
-- [kikimore](https://github.com/cloydlau/kikimore) : Admate 会用到其中的一些组件
+- [kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
 
 - `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
