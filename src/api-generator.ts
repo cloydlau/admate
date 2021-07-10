@@ -36,7 +36,7 @@ type config = {
   disable?: object | ((objForConfig: object) => object),
 }
 
-export default function getApiGenerator ({
+export default function createApiGenerator ({
   request,
   config,
   url,
@@ -239,7 +239,7 @@ export default function getApiGenerator ({
   }
 }
 
-export const getAxiosShortcut = ({
+export const createAxiosShortcut = ({
   request
 }: {
   request: (args: any) => Promise<any>

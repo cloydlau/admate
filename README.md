@@ -48,8 +48,8 @@ Vue.use(ElementVerify)
  * mixins
  */
 import { CancelToken } from 'axios'
-import { getMixins } from 'admate'
-let mixins = getMixins({
+import { createMixins } from 'admate'
+let mixins = createMixins({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -73,15 +73,15 @@ export { mixins }
 /**
  * apiGenerator
  */
-import { getApiGenerator } from 'admate'
-const apiGenerator = getApiGenerator({ request })
+import { createApiGenerator } from 'admate'
+const apiGenerator = createApiGenerator({ request })
 export { apiGenerator }
 
 /**
  * axiosShortcut
  */
-import { getAxiosShortcut } from 'admate'
-const axiosShortcut = getAxiosShortcut({ request })
+import { createAxiosShortcut } from 'admate'
+const axiosShortcut = createAxiosShortcut({ request })
 const $axiosShortcut = Object.keys(axiosShortcut).reduce((total, currentValue) => {
   total[`$${currentValue}`] = axiosShortcut[currentValue]
   return total
@@ -250,7 +250,7 @@ export default {
 mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
 :::
 
-获取实例：调用 `getMixins()`
+获取实例：调用 `createMixins()`
 
 `mixins` 集成了一些什么功能？
 
@@ -269,9 +269,9 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 
 import Vue from 'vue'
 import { CancelToken } from 'axios'
-import { getMixins } from 'admate'
+import { createMixins } from 'admate'
 
-let mixins = getMixins({
+let mixins = createMixins({
   // 全局配置
 
   //  接口参数、返回值格式定制化
@@ -326,15 +326,15 @@ export { mixins }
 
 根据接口前缀自动生成增删查改接口调用
 
-获取实例：调用 `getApiGenerator` 方法
+获取实例：调用 `createApiGenerator` 方法
 
 ```js
 // main.js
 
-import { getApiGenerator } from 'admate'
+import { createApiGenerator } from 'admate'
 import request from '@/utils/request'
 
-const apiGenerator = getApiGenerator({
+const apiGenerator = createApiGenerator({
   // 全局配置
 
   // axios实例
@@ -385,14 +385,14 @@ export { apiGenerator }
 
 根据axios实例生成axios实例的调用捷径
 
-通过 `getAxiosShortcut` 方法获取 `axiosShortcut`
+通过 `createAxiosShortcut` 方法获取 `axiosShortcut`
 
 ```js
 import Vue from 'vue'
-import { getAxiosShortcut } from 'admate'
+import { createAxiosShortcut } from 'admate'
 import request from '@/utils/request'
 
-const axiosShortcut = getAxiosShortcut({
+const axiosShortcut = createAxiosShortcut({
   // 全局配置
 
   // axios实例
