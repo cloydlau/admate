@@ -24,7 +24,7 @@
 yarn add admate kikimore element-verify?
 ```
 
-- [kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
+- [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
 
 - `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
@@ -97,17 +97,19 @@ const $filters = Object.keys(filters).reduce((total, currentValue) => {
   return total
 }, {})
 export { $filters }
+```
 
-/**
- * [AuthButton] show属性
- */
-import router from '../router'
-import store from '../store'
-export const showAuthButton = name => {
-  let authButtons = store.getters?.authButtons?.[router.currentRoute.path] || []
+```js
+// @/permission.js
+// 权限按钮显隐逻辑，仅供参考，根据自身需求进行实现。
 
+import router from './router'
+import store from './store'
+
+export function getPageBtnList () {
+  let authButtons = store.getters?.authButtons?.[router.currentRoute.path]
   // 分解连缀的权限词, 例如: ['启用/停用'] 拆分成: ['启用','停用']
-  authButtons.forEach((item, index) => {
+  authButtons?.forEach((item, index) => {
     const splitArr = item.split('/')
     if (splitArr.length > 1) {
       authButtons.splice(index, 1)
@@ -116,17 +118,13 @@ export const showAuthButton = name => {
       })
     }
   })
-  return authButtons.includes(name)
+  return authButtons || []
 }
 ```
 
-::: warning  
-`showAuthButton` 是判断权限按钮是否显示的逻辑 根据你的系统需求自行修改
-:::
-
 ```css
 /* @/utils/admate.css */
-/* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要 */
+/* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要。 */
 
 .p-20px {
     padding: 20px;
@@ -151,27 +149,42 @@ export const showAuthButton = name => {
 ```vue
 <!-- xxx.vue -->
 
-<template>
-  <!-- AuthButton示例 -->
-  <AuthButton :show="showAuthButton" name="新增"/>
-</template>
-
 <script>
-import { mixins, apiGenerator, showAuthButton, $filters, $axiosShortcut } from '@/utils/admate'
+import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
+import { getPageBtnList } from '@/permission'
 
 export default {
   mixins: [mixins],
-  components: { FormDialog, AuthButton, Selector, Pagination, FormItemTip, Tag },
+  components: { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip },
   filters: {
     ...$filters
   },
   data () {
     return {
       api__: apiGenerator('xxx'),
-      showAuthButton,
+      pageBtnList: getPageBtnList(),
+      options: {
+        status: ['停用', '启用'],
+      },
+      popSwitchProps (status) {
+        return {
+          value: status,
+          activeValue: 1,
+          inactiveValue: 0,
+          elTooltipProps: {content: `已${this.options.status[status]}`},
+          ...this.pageBtnList.includes(this.options.status[status]) ?
+            {
+              elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+            } :
+            {
+              disabled: true,
+              elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
+            }
+        }
+      },
     }
   },
   methods: {
@@ -185,9 +198,27 @@ export default {
 
 ### 搭配代码生成器使用
 
-:one: 在 `VSCode` 插件市场搜索 `yapi2code` 并安装
+使用代码生成器生成页面模板
 
-:two: 打开命令面板（`F1`） 输入 `yapi2code` 运行
+#### Installation
+
+安装Chrome/Edge插件 `YApi2Code`，或使用离线版： 
+
+:one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
+
+:two: 打开浏览器 `扩展程序`，并开启 `开发者模式`
+
+:three: 点击 `加载已解压的扩展程序`，选择解压后的文件夹
+
+#### Usage
+
+:one: 访问YApi，选中相应模块的 `查询表格` 接口
+
+:two: 点击浏览器右上角运行插件
+
+:three: 点击 `生成代码`，代码将被复制至剪贴板
+
+:four: 创建页面文件 `xxx.vue`，粘贴代码
 
 <br>
 
