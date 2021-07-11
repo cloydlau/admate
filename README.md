@@ -169,22 +169,20 @@ export default {
       options: {
         status: ['停用', '启用'],
       },
-      popSwitchProps (status) {
-        return {
-          value: status,
-          activeValue: 1,
-          inactiveValue: 0,
-          elTooltipProps: {content: `已${this.options.status[status]}`},
-          ...this.pageBtnList.includes(this.options.status[status]) ?
-            {
-              elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
-            } :
-            {
-              disabled: true,
-              elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
-            }
-        }
-      },
+      popSwitchProps: status => ({ 
+        value: status,
+        activeValue: 1,
+        inactiveValue: 0,
+        elTooltipProps: {content: `已${this.options.status[status]}`},
+        ...this.pageBtnList.includes(this.options.status[status]) ?
+          {
+            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+          } :
+          {
+            disabled: true,
+            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
+          }
+      }),
     }
   },
   methods: {
