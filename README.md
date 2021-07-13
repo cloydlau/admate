@@ -14,6 +14,136 @@
 
 参考管理后台脚手架 `admin-cli`
 
+```ts
+// @/utils/admate.ts
+
+/**
+ * 挂载lodash
+ */
+import _ from 'lodash'
+Object.defineProperty(Vue.prototype, '$lo', {
+  value: _
+})
+
+/**
+ * mixin
+ */
+import { mapGetters } from 'vuex'
+import { CancelToken } from 'axios'
+import { createMixin } from 'admate'
+import { getPageBtnList } from '@/permission'
+const mixin = createMixin({
+  getListProxy (motive) {
+    this.getList__()
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+      this.$message.success('操作成功')
+    }
+  },
+  CancelToken
+})
+const mixins = _.merge(mixin, {
+  /**
+   * 补充mixin
+   */
+  data () {
+    return _.merge(mixin.data(), {
+      pageBtnList: getPageBtnList(),
+      options: {
+        status: ['停用', '启用'],
+      },
+      popSwitchProps: status => ({
+        value: status,
+        elTooltipProps: { content: `已${this.options.status[status]}` },
+        ...this.pageBtnList.includes(this.options.status[status]) ?
+          {
+            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+          } :
+          {
+            disabled: true,
+            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
+          }
+      }),
+    })
+  },
+  computed: {
+    ...mapGetters([
+      'dict',
+    ]),
+  }
+})
+export { mixins }
+
+/**
+ * apiGenerator
+ */
+import { createApiGenerator } from 'admate'
+const apiGenerator = createApiGenerator({ request })
+export { apiGenerator }
+
+/**
+ * axiosShortcut
+ */
+import { createAxiosShortcut } from 'admate'
+const axiosShortcut = createAxiosShortcut({ request })
+for (let k in axiosShortcut) {
+  Object.defineProperty(Vue.prototype, `$${k}`, {
+    value: axiosShortcut[k]
+  })
+}
+
+/**
+ * filters
+ */
+import { filters } from 'admate'
+Object.keys(filters).map(filter => {
+  const key = `$${filter}`
+  Vue.filter(key, filters[filter])
+  Object.defineProperty(Vue.prototype, key, {
+    value: filters[filter]
+  })
+})
+
+/**
+ * 注册指令表单校验
+ */
+import ElementVerify from 'element-verify'
+Vue.use(ElementVerify)
+
+/**
+ * 注册趁手小型组件
+ */
+import 'kikimore/dist/style.css'
+import { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip, Swal } from 'kikimore'
+import TimeRangePicker from 'time-range-picker'
+[{
+  component: PopButton,
+  config: {
+    size: 'mini'
+  }
+}, {
+  component: PopSwitch,
+  config: {
+    activeValue: 1,
+    inactiveValue: 0,
+  }
+}, {
+  component: FormDialog,
+}, {
+  component: Selector,
+}, {
+  component: Pagination
+}, {
+  component: FormItemTip,
+}, {
+  component: TimeRangePicker
+}].map(({ component, config }) =>
+  Vue.use(component, config)
+)
+Object.defineProperty(Vue.prototype, '$Swal', {
+  value: Swal
+})
+```
+
 <br>
 
 ### 局部引入
@@ -30,12 +160,11 @@ yarn add admate kikimore element-verify?
 
 2. 初始化
 
-```js
-// @/utils/admate.js
+```ts
+// @/utils/admate.ts
 
 import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
 import request from '@/utils/request'
 
 /**
@@ -45,11 +174,13 @@ import ElementVerify from 'element-verify'
 Vue.use(ElementVerify)
 
 /**
- * mixins
+ * mixin
  */
+import { mapGetters } from 'vuex'
 import { CancelToken } from 'axios'
-import { createMixins } from 'admate'
-let mixins = createMixins({
+import { createMixin } from 'admate'
+import { getPageBtnList } from '@/permission'
+const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -58,16 +189,36 @@ let mixins = createMixins({
   },
   CancelToken
 })
-mixins = {
-  ...mixins,
-  // mixins补充
+const mixins = _.merge(mixin, {
+  /**
+   * 补充mixin
+   */
+  data () {
+    return _.merge(mixin.data(), {
+      pageBtnList: getPageBtnList(),
+      options: {
+        status: ['停用', '启用'],
+      },
+      popSwitchProps: status => ({
+        value: status,
+        elTooltipProps: { content: `已${this.options.status[status]}` },
+        ...this.pageBtnList.includes(this.options.status[status]) ?
+          {
+            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+          } :
+          {
+            disabled: true,
+            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
+          }
+      }),
+    })
+  },
   computed: {
-    ...mixins.computed,
     ...mapGetters([
       'dict',
     ]),
   }
-}
+})
 export { mixins }
 
 /**
@@ -99,8 +250,8 @@ const $filters = Object.keys(filters).reduce((total, currentValue) => {
 export { $filters }
 ```
 
-```js
-// @/permission.js
+```ts
+// @/permission.ts
 // 权限按钮显隐逻辑，仅供参考，根据自身需求进行实现。
 
 import router from './router'
@@ -169,11 +320,11 @@ export default {
       options: {
         status: ['停用', '启用'],
       },
-      popSwitchProps: status => ({ 
+      popSwitchProps: status => ({
         value: status,
         activeValue: 1,
         inactiveValue: 0,
-        elTooltipProps: {content: `已${this.options.status[status]}`},
+        elTooltipProps: { content: `已${this.options.status[status]}` },
         ...this.pageBtnList.includes(this.options.status[status]) ?
           {
             elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
@@ -200,7 +351,7 @@ export default {
 
 #### Installation
 
-安装Chrome/Edge插件 `YApi2Code`，或使用离线版： 
+安装Chrome/Edge插件 `YApi2Code`，或使用离线版：
 
 :one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
 
@@ -223,7 +374,7 @@ export default {
 ## 命名规则
 
 ::: warning  
-`mixins` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
+`mixin` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
 
 为什么 `Admate`
 没有按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
@@ -238,9 +389,9 @@ export default {
 
 <br>
 
-## 初始化
+## 全局配置
 
-### mixins
+### mixin
 
 页面公共逻辑混入
 
@@ -248,9 +399,9 @@ export default {
 mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
 :::
 
-获取实例：调用 `createMixins()`
+获取实例：调用 `createMixin()`
 
-`mixins` 集成了一些什么功能？
+`mixin` 集成了一些什么功能？
 
 - 查询表格、增删查改、状态启停用等管理后台页面标配
 - 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
@@ -262,14 +413,13 @@ mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前
 
 <br>
 
-```js
-// main.js
+```ts
+// @/utils/admate.ts
 
-import Vue from 'vue'
 import { CancelToken } from 'axios'
-import { createMixins } from 'admate'
+import { createMixin } from 'admate'
 
-let mixins = createMixins({
+let mixin = createMixin({
   // 全局配置
 
   //  接口参数、返回值格式定制化
@@ -301,21 +451,7 @@ let mixins = createMixins({
 
   // 用于切换页面时中断请求
   CancelToken,
-
 })
-
-// 对mixins进行补充 如加入computed
-mixins = {
-  ...mixins,
-  computed: {
-    ...mixins.computed,
-    ...mapGetters([
-      'dict',
-    ]),
-  }
-}
-
-export { mixins }
 ```
 
 <br>
@@ -326,8 +462,8 @@ export { mixins }
 
 获取实例：调用 `createApiGenerator` 方法
 
-```js
-// main.js
+```ts
+// @/utils/admate.ts
 
 import { createApiGenerator } from 'admate'
 import request from '@/utils/request'
@@ -373,8 +509,6 @@ const apiGenerator = createApiGenerator({
     },
   }
 })
-
-export { apiGenerator }
 ```
 
 <br>
@@ -385,7 +519,9 @@ export { apiGenerator }
 
 通过 `createAxiosShortcut` 方法获取 `axiosShortcut`
 
-```js
+```ts
+// @/utils/admate.ts
+
 import Vue from 'vue'
 import { createAxiosShortcut } from 'admate'
 import request from '@/utils/request'
@@ -413,8 +549,11 @@ for (let k in axiosShortcut) {
 所有过滤器均可当作方法调用
 :::
 
-```js
+```ts
+// @/utils/admate.ts
+
 import { filters } from 'admate'
+
 Object.keys(filters).map(filter => {
   const key = `$${filter}`
   Vue.filter(key, filters[filter])
@@ -428,10 +567,12 @@ Object.keys(filters).map(filter => {
 
 ## 局部配置
 
-### mixins
+### mixin
 
-```js
-import { mixins } from '@/main'
+```ts
+// xxx.vue
+
+import { mixins } from '@/utils/admate'
 
 export default {
   mixins: [mixins],
@@ -456,8 +597,10 @@ export default {
 
 ### apiGenerator
 
-```js
-import { apiGenerator } from '@/main'
+```ts
+// xxx.vue
+
+import { apiGenerator } from '@/utils/admate.ts'
 
 export default {
   data () {
@@ -474,15 +617,18 @@ export default {
 
 如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
 
-```js
-data()
-{
-  return {
-    api__: apiGenerator('/somepage', {
-      url: {
-        r: '/anotherpage/selectOne',
-      },
-    })
+```ts
+import { apiGenerator } from '@/utils/admate.ts'
+
+export default {
+  data () {
+    return {
+      api__: apiGenerator('/somepage', {
+        url: {
+          r: '/anotherpage/selectOne',
+        },
+      })
+    }
   }
 }
 ```
@@ -504,17 +650,18 @@ data()
 
 `this.list__.filter`
 
-```js
+```ts
 // 绑定默认值
 // 默认值将被浅混入（Spread Syntax）
 
-data()
-{
-  return {
-    list__: {
-      filter: {
-        pageSize: 15, // 覆盖默认值10
-        status: 1 // 新增的
+export default {
+  data () {
+    return {
+      list__: {
+        filter: {
+          pageSize: 15, // 覆盖默认值10
+          status: 1 // 新增的
+        }
       }
     }
   }
@@ -568,7 +715,7 @@ export default {
 
 `this.list__.loading`
 
-```js
+```ts
 methods: {
   xxx()
   {
@@ -589,7 +736,7 @@ methods: {
 
 `getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
 
-```js
+```ts
 methods: {
   /**
    * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
@@ -616,7 +763,7 @@ methods: {
 
 `this.row__.data`
 
-```js
+```ts
 // 绑定默认值
 // 默认值主要用于表单新增时，查看/编辑时，默认值将与接口返回值进行浅混入（Spread Syntax）
 
@@ -706,7 +853,7 @@ dialogTitle
 
 ### Hook: 打开表单时
 
-```js
+```ts
 /**
  * @return {Promise<any>} 查询单条接口调用 参数为接口返回值
  */
@@ -769,7 +916,7 @@ export default {
 
 ### Hook: 提交表单时
 
-```js
+```ts
 /**
  * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
  * @return {Promise} 提交表单接口调用
@@ -871,7 +1018,7 @@ export default {
 </template>
 
 <script>
-import { mixins, apiGenerator } from '@/utils/init'
+import { mixins, apiGenerator } from '@/utils/admate'
 
 export default {
   mixins: [mixins],
@@ -905,7 +1052,7 @@ export default {
 
 ### 查询表格
 
-```js
+```ts
 /**
  * @return {Promise<any>} 查询表格接口调用 参数为接口返回值
  */
@@ -916,7 +1063,7 @@ this.getList__()
 
 ### 查询单条
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -951,7 +1098,7 @@ this.r__()
 
 ### 编辑单条
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -963,7 +1110,7 @@ this.u__()
 
 ### 删除单条
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -975,7 +1122,7 @@ this.d__()
 
 ### 变更单条状态
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -1011,7 +1158,7 @@ this.updateStatus__()
 
 ### 启用单条
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -1023,7 +1170,7 @@ this.enable__()
 
 ### 停用单条
 
-```js
+```ts
 /**
  * @param {object|FormData} obj - 必传
  * @param {string} objIs - 指定参数1的用途 默认'param'
@@ -1096,7 +1243,7 @@ export default {
 - `DELETE`
 - `HEAD`
 
-```js
+```ts
 /**
  * @param {string} url - 接口地址
  * @param {object} data - 接口参数
@@ -1120,7 +1267,7 @@ this.$POST()
 
 > 请求体类型为 multipart/form-data
 
-```js
+```ts
 /**
  * @param {string} url - 接口地址
  * @param {object} data - 接口参数
@@ -1140,7 +1287,7 @@ this.$POST.upload()
 
 **ajax请求方式**
 
-```js
+```ts
 /**
  * @param {string} url - 接口地址
  * @param {object} data - 接口参数
@@ -1156,7 +1303,7 @@ this.$POST.download()
 
 **地址栏请求方式**
 
-```js
+```ts
 /**
  * @param {string} url - 接口地址
  * @param {object} data - 接口参数
@@ -1171,7 +1318,7 @@ this.$DOWNLOAD()
 
 > 上传/下载本质上还是调用axios实例 所以在axios实例的响应拦截器中判断即可
 
-```js
+```ts
 request.interceptors.response.use(
   response => {
     // download
@@ -1199,7 +1346,7 @@ key2label
 
 当作方法调用：
 
-```js
+```ts
 /**
  * @param {any} 需要查询的key
  * @param {object[]} 数据字典数组

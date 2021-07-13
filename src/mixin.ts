@@ -58,7 +58,7 @@ function argsHandler (obj, objIs, motive, row__) {
   }
 }
 
-function createMixins ({
+function createMixin ({
   props,
   getListProxy,
   CancelToken,
@@ -400,4 +400,4 @@ function createMixins ({
   }
 }
 
-export default createMixins
+export default createMixin
