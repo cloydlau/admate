@@ -21,7 +21,7 @@
     "ri": "npm run clean && pnpm i"
   },
   "dependencies": {
-    "kayran": "^0.2.2",
+    "kayran": "^0.3.2",
     "lodash-es": "^4.17.21",
     "qs": "^6.10.1"
   },
