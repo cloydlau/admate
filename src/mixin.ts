@@ -27,7 +27,7 @@ function getInitData () {
   }
 }
 
-function argsHandler (obj, objIs, motive, row__) {
+function argsHandler (obj = {}, objIs, motive, row__) {
   const isRorU = ['r', 'u'].includes(motive)
   switch (objIs) {
     case 'param':
@@ -236,7 +236,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       r__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'r', this.row__)
@@ -246,7 +246,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       u__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'u', this.row__)
@@ -256,7 +256,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       d__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'd', this.row__)
@@ -280,7 +280,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       updateStatus__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'updateStatus', this.row__)
@@ -296,7 +296,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       enable__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'enable', this.row__)
@@ -312,7 +312,7 @@ function createMixin ({
        * @param {string} objIs - 指定参数1的用途 默认'param'
        */
       disable__ (
-        obj: object | FormData,
+        obj?: object | FormData,
         objIs = 'param'
       ) {
         argsHandler(obj, objIs, 'disable', this.row__)

@@ -739,8 +739,8 @@ methods: {
 ```ts
 methods: {
   /**
-   * @param {string} motive - 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res - 调用动机的接口返回值（首次进入页面、查询表格参数改变时为空）
+   * @param {string} motive 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
+   * @param {object} res 调用动机的接口返回值（首次进入页面、查询表格参数改变时为空）
    */
   getListProxy__(motive, res)
   {
@@ -876,7 +876,7 @@ export default {
       return this.retrieve__()
       ?.then( // 新增时 retrieve__返回为空 需要判空
         /**
-         * @param {object} rowData - 单条数据
+         * @param {object} rowData 单条数据
          */
         rowData => {
           this.row__.data.status = 1
@@ -918,7 +918,7 @@ export default {
 
 ```ts
 /**
- * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
+ * @param {function|object|FormData} paramHandler 提交之前的钩子或指定表单参数
  * @return {Promise} 提交表单接口调用
  */
 this.submit__(paramHandler)
@@ -1034,10 +1034,10 @@ export default {
   methods: {
     getListProxy__ (motive) {
       if (motive === 'init') {
-        this.u__({})
+        this.u__()
       } else {
         this.$Swal.success('操作成功').then(() => {
-          this.u__({})
+          this.u__()
         })
       }
     }
@@ -1065,8 +1065,8 @@ this.getList__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.r__()
 ```
@@ -1100,8 +1100,8 @@ this.r__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.u__()
 ```
@@ -1112,8 +1112,8 @@ this.u__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.d__()
 ```
@@ -1124,8 +1124,8 @@ this.d__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.updateStatus__()
 ```
@@ -1160,8 +1160,8 @@ this.updateStatus__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.enable__()
 ```
@@ -1172,8 +1172,8 @@ this.enable__()
 
 ```ts
 /**
- * @param {object|FormData} obj - 必传
- * @param {string} objIs - 指定参数1的用途 默认'param'
+ * @param {object|FormData} obj?
+ * @param {string} objIs 指定参数1的用途 默认'param'
  */
 this.disable__()
 ```
@@ -1245,9 +1245,9 @@ export default {
 
 ```ts
 /**
- * @param {string} url - 接口地址
- * @param {object} data - 接口参数
- * @param {object} config - axios配置
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数
+ * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
 this.$POST()
@@ -1269,9 +1269,9 @@ this.$POST()
 
 ```ts
 /**
- * @param {string} url - 接口地址
- * @param {object} data - 接口参数
- * @param {object} config - axios配置
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数
+ * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
 this.$POST.upload()
@@ -1289,9 +1289,9 @@ this.$POST.upload()
 
 ```ts
 /**
- * @param {string} url - 接口地址
- * @param {object} data - 接口参数
- * @param {object} config - axios配置
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数
+ * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
 this.$POST.download()
@@ -1305,9 +1305,9 @@ this.$POST.download()
 
 ```ts
 /**
- * @param {string} url - 接口地址
- * @param {object} data - 接口参数
- * @param {object} config - axios配置
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数
+ * @param {object} config axios配置
  */
 this.$DOWNLOAD()
 ```
