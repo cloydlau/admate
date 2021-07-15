@@ -70,12 +70,13 @@ const mixin = createMixin({
   },
   CancelToken
 })
+const mininData = mixin.data()
 const mixins = merge(mixin, {
   /**
    * 补充mixin
    */
   data () {
-    return merge(mixin.data(), {
+    return merge(mininData, {
       pageBtnList: getPageBtnList(),
       options: {
         status: ['停用', '启用'],
@@ -176,12 +177,13 @@ const mixin = createMixin({
   },
   CancelToken
 })
+const mininData = mixin.data()
 const mixins = merge(mixin, {
   /**
    * 补充mixin
    */
   data () {
-    return merge(mixin.data(), {
+    return merge(mininData, {
       pageBtnList: getPageBtnList(),
       options: {
         status: ['停用', '启用'],
