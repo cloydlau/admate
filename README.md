@@ -28,14 +28,9 @@ import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
 /**
- * 全局注册element-verify
+ * 全局注册kikimore
  */
-Vue.use(ElementVerify)
-
-  /**
-   * 全局注册kikimore
-   */
-  [{
+[{
   component: PopButton,
   config: {
     size: 'mini'
@@ -133,6 +128,11 @@ Object.keys(filters).map(filter => {
     value: filters[filter]
   })
 })
+
+/**
+ * 全局注册element-verify
+ */
+Vue.use(ElementVerify)
 ```
 
 <br>
@@ -163,11 +163,6 @@ import ElementVerify from 'element-verify'
 import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
 import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
-
-/**
- * 全局注册element-verify
- */
-Vue.use(ElementVerify)
 
 /**
  * 导出mixin
@@ -239,6 +234,11 @@ const $filters = Object.keys(filters).reduce((total, currentValue) => {
   return total
 }, {})
 export { $filters }
+
+/**
+ * 全局注册element-verify
+ */
+Vue.use(ElementVerify)
 ```
 
 ```ts
