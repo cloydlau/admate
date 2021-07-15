@@ -65,7 +65,7 @@ const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$Swal.success('操作成功')
+      this.$message.success('操作成功')
     }
   },
   CancelToken
@@ -172,7 +172,7 @@ const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$Swal.success('操作成功')
+      this.$message.success('操作成功')
     }
   },
   CancelToken
