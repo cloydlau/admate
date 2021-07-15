@@ -441,7 +441,7 @@ let mixin = createMixin({
     r: 'data'
   },
 
-  // 查询表格代理 详见生命周期-查询表格时
+  // 查询表格代理
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -453,6 +453,8 @@ let mixin = createMixin({
   CancelToken,
 })
 ```
+
+`getListProxy` 详细用法见[Hook: 查询表格时](#query-table)
 
 <br>
 
@@ -499,7 +501,7 @@ const apiGenerator = createApiGenerator({
   },
 
   // 提交方式 默认空数组（全json） 可以在这里指定接口使用formData
-  formData: ['c', 'u'],
+  useFormData: ['c', 'u'],
 
   // 使用config你可以完全自定义每个接口的请求配置 甚至支持function（从而能够拿到data）
   config: {
@@ -728,7 +730,7 @@ methods: {
 }
 ```
 
-<br>
+<a name="query-table"><br></a>
 
 ### Hook: 查询表格时
 
@@ -1071,22 +1073,11 @@ this.getList__()
 this.r__()
 ```
 
-#### 不调用查询单条接口
+**参数2的可选值：**
 
-对于 `r__` 和 `u__` 支持直接使用表格中的单条数据（而不是调用接口）
-
-1. 第一个参数：不再传接口参数 将表格中的行数据直接传入
-2. 第二个参数：传 `'data'`
-
-```html
-
-<el-table-column label="操作" align="center">
-  <template slot-scope="{row}">
-    <AuthButton @click="r__(row,'data')" name="查看"/>
-    <AuthButton @click="u__(row,'data')" name="编辑"/>
-  </template>
-</el-table-column>
-```
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
 
 <br>
 
@@ -1106,6 +1097,12 @@ this.r__()
 this.u__()
 ```
 
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
+
 <br>
 
 ### 删除单条
@@ -1117,6 +1114,11 @@ this.u__()
  */
 this.d__()
 ```
+
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1130,7 +1132,12 @@ this.d__()
 this.updateStatus__()
 ```
 
-状态变更的两种方式：
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+
+**状态变更的两种方式：**
 
 - 调用同一个接口，传参指定新的状态：使用 `updateStatus`
 
@@ -1138,7 +1145,10 @@ this.updateStatus__()
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <AuthButton @click="updateStatus__({id,status:status^1})" :name="['启用', '停用'][status]"/>
+    <PopSwitch
+      v-bind="popSwitchProps(status)"
+      @change="updateStatus__({id,status:status^1})"
+    />
   </template>
 </el-table-column>
 ```
@@ -1149,7 +1159,10 @@ this.updateStatus__()
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <AuthButton @click="[enable__,disable__][status]({id})" :name="['启用', '停用'][status]"/>
+    <PopSwitch
+      v-bind="popSwitchProps(status)"
+      @change="[enable__,disable__][status]({id})"
+    />
   </template>
 </el-table-column>
 ```
@@ -1166,6 +1179,11 @@ this.updateStatus__()
 this.enable__()
 ```
 
+**参数2的可选值：**
+
+- `'param'`：将参数1用作请求参数（默认）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+
 <br>
 
 ### 停用单条
@@ -1181,22 +1199,33 @@ this.disable__()
 **参数2的可选值：**
 
 - `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于请求配置
-- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）（仅 `r__` 和 `u__` 可用）
+- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
-<br>
+<a name="RESTful"><br></a>
 
 ## RESTful
 
 如果接口地址需要进行动态拼接
 
 ```vue
+<!-- 示例 -->
 
 <template>
   <el-table-column label="操作" align="center">
     <template slot-scope="{row}">
-      <AuthButton @click="r__(row,'config')" name="查看"/>
-      <AuthButton @click="u__(row,'config')" name="编辑"/>
+      <PopButton
+        v-if="pageBtnList.includes('查看')"
+        :elTooltipProps="{content:'查看'}"
+        icon="el-icon-search"
+        @click="r__(row,'config')"
+      />
+      <PopButton
+        v-if="pageBtnList.includes('编辑')"
+        :elTooltipProps="{content:'编辑'}"
+        type="primary"
+        icon="el-icon-edit"
+        @click="u__(row,'config')"
+      />
     </template>
   </el-table-column>
 </template>
@@ -1206,21 +1235,11 @@ export default {
   data () {
     return {
       api__: apiGenerator('/somepage', {
-
-        // 方式1
-        url: {
-          r: row => 'module/' + row.id,
-        },
-
-        // 方式2
         config: {
-          r (row) {
-            return {
-              url: 'module/' + row.id
-            }
-          },
+          r: row => ({
+            url: 'module/' + row.id
+          }),
         }
-
       })
     }
   }
