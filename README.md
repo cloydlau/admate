@@ -12,110 +12,30 @@
 
 ### 全局注册
 
-参考管理后台脚手架 `admin-cli`
-
 ```ts
 // @/utils/admate.ts
 
-/**
- * 挂载lodash
- */
-import _ from 'lodash'
-Object.defineProperty(Vue.prototype, '$lo', {
-  value: _
-})
-
-/**
- * mixin
- */
+import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { CancelToken } from 'axios'
-import { createMixin } from 'admate'
-import { getPageBtnList } from '@/permission'
-const mixin = createMixin({
-  getListProxy (motive) {
-    this.getList__()
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$message.success('操作成功')
-    }
-  },
-  CancelToken
-})
-const mixins = _.merge(mixin, {
-  /**
-   * 补充mixin
-   */
-  data () {
-    return _.merge(mixin.data(), {
-      pageBtnList: getPageBtnList(),
-      options: {
-        status: ['停用', '启用'],
-      },
-      popSwitchProps: status => ({
-        value: status,
-        elTooltipProps: { content: `已${this.options.status[status]}` },
-        ...this.pageBtnList.includes(this.options.status[status]) ?
-          {
-            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
-          } :
-          {
-            disabled: true,
-            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
-          }
-      }),
-    })
-  },
-  computed: {
-    ...mapGetters([
-      'dict',
-    ]),
-  }
-})
-export { mixins }
-
-/**
- * apiGenerator
- */
-import { createApiGenerator } from 'admate'
-const apiGenerator = createApiGenerator({ request })
-export { apiGenerator }
-
-/**
- * axiosShortcut
- */
-import { createAxiosShortcut } from 'admate'
-const axiosShortcut = createAxiosShortcut({ request })
-for (let k in axiosShortcut) {
-  Object.defineProperty(Vue.prototype, `$${k}`, {
-    value: axiosShortcut[k]
-  })
-}
-
-/**
- * filters
- */
-import { filters } from 'admate'
-Object.keys(filters).map(filter => {
-  const key = `$${filter}`
-  Vue.filter(key, filters[filter])
-  Object.defineProperty(Vue.prototype, key, {
-    value: filters[filter]
-  })
-})
-
-/**
- * 注册指令表单校验
- */
+import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
-Vue.use(ElementVerify)
-
-/**
- * 注册趁手小型组件
- */
+import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip, Swal } from 'kikimore'
 import TimeRangePicker from 'time-range-picker'
-[{
+import request from '@/utils/request'
+import { getPageBtnList } from '@/permission'
+
+/**
+ * 全局注册element-verify
+ */
+Vue.use(ElementVerify)
+
+  /**
+   * 全局注册kikimore
+   */
+  [{
   component: PopButton,
   config: {
     size: 'mini'
@@ -142,59 +62,25 @@ import TimeRangePicker from 'time-range-picker'
 Object.defineProperty(Vue.prototype, '$Swal', {
   value: Swal
 })
-```
-
-<br>
-
-### 局部引入
-
-1. 安装依赖
-
-```bash
-yarn add admate kikimore element-verify?
-```
-
-- [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
-
-- `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
-
-2. 初始化
-
-```ts
-// @/utils/admate.ts
-
-import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
-import Vue from 'vue'
-import request from '@/utils/request'
 
 /**
- * 全局注册指令表单校验
+ * 导出mixin
  */
-import ElementVerify from 'element-verify'
-Vue.use(ElementVerify)
-
-/**
- * mixin
- */
-import { mapGetters } from 'vuex'
-import { CancelToken } from 'axios'
-import { createMixin } from 'admate'
-import { getPageBtnList } from '@/permission'
 const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$message.success('操作成功')
+      this.$Swal.success('操作成功')
     }
   },
   CancelToken
 })
-const mixins = _.merge(mixin, {
+const mixins = merge(mixin, {
   /**
    * 补充mixin
    */
   data () {
-    return _.merge(mixin.data(), {
+    return merge(mixin.data(), {
       pageBtnList: getPageBtnList(),
       options: {
         status: ['停用', '启用'],
@@ -222,9 +108,114 @@ const mixins = _.merge(mixin, {
 export { mixins }
 
 /**
- * apiGenerator
+ * 导出apiGenerator
  */
-import { createApiGenerator } from 'admate'
+const apiGenerator = createApiGenerator({ request })
+export { apiGenerator }
+
+/**
+ * 全局注册axiosShortcut
+ */
+const axiosShortcut = createAxiosShortcut({ request })
+for (let k in axiosShortcut) {
+  Object.defineProperty(Vue.prototype, `$${k}`, {
+    value: axiosShortcut[k]
+  })
+}
+
+/**
+ * 全局注册filters
+ */
+Object.keys(filters).map(filter => {
+  const key = `$${filter}`
+  Vue.filter(key, filters[filter])
+  Object.defineProperty(Vue.prototype, key, {
+    value: filters[filter]
+  })
+})
+```
+
+<br>
+
+### 局部引入
+
+1. 安装依赖
+
+```bash
+yarn add admate kikimore element-verify?
+```
+
+- [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
+
+- `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
+
+2. 初始化
+
+```ts
+// @/utils/admate.ts
+
+import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
+import Vue from 'vue'
+import { mapGetters } from 'vuex'
+import { CancelToken } from 'axios'
+import { merge } from 'lodash'
+import ElementVerify from 'element-verify'
+import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
+import request from '@/utils/request'
+import { getPageBtnList } from '@/permission'
+
+/**
+ * 全局注册element-verify
+ */
+Vue.use(ElementVerify)
+
+/**
+ * 导出mixin
+ */
+const mixin = createMixin({
+  getListProxy (motive) {
+    this.getList__()
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+      this.$Swal.success('操作成功')
+    }
+  },
+  CancelToken
+})
+const mixins = merge(mixin, {
+  /**
+   * 补充mixin
+   */
+  data () {
+    return merge(mixin.data(), {
+      pageBtnList: getPageBtnList(),
+      options: {
+        status: ['停用', '启用'],
+      },
+      popSwitchProps: status => ({
+        value: status,
+        elTooltipProps: { content: `已${this.options.status[status]}` },
+        ...this.pageBtnList.includes(this.options.status[status]) ?
+          {
+            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+          } :
+          {
+            disabled: true,
+            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
+          }
+      }),
+    })
+  },
+  computed: {
+    ...mapGetters([
+      'dict',
+    ]),
+  }
+})
+export { mixins }
+
+/**
+ * 导出apiGenerator
+ */
 const apiGenerator = createApiGenerator({ request })
 export { apiGenerator }
 
