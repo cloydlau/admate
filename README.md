@@ -59,7 +59,7 @@ Object.defineProperty(Vue.prototype, '$Swal', {
 })
 
 /**
- * 导出mixin
+ * 初始化mixin并导出
  */
 const mixin = createMixin({
   getListProxy (motive) {
@@ -104,7 +104,7 @@ const mixins = merge(mixin, {
 export { mixins }
 
 /**
- * 导出apiGenerator
+ * 初始化apiGenerator并导出
  */
 const apiGenerator = createApiGenerator({ request })
 export { apiGenerator }
@@ -166,7 +166,7 @@ import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
 /**
- * 导出mixin
+ * 初始化mixin并导出
  */
 const mixin = createMixin({
   getListProxy (motive) {
@@ -211,13 +211,13 @@ const mixins = merge(mixin, {
 export { mixins }
 
 /**
- * 导出apiGenerator
+ * 初始化apiGenerator并导出
  */
 const apiGenerator = createApiGenerator({ request })
 export { apiGenerator }
 
 /**
- * axiosShortcut
+ * 初始化axiosShortcut并导出
  */
 import { createAxiosShortcut } from 'admate'
 const axiosShortcut = createAxiosShortcut({ request })
@@ -228,7 +228,7 @@ const $axiosShortcut = Object.keys(axiosShortcut).reduce((total, currentValue) =
 export { $axiosShortcut }
 
 /**
- * filters
+ * 导出filters
  */
 import { filters } from 'admate'
 const $filters = Object.keys(filters).reduce((total, currentValue) => {
@@ -266,7 +266,7 @@ export function getPageBtnList () {
 }
 ```
 
-```css
+```scss
 /* @/utils/admate.css */
 /* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要。 */
 
@@ -595,7 +595,7 @@ export default {
 ```ts
 // xxx.vue
 
-import { apiGenerator } from '@/utils/admate.ts'
+import { apiGenerator } from '@/utils/admate'
 
 export default {
   data () {
@@ -613,7 +613,7 @@ export default {
 如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
 
 ```ts
-import { apiGenerator } from '@/utils/admate.ts'
+import { apiGenerator } from '@/utils/admate'
 
 export default {
   data () {
@@ -711,14 +711,15 @@ export default {
 `this.list__.loading`
 
 ```ts
-methods: {
-  xxx()
-  {
-    this.list__.loading = true
-    this.$POST('')
-    .finally(() => {
-      this.list__.loading = false
-    })
+export default {
+  methods: {
+    xxx () {
+      this.list__.loading = true
+      this.$POST('')
+      .finally(() => {
+        this.list__.loading = false
+      })
+    }
   }
 }
 ```
@@ -762,15 +763,16 @@ methods: {
 // 绑定默认值
 // 默认值主要用于表单新增时，查看/编辑时，默认值将与接口返回值进行浅混入（Spread Syntax）
 
-data()
-{
-  return {
-    row__: {
-      data: {
-        arr: [],
-        num: 100
-      }
-    },
+export default {
+  data () {
+    return {
+      row__: {
+        data: {
+          arr: [],
+          num: 100
+        }
+      },
+    }
   }
 }
 ```
@@ -936,7 +938,7 @@ export default {
       return this.submit__(
         async () => {
           // 在提交之前做点什么（表单校验通过后）...
-          if ('c' === this.row__.status) {
+          if (this.row__.status === 'c') {
             this.row__.data.status = 1
           }
 
