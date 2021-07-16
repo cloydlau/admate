@@ -65,7 +65,7 @@ const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$message.success('操作成功')
+      this.$Swal.success('操作成功')
     }
   },
   CancelToken
@@ -162,6 +162,8 @@ import { CancelToken } from 'axios'
 import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
 import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
+import 'kikimore/dist/style.css'
+import { Swal } from 'kikimore'
 import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
@@ -172,7 +174,7 @@ const mixin = createMixin({
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$message.success('操作成功')
+      Swal.success('操作成功')
     }
   },
   CancelToken
@@ -438,7 +440,7 @@ let mixin = createMixin({
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$message.success('操作成功')
+      this.$Swal.success('操作成功')
     }
   },
 
@@ -581,7 +583,7 @@ export default {
     getListProxy__ (motive, res) {
       this.getList__()
       if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-        this.$message.success('操作成功')
+        this.$Swal.success('操作成功')
       }
     }
   }
