@@ -84,7 +84,7 @@ const mixins = merge(mixin, {
       popSwitchProps: status => ({
         value: status,
         elTooltipProps: { content: `已${this.options.status[status]}` },
-        ...this.pageBtnList.includes(this.options.status[status]) ?
+        ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
           {
             elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
           } :
@@ -193,7 +193,7 @@ const mixins = merge(mixin, {
       popSwitchProps: status => ({
         value: status,
         elTooltipProps: { content: `已${this.options.status[status]}` },
-        ...this.pageBtnList.includes(this.options.status[status]) ?
+        ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
           {
             elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
           } :
@@ -300,7 +300,6 @@ import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
-import { getPageBtnList } from '@/permission'
 
 export default {
   mixins: [mixins],
@@ -311,24 +310,6 @@ export default {
   data () {
     return {
       api__: apiGenerator('xxx'),
-      pageBtnList: getPageBtnList(),
-      options: {
-        status: ['停用', '启用'],
-      },
-      popSwitchProps: status => ({
-        value: status,
-        activeValue: 1,
-        inactiveValue: 0,
-        elTooltipProps: { content: `已${this.options.status[status]}` },
-        ...this.pageBtnList.includes(this.options.status[status]) ?
-          {
-            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
-          } :
-          {
-            disabled: true,
-            elPopoverProps: { content: `<i class='el-icon-warning'/> 权限不足` },
-          }
-      }),
     }
   },
   methods: {
