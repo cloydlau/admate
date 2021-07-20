@@ -129,10 +129,9 @@ export default function createApiGenerator ({
       ...useFormData ? useFormData : []
     ]
 
-    const getUrl = (suffix): string =>
-      suffix.startsWith('/') ? suffix :
-        (module.endsWith('/') ? module :
-          module + '/') + suffix
+    const getUrl = (suffix, objForConfig) =>
+      typeof suffix === 'function' ? suffix(objForConfig) :
+        suffix.startsWith('/') ? suffix : (module.endsWith('/') ? module : module + '/') + suffix
 
     return {
       c: (obj, objIs = 'param', config) => {
