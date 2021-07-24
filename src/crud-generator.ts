@@ -36,23 +36,24 @@ type config = {
   disable?: object | ((objForConfig: object) => object),
 }
 
-export default function createApiGenerator ({
+export default function createCRUDGenerator ({
   request,
   config,
   url,
   method,
-  useFormData,
 }: {
   request: (args: any) => Promise<any>,
   config?: config,
   url?: url,
   method?: method,
-  useFormData?: string[],
 }): (module: string, config?: object) => object {
   const globalRequest = request
 
   const globalConfig = {
-    c: {},
+    c: {
+      url: 'create',
+      method: 'POST',
+    },
     r: {},
     u: {},
     d: {},
@@ -65,10 +66,10 @@ export default function createApiGenerator ({
 
   const globalUrl = {
     c: 'create',
-    r: 'queryForDetail',
+    r: 'read',
     u: 'update',
     d: 'delete',
-    list: 'queryForPage',
+    list: 'list',
     updateStatus: 'updateStatus',
     enable: 'enable',
     disable: 'disable',
@@ -77,36 +78,30 @@ export default function createApiGenerator ({
 
   const globalMethod = {
     c: 'POST',
-    r: 'POST',
-    u: 'POST',
-    d: 'POST',
-    list: 'POST',
-    updateStatus: 'POST',
-    enable: 'POST',
-    disable: 'POST',
+    r: 'GET',
+    u: 'PUT',
+    d: 'DELETE',
+    list: 'GET',
+    updateStatus: 'PUT',
+    enable: 'PUT',
+    disable: 'PUT',
     ...method
   }
-
-  const useFormData_g = [
-    ...useFormData ? useFormData : []
-  ]
 
   /**
    * @param {string} module - 接口模块前缀
    * @param {object} url - 默认接口地址混入
    */
-  return function apiGenerator (module: string, {
+  return function CRUDGenerator (module: string, {
     request,
     config,
     url,
     method,
-    useFormData,
   }: {
     request?: (args: any) => Promise<any>,
     config?: config,
     url?: url,
     method?: method,
-    useFormData?: string[],
   } = {}) {
     // 保证module不为null
     module = module || ''
@@ -124,99 +119,87 @@ export default function createApiGenerator ({
       ...globalMethod,
       ...method
     }
-    useFormData = [
-      ...useFormData_g ? useFormData_g : [],
-      ...useFormData ? useFormData : []
-    ]
 
     const getUrl = (suffix, objForConfig) =>
       typeof suffix === 'function' ? suffix(objForConfig) :
         suffix.startsWith('/') ? suffix : (module.endsWith('/') ? module : module + '/') + suffix
 
     return {
-      c: (obj, objIs = 'param', config) => {
+      c: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.c),
           method: method.c,
           ...objIs === 'param' && {
-            data: useFormData.includes('c') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.c === 'function' ? localConfig.c(obj) : localConfig.c,
         })
       },
-      u: (obj, objIs = 'param', config) => {
+      u: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.u),
           method: method.u,
           ...objIs === 'param' && {
-            data: useFormData.includes('u') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.u === 'function' ? localConfig.u(obj) : localConfig.u,
         })
       },
-      list: (obj, objIs = 'param', config) => {
+      list: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.list),
           method: method.list,
           ...objIs === 'param' && {
-            data: useFormData.includes('list') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.list === 'function' ? localConfig.list(obj) : localConfig.list,
         })
       },
-      r: (obj, objIs = 'param', config) => request({
+      r: (obj, objIs = 'param') => request({
         url: getUrl(url.r),
         method: method.r,
         ...objIs === 'param' && {
-          data: useFormData.includes('r') ? jsonToFormData(obj) : obj
+          data: obj
         },
-        ...config,
         ...typeof localConfig.r === 'function' ? localConfig.r(obj) : localConfig.r,
       }),
-      d: (obj, objIs = 'param', config) => {
+      d: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.d),
           method: method.d,
           ...objIs === 'param' && {
-            data: useFormData.includes('d') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.d === 'function' ? localConfig.d(obj) : localConfig.d,
         })
       },
-      updateStatus: (obj, objIs = 'param', config) => {
+      updateStatus: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.updateStatus),
           method: method.updateStatus,
           ...objIs === 'param' && {
-            data: useFormData.includes('updateStatus') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.updateStatus === 'function' ? localConfig.updateStatus(obj) : localConfig.updateStatus,
         })
       },
-      enable: (obj, objIs = 'param', config) => {
+      enable: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.enable),
           method: method.enable,
           ...objIs === 'param' && {
-            data: useFormData.includes('enable') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.enable === 'function' ? localConfig.enable(obj) : localConfig.enable,
         })
       },
-      disable: (obj, objIs = 'param', config) => {
+      disable: (obj, objIs = 'param') => {
         return request({
           url: getUrl(url.disable),
           method: method.disable,
           ...objIs === 'param' && {
-            data: useFormData.includes('disable') ? jsonToFormData(obj) : obj
+            data: obj
           },
-          ...config,
           ...typeof localConfig.disable === 'function' ? localConfig.disable(obj) : localConfig.disable,
         })
       },
@@ -224,11 +207,7 @@ export default function createApiGenerator ({
   }
 }
 
-export const createAxiosShortcut = ({
-  request
-}: {
-  request: (args: any) => Promise<any>
-}): {
+export const createRequestShortcut = (axiosInstance: (args: any) => Promise<any>): {
   'GET'?: (args: any) => Promise<any>,
   'POST'?: (args: any) => Promise<any>,
   'DELETE'?: (args: any) => Promise<any>,
@@ -243,15 +222,12 @@ export const createAxiosShortcut = ({
     method?: string
   } = {}) => {
     if (config.method) {
-      return request({
+      return axiosInstance({
         responseType: 'blob',
         url,
         ...config.method.toUpperCase() === 'GET' ? { params: data } : { data },
         ...config
       })
-      /*.then(() => {
-        Vue.prototype.$message?.success?.('操作成功')
-      })*/
     } else {
       window.open(url + stringify(data, { addQueryPrefix: true }))
     }
@@ -260,7 +236,7 @@ export const createAxiosShortcut = ({
   (result as any).DOWNLOAD = download
 
   const upload = (url, data, config) => {
-    return request({
+    return axiosInstance({
       url,
       method: 'POST',
       data: jsonToFormData(data),
@@ -274,7 +250,7 @@ export const createAxiosShortcut = ({
         data = paramFilter(data)
       }
 
-      return request({
+      return axiosInstance({
         method: v,
         url,
         ...v.toUpperCase() === 'GET' ? { params: data } : { data },
