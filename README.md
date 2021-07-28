@@ -273,20 +273,20 @@ export function getPageBtnList () {
 /* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要。 */
 
 .p-20px {
-    padding: 20px;
+  padding: 20px;
 }
 
 .flex {
-    display: flex;
+  display: flex;
 }
 
 .justify-between {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
 .my-20px {
-    margin-top: 20px;
-    margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 ```
 
@@ -583,8 +583,14 @@ import { apiGenerator } from '@/utils/admate'
 export default {
   data () {
     return {
+      /**
+       * @param {string} - 接口模块前缀
+       * @param {object} - 请求配置，与全局配置相同
+       */
       api__: apiGenerator('/somepage', {
-        // 全局配置中的所有配置项均支持局部配置
+        r: {
+          method: 'POST'
+        },
       })
     }
   }
@@ -835,12 +841,11 @@ dialogTitle
 
 ```ts
 /**
- * @return {Promise<any>} 查询单条接口调用 参数为接口返回值
+ * 为FormDialog组件retrieve属性定制的方法
+ * @return {Promise<any>}
  */
-this.retrieve__()
+this.retrieve__
 ```
-
-> `retrieve__` 是为 `FormDialog` 组件 `retrieve` 属性定制的方法
 
 ```vue
 <!-- 示例：修改接口返回值 -->
@@ -856,7 +861,7 @@ export default {
       return this.retrieve__()
       ?.then( // 新增时 retrieve__返回为空 需要判空
         /**
-         * @param {object} rowData 单条数据
+         * @param {object} rowData - 单条数据
          */
         rowData => {
           this.row__.data.status = 1
@@ -898,13 +903,12 @@ export default {
 
 ```ts
 /**
- * @param {function|object|FormData} paramHandler 提交之前的钩子或指定表单参数
+ * 为FormDialog组件submit属性定制的方法
+ * @param {any} 提交前的钩子函数或指定表单参数
  * @return {Promise} 提交表单接口调用
  */
-this.submit__(paramHandler)
+this.submit__
 ```
-
-> `submit__` 是为 `FormDialog` 组件 `submit` 属性定制的方法
 
 ```vue
 <!-- 示例：修改提交参数 -->
@@ -1034,9 +1038,9 @@ export default {
 
 ```ts
 /**
- * @return {Promise<any>} 查询表格接口调用 参数为接口返回值
+ * @return {Promise<any>} 接口返回值
  */
-this.getList__()
+this.getList__
 ```
 
 <br>
@@ -1045,23 +1049,24 @@ this.getList__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.r__()
+this.r__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
-- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'raw'`：将payload直接用作表单数据（不调用查询单条接口）
 
 <br>
 
 ### 新增单条
 
-```this.c__()```
+`this.c__`
 
 <br>
 
@@ -1069,17 +1074,18 @@ this.r__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.u__()
+this.u__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
-- `'data'`：将参数1直接用作表单数据（不调用查询单条接口）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'raw'`：将payload直接用作表单数据（不调用查询单条接口）
 
 <br>
 
@@ -1087,16 +1093,17 @@ this.u__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.d__()
+this.d__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1104,16 +1111,17 @@ this.d__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.updateStatus__()
+this.updateStatus__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 **状态变更的两种方式：**
 
@@ -1151,16 +1159,17 @@ this.updateStatus__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.enable__()
+this.enable__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1168,16 +1177,17 @@ this.enable__()
 
 ```ts
 /**
- * @param {object|FormData} obj?
- * @param {string} objIs 指定参数1的用途 默认'param'
+ * @param {any} [payload] - 接口参数
+ * @param {string} [payloadUse=data] - 指定payload的用途
  */
-this.disable__()
+this.disable__
 ```
 
 **参数2的可选值：**
 
-- `'param'`：将参数1用作请求参数（默认）
-- `'config'`：将参数1仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 <a name="RESTful"><br></a>
 
@@ -1213,11 +1223,9 @@ export default {
   data () {
     return {
       api__: apiGenerator('/somepage', {
-        config: {
-          r: row => ({
-            url: 'module/' + row.id
-          }),
-        }
+        r: config => ({
+          url: 'module/' + config.id
+        }),
       })
     }
   }
@@ -1231,23 +1239,20 @@ export default {
 
 ### AJAX
 
-快捷方式
-
-- `GET`
-- `POST`
-- `PATCH`
-- `PUT`
-- `DELETE`
-- `HEAD`
-
 ```ts
 /**
+ * 快捷方式
  * @param {string} url 接口地址
  * @param {object} data 接口参数
  * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.$POST()
+this.$POST
+this.$GET
+this.$PATCH
+this.$PUT
+this.$DELETE
+this.$HEAD
 ```
 
 ::: tip  
@@ -1271,7 +1276,7 @@ this.$POST()
  * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.$POST.upload()
+this.$POST.upload
 ```
 
 ::: tip  
@@ -1291,7 +1296,7 @@ this.$POST.upload()
  * @param {object} config axios配置
  * @return {Promise<object>} 接口返回值
  */
-this.$POST.download()
+this.$POST.download
 ```
 
 ::: tip  
@@ -1306,7 +1311,7 @@ this.$POST.download()
  * @param {object} data 接口参数
  * @param {object} config axios配置
  */
-this.$DOWNLOAD()
+this.$DOWNLOAD
 ```
 
 <br>

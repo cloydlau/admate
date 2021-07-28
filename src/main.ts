@@ -1,10 +1,10 @@
-import createCRUDGenerator, { createRequestShortcut } from './crud-generator'
+import createApiGenerator, { createAxiosShortcut } from './api-generator'
 import createMixin from './mixin'
 import * as filters from './filters'
 
 export {
-  createCRUDGenerator,
-  createRequestShortcut,
+  createApiGenerator,
+  createAxiosShortcut,
   createMixin,
   filters,
 }

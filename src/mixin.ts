@@ -1,9 +1,10 @@
-import { isEmpty } from 'kayran'
+import { isEmpty, notEmpty } from 'kayran'
 import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
+import { cancelAllRequest } from './api-generator'
 import { name } from '../package.json'
 const prefix = `[${name}] `
 
-function getInitData () {
+function getInitialData () {
   return {
     props__: null,
     list__: {
@@ -12,45 +13,42 @@ function getInitData () {
       total: 0,
       filter: {},
       prevPageNo: 1,
-      cancelToken: null
     },
     row__: {
       loading: false,
       show: false,
       data: {},
-      initData: {},
-      obj: {},
-      objIs: null,
+      initialData: {},
+      payload: {},
+      payloadUse: null,
       status: '',
-      cancelToken: null
     },
   }
 }
 
-function argsHandler (obj = {}, objIs, motive, row__) {
+function argsHandler (payload = {}, payloadUse = 'data', motive, row__) {
   const isRorU = ['r', 'u'].includes(motive)
-  switch (objIs) {
-    case 'param':
-      if (!(isPlainObject(obj) || obj instanceof FormData)) {
-        throw Error(`${prefix} ${motive}__的第一个参数的类型需为 object|FormData`)
-      }
+  switch (payloadUse) {
+    case 'data':
+      break
+    case 'params':
       break
     case 'config':
       break
-    case 'data':
+    case 'raw':
       if (!isRorU) {
-        throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' 'config' 之一`)
+        throw Error(`${prefix}只有r__和u__的参数2可以使用'raw'`)
       }
-      if (!(isPlainObject(obj))) {
-        throw Error(`${prefix}'直接使用列表数据时 ${motive}__的第一个参数的类型需为 object'`)
+      if (notEmpty(payload) && !isPlainObject(payload)) {
+        throw Error(`${prefix}直接使用列表数据时，参数1的类型需为object`)
       }
       break
     default:
-      throw Error(`${prefix}' ${motive}__的第二个参数需为 'param' ${isRorU ? 'data ' : ''}'config' 之一`)
+      throw Error(`${prefix}${motive}__的参数2需为'params'/'data'/'config'${isRorU ? `'/raw'` : ''}`)
   }
 
-  row__.obj = objIs === 'data' ? cloneDeep(obj) : obj
-  row__.objIs = objIs
+  row__.payload = payloadUse === 'raw' ? cloneDeep(payload) : payload
+  row__.payloadUse = payloadUse
 
   if (isRorU) {
     row__.status = motive
@@ -61,11 +59,9 @@ function argsHandler (obj = {}, objIs, motive, row__) {
 function createMixin ({
   props,
   getListProxy,
-  CancelToken,
 }: {
   props?: object
   getListProxy?: Function
-  CancelToken?: any
 }): object {
   props = {
     pageNo: 'pageNo',
@@ -76,11 +72,11 @@ function createMixin ({
     ...props
   }
 
-  getListProxy = getListProxy || this.getList__
+  getListProxy ||= this.getList__
 
   return {
     data () {
-      return cloneDeep(getInitData())
+      return cloneDeep(getInitialData())
     },
     watch: {
       async 'row__.show' (newVal) {
@@ -89,17 +85,17 @@ function createMixin ({
           //setTimeout(() => {
           this.row__.status = ''
           //}, 300)
-          this.row__.data = cloneDeep(this.row__.initData)
-          this.row__.obj = {}
-          this.row__.objIs = null
+          this.row__.data = cloneDeep(this.row__.initialData)
+          this.row__.payload = {}
+          this.row__.payloadUse = null
           this.$refs.rowForm && this.$refs.rowForm.clearValidate()
           this.row__.loading = false
         }
       }
     },
     /*beforeCreate() {
-          for (let k in initData) {
-            this[k] = initData[k]
+          for (let k in initialData) {
+            this[k] = initialData[k]
           }
     },*/
     created () {
@@ -126,12 +122,12 @@ function createMixin ({
       }
 
       if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
-        this.row__.initData = cloneDeep(this.row__.data)
+        this.row__.initialData = cloneDeep(this.row__.data)
       }
       this.getListProxy__('init')
     },
     mounted () {
-      // fixing: 没有声明的筛选参数无法重置
+      // fix: 没有声明的筛选参数无法重置
       if (this.$refs.listFilter?.fields) {
         let obj = {}
         Array.from(this.$refs.listFilter.fields, (v: any) => v.labelFor)?.map(v => {
@@ -181,26 +177,20 @@ function createMixin ({
     },
     destroyed () {
       // 页面销毁时如果还有查询请求 中止掉
-      this.list__.cancelToken?.()
-      this.row__.cancelToken?.()
-      /*    let initData = getInitData()
+      cancelAllRequest()
+      /*    let initialData = getInitialData()
           for (let k in this.$data) {
             // delete this[k]
-            this[k] = initData[k]
+            this[k] = initialData[k]
           }*/
-      Object.assign(this.$data, getInitData())
+      Object.assign(this.$data, getInitialData())
     },
     methods: {
       getList__ () {
         this.list__.loading = true
         this.list__.data.length = 0
         return new Promise((resolve, reject) => {
-          this.api__.list(this.list__.filter, 'param', {
-            cancelToken: CancelToken && new CancelToken(c => {
-              // executor 函数接收一个 cancel 函数作为参数
-              this.list__.cancelToken = c
-            })
-          })
+          this.api__.list(this.list__.filter, 'param')
           .then(res => {
             // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
             // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
@@ -222,7 +212,6 @@ function createMixin ({
             reject(res)
           })
           .finally(e => {
-            this.list__.cancelToken = null
             this.list__.loading = false
           })
         })
@@ -231,37 +220,16 @@ function createMixin ({
         this.row__.status = 'c'
         this.row__.show = true
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      r__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'r', this.row__)
+      r__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'r', this.row__)
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      u__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'u', this.row__)
+      u__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'u', this.row__)
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      d__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'd', this.row__)
+      d__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'd', this.row__)
         this.list__.loading = true
-        this.api__.d(obj, objIs).then(async res => {
+        this.api__.d(payload, payloadUse,).then(async res => {
           if (this.list__.data?.length === 1) {
             if (this.list__.filter[this.props__.pageNo] === 1) {
               await this.getListProxy__('d', res)
@@ -275,57 +243,33 @@ function createMixin ({
           this.list__.loading = false
         })
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      updateStatus__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'updateStatus', this.row__)
+      updateStatus__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'updateStatus', this.row__)
         this.list__.loading = true
-        this.api__.updateStatus(obj, objIs).then(async res => {
+        this.api__.updateStatus(payload, payloadUse,).then(async res => {
           await this.getListProxy__('updateStatus', res)
         }).finally(e => {
           this.list__.loading = false
         })
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      enable__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'enable', this.row__)
+      enable__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'enable', this.row__)
         this.list__.loading = true
-        this.api__.enable(obj, objIs).then(async res => {
+        this.api__.enable(payload, payloadUse,).then(async res => {
           await this.getListProxy__('enable', res)
         }).finally(e => {
           this.list__.loading = false
         })
       },
-      /**
-       * @param {object|FormData} obj - 必传
-       * @param {string} objIs - 指定参数1的用途 默认'param'
-       */
-      disable__ (
-        obj?: object | FormData,
-        objIs = 'param'
-      ) {
-        argsHandler(obj, objIs, 'disable', this.row__)
+      disable__ (payload?, payloadUse?: string) {
+        argsHandler(payload, payloadUse, 'disable', this.row__)
         this.list__.loading = true
-        this.api__.disable(obj, objIs).then(async res => {
+        this.api__.disable(payload, payloadUse,).then(async res => {
           await this.getListProxy__('disable', res)
         }).finally(e => {
           this.list__.loading = false
         })
       },
-      /**
-       * @return {Promise} 查询单条接口调用
-       */
       retrieve__ () {
         // 仅查看和编辑才调用
         if (!['r', 'u'].includes(this.row__.status)) {
@@ -333,23 +277,16 @@ function createMixin ({
         }
 
         return new Promise((resolve, reject) => {
-          if (this.row__.objIs === 'data') {
-            resolve(this.row__.obj)
+          const result = this.api__.r(this.row__.payload, this.row__.payloadUse)
+
+          if (this.row__.payloadUse === 'raw') {
+            resolve(result)
             this.row__.data = {
               ...this.row__.data,
-              ...this.row__.obj
+              ...result
             }
           } else {
-            this.api__.r(
-              this.row__.obj,
-              this.row__.objIs,
-              {
-                cancelToken: CancelToken && new CancelToken(c => {
-                  // executor 函数接收一个 cancel 函数作为参数
-                  this.row__.cancelToken = c
-                })
-              })
-            .then(res => {
+            result.then(res => {
               const rowData = at(res, this.props__.r)[0]
               // 坑：
               /*
@@ -371,28 +308,17 @@ function createMixin ({
             .catch(e => {
               reject(e)
             })
-            .finally(() => {
-              this.row__.cancelToken = null
-            })
           }
         })
       },
-      /**
-       * @param {function|object|FormData} paramHandler - 提交之前的钩子或指定表单参数
-       * @return {Promise} 提交表单接口调用
-       */
-      async submit__ (paramHandler?: (Function) | object | FormData) {
-        let param = this.row__.data
-        if (paramHandler) {
-          if (paramHandler instanceof Function) {
-            await paramHandler()
-          } else if (isPlainObject(paramHandler) || paramHandler instanceof FormData) {
-            param = paramHandler
-          } else {
-            console.error(prefix + 'submit__的参数类型仅能为function|object|FormData')
-          }
+      async submit__ (paramsHandler?) {
+        let params = this.row__.data
+        if (typeof paramsHandler === 'function') {
+          await paramsHandler()
+        } else if (paramsHandler !== undefined) {
+          params = paramsHandler
         }
-        return this.api__[this.row__.status](param).then(async res => {
+        return this.api__[this.row__.status](params).then(async res => {
           await this.getListProxy__(this.row__.status, res)
         })
       },
