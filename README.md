@@ -4,6 +4,14 @@
 
 并在此基础上确保灵活可配 避免过度封装（opinionated）
 
+## Features
+
+- 查询列表、增删查改、状态启停用等管理后台页面标配。
+- 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）。
+- 离开页面时，如果存在未完成的请求，自动终止该请求调用。
+- 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）。
+- 节流控制列表筛选的接口触发频率。
+
 <br>
 
 ## Installation
@@ -17,7 +25,6 @@
 
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { CancelToken } from 'axios'
 import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
 import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
@@ -68,7 +75,6 @@ const mixin = createMixin({
       this.$Swal.success('操作成功')
     }
   },
-  CancelToken
 })
 const mininData = mixin.data()
 const mixins = merge(mixin, {
@@ -106,7 +112,42 @@ export { mixins }
 /**
  * 初始化apiGenerator并导出
  */
-const apiGenerator = createApiGenerator({ request })
+const apiGenerator = createApiGenerator(
+  /**
+   * 全局配置
+   */
+   
+  // axios或axios实例
+  request,
+  
+  // crud接口的axios配置 
+  {
+    c: {
+      url: 'create',
+      method: 'POST',
+    },
+    r: {
+      url: 'queryForDetail',
+      method: 'POST',
+    },
+    u: {
+      url: 'update',
+      method: 'POST',
+    },
+    d: {
+      url: 'delete',
+      method: 'POST',
+    },
+    list: {
+      url: 'queryForPage',
+      method: 'POST',
+    },
+    updateStatus: {
+      url: 'updateStatus',
+      method: 'POST',
+    },
+  }
+)
 export { apiGenerator }
 
 /**
@@ -138,6 +179,56 @@ Vue.use(ElementVerify)
 
 <br>
 
+### 局部配置
+
+#### mixin
+
+```ts
+import { mixins } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      props__: {}, // 注意双下划线结尾
+    }
+  },
+  methods: {
+    // 注意双下划线结尾
+    getListProxy__ (motive, res) {
+      this.getList__()
+      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+        this.$Swal.success('操作成功')
+      }
+    }
+  }
+}
+```
+
+#### apiGenerator
+
+```ts
+import { apiGenerator } from '@/utils/admate'
+
+export default {
+  data () {
+    return {
+      /**
+       * @param {string} - 接口模块前缀
+       * @param {object} - crud的请求配置（同全局配置）
+       */
+      api__: apiGenerator('/somepage', {
+        r: {
+          method: 'POST'
+        },
+      })
+    }
+  }
+}
+```
+
+<br>
+
 ### 局部引入
 
 1. 安装依赖
@@ -158,7 +249,6 @@ yarn add admate kikimore element-verify?
 import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { CancelToken } from 'axios'
 import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
 import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
@@ -171,13 +261,36 @@ import { getPageBtnList } from '@/permission'
  * 初始化mixin并导出
  */
 const mixin = createMixin({
-  getListProxy (motive) {
+  /**
+   * 全局配置
+   */
+
+  // 接口参数、返回值格式定制化
+  props: {
+    // [查询列表接口] 页码字段名
+    pageNo: 'pageNo',
+
+    // [查询列表接口] 页容量字段名
+    pageSize: 'pageSize',
+
+    // [查询列表接口] 返回值中表格字段所在位置
+    // 考虑到分页与不分页的返回格式可能是不同的 所以支持传入一个数组 数组会被遍历 直到找到为止
+    list: ['data', 'data.records', 'data.list'],
+
+    // [查询列表接口] 返回值中总记录数字段所在位置
+    total: 'data.total',
+
+    // [单条查询接口] 返回值中数据所在位置
+    r: 'data'
+  },
+
+  // 查询列表代理
+  getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
       Swal.success('操作成功')
     }
   },
-  CancelToken
 })
 const mininData = mixin.data()
 const mixins = merge(mixin, {
@@ -215,14 +328,52 @@ export { mixins }
 /**
  * 初始化apiGenerator并导出
  */
-const apiGenerator = createApiGenerator({ request })
+const apiGenerator = createApiGenerator(
+  /**
+   * 全局配置
+   */
+   
+  // axios或axios实例
+  request,
+  
+  // crud接口的axios配置 
+  {
+    c: {
+      url: 'create',
+      method: 'POST',
+    },
+    r: {
+      url: 'queryForDetail',
+      method: 'POST',
+    },
+    u: {
+      url: 'update',
+      method: 'POST',
+    },
+    d: {
+      url: 'delete',
+      method: 'POST',
+    },
+    list: {
+      url: 'queryForPage',
+      method: 'POST',
+    },
+    updateStatus: {
+      url: 'updateStatus',
+      method: 'POST',
+    },
+  }
+)
 export { apiGenerator }
 
 /**
  * 初始化axiosShortcut并导出
  */
 import { createAxiosShortcut } from 'admate'
-const axiosShortcut = createAxiosShortcut({ request })
+const axiosShortcut = createAxiosShortcut(
+  // axios或axios实例
+  request,
+)
 const $axiosShortcut = Object.keys(axiosShortcut).reduce((total, currentValue) => {
   total[`$${currentValue}`] = axiosShortcut[currentValue]
   return total
@@ -244,6 +395,8 @@ export { $filters }
  */
 Vue.use(ElementVerify)
 ```
+
+`getListProxy` 详细用法见[Hook: 查询列表时](#query-table)
 
 ```ts
 // @/permission.ts
@@ -337,7 +490,7 @@ export default {
 
 #### Usage
 
-:one: 访问YApi，选中相应模块的 `查询表格` 接口
+:one: 访问YApi，选中相应模块的 `查询列表` 接口
 
 :two: 点击浏览器右上角运行插件
 
@@ -362,132 +515,6 @@ export default {
   properties starting with "$" or "_" are not proxied in the Vue instance to prevent conflicts with Vue internals.
   See: https://vuejs.org/v2/api/#data</span>
   :::
-
-<br>
-
-## 全局配置
-
-### mixin
-
-页面公共逻辑混入
-
-::: danger  
-mixins属于vue2.0时代遗留物 其思想已淘汰 仅作为升级vue3.0之前的临时方案
-:::
-
-获取实例：调用 `createMixin()`
-
-`mixin` 集成了一些什么功能？
-
-- 查询表格、增删查改、状态启停用等管理后台页面标配
-- 关闭表单对话框时 自动将表单绑定的数据恢复至初始状态（不是直接清空）
-- 离开页面时 如果存在未完成的请求 自动终止该请求调用
-- 删除当前分页最后一条记录时 自动切换至上一页（如果当前不在第一页）
-- 节流控制表格筛选的接口触发频率
-
-  ...
-
-<br>
-
-```ts
-// @/utils/admate.ts
-
-import { CancelToken } from 'axios'
-import { createMixin } from 'admate'
-
-let mixin = createMixin({
-  // 全局配置
-
-  //  接口参数、返回值格式定制化
-  props: {
-    // [查询表格接口] 页码字段名
-    pageNo: 'pageNo',
-
-    // [查询表格接口] 页容量字段名
-    pageSize: 'pageSize',
-
-    // [查询表格接口] 返回值中表格字段所在位置
-    // 考虑到分页与不分页的返回格式可能是不同的 所以支持传入一个数组 数组会被遍历 直到找到为止
-    list: ['data', 'data.records'],
-
-    // [查询表格接口] 返回值中总记录数字段所在位置
-    total: 'data.total',
-
-    // [单条查询接口] 返回值中数据所在位置
-    r: 'data'
-  },
-
-  // 查询表格代理
-  getListProxy (motive, res) {
-    this.getList__()
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$Swal.success('操作成功')
-    }
-  },
-
-  // 用于切换页面时中断请求
-  CancelToken,
-})
-```
-
-`getListProxy` 详细用法见[Hook: 查询表格时](#query-table)
-
-<br>
-
-### apiGenerator
-
-根据接口前缀自动生成增删查改接口调用
-
-获取实例：调用 `createApiGenerator` 方法
-
-```ts
-// @/utils/admate.ts
-
-import { createApiGenerator } from 'admate'
-import request from '@/utils/request'
-
-const apiGenerator = createApiGenerator({
-  // 全局配置
-
-  // axios实例
-  request,
-
-  // 接口后缀默认值
-  url: {
-    c: 'create',                  // 单条新增
-    r: 'queryForDetail',          // 单条查询
-    u: 'update',                  // 单条编辑
-    d: 'delete',                  // 单条删除
-    list: 'queryForPage',         // 查询表格
-    updateStatus: 'updateStatus', // 单条状态变更
-    enable: 'enable',             // 状态启用
-    disable: 'enable',            // 状态停用
-  },
-
-  // 请求方式 默认全POST
-  method: {
-    c: 'POST',
-    r: 'POST',
-    u: 'POST',
-    d: 'POST',
-    list: 'POST',
-    updateStatus: 'POST',
-    enable: 'POST',
-    disable: 'POST',
-  },
-
-  // 提交方式 默认空数组（全json） 可以在这里指定接口使用formData
-  useFormData: ['c', 'u'],
-
-  // 使用config你可以完全自定义每个接口的请求配置 甚至支持function（从而能够拿到data）
-  config: {
-    c: {},
-    r (data) {
-      return {}
-    },
-  }
-})
-```
 
 <br>
 
@@ -543,88 +570,24 @@ Object.keys(filters).map(filter => {
 
 <br>
 
-## 局部配置
-
-### mixin
-
-```ts
-// xxx.vue
-
-import { mixins } from '@/utils/admate'
-
-export default {
-  mixins: [mixins],
-  data () {
-    return {
-      props__: {}, // 注意双下划线结尾
-    }
-  },
-  methods: {
-    // 注意双下划线结尾
-    getListProxy__ (motive, res) {
-      this.getList__()
-      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-        this.$Swal.success('操作成功')
-      }
-    }
-  }
-}
-```
-
-<br>
-
-### apiGenerator
-
-```ts
-// xxx.vue
-
-import { apiGenerator } from '@/utils/admate'
-
-export default {
-  data () {
-    return {
-      /**
-       * @param {string} - 接口模块前缀
-       * @param {object} - 请求配置，与全局配置相同
-       */
-      api__: apiGenerator('/somepage', {
-        r: {
-          method: 'POST'
-        },
-      })
-    }
-  }
-}
-```
-
 #### 覆盖统一前缀
 
-如果某个接口的前缀不是 `somepage` 可以在后缀前加斜线
-
 ```ts
 import { apiGenerator } from '@/utils/admate'
 
 export default {
   data () {
     return {
-      api__: apiGenerator('/somepage', {
-        url: {
-          r: '/anotherpage/selectOne',
+      api__: apiGenerator('somepage', {
+        r: {
+          // 如果某个接口的前缀不是'somepage'，可以在url前面加斜线，忽略该前缀。
+          url: '/anotherpage/selectOne',
         },
       })
     }
   }
 }
 ```
-
-将得到：
-
-- `/somepage/create`
-- `/somepage/update`
-- `/somepage/delete`
-- `/somepage/queryForPage`
-- `/somepage/updateStatus`
-- `/anotherpage/selectOne`
 
 <br>
 
@@ -715,9 +678,9 @@ export default {
 
 <a name="query-table"><br></a>
 
-### Hook: 查询表格时
+### Hook: 查询列表时
 
-`getList__` ：在首次进入页面、查询表格参数改变、单条增删查改后会被调用
+`getList__` ：在首次进入页面、查询列表参数改变、单条增删查改后会被调用
 
 `getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
 
@@ -725,14 +688,14 @@ export default {
 methods: {
   /**
    * @param {string} motive 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res 调用动机的接口返回值（首次进入页面、查询表格参数改变时为空）
+   * @param {object} res 调用动机的接口返回值（首次进入页面、查询列表参数改变时为空）
    */
   getListProxy__(motive, res)
   {
-    // 在查询表格之前做点什么...
+    // 在查询列表之前做点什么...
     this.getList__()
     .then(res => {
-      // 在查询表格之后做点什么...
+      // 在查询列表之后做点什么...
     })
     .catch(res => {})
     .finally()
@@ -842,7 +805,7 @@ dialogTitle
 ```ts
 /**
  * 为FormDialog组件retrieve属性定制的方法
- * @return {Promise<any>}
+ * @returns {Promise<any>}
  */
 this.retrieve__
 ```
@@ -905,7 +868,7 @@ export default {
 /**
  * 为FormDialog组件submit属性定制的方法
  * @param {any} 提交前的钩子函数或指定表单参数
- * @return {Promise} 提交表单接口调用
+ * @returns {Promise} 提交表单接口调用
  */
 this.submit__
 ```
@@ -1034,11 +997,11 @@ export default {
 
 ## 增删查改
 
-### 查询表格
+### 查询列表
 
 ```ts
 /**
- * @return {Promise<any>} 接口返回值
+ * @returns {Promise<any>} 接口返回值
  */
 this.getList__
 ```
@@ -1243,9 +1206,9 @@ export default {
 /**
  * 快捷方式
  * @param {string} url 接口地址
- * @param {object} data 接口参数
+ * @param {object} data 接口参数（GET请求默认使用params）
  * @param {object} config axios配置
- * @return {Promise<object>} 接口返回值
+ * @returns {Promise<any>} 接口返回
  */
 this.$POST
 this.$GET
@@ -1254,14 +1217,6 @@ this.$PUT
 this.$DELETE
 this.$HEAD
 ```
-
-::: tip  
-屏蔽了GET和POST请求参数属性不一致的差异
-
-过滤掉参数中无效的值（null | NaN | undefined）
-
-有时候参数所绑定的对象中会存在一些临时属性 而这些属性是不应该提交到后端的 我们约定这些临时变量以双下划线__开头 __开头的属性会被过滤掉
-:::
 
 <br>
 
@@ -1274,14 +1229,12 @@ this.$HEAD
  * @param {string} url 接口地址
  * @param {object} data 接口参数
  * @param {object} config axios配置
- * @return {Promise<object>} 接口返回值
+ * @returns {Promise<any>} 接口返回
  */
 this.$POST.upload
+this.$PATCH.upload
+this.$PUT.upload
 ```
-
-::: tip  
-示例中的 `POST` 可替换为其他请求方式
-:::
 
 <br>
 
@@ -1294,9 +1247,9 @@ this.$POST.upload
  * @param {string} url 接口地址
  * @param {object} data 接口参数
  * @param {object} config axios配置
- * @return {Promise<object>} 接口返回值
+ * @returns {Promise<any>} 接口返回
  */
-this.$POST.download
+this.$GET.download
 ```
 
 ::: tip  
@@ -1353,7 +1306,7 @@ key2label
  * @param {any} 需要查询的key
  * @param {object[]} 数据字典数组
  * @param {object} 配置选项，自定义key和label对应的属性名 默认值为 { key: 'dataValue', label: 'dataName' }
- * @return {any} key所对应的label
+ * @returns {any} key所对应的label
  */
 this.$key2label('1', [
   { dataValue: '1', dataName: 'a' },
