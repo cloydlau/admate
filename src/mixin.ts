@@ -37,14 +37,14 @@ function argsHandler (payload = {}, payloadUse = 'data', motive, row__) {
       break
     case 'raw':
       if (!isRorU) {
-        throw Error(`${prefix}只有r__和u__的参数2可以使用'raw'`)
+        throw Error(`${prefix}只有r__和u__的参数2可以使用\'raw\'`)
       }
       if (notEmpty(payload) && !isPlainObject(payload)) {
         throw Error(`${prefix}直接使用列表数据时，参数1的类型需为object`)
       }
       break
     default:
-      throw Error(`${prefix}${motive}__的参数2需为'params'/'data'/'config'${isRorU ? `'/raw'` : ''}`)
+      throw Error(`${prefix}${motive}__的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/raw\'` : ''}`)
   }
 
   row__.payload = payloadUse === 'raw' ? cloneDeep(payload) : payload

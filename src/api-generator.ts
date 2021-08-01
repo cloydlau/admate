@@ -118,7 +118,7 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
       return axios({
         responseType: 'blob',
         url,
-        ...config.method.toUpperCase() === 'GET' ? { params: data } : { data },
+        ...methodsHaveRequestBody.includes(config.method.toUpperCase()) ? { data } : { params: data },
         ...config
       })
     } else {
@@ -142,7 +142,7 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
       return axios({
         method: v,
         url,
-        ...v.toUpperCase() === 'GET' ? { params: data } : { data },
+        ...methodsHaveRequestBody.includes(v.toUpperCase()) ? { data } : { params: data },
         ...config
       })
     }
