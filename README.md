@@ -1213,6 +1213,14 @@ export default {
       FormData,
     }
   },
+  methods: {
+    getListProxy__ (motive) {
+      this.getList__(FormData.from(this.list__.filter))
+      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+        this.$Swal.success('操作成功')
+      }
+    },
+  }
 }
 </script>
 ```

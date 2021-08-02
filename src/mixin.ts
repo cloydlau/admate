@@ -186,11 +186,11 @@ function createMixin ({
       Object.assign(this.$data, getInitialData())
     },
     methods: {
-      getList__ (payload?, payloadUse?: string) {
+      getList__ (payload = this.list__.filter, payloadUse?: string) {
         this.list__.loading = true
         this.list__.data.length = 0
         return new Promise((resolve, reject) => {
-          this.api__.list(this.list__.filter, payloadUse)
+          this.api__.list(payload, payloadUse)
           .then(res => {
             // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
             // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
