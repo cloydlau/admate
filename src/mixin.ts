@@ -1,8 +1,8 @@
 import { isEmpty, notEmpty } from 'kayran'
 import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
 import { cancelAllRequest } from './api-generator'
-import { name } from '../package.json'
-const prefix = `[${name}] `
+
+const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 function getInitialData () {
   return {
@@ -35,19 +35,19 @@ function argsHandler (payload = {}, payloadUse = 'data', motive, row__) {
       break
     case 'config':
       break
-    case 'raw':
+    case 'cache':
       if (!isRorU) {
-        throw Error(`${prefix}只有r__和u__的参数2可以使用\'raw\'`)
+        throw Error(`${CONSOLE_PREFIX}只有r__和u__的参数2可以使用\'cache\'`)
       }
       if (notEmpty(payload) && !isPlainObject(payload)) {
-        throw Error(`${prefix}直接使用列表数据时，参数1的类型需为object`)
+        throw Error(`${CONSOLE_PREFIX}直接使用列表数据时，参数1的类型需为object`)
       }
       break
     default:
-      throw Error(`${prefix}${motive}__的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/raw\'` : ''}`)
+      throw Error(`${CONSOLE_PREFIX}${motive}__的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/cache\'` : ''}`)
   }
 
-  row__.payload = payloadUse === 'raw' ? cloneDeep(payload) : payload
+  row__.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
   row__.payloadUse = payloadUse
 
   if (isRorU) {
@@ -66,9 +66,9 @@ function createMixin ({
   props = {
     pageNo: 'pageNo',
     pageSize: 'pageSize',
-    total: 'data.total',
-    list: ['data', 'data.records', 'data.list'], // 不分页/分页两种情况 data.list为兼容性代码
-    r: 'data',
+    total: 'total',
+    list: 'list',
+    r: '',
     ...props
   }
 
@@ -102,7 +102,7 @@ function createMixin ({
       // 混入对象的钩子将在组件自身钩子之前调用
 
       if (!this.api__) {
-        throw new Error(prefix + 'data中未找到api__')
+        throw new Error(`${CONSOLE_PREFIX}data中未找到api__`)
       }
 
       /**
@@ -161,7 +161,7 @@ function createMixin ({
             if (this.$refs.listFilter) {
               this.$refs.listFilter.validate(callback)
             } else {
-              console.warn(prefix + '未找到$refs.listFilter')
+              console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilter`)
               callback(true)
             }
           }, 500, {
@@ -186,11 +186,11 @@ function createMixin ({
       Object.assign(this.$data, getInitialData())
     },
     methods: {
-      getList__ () {
+      getList__ (payload?, payloadUse?: string) {
         this.list__.loading = true
         this.list__.data.length = 0
         return new Promise((resolve, reject) => {
-          this.api__.list(this.list__.filter, 'param')
+          this.api__.list(this.list__.filter, payloadUse)
           .then(res => {
             // 在快速切换页面时（上一个页面的接口调用还未结束就切换到下一个页面） 在data被清空的空隙 this.props__为空
             // 不能采用给this.props__赋初值来解决 因为自定义的全局props会被该初值覆盖
@@ -279,7 +279,7 @@ function createMixin ({
         return new Promise((resolve, reject) => {
           const result = this.api__.r(this.row__.payload, this.row__.payloadUse)
 
-          if (this.row__.payloadUse === 'raw') {
+          if (this.row__.payloadUse === 'cache') {
             resolve(result)
             this.row__.data = {
               ...this.row__.data,

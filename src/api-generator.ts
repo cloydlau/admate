@@ -1,10 +1,12 @@
-import { stringify, merge } from 'qs'
+import { stringify } from 'qs'
+import { merge } from 'lodash-es'
 import { CancelToken } from 'axios'
 import { jsonToFormData } from 'kayran'
-import { name } from '../package.json'
 
-const prefix = `[${name}] `
-const methodsHaveRequestBody = ['PUT', 'POST', 'DELETE', 'PATCH']
+const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
+const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
+const METHODS_WITHOUT_REQUEST_BODY = ['GET', 'HEAD']
+const METHODS = METHODS_WITH_REQUEST_BODY.concat(METHODS_WITHOUT_REQUEST_BODY)
 let source
 
 type config = {
@@ -18,7 +20,7 @@ type config = {
   disable?: object | ((objForConfig: object) => object),
 }
 
-export default function createApiGenerator (
+export default function createAPIGenerator (
   axios: (args: any) => Promise<any>,
   config_g?: config,
 ): (
@@ -61,7 +63,7 @@ export default function createApiGenerator (
   })
 
   const getUrl = (urlSuffix: string, url: string) =>
-    typeof url.startsWith('/') ? url :
+    url.startsWith('/') ? url :
       (urlSuffix.endsWith('/') ? urlSuffix : urlSuffix + '/') + url
 
   return (
@@ -74,7 +76,7 @@ export default function createApiGenerator (
     let result = {}
     for (let k in config) {
       result[k] = (payload, payloadUse) => {
-        if (payloadUse === 'raw') {
+        if (payloadUse === 'cache') {
           return payload
         } else {
           const cfg = {
@@ -84,7 +86,7 @@ export default function createApiGenerator (
               config[k],
           }
 
-          payloadUse ||= methodsHaveRequestBody.includes(cfg.method?.toUpperCase()) ? 'data' : 'params'
+          payloadUse ||= METHODS_WITH_REQUEST_BODY.includes(cfg.method?.toUpperCase()) ? 'data' : 'params'
 
           return axios({
             ...payloadUse === 'data' && { data: payload },
@@ -118,7 +120,7 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
       return axios({
         responseType: 'blob',
         url,
-        ...methodsHaveRequestBody.includes(config.method.toUpperCase()) ? { data } : { params: data },
+        ...METHODS_WITH_REQUEST_BODY.includes(config.method.toUpperCase()) ? { data } : { params: data },
         ...config
       })
     } else {
@@ -137,12 +139,12 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
     })
   }
 
-  ['GET', 'POST', 'DELETE', 'PATCH', 'HEAD', 'PUT'].map(v => {
+  METHODS.map(v => {
     const value = (url, data, config = {}) => {
       return axios({
         method: v,
         url,
-        ...methodsHaveRequestBody.includes(v.toUpperCase()) ? { data } : { params: data },
+        ...METHODS_WITH_REQUEST_BODY.includes(v.toUpperCase()) ? { data } : { params: data },
         ...config
       })
     }
@@ -152,7 +154,7 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
       // @ts-ignore
       const [url, data, config] = arguments
       if (config?.method) {
-        console.warn(prefix + 'method无法重复指定')
+        console.warn(`${CONSOLE_PREFIX}method无法重复指定`)
       }
       return download(url, data, {
         ...config,
@@ -165,7 +167,7 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
       // @ts-ignore
       const [url, data, config] = arguments
       if (config?.method) {
-        console.warn(prefix + 'method无法重复指定')
+        console.warn(`${CONSOLE_PREFIX}method无法重复指定`)
       }
       return upload(url, data, {
         ...config,

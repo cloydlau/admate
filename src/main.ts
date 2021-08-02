@@ -1,10 +1,8 @@
-import createApiGenerator, { createAxiosShortcut } from './api-generator'
+import createAPIGenerator, { createAxiosShortcut } from './api-generator'
 import createMixin from './mixin'
-import * as filters from './filters'
 
 export {
-  createApiGenerator,
+  createAPIGenerator,
   createAxiosShortcut,
   createMixin,
-  filters,
 }

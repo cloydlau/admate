@@ -1,8 +1,8 @@
 # Admate / 管理后台伴侣
 
-`Admate` 的目标是以快速简洁的方式开发管理后台页面
+`Admate` 的目标是以快速简洁的方式开发管理后台页面，
 
-并在此基础上确保灵活可配 避免过度封装（opinionated）
+并在此基础上确保灵活可配，避免过度封装。
 
 ## Features
 
@@ -10,7 +10,7 @@
 - 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）。
 - 离开页面时，如果存在未完成的请求，自动终止该请求调用。
 - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）。
-- 节流控制列表筛选的接口触发频率。
+- 节流控制筛选列表的接口触发频率。
 
 <br>
 
@@ -27,7 +27,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
-import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
+import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Selector, Pagination, FormItemTip, Swal } from 'kikimore'
 import TimeRangePicker from 'time-range-picker'
@@ -69,6 +69,25 @@ Object.defineProperty(Vue.prototype, '$Swal', {
  * 初始化mixin并导出
  */
 const mixin = createMixin({
+  // 接口返回值配置
+  props: {
+    // [列表查询接口] 返回值中列表数组的字段名/字段路径
+    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
+    list: ['data', 'data.records', 'data.list'],
+
+    // [列表查询接口] 返回值中页码的字段名/字段路径
+    pageNo: 'pageNo',
+
+    // [列表查询接口] 返回值中页容量的字段名/字段路径
+    pageSize: 'pageSize',
+
+    // [列表查询接口] 返回值中记录总数的字段名/字段路径
+    total: 'data.total',
+
+    // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
+    r: 'data'
+  },
+  // 代理getList__
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -112,14 +131,14 @@ export { mixins }
 /**
  * 初始化apiGenerator并导出
  */
-const apiGenerator = createApiGenerator(
+const apiGenerator = createAPIGenerator(
   /**
    * 全局配置
    */
-   
+
   // axios或axios实例
   request,
-  
+
   // crud接口的axios配置 
   {
     c: {
@@ -152,8 +171,11 @@ export { apiGenerator }
 
 /**
  * 全局注册axiosShortcut
+ * 生成接口调用捷径
  */
-const axiosShortcut = createAxiosShortcut({ request })
+const axiosShortcut = createAxiosShortcut(
+  request // axios或axios实例
+)
 for (let k in axiosShortcut) {
   Object.defineProperty(Vue.prototype, `$${k}`, {
     value: axiosShortcut[k]
@@ -163,10 +185,22 @@ for (let k in axiosShortcut) {
 /**
  * 全局注册filters
  */
+const filters = {
+  // 数据字典转义
+  $key2label: (value, options) =>
+    (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
+  // 表单标题
+  $dialogTitle: (value, catalog) => ({
+    c: '新增',
+    r: '查看',
+    u: '编辑',
+    ...catalog,
+  }[value] ?? '')
+}
 Object.keys(filters).map(filter => {
-  const key = `$${filter}`
-  Vue.filter(key, filters[filter])
-  Object.defineProperty(Vue.prototype, key, {
+  Vue.filter(filter, filters[filter])
+  // 同时注册为全局方法
+  Object.defineProperty(Vue.prototype, filter, {
     value: filters[filter]
   })
 })
@@ -177,55 +211,7 @@ Object.keys(filters).map(filter => {
 Vue.use(ElementVerify)
 ```
 
-<br>
-
-### 局部配置
-
-#### mixin
-
-```ts
-import { mixins } from '@/utils/admate'
-
-export default {
-  mixins: [mixins],
-  data () {
-    return {
-      props__: {}, // 注意双下划线结尾
-    }
-  },
-  methods: {
-    // 注意双下划线结尾
-    getListProxy__ (motive, res) {
-      this.getList__()
-      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-        this.$Swal.success('操作成功')
-      }
-    }
-  }
-}
-```
-
-#### apiGenerator
-
-```ts
-import { apiGenerator } from '@/utils/admate'
-
-export default {
-  data () {
-    return {
-      /**
-       * @param {string} - 接口模块前缀
-       * @param {object} - crud的请求配置（同全局配置）
-       */
-      api__: apiGenerator('/somepage', {
-        r: {
-          method: 'POST'
-        },
-      })
-    }
-  }
-}
-```
+`getListProxy` 详细用法见[Hook: 查询列表时](#query-table)
 
 <br>
 
@@ -251,7 +237,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
-import { createMixin, createApiGenerator, createAxiosShortcut, filters } from 'admate'
+import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { Swal } from 'kikimore'
 import request from '@/utils/request'
@@ -265,30 +251,29 @@ const mixin = createMixin({
    * 全局配置
    */
 
-  // 接口参数、返回值格式定制化
+  // 接口返回值配置
   props: {
-    // [查询列表接口] 页码字段名
-    pageNo: 'pageNo',
-
-    // [查询列表接口] 页容量字段名
-    pageSize: 'pageSize',
-
-    // [查询列表接口] 返回值中表格字段所在位置
-    // 考虑到分页与不分页的返回格式可能是不同的 所以支持传入一个数组 数组会被遍历 直到找到为止
+    // [列表查询接口] 返回值中列表数组的字段名/字段路径
+    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
     list: ['data', 'data.records', 'data.list'],
 
-    // [查询列表接口] 返回值中总记录数字段所在位置
+    // [列表查询接口] 返回值中页码的字段名/字段路径
+    pageNo: 'pageNo',
+
+    // [列表查询接口] 返回值中页容量的字段名/字段路径
+    pageSize: 'pageSize',
+
+    // [列表查询接口] 返回值中记录总数的字段名/字段路径
     total: 'data.total',
 
-    // [单条查询接口] 返回值中数据所在位置
+    // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
     r: 'data'
   },
-
-  // 查询列表代理
+  // 代理getList__
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      Swal.success('操作成功')
+      this.$Swal.success('操作成功')
     }
   },
 })
@@ -328,14 +313,14 @@ export { mixins }
 /**
  * 初始化apiGenerator并导出
  */
-const apiGenerator = createApiGenerator(
+const apiGenerator = createAPIGenerator(
   /**
    * 全局配置
    */
-   
+
   // axios或axios实例
   request,
-  
+
   // crud接口的axios配置 
   {
     c: {
@@ -368,6 +353,7 @@ export { apiGenerator }
 
 /**
  * 初始化axiosShortcut并导出
+ * 生成接口调用捷径
  */
 import { createAxiosShortcut } from 'admate'
 const axiosShortcut = createAxiosShortcut(
@@ -383,11 +369,16 @@ export { $axiosShortcut }
 /**
  * 导出filters
  */
-import { filters } from 'admate'
-const $filters = Object.keys(filters).reduce((total, currentValue) => {
-  total[`$${currentValue}`] = filters[currentValue]
-  return total
-}, {})
+const $filters = {
+  $key2label: (value, options) =>
+    (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
+  $dialogTitle: (value, catalog) => ({
+    c: '新增',
+    r: '查看',
+    u: '编辑',
+    ...catalog,
+  }[value] ?? '')
+}
 export { $filters }
 
 /**
@@ -474,6 +465,51 @@ export default {
 
 <br>
 
+### 局部配置
+
+#### mixin
+
+```ts
+import { mixins } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      props__: {}, // 注意双下划线结尾
+    }
+  },
+  methods: {
+    // 注意双下划线结尾
+    getListProxy__ (motive, res) {}
+  }
+}
+```
+
+#### apiGenerator
+
+```ts
+import { apiGenerator } from '@/utils/admate'
+
+export default {
+  data () {
+    return {
+      /**
+       * @param {string} - 接口模块前缀
+       * @param {object} - crud的请求配置（同全局配置）
+       */
+      api__: apiGenerator('/somepage', {
+        r: {
+          method: 'POST'
+        },
+      })
+    }
+  }
+}
+```
+
+<br>
+
 ### 搭配代码生成器使用
 
 使用代码生成器生成页面模板
@@ -518,82 +554,9 @@ export default {
 
 <br>
 
-### axiosShortcut
+## 列表
 
-根据axios实例生成axios实例的调用捷径
-
-通过 `createAxiosShortcut` 方法获取 `axiosShortcut`
-
-```ts
-// @/utils/admate.ts
-
-import Vue from 'vue'
-import { createAxiosShortcut } from 'admate'
-import request from '@/utils/request'
-
-const axiosShortcut = createAxiosShortcut({
-  // 全局配置
-
-  // axios实例
-  request
-})
-for (let k in axiosShortcut) {
-  Object.defineProperty(Vue.prototype, `$${k}`, {
-    value: axiosShortcut[k]
-  })
-}
-```
-
-<br>
-
-### filters
-
-管理后台常用filters
-
-::: tip  
-所有过滤器均可当作方法调用
-:::
-
-```ts
-// @/utils/admate.ts
-
-import { filters } from 'admate'
-
-Object.keys(filters).map(filter => {
-  const key = `$${filter}`
-  Vue.filter(key, filters[filter])
-  Object.defineProperty(Vue.prototype, key, {
-    value: filters[filter]
-  })
-})
-```
-
-<br>
-
-#### 覆盖统一前缀
-
-```ts
-import { apiGenerator } from '@/utils/admate'
-
-export default {
-  data () {
-    return {
-      api__: apiGenerator('somepage', {
-        r: {
-          // 如果某个接口的前缀不是'somepage'，可以在url前面加斜线，忽略该前缀。
-          url: '/anotherpage/selectOne',
-        },
-      })
-    }
-  }
-}
-```
-
-<br>
-
-## 表格
-
-### 查询参数
+### 筛选参数
 
 `this.list__.filter`
 
@@ -652,9 +615,9 @@ export default {
 
 <br>
 
-### 查询校验
+### 筛选校验
 
-给绑定表格参数的el-form添加校验逻辑即可，执行 `getList` 之前会自动进行校验，校验失败则不会执行 `getList`
+给绑定列表筛选参数的el-form添加校验逻辑即可，会自动进行校验，校验失败则不会执行 `getList__`
 
 <br>
 
@@ -680,9 +643,9 @@ export default {
 
 ### Hook: 查询列表时
 
-`getList__` ：在首次进入页面、查询列表参数改变、单条增删查改后会被调用
+`getList__` ：在首次进入页面、查询列表参数改变、单条记录增删查改后会被调用
 
-`getListProxy__`：你可以在 `methods` 中定义一个 `getListProxy__` 方法来代理 `getList__`
+`getListProxy__`：你可以在 `methods` 中定义 `getListProxy__` 方法来代理 `getList__`
 
 ```ts
 methods: {
@@ -736,7 +699,7 @@ export default {
 给绑定表单参数的el-form添加校验逻辑即可
 
 ```vue
-<!-- 示例：额外的校验 自行控制表单的关闭 -->
+<!-- 示例：额外的校验，自行控制表单的关闭 -->
 
 <template>
   <FormDialog :submit="submit"/>
@@ -824,7 +787,7 @@ export default {
       return this.retrieve__()
       ?.then( // 新增时 retrieve__返回为空 需要判空
         /**
-         * @param {object} rowData - 单条数据
+         * @param {object} rowData - 单条记录数据
          */
         rowData => {
           this.row__.data.status = 1
@@ -868,7 +831,7 @@ export default {
 /**
  * 为FormDialog组件submit属性定制的方法
  * @param {any} 提交前的钩子函数或指定表单参数
- * @returns {Promise} 提交表单接口调用
+ * @returns {Promise<any>} 提交表单接口返回
  */
 this.submit__
 ```
@@ -927,9 +890,9 @@ export default {
 
 <br>
 
-### 特殊页面：无表格，仅含表单
+### 特殊页面：无列表，仅含表单
 
-场景：表格中只有一条数据，故表格被省略，默认弹出编辑框
+场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
 
 ```vue
 <!-- 示例 -->
@@ -1001,6 +964,8 @@ export default {
 
 ```ts
 /**
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
  * @returns {Promise<any>} 接口返回值
  */
 this.getList__
@@ -1008,12 +973,12 @@ this.getList__
 
 <br>
 
-### 查询单条
+### 查询单条记录
 
 ```ts
 /**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
  */
 this.r__
 ```
@@ -1023,22 +988,22 @@ this.r__
 - `'data'`：将payload用作请求配置的 `data` 参数（默认）
 - `'params'`：将payload用作请求配置的 `params` 参数
 - `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
-- `'raw'`：将payload直接用作表单数据（不调用查询单条接口）
+- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
 
-### 新增单条
+### 新增单条记录
 
 `this.c__`
 
 <br>
 
-### 编辑单条
+### 编辑单条记录
 
 ```ts
 /**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
  */
 this.u__
 ```
@@ -1048,16 +1013,16 @@ this.u__
 - `'data'`：将payload用作请求配置的 `data` 参数（默认）
 - `'params'`：将payload用作请求配置的 `params` 参数
 - `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
-- `'raw'`：将payload直接用作表单数据（不调用查询单条接口）
+- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
 
-### 删除单条
+### 删除单条记录
 
 ```ts
 /**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
  */
 this.d__
 ```
@@ -1070,12 +1035,48 @@ this.d__
 
 <br>
 
-### 变更单条状态
+### 启用单条记录
 
 ```ts
 /**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
+ */
+this.enable__
+```
+
+**参数2的可选值：**
+
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+
+<br>
+
+### 停用单条记录
+
+```ts
+/**
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
+ */
+this.disable__
+```
+
+**参数2的可选值：**
+
+- `'data'`：将payload用作请求配置的 `data` 参数（默认）
+- `'params'`：将payload用作请求配置的 `params` 参数
+- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+
+<br>
+
+### 变更单条记录状态
+
+```ts
+/**
+ * @param {any} [payload]
+ * @param {string} [payloadUse] 指定payload的用途
  */
 this.updateStatus__
 ```
@@ -1115,42 +1116,6 @@ this.updateStatus__
   </template>
 </el-table-column>
 ```
-
-<br>
-
-### 启用单条
-
-```ts
-/**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
- */
-this.enable__
-```
-
-**参数2的可选值：**
-
-- `'data'`：将payload用作请求配置的 `data` 参数（默认）
-- `'params'`：将payload用作请求配置的 `params` 参数
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
-
-<br>
-
-### 停用单条
-
-```ts
-/**
- * @param {any} [payload] - 接口参数
- * @param {string} [payloadUse=data] - 指定payload的用途
- */
-this.disable__
-```
-
-**参数2的可选值：**
-
-- `'data'`：将payload用作请求配置的 `data` 参数（默认）
-- `'params'`：将payload用作请求配置的 `params` 参数
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
 
 <a name="RESTful"><br></a>
 
@@ -1198,6 +1163,87 @@ export default {
 
 <br>
 
+## FormData
+
+axios的data默认以application/json作为MIME type，如果你需要使用 `multipart/form-data`：
+
+- 全局配置
+
+给你的axios配置 `transformRequest`、`headers['Content-Type']`
+
+- 局部配置
+
+`r__`、`u__`、`d__`、`updateStatus__`、`enable__`、`disable__` 的payload参数均支持FormData类型。
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-table-column label="操作" align="center">
+    <template slot-scope="{row:{id}}">
+      <PopButton
+        v-if="pageBtnList.includes('编辑')"
+        :elTooltipProps="{content:'编辑'}"
+        type="primary"
+        icon="el-icon-edit"
+        @click="u__(FormData.from({id}))"
+      />
+    </template>
+  </el-table-column>
+</template>
+
+<script>
+import { mixins, apiGenerator } from '@/utils/admate'
+import { jsonToFormData, pickDeepBy } from 'kayran'
+
+// 过滤参数并转换为FormData
+FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) =>
+  ![NaN, null, undefined].includes(v) &&
+  !k.startsWith('__')
+))
+
+// 直接转换为FormData
+//FormData.from = jsonToFormData
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      api__: apiGenerator('xxx'),
+      FormData,
+    }
+  },
+}
+</script>
+```
+
+<br>
+
+## URL前缀不统一
+
+APIGenerator以统一的URL前缀生成接口调用，当然，也可以不统一：
+
+```ts
+// 示例
+
+import { apiGenerator } from '@/utils/admate'
+
+export default {
+  data () {
+    return {
+      api__: apiGenerator('somepage', {
+        r: {
+          // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀。
+          url: '/anotherpage/selectOne',
+        },
+      })
+    }
+  }
+}
+```
+
+<br>
+
 ## 接口调用
 
 ### AJAX
@@ -1206,7 +1252,7 @@ export default {
 /**
  * 快捷方式
  * @param {string} url 接口地址
- * @param {object} data 接口参数（GET请求默认使用params）
+ * @param {object} data 接口参数（GET、HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
@@ -1222,46 +1268,40 @@ this.$HEAD
 
 ### 上传
 
-> 请求体类型为 multipart/form-data
+> MIME type为multipart/form-data
 
 ```ts
 /**
  * @param {string} url 接口地址
- * @param {object} data 接口参数
+ * @param {object} data 接口参数（GET、HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
-this.$POST.upload
-this.$PATCH.upload
-this.$PUT.upload
+this.$POST.upload // 请求方式可以更换
 ```
 
 <br>
 
 ### 下载
 
-**ajax请求方式**
+**AJAX请求**
 
 ```ts
 /**
  * @param {string} url 接口地址
- * @param {object} data 接口参数
+ * @param {object} data 接口参数（GET、HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
-this.$GET.download
+this.$GET.download // 请求方式可以更换
 ```
 
-::: tip  
-示例中的 `POST` 可替换为其他请求方式
-:::
-
-**地址栏请求方式**
+**HTTP请求**
 
 ```ts
 /**
  * @param {string} url 接口地址
- * @param {object} data 接口参数
+ * @param {object} params 接口参数
  * @param {object} config axios配置
  */
 this.$DOWNLOAD
@@ -1269,11 +1309,11 @@ this.$DOWNLOAD
 
 <br>
 
-**给上传/下载添加全局回调**
-
-> 上传/下载本质上还是调用axios实例 所以在axios实例的响应拦截器中判断即可
+**给上传、下载添加全局回调**
 
 ```ts
+// 可以在响应拦截器中判断
+
 request.interceptors.response.use(
   response => {
     // download
@@ -1305,7 +1345,6 @@ key2label
 /**
  * @param {any} 需要查询的key
  * @param {object[]} 数据字典数组
- * @param {object} 配置选项，自定义key和label对应的属性名 默认值为 { key: 'dataValue', label: 'dataName' }
  * @returns {any} key所对应的label
  */
 this.$key2label('1', [
