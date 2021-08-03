@@ -88,7 +88,7 @@ function createMixin ({
           this.row__.data = cloneDeep(this.row__.initialData)
           this.row__.payload = {}
           this.row__.payloadUse = null
-          this.$refs.rowForm && this.$refs.rowForm.clearValidate()
+          this.$refs.rowForm?.clearValidate()
           this.row__.loading = false
         }
       }
