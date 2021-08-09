@@ -9,7 +9,7 @@ const METHODS_WITHOUT_REQUEST_BODY = ['GET', 'HEAD']
 const METHODS = METHODS_WITH_REQUEST_BODY.concat(METHODS_WITHOUT_REQUEST_BODY)
 let source
 
-type config = {
+type configCatalogType = {
   c?: object | ((objForConfig: object) => object),
   r?: object | ((objForConfig: object) => object),
   u?: object | ((objForConfig: object) => object),
@@ -22,12 +22,12 @@ type config = {
 
 export default function createAPIGenerator (
   axios: (args: any) => Promise<any>,
-  config_g?: config,
+  configCatalog_global?: configCatalogType,
 ): (
   module: string,
-  config?: config
+  config?: configCatalogType
 ) => object {
-  const defaultConfig = () => ({
+  const configCatalog_default = {
     c: {
       url: 'create',
       method: 'POST',
@@ -60,7 +60,9 @@ export default function createAPIGenerator (
       url: 'disable',
       method: 'PUT',
     },
-  })
+  }
+
+  Object.freeze(configCatalog_default)
 
   const getUrl = (urlSuffix: string, url: string) =>
     url.startsWith('/') ? url :
@@ -68,31 +70,39 @@ export default function createAPIGenerator (
 
   return (
     urlSuffix: string = '',
-    config?: config
+    configCatalog?: configCatalogType
   ) => {
     source = CancelToken.source()
-    config = merge(defaultConfig(), config_g, config)
 
     let result = {}
-    for (let k in config) {
+    for (let k in configCatalog_default) {
       result[k] = (payload, payloadUse) => {
         if (payloadUse === 'cache') {
           return payload
         } else {
-          const cfg = {
+          const configObj_default = configCatalog_default[k]
+
+          const configObj_global =
+            typeof configCatalog_global[k] === 'function' ?
+              configCatalog_global[k](payload) :
+              configCatalog_global[k]
+
+          const configObj = {
             cancelToken: source.token,
-            ...typeof config[k] === 'function' ?
-              config[k](payload) :
-              config[k],
+            ...typeof configCatalog[k] === 'function' ?
+              configCatalog[k](payload) :
+              configCatalog[k]
           }
 
-          payloadUse ||= METHODS_WITH_REQUEST_BODY.includes(cfg.method?.toUpperCase()) ? 'data' : 'params'
+          const config = merge(configObj_default, configObj_global, configObj)
+
+          payloadUse ||= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
 
           return axios({
             ...payloadUse === 'data' && { data: payload },
             ...payloadUse === 'params' && { params: payload },
-            ...cfg,
-            url: getUrl(urlSuffix, cfg.url)
+            ...config,
+            url: getUrl(urlSuffix, config.url)
           })
         }
       }

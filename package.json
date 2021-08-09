@@ -28,7 +28,7 @@
     "ri": "rd /s /q .\\node_modules && pnpm i"
   },
   "dependencies": {
-    "kayran": "^0.3.2",
+    "kayran": "^0.4.0",
     "lodash-es": "^4.17.21",
     "qs": "^6.10.1"
   },
