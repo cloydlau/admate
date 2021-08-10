@@ -22,10 +22,10 @@ type configCatalogType = {
 
 export default function createAPIGenerator (
   axios: (args: any) => Promise<any>,
-  configCatalog_global?: configCatalogType,
+  configCatalog_global: configCatalogType = {},
 ): (
-  module: string,
-  config?: configCatalogType
+  urlSuffix: string,
+  configCatalog?: configCatalogType
 ) => object {
   const configCatalog_default = {
     c: {
@@ -70,8 +70,8 @@ export default function createAPIGenerator (
 
   return (
     urlSuffix: string = '',
-    configCatalog?: configCatalogType
-  ) => {
+    configCatalog: configCatalogType = {}
+  ): object => {
     source = CancelToken.source()
 
     let result = {}

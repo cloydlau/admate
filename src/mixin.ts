@@ -88,7 +88,6 @@ function createMixin ({
           this.row__.data = cloneDeep(this.row__.initialData)
           this.row__.payload = {}
           this.row__.payloadUse = null
-          this.$refs.rowForm?.clearValidate()
           this.row__.loading = false
         }
       }
@@ -113,7 +112,7 @@ function createMixin ({
         ...this.props__
       }
 
-      this.getListProxy__ = this.getListProxy__ || getListProxy
+      this.getListProxy__ ||= getListProxy
 
       this.list__.filter = {
         [this.props__.pageNo]: 1,
@@ -128,9 +127,9 @@ function createMixin ({
     },
     mounted () {
       // fix: 没有声明的筛选参数无法重置
-      if (this.$refs.listFilter?.fields) {
+      if (this.$refs.listFilterForm__?.fields) {
         let obj = {}
-        Array.from(this.$refs.listFilter.fields, (v: any) => v.labelFor)?.map(v => {
+        Array.from(this.$refs.listFilterForm__.fields, (v: any) => v.labelFor)?.map(v => {
           obj[v] = undefined
         })
         this.list__.filter = {
@@ -158,10 +157,10 @@ function createMixin ({
                 this.list__.prevPageNo = newVal[pageNoField]
               }
             }
-            if (this.$refs.listFilter) {
-              this.$refs.listFilter.validate(callback)
+            if (this.$refs.listFilterForm__) {
+              this.$refs.listFilterForm__.validate(callback)
             } else {
-              console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilter`)
+              //console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilterForm__`)
               callback(true)
             }
           }, 500, {
