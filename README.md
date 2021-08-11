@@ -6,11 +6,16 @@
 
 ## Features
 
-- 列表查询、单条记录的增删查改和状态启停用等管理后台页面标配。
+- 列表、单条记录的CRUD。
+- 同一个系统内，CRUD的请求配置通常是相似的，同一个模块内，接口前缀通常是一致的，Admate提供全局和局部的配置方式来减少冗余代码。
+- 除了标配的CRUD封装，也为其他请求提供调用捷径（含上传、下载）。
+- 节流控制筛选列表的接口调用频率（监听筛选参数时）。
+
+周全的收尾工作，没有“后顾之忧”：
 - 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）。
-- 离开页面时，自动终止尚未完成的请求调用。
 - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）。
-- 节流控制筛选列表的接口触发频率。
+- 自动给模板里的筛选参数赋初值，使得重置功能能够正常工作。
+- 离开页面时，自动终止尚未完成的请求调用。
 
 <br>
 
@@ -71,6 +76,9 @@ Object.defineProperty(Vue.prototype, '$Swal', {
 const mixin = createMixin({
   // 接口返回值配置
   props: {
+    // 是否在列表筛选参数改变后自动刷新列表
+    watchListFilter: true,
+
     // [列表查询接口] 返回值中列表数组的字段名/字段路径
     // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
     list: ['data', 'data.records', 'data.list'],
@@ -252,6 +260,9 @@ const mixin = createMixin({
 
   // 接口返回值配置
   props: {
+    // 是否在列表筛选参数改变后自动刷新列表
+    watchListFilter: true,
+
     // [列表查询接口] 返回值中列表数组的字段名/字段路径
     // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
     list: ['data', 'data.records', 'data.list'],
@@ -553,6 +564,65 @@ export default {
 <br>
 
 ## 列表
+
+### 筛选触发列表更新的方式
+
+- 点击专用的 `查询` 按钮触发（`props.watchListFilter === false`）
+  - :x: 操作相对繁琐。
+  - :x: 列表数据与筛选条件可能是无关的。会产生“此时列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
+  - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+
+- **改变筛选条件后即时触发（`props.watchListFilter === true`，默认）**
+  - :heavy_check_mark: 操作相对简便。
+  - :heavy_check_mark: 列表数据与筛选条件即时绑定。
+  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate处理了此缺陷）。
+
+```vue
+<!-- 使用专用的查询按钮示例 -->
+
+<template>
+  <el-form ref="listFilterForm__" :model="list__.filter" inline>
+    <el-form-item prop="status">
+      <Selector
+        :index.sync="list__.filter.status"
+        :options="options.status"
+        placeholder="状态"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        @click="$refs.listFilterForm__.validate(valid => {
+          valid && getList__()
+        })"
+        type="primary"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        @click="$refs.listFilterForm__.resetFields()"
+      >
+        重置
+      </el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      props__: {
+        watchListFilter: false,
+      }
+    }
+  }
+}
+</script>
+```
+
+<br>
 
 ### 筛选参数
 

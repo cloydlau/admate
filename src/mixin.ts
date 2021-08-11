@@ -64,6 +64,7 @@ function createMixin ({
   getListProxy?: Function
 }): object {
   props = {
+    watchListFilter: true,
     pageNo: 'pageNo',
     pageSize: 'pageSize',
     total: 'total',
@@ -138,41 +139,43 @@ function createMixin ({
         }
       }
 
-      this.$watch('list__.filter', newVal => {
-        if (!this.getListThrottled__) {
-          this.getListThrottled__ = throttle(() => {
-            const callback = async valid => {
-              if (valid) {
-                const pageNoField = this.props__.pageNo
+      if (this.props__.watchListFilter) {
+        this.$watch('list__.filter', newVal => {
+          if (!this.getListThrottled__) {
+            this.getListThrottled__ = throttle(() => {
+              const callback = async valid => {
+                if (valid) {
+                  const pageNoField = this.props__.pageNo
 
-                // 如果改变的不是页码 页码重置为1
-                if (this.list__.prevPageNo === newVal[pageNoField]) {
-                  this.list__.filter[pageNoField] === 1 ?
-                    await this.getListProxy__('filterChange') :
-                    this.list__.filter[pageNoField] = 1
-                } else {
-                  // 刷新列表
-                  await this.getListProxy__('pageNoChange')
+                  // 如果改变的不是页码 页码重置为1
+                  if (this.list__.prevPageNo === newVal[pageNoField]) {
+                    this.list__.filter[pageNoField] === 1 ?
+                      await this.getListProxy__('filterChange') :
+                      this.list__.filter[pageNoField] = 1
+                  } else {
+                    // 刷新列表
+                    await this.getListProxy__('pageNoChange')
+                  }
+                  this.list__.prevPageNo = newVal[pageNoField]
                 }
-                this.list__.prevPageNo = newVal[pageNoField]
               }
-            }
-            if (this.$refs.listFilterForm__) {
-              this.$refs.listFilterForm__.validate(callback)
-            } else {
-              //console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilterForm__`)
-              callback(true)
-            }
-          }, 500, {
-            leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
-            trailing: true
-          })
-        }
+              if (this.$refs.listFilterForm__) {
+                this.$refs.listFilterForm__.validate(callback)
+              } else {
+                //console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilterForm__`)
+                callback(true)
+              }
+            }, 500, {
+              leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
+              trailing: true
+            })
+          }
 
-        this.getListThrottled__()
-      }, {
-        deep: true
-      })
+          this.getListThrottled__()
+        }, {
+          deep: true
+        })
+      }
     },
     destroyed () {
       // 页面销毁时如果还有查询请求 中止掉
