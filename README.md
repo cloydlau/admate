@@ -575,7 +575,7 @@ export default {
 - **改变筛选条件后即时触发（`props.watchListFilter === true`，默认）**
   - :heavy_check_mark: 操作相对简便。
   - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate处理了此缺陷）。
+  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
 
 ```vue
 <!-- 使用专用的查询按钮示例 -->
