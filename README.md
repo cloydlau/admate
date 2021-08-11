@@ -6,9 +6,9 @@
 
 ## Features
 
-- 查询列表、增删查改、状态启停用等管理后台页面标配。
+- 列表查询、单条记录的增删查改和状态启停用等管理后台页面标配。
 - 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）。
-- 离开页面时，如果存在未完成的请求，自动终止该请求调用。
+- 离开页面时，自动终止尚未完成的请求调用。
 - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）。
 - 节流控制筛选列表的接口触发频率。
 
@@ -87,7 +87,7 @@ const mixin = createMixin({
     // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
     r: 'data'
   },
-  // 代理getList__
+  // 代理this.getList__
   getListProxy (motive) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -108,7 +108,8 @@ const mixins = merge(mixin, {
       },
       popSwitchProps: status => ({
         value: status,
-        elTooltipProps: { content: `已${this.options.status[status]}` },
+        'active-text': this.options.status[1],
+        'inactive-text': this.options.status[0],
         ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
           {
             elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
@@ -211,8 +212,6 @@ Object.keys(filters).map(filter => {
 Vue.use(ElementVerify)
 ```
 
-`getListProxy` 详细用法见[Hook: 查询列表时](#query-table)
-
 <br>
 
 ### 局部引入
@@ -269,7 +268,7 @@ const mixin = createMixin({
     // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
     r: 'data'
   },
-  // 代理getList__
+  // 代理this.getList__
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
@@ -290,7 +289,8 @@ const mixins = merge(mixin, {
       },
       popSwitchProps: status => ({
         value: status,
-        elTooltipProps: { content: `已${this.options.status[status]}` },
+        'active-text': this.options.status[1],
+        'inactive-text': this.options.status[0],
         ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
           {
             elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
@@ -386,8 +386,6 @@ export { $filters }
  */
 Vue.use(ElementVerify)
 ```
-
-`getListProxy` 详细用法见[Hook: 查询列表时](#query-table)
 
 ```ts
 // @/permission.ts
@@ -539,7 +537,7 @@ export default {
 ## 命名规则
 
 ::: warning  
-`mixin` 中所有的 data、methods 均已**双下划线结尾**命名，以避免与业务代码冲突
+`mixin` 中所有的 data、methods 均以**双下划线结尾**命名，以避免与业务代码冲突
 
 为什么 `Admate`
 没有按照 [Vue官方风格指南](https://cn.vuejs.org/v2/style-guide/#%E7%A7%81%E6%9C%89-property-%E5%90%8D%E5%BF%85%E8%A6%81)
@@ -558,7 +556,9 @@ export default {
 
 ### 筛选参数
 
-`this.list__.filter`
+`this.list__.filter`：数据对象
+
+`this.$refs.listFilterForm__`：el-form的ref，会被Admate用于初始化数据对象（你便不再需要给筛选参数赋初值）、筛选参数校验
 
 ```ts
 // 绑定默认值
@@ -586,7 +586,7 @@ export default {
 <!-- 示例 -->
 
 <template>
-  <el-form ref="listFilter" :model="list__.filter" inline>
+  <el-form ref="listFilterForm__" :model="list__.filter" inline>
     <el-form-item prop="effect">
       <el-checkbox
         v-model="list__.filter.effect"
@@ -594,7 +594,7 @@ export default {
         border
       />
     </el-form-item>
-    <el-button @click="()=>{$refs.listFilter.resetFields()}">重置</el-button>
+    <el-button @click="()=>{$refs.listFilterForm__.resetFields()}">重置</el-button>
   </el-form>
 </template>
 
@@ -1330,43 +1330,6 @@ request.interceptors.response.use(
     }
   },
 )
-```
-
-<br>
-
-## 数据字典转义
-
-key2label
-
-```html
-
-<el-table-column>
-  <template slot-scope="{row}">
-    {{row.type | $key2label(dict.type)}}
-  </template>
-</el-table-column>
-```
-
-当作方法调用：
-
-```ts
-/**
- * @param {any} 需要查询的key
- * @param {object[]} 数据字典数组
- * @returns {any} key所对应的label
- */
-this.$key2label('1', [
-  { dataValue: '1', dataName: 'a' },
-  { dataValue: '2', dataName: 'b' },
-]) // 'a'
-
-this.$key2label('1', [
-  { id: '1', name: 'a' },
-  { id: '2', name: 'b' },
-], {
-  key: 'id',
-  label: 'name'
-}) // 'a'
 ```
 
 <br>
