@@ -379,7 +379,6 @@ export { apiGenerator }
  * 初始化axiosShortcut并导出
  * 生成接口调用捷径
  */
-import { createAxiosShortcut } from 'admate'
 const axiosShortcut = createAxiosShortcut(
   // axios或axios实例
   request,
