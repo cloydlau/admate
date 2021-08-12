@@ -12,6 +12,7 @@
 - 节流控制筛选列表的接口调用频率（监听筛选参数时）。
 
 周全的收尾工作，没有“后顾之忧”：
+
 - 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）。
 - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）。
 - 自动给模板里的筛选参数赋初值，使得重置功能能够正常工作。
@@ -40,6 +41,11 @@ import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
 /**
+ * 单条记录的状态
+ */
+const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE = 0;
+
+/**
  * 全局注册kikimore
  */
 [{
@@ -50,8 +56,10 @@ import { getPageBtnList } from '@/permission'
 }, {
   component: PopSwitch,
   config: {
-    activeValue: 1,
-    inactiveValue: 0,
+    'active-value': ENABLED_VALUE,
+    'inactive-value': DISABLED_VALUE,
+    'active-text': STATUS_OPTIONS[ENABLED_VALUE],
+    'inactive-text': STATUS_OPTIONS[DISABLED_VALUE],
   }
 }, {
   component: FormDialog,
@@ -112,15 +120,13 @@ const mixins = merge(mixin, {
     return merge(mininData, {
       pageBtnList: getPageBtnList(),
       options: {
-        status: ['停用', '启用'],
+        status: STATUS_OPTIONS,
       },
       popSwitchProps: status => ({
         value: status,
-        'active-text': this.options.status[1],
-        'inactive-text': this.options.status[0],
-        ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
+        ...this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1]) ?
           {
-            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+            elPopconfirmProps: { title: `确认${STATUS_OPTIONS[status ^ 1]}吗？` }
           } :
           {
             disabled: true,
@@ -251,6 +257,11 @@ import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
 /**
+ * 单条记录的状态
+ */
+const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE = 0;
+
+/**
  * 初始化mixin并导出
  */
 const mixin = createMixin({
@@ -296,15 +307,17 @@ const mixins = merge(mixin, {
     return merge(mininData, {
       pageBtnList: getPageBtnList(),
       options: {
-        status: ['停用', '启用'],
+        status: STATUS_OPTIONS,
       },
       popSwitchProps: status => ({
         value: status,
-        'active-text': this.options.status[1],
-        'inactive-text': this.options.status[0],
-        ...this.pageBtnList.includes(this.options.status[status ^ 1]) ?
+        'active-value': ENABLED_VALUE,
+        'inactive-value': DISABLED_VALUE,
+        'active-text': STATUS_OPTIONS[ENABLED_VALUE],
+        'inactive-text': STATUS_OPTIONS[DISABLED_VALUE],
+        ...this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1]) ?
           {
-            elPopconfirmProps: { title: `确认${this.options.status[status ^ 1]}吗？` }
+            elPopconfirmProps: { title: `确认${STATUS_OPTIONS[status ^ 1]}吗？` }
           } :
           {
             disabled: true,
@@ -568,14 +581,14 @@ export default {
 ### 筛选触发列表更新的方式
 
 - 点击专用的 `查询` 按钮触发（`props.watchListFilter === false`）
-  - :x: 操作相对繁琐。
-  - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
-  - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+    - :x: 操作相对繁琐。
+    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
+    - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
 
 - **改变筛选条件后即时触发（`props.watchListFilter === true`，默认）**
-  - :heavy_check_mark: 操作相对简便。
-  - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
+    - :heavy_check_mark: 操作相对简便。
+    - :heavy_check_mark: 列表数据与筛选条件即时绑定。
+    - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
 
 ```vue
 <!-- 使用专用的查询按钮示例 -->
