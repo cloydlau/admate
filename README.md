@@ -122,9 +122,12 @@ const mixins = merge(mixin, {
       options: {
         status: STATUS_OPTIONS,
       },
-      popSwitchProps: status => ({
+      popSwitchProps: (
+        status,
+        isEnabled = this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1])
+      ) => ({
         value: status,
-        ...this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1]) ?
+        ...isEnabled ?
           {
             elPopconfirmProps: { title: `确认${STATUS_OPTIONS[status ^ 1]}吗？` }
           } :
@@ -309,13 +312,16 @@ const mixins = merge(mixin, {
       options: {
         status: STATUS_OPTIONS,
       },
-      popSwitchProps: status => ({
+      popSwitchProps: (
+        status,
+        isEnabled = this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1])
+      ) => ({
         value: status,
         'active-value': ENABLED_VALUE,
         'inactive-value': DISABLED_VALUE,
         'active-text': STATUS_OPTIONS[ENABLED_VALUE],
         'inactive-text': STATUS_OPTIONS[DISABLED_VALUE],
-        ...this.pageBtnList.includes(STATUS_OPTIONS[status ^ 1]) ?
+        ...isEnabled ?
           {
             elPopconfirmProps: { title: `确认${STATUS_OPTIONS[status ^ 1]}吗？` }
           } :
