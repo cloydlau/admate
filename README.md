@@ -294,7 +294,7 @@ const mixin = createMixin({
   getListProxy (motive, res) {
     this.getList__()
     if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      this.$Swal.success('操作成功')
+      Swal.success('操作成功')
     }
   },
 })
