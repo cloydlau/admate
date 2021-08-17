@@ -43,40 +43,7 @@ import { getPageBtnList } from '@/permission'
 /**
  * 单条记录的状态
  */
-const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE = 0;
-
-/**
- * 全局注册kikimore
- */
-[{
-  component: PopButton,
-  config: {
-    size: 'mini'
-  }
-}, {
-  component: PopSwitch,
-  config: {
-    'active-value': ENABLED_VALUE,
-    'inactive-value': DISABLED_VALUE,
-    'active-text': STATUS_OPTIONS[ENABLED_VALUE],
-    'inactive-text': STATUS_OPTIONS[DISABLED_VALUE],
-  }
-}, {
-  component: FormDialog,
-}, {
-  component: Selector,
-}, {
-  component: Pagination
-}, {
-  component: FormItemTip,
-}, {
-  component: TimeRangePicker
-}].map(({ component, config }) =>
-  Vue.use(component, config)
-)
-Object.defineProperty(Vue.prototype, '$Swal', {
-  value: Swal
-})
+const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE = 0
 
 /**
  * 初始化mixin并导出
@@ -199,6 +166,39 @@ for (let k in axiosShortcut) {
     value: axiosShortcut[k]
   })
 }
+
+/**
+ * 全局注册kikimore
+ */
+[{
+  component: PopButton,
+  config: {
+    size: 'mini'
+  }
+}, {
+  component: PopSwitch,
+  config: {
+    'active-value': ENABLED_VALUE,
+    'inactive-value': DISABLED_VALUE,
+    'active-text': STATUS_OPTIONS[ENABLED_VALUE],
+    'inactive-text': STATUS_OPTIONS[DISABLED_VALUE],
+  }
+}, {
+  component: FormDialog,
+}, {
+  component: Selector,
+}, {
+  component: Pagination
+}, {
+  component: FormItemTip,
+}, {
+  component: TimeRangePicker
+}].map(({ component, config }) =>
+        Vue.use(component, config)
+)
+Object.defineProperty(Vue.prototype, '$Swal', {
+  value: Swal
+})
 
 /**
  * 全局注册filters
