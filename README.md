@@ -35,7 +35,7 @@ import { merge } from 'lodash'
 import ElementVerify from 'element-verify'
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, Selector, FormItemTip, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, DropDown, Swal } from 'kikimore'
 import TimeRangePicker from 'time-range-picker'
 import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
@@ -192,9 +192,7 @@ for (let k in axiosShortcut) {
 }, {
   component: FormDialog,
 }, {
-  component: Selector,
-}, {
-  component: FormItemTip,
+  component: DropDown,
 }, {
   component: TimeRangePicker
 }].map(({ component, config }) =>
@@ -479,12 +477,12 @@ export function getPageBtnList () {
 <script>
 import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, Selector, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, DropDown, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
 
 export default {
   mixins: [mixins],
-  components: { FormDialog, PopButton, PopSwitch, Selector },
+  components: { FormDialog, PopButton, PopSwitch, DropDown },
   filters: {
     ...$filters
   },
@@ -611,7 +609,7 @@ export default {
 <template>
   <el-form ref="listFilterForm__" :model="list__.filter" inline>
     <el-form-item prop="status">
-      <Selector
+      <DropDown
         :index.sync="list__.filter.status"
         :options="options.status"
         placeholder="状态"
