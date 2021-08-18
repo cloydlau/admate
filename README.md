@@ -479,12 +479,12 @@ export function getPageBtnList () {
 <script>
 import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, Selector, FormItemTip, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, Selector, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
 
 export default {
   mixins: [mixins],
-  components: { FormDialog, PopButton, PopSwitch, Selector, FormItemTip },
+  components: { FormDialog, PopButton, PopSwitch, Selector },
   filters: {
     ...$filters
   },
