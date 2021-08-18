@@ -192,5 +192,6 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
 }
 
 export const cancelAllRequest = () => {
-  source?.cancel('Request was canceled due to page leaving.')
+  // 即使不存在pending的请求 cancel()也会触发axios.interceptors.response.use.onRejected
+  source?.cancel()
 }
