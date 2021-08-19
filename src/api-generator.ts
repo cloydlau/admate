@@ -96,7 +96,7 @@ export default function createAPIGenerator (
 
           const config = merge(configObj_default, configObj_global, configObj)
 
-          payloadUse ||= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
+          payloadUse ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
 
           return axios({
             ...payloadUse === 'data' && { data: payload },

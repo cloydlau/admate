@@ -59,12 +59,13 @@ function argsHandler (payload = {}, payloadUse = 'data', motive, row__) {
 function createMixin ({
   props,
   getListProxy,
+  watchListFilter = true,
 }: {
   props?: object
   getListProxy?: Function
+  watchListFilter?: boolean,
 }): object {
   props = {
-    watchListFilter: true,
     pageNo: 'pageNo',
     total: 'total',
     list: 'list',
@@ -72,7 +73,7 @@ function createMixin ({
     ...props
   }
 
-  getListProxy ||= this.getList__
+  getListProxy ??= this.getList__
 
   return {
     data () {
@@ -112,7 +113,9 @@ function createMixin ({
         ...this.props__
       }
 
-      this.getListProxy__ ||= getListProxy
+      this.getListProxy__ ??= getListProxy
+
+      this.watchListFilter__ ??= watchListFilter
 
       this.list__.filter = {
         [this.props__.pageNo]: 1,
@@ -137,7 +140,7 @@ function createMixin ({
         }
       }
 
-      if (this.props__.watchListFilter) {
+      if (this.watchListFilter__) {
         this.$watch('list__.filter', newFilter => {
           if (!this.getListThrottled__) {
             this.getListThrottled__ = throttle(() => {

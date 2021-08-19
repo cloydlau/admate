@@ -51,13 +51,10 @@ const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE =
 const mixin = createMixin({
   // 接口返回值配置
   props: {
-    // 是否在列表筛选参数改变后自动刷新列表
-    watchListFilter: true,
-
     // [列表查询接口] 页码的参数名
     // 注意: 如果修改了默认值，需要同步修改el-pagination组件currentPage参数的绑定值
     pageNo: 'pageNo',
-    
+
     // [列表查询接口] 返回值中记录总数的字段名/字段路径
     total: 'data.total',
 
@@ -75,6 +72,8 @@ const mixin = createMixin({
       this.$Swal.success('操作成功')
     }
   },
+  // 是否在列表筛选参数改变后自动刷新列表
+  watchListFilter: true,
 })
 const mininData = mixin.data()
 const mixins = merge(mixin, {
@@ -202,7 +201,7 @@ for (let k in axiosShortcut) {
 }, {
   component: TimeRangePicker
 }].map(({ component, config }) =>
-        Vue.use(component, config)
+  Vue.use(component, config)
 )
 Object.defineProperty(Vue.prototype, '$Swal', {
   value: Swal
@@ -282,9 +281,6 @@ const mixin = createMixin({
 
   // 接口返回值配置
   props: {
-    // 是否在列表筛选参数改变后自动刷新列表
-    watchListFilter: true,
-
     // [列表查询接口] 页码的参数名
     // 注意: 如果修改了默认值，需要同步修改el-pagination组件currentPage参数的绑定值
     pageNo: 'pageNo',
@@ -306,6 +302,8 @@ const mixin = createMixin({
       Swal.success('操作成功')
     }
   },
+  // 是否在列表筛选参数改变后自动刷新列表
+  watchListFilter: true,
 })
 const mininData = mixin.data()
 const mixins = merge(mixin, {
@@ -605,12 +603,12 @@ export default {
 
 ### 筛选触发列表更新的方式
 
-- 点击专用的 `查询` 按钮触发（`props.watchListFilter === false`）
+- 点击专用的 `查询` 按钮触发（`watchListFilter === false`）
     - :x: 操作相对繁琐。
     - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
     - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
 
-- **改变筛选条件后即时触发（`props.watchListFilter === true`，默认）**
+- **改变筛选条件后即时触发（`watchListFilter === true`，默认）**
     - :heavy_check_mark: 操作相对简便。
     - :heavy_check_mark: 列表数据与筛选条件即时绑定。
     - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
@@ -651,9 +649,7 @@ export default {
 export default {
   data () {
     return {
-      props__: {
-        watchListFilter: false,
-      }
+      watchListFilter__: false,
     }
   }
 }
