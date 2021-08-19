@@ -54,18 +54,16 @@ const mixin = createMixin({
     // 是否在列表筛选参数改变后自动刷新列表
     watchListFilter: true,
 
-    // [列表查询接口] 返回值中列表数组的字段名/字段路径
-    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
-    list: ['data', 'data.records', 'data.list'],
-
-    // [列表查询接口] 返回值中页码的字段名/字段路径
+    // [列表查询接口] 页码的参数名
+    // 注意: 如果修改了默认值，需要同步修改el-pagination组件currentPage参数的绑定值
     pageNo: 'pageNo',
-
-    // [列表查询接口] 返回值中页容量的字段名/字段路径
-    pageSize: 'pageSize',
-
+    
     // [列表查询接口] 返回值中记录总数的字段名/字段路径
     total: 'data.total',
+
+    // [列表查询接口] 返回值中列表数组的字段名/字段路径
+    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组
+    list: ['data', 'data.records', 'data.list'],
 
     // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
     r: 'data'
@@ -85,6 +83,14 @@ const mixins = merge(mixin, {
    */
   data () {
     return merge(mininData, {
+      list__: {
+        // 查询列表接口的默认参数
+        filter: {
+          // 页容量
+          // 注意：如果修改了默认值，需要同步修改el-pagination组件page-size参数的值
+          pageSize: 10
+        }
+      },
       console, // 以便在template中打印
       Promise, // 以便在template中使用Promise
       pageBtnList: getPageBtnList(),
@@ -279,18 +285,16 @@ const mixin = createMixin({
     // 是否在列表筛选参数改变后自动刷新列表
     watchListFilter: true,
 
-    // [列表查询接口] 返回值中列表数组的字段名/字段路径
-    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组。
-    list: ['data', 'data.records', 'data.list'],
-
-    // [列表查询接口] 返回值中页码的字段名/字段路径
+    // [列表查询接口] 页码的参数名
+    // 注意: 如果修改了默认值，需要同步修改el-pagination组件currentPage参数的绑定值
     pageNo: 'pageNo',
-
-    // [列表查询接口] 返回值中页容量的字段名/字段路径
-    pageSize: 'pageSize',
 
     // [列表查询接口] 返回值中记录总数的字段名/字段路径
     total: 'data.total',
+
+    // [列表查询接口] 返回值中列表数组的字段名/字段路径
+    // 考虑到分页与不分页的返回格式可能是不同的，所以支持数组
+    list: ['data', 'data.records', 'data.list'],
 
     // [单条记录查询接口] 返回值中单条记录数据的字段名/字段路径
     r: 'data'
@@ -310,6 +314,14 @@ const mixins = merge(mixin, {
    */
   data () {
     return merge(mininData, {
+      list__: {
+        // 查询列表接口的默认参数
+        filter: {
+          // 页容量
+          // 注意：如果修改了默认值，需要同步修改el-pagination组件page-size参数的值
+          pageSize: 10
+        }
+      },
       console, // 以便在template中打印
       Promise, // 以便在template中使用Promise
       pageBtnList: getPageBtnList(),
@@ -665,7 +677,7 @@ export default {
     return {
       list__: {
         filter: {
-          pageSize: 15, // 覆盖默认值10
+          pageSize: 15, // 覆盖全局配置
           status: 1 // 新增的
         }
       }

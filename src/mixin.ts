@@ -66,7 +66,6 @@ function createMixin ({
   props = {
     watchListFilter: true,
     pageNo: 'pageNo',
-    pageSize: 'pageSize',
     total: 'total',
     list: 'list',
     r: '',
@@ -117,7 +116,6 @@ function createMixin ({
 
       this.list__.filter = {
         [this.props__.pageNo]: 1,
-        [this.props__.pageSize]: this.list__.filter[this.props__.pageSize] || 10,
         ...this.list__.filter
       }
 
@@ -140,7 +138,7 @@ function createMixin ({
       }
 
       if (this.props__.watchListFilter) {
-        this.$watch('list__.filter', newVal => {
+        this.$watch('list__.filter', newFilter => {
           if (!this.getListThrottled__) {
             this.getListThrottled__ = throttle(() => {
               const callback = async valid => {
@@ -148,7 +146,7 @@ function createMixin ({
                   const pageNoField = this.props__.pageNo
 
                   // 如果改变的不是页码 页码重置为1
-                  if (this.list__.prevPageNo === newVal[pageNoField]) {
+                  if (this.list__.prevPageNo === newFilter[pageNoField]) {
                     this.list__.filter[pageNoField] === 1 ?
                       await this.getListProxy__('filterChange') :
                       this.list__.filter[pageNoField] = 1
@@ -156,7 +154,7 @@ function createMixin ({
                     // 刷新列表
                     await this.getListProxy__('pageNoChange')
                   }
-                  this.list__.prevPageNo = newVal[pageNoField]
+                  this.list__.prevPageNo = newFilter[pageNoField]
                 }
               }
               if (this.$refs.listFilterForm__) {
