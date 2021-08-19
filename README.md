@@ -87,7 +87,7 @@ const mixins = merge(mixin, {
         // 查询列表接口的默认参数
         filter: {
           // 页容量
-          // 注意：如果修改了默认值，需要同步修改el-pagination组件page-size参数的值
+          // 注意：如果修改了默认值，需要同步修改el-pagination组件pageSize参数的值
           pageSize: 10
         }
       },
@@ -318,7 +318,7 @@ const mixins = merge(mixin, {
         // 查询列表接口的默认参数
         filter: {
           // 页容量
-          // 注意：如果修改了默认值，需要同步修改el-pagination组件page-size参数的值
+          // 注意：如果修改了默认值，需要同步修改el-pagination组件pageSize参数的值
           pageSize: 10
         }
       },
