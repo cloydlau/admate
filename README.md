@@ -1091,7 +1091,7 @@ this.r__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
@@ -1116,7 +1116,7 @@ this.u__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
@@ -1135,7 +1135,7 @@ this.d__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1153,7 +1153,7 @@ this.enable__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1171,7 +1171,7 @@ this.disable__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -1189,7 +1189,7 @@ this.updateStatus__
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置的参数（详见[RESTful](#RESTful)）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 **状态变更的两种方式：**
 
