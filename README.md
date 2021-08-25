@@ -521,7 +521,9 @@ export default {
   mixins: [mixins],
   data () {
     return {
-      props__: {}, // 注意双下划线结尾
+      // 注意双下划线结尾
+      props__: {},
+      watchListFilter__: true,
     }
   },
   methods: {
