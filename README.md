@@ -1280,7 +1280,7 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
 `r__`、`u__`、`d__`、`updateStatus__`、`enable__`、`disable__` 的payload参数均支持FormData类型。
 
 ```vue
-<!-- 局部配置示例 -->
+<!-- 示例：局部配置 -->
 
 <template>
   <el-table-column label="操作" align="center">
