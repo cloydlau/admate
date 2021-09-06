@@ -248,7 +248,7 @@ yarn add admate kikimore element-form-verify?
 
 - [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
 
-- `element-form-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
+- [element-form-verify](https://github.com/a1067111756/vue-verify) : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
 2. 初始化
 
@@ -262,7 +262,7 @@ import { merge } from 'lodash'
 import ElementFormVerify from 'element-form-verify'
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
-import { Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
 import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
 
@@ -270,6 +270,15 @@ import { getPageBtnList } from '@/permission'
  * 单条记录的状态
  */
 const STATUS_OPTIONS = ['停用', '启用'], ENABLED_VALUE = 1, DISABLED_VALUE = 0;
+
+/**
+ * 初始化axiosShortcut并导出
+ * 生成接口调用捷径
+ */
+const axiosShortcut = createAxiosShortcut(
+  // axios或axios实例
+  request,
+)
 
 /**
  * 初始化mixin并导出
@@ -310,6 +319,19 @@ const mixins = merge(mixin, {
   /**
    * 补充mixin
    */
+  components: {
+    ...Object.fromEntries([FormDialog, PopButton, PopSwitch, Select].map(v => [v.name, v])),
+  },
+  filters: {
+    $value2label: (value, options) =>
+      (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
+    $dialogTitle: (value, catalog) => ({
+      c: '新增',
+      r: '查看',
+      u: '编辑',
+      ...catalog,
+    }[value] ?? '')
+  },
   data () {
     return merge(mininData, {
       list__: {
@@ -354,6 +376,12 @@ const mixins = merge(mixin, {
     ...mapGetters([
       'dict',
     ]),
+  },
+  methods: {
+    ...Object.keys(axiosShortcut).reduce((total, currentValue) => {
+      total[`$${currentValue}`] = axiosShortcut[currentValue]
+      return total
+    }, {})
   }
 })
 export { mixins }
@@ -398,35 +426,6 @@ const apiGenerator = createAPIGenerator(
   }
 )
 export { apiGenerator }
-
-/**
- * 初始化axiosShortcut并导出
- * 生成接口调用捷径
- */
-const axiosShortcut = createAxiosShortcut(
-  // axios或axios实例
-  request,
-)
-const $axiosShortcut = Object.keys(axiosShortcut).reduce((total, currentValue) => {
-  total[`$${currentValue}`] = axiosShortcut[currentValue]
-  return total
-}, {})
-export { $axiosShortcut }
-
-/**
- * 导出filters
- */
-const $filters = {
-  $value2label: (value, options) =>
-    (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
-  $dialogTitle: (value, catalog) => ({
-    c: '新增',
-    r: '查看',
-    u: '编辑',
-    ...catalog,
-  }[value] ?? '')
-}
-export { $filters }
 
 /**
  * 全局注册element-form-verify
