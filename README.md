@@ -32,10 +32,10 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { merge } from 'lodash'
-import ElementVerify from 'element-verify'
+import ElementFormVerify from 'element-form-verify'
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, DropDown, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
 import TimeRangePicker from 'time-range-picker'
 import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
@@ -197,7 +197,7 @@ for (let k in axiosShortcut) {
 }, {
   component: FormDialog,
 }, {
-  component: DropDown,
+  component: Select,
 }, {
   component: TimeRangePicker
 }].map(({ component, config }) =>
@@ -212,7 +212,7 @@ Object.defineProperty(Vue.prototype, '$Swal', {
  */
 const filters = {
   // 数据字典转义
-  $key2label: (value, options) =>
+  $value2label: (value, options) =>
     (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
   // 表单标题
   $dialogTitle: (value, catalog) => ({
@@ -231,9 +231,9 @@ Object.keys(filters).map(filter => {
 })
 
 /**
- * 全局注册element-verify
+ * 全局注册element-form-verify
  */
-Vue.use(ElementVerify)
+Vue.use(ElementFormVerify)
 ```
 
 <br>
@@ -243,12 +243,12 @@ Vue.use(ElementVerify)
 1. 安装依赖
 
 ```bash
-yarn add admate kikimore element-verify?
+yarn add admate kikimore element-form-verify?
 ```
 
 - [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
 
-- `element-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
+- `element-form-verify` : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
 
 2. 初始化
 
@@ -259,7 +259,7 @@ import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind�
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { merge } from 'lodash'
-import ElementVerify from 'element-verify'
+import ElementFormVerify from 'element-form-verify'
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { Swal } from 'kikimore'
@@ -417,7 +417,7 @@ export { $axiosShortcut }
  * 导出filters
  */
 const $filters = {
-  $key2label: (value, options) =>
+  $value2label: (value, options) =>
     (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
   $dialogTitle: (value, catalog) => ({
     c: '新增',
@@ -429,9 +429,9 @@ const $filters = {
 export { $filters }
 
 /**
- * 全局注册element-verify
+ * 全局注册element-form-verify
  */
-Vue.use(ElementVerify)
+Vue.use(ElementFormVerify)
 ```
 
 ```ts
@@ -487,12 +487,14 @@ export function getPageBtnList () {
 <script>
 import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
 import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, DropDown, Swal } from 'kikimore'
+import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
 const { success, info, warning, error, confirm } = Swal
 
 export default {
   mixins: [mixins],
-  components: { FormDialog, PopButton, PopSwitch, DropDown },
+  components: {
+    ...Object.fromEntries([FormDialog, PopButton, PopSwitch, Select].map(v => [v.name, v])),
+  },
   filters: {
     ...$filters
   },
@@ -583,7 +585,7 @@ export default {
 
 <br>
 
-## 命名规则
+## Naming Rules
 
 ::: warning  
 `mixin` 中所有的 data、methods 均以**双下划线结尾**命名，以避免与业务代码冲突
@@ -621,7 +623,7 @@ export default {
 <template>
   <el-form ref="listFilterForm__" :model="list__.filter" inline>
     <el-form-item prop="status">
-      <DropDown
+      <KiSelect
         :index.sync="list__.filter.status"
         :options="options.status"
         placeholder="状态"
@@ -808,7 +810,7 @@ export default {
 <!-- 示例：额外的校验，自行控制表单的关闭 -->
 
 <template>
-  <FormDialog :submit="submit"/>
+  <KiFormDialog :submit="submit"/>
 </template>
 
 <script>
@@ -851,7 +853,7 @@ dialogTitle
 
 ```html
 
-<FormDialog :title="row__.status | $dialogTitle"/>
+<KiFormDialog :title="row__.status | $dialogTitle"/>
 ```
 
 默认对应关系：
@@ -864,7 +866,7 @@ dialogTitle
 
 ```html
 
-<FormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
+<KiFormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
 ```
 
 <br>
@@ -883,7 +885,7 @@ this.retrieve__
 <!-- 示例：修改接口返回值 -->
 
 <template>
-  <FormDialog :retrieve="retrieve"/>
+  <KiFormDialog :retrieve="retrieve"/>
 </template>
 
 <script>
@@ -909,7 +911,7 @@ export default {
 <!-- 在查询单条记录之前做点什么 -->
 
 <template>
-  <FormDialog :retrieve="retrieve"/>
+  <KiFormDialog :retrieve="retrieve"/>
 </template>
 
 <script>
@@ -946,7 +948,7 @@ this.submit__
 <!-- 示例：修改提交参数 -->
 
 <template>
-  <FormDialog :submit="submit"/>
+  <KiFormDialog :submit="submit"/>
 </template>
 
 <script>
@@ -977,7 +979,7 @@ export default {
 <!-- 示例：指定提交参数 -->
 
 <template>
-  <FormDialog :submit="submit"/>
+  <KiFormDialog :submit="submit"/>
 </template>
 
 <script>
@@ -1005,7 +1007,7 @@ export default {
 
 <template>
   <div class="p-20px w-full">
-    <FormDialog
+    <KiFormDialog
       :show.sync="row__.show"
       :title="row__.status | $dialogTitle"
       v-model="row__.data"
@@ -1029,7 +1031,7 @@ export default {
           保 存
         </el-button>
       </div>
-    </FormDialog>
+    </KiFormDialog>
   </div>
 </template>
 
@@ -1201,7 +1203,7 @@ this.updateStatus__
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <PopSwitch
+    <KiPopSwitch
       v-bind="popSwitchProps(status)"
       @change="updateStatus__({id,status:status^1})"
     />
@@ -1215,7 +1217,7 @@ this.updateStatus__
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <PopSwitch
+    <KiPopSwitch
       v-bind="popSwitchProps(status)"
       @change="[enable__,disable__][status]({id})"
     />
@@ -1235,13 +1237,13 @@ this.updateStatus__
 <template>
   <el-table-column label="操作" align="center">
     <template slot-scope="{row}">
-      <PopButton
+      <KiPopButton
         v-if="pageBtnList.includes('查看')"
         :elTooltipProps="{content:'查看'}"
         icon="el-icon-search"
         @click="r__(row,'config')"
       />
-      <PopButton
+      <KiPopButton
         v-if="pageBtnList.includes('编辑')"
         :elTooltipProps="{content:'编辑'}"
         type="primary"
@@ -1287,7 +1289,7 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
 <template>
   <el-table-column label="操作" align="center">
     <template slot-scope="{row:{id}}">
-      <PopButton
+      <KiPopButton
         v-if="pageBtnList.includes('编辑')"
         :elTooltipProps="{content:'编辑'}"
         type="primary"
