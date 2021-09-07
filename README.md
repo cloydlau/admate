@@ -22,7 +22,21 @@
 
 ## Installation
 
+### 依赖
+
 ![NPM](https://nodei.co/npm/admate.png)
+
+
+```bash
+yarn add admate kikimore element-form-verify?
+```
+
+- [kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中一些组件（必要）
+
+- [element-form-verify](https://github.com/a1067111756/vue-verify) :
+  Admate默认使用该库来校验输入（可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`）
+
+<br>
 
 ### 全局注册
 
@@ -37,8 +51,9 @@ import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
 import TimeRangePicker from 'time-range-picker'
-import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
+import request from '@/utils/request'
+import '@/utils/filters'
 
 /**
  * 单条记录的状态
@@ -208,29 +223,6 @@ Object.defineProperty(Vue.prototype, '$Swal', {
 })
 
 /**
- * 全局注册filters
- */
-const filters = {
-  // 数据字典转义
-  $value2label: (value, options) =>
-    (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
-  // 表单标题
-  $dialogTitle: (value, catalog) => ({
-    c: '新增',
-    r: '查看',
-    u: '编辑',
-    ...catalog,
-  }[value] ?? '')
-}
-Object.keys(filters).map(filter => {
-  Vue.filter(filter, filters[filter])
-  // 同时注册为全局方法
-  Object.defineProperty(Vue.prototype, filter, {
-    value: filters[filter]
-  })
-})
-
-/**
  * 全局注册element-form-verify
  */
 Vue.use(ElementFormVerify)
@@ -239,18 +231,6 @@ Vue.use(ElementFormVerify)
 <br>
 
 ### 局部引入
-
-1. 安装依赖
-
-```bash
-yarn add admate kikimore element-form-verify?
-```
-
-- [Kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中的一些组件
-
-- [element-form-verify](https://github.com/a1067111756/vue-verify) : Admate默认使用该库来以指令方式校验输入，可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`
-
-2. 初始化
 
 ```ts
 // @/utils/admate.ts
@@ -263,8 +243,9 @@ import ElementFormVerify from 'element-form-verify'
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
-import request from '@/utils/request'
 import { getPageBtnList } from '@/permission'
+import request from '@/utils/request'
+import filters from '@/utils/filters'
 
 /**
  * 单条记录的状态
@@ -322,16 +303,7 @@ const mixins = merge(mixin, {
   components: {
     ...Object.fromEntries([FormDialog, PopButton, PopSwitch, Select].map(v => [v.name, v])),
   },
-  filters: {
-    $value2label: (value, options) =>
-      (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
-    $dialogTitle: (value, catalog) => ({
-      c: '新增',
-      r: '查看',
-      u: '编辑',
-      ...catalog,
-    }[value] ?? '')
-  },
+  filters,
   data () {
     return merge(mininData, {
       list__: {
@@ -433,6 +405,10 @@ export { apiGenerator }
 Vue.use(ElementFormVerify)
 ```
 
+<br>
+
+### 元素级权限
+
 ```ts
 // @/permission.ts
 // 权限按钮显隐逻辑，仅供参考，根据自身需求进行实现。
@@ -456,9 +432,67 @@ export function getPageBtnList () {
 }
 ```
 
+<br>
+
+### filters
+
+```ts
+// @/utils/filters
+
+import Vue from 'vue'
+import currency from 'currency.js'
+import { notEmpty } from 'kayran'
+
+const filters = {
+  // 表单标题（必要）
+  $dialogTitle: (value, catalog) => ({
+    c: '新增',
+    r: '查看',
+    u: '编辑',
+    ...catalog,
+  }[value] ?? ''),
+  // 数据字典转义
+  $value2label: (value, options) =>
+    (options?.filter(v => v['dataValue'] === value)[0]?.['dataName']) ?? '',
+  // 分转元
+  $cent2yuan: (value, { withSymbol = false } = {}) => {
+    if (notEmpty(value)) {
+      const c = currency(value, {
+        fromCents: true,
+        symbol: '￥',
+      })
+      return withSymbol ? c.format() : c.value
+    }
+    return value
+  },
+  // 元转分
+  $yuan2cent: value =>
+    notEmpty(value) ?
+      currency(value).multiply(100).value :
+      value,
+}
+
+// S: 仅限全局注册时
+Object.keys(filters).map(filter => {
+  Vue.filter(filter, filters[filter])
+  // 同时注册为全局方法
+  Object.defineProperty(Vue.prototype, filter, {
+    value: filters[filter]
+  })
+})
+// E: 仅限全局注册时
+
+export default filters // 局部引入时需要
+```
+
+<br>
+
+### 样式
+
+如果你的系统没有集成 `windicss` / `tailwind`，需要引入下方样式补丁：
+
 ```scss
 /* @/utils/admate.css */
-/* 样式补丁，如果如果你的系统已集成 windicss / tailwind，则不需要。 */
 
 .p-20px {
   padding: 20px;
@@ -475,84 +509,6 @@ export function getPageBtnList () {
 .my-20px {
   margin-top: 20px;
   margin-bottom: 20px;
-}
-```
-
-3. 页面使用
-
-```vue
-<!-- xxx.vue -->
-
-<script>
-import { mixins, apiGenerator, $filters, $axiosShortcut } from '@/utils/admate'
-import 'kikimore/dist/style.css'
-import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
-const { success, info, warning, error, confirm } = Swal
-
-export default {
-  mixins: [mixins],
-  components: {
-    ...Object.fromEntries([FormDialog, PopButton, PopSwitch, Select].map(v => [v.name, v])),
-  },
-  filters: {
-    ...$filters
-  },
-  data () {
-    return {
-      api__: apiGenerator('xxx'),
-    }
-  },
-  methods: {
-    ...$axiosShortcut,
-  }
-}
-</script>
-```
-
-<br>
-
-### 局部配置
-
-#### mixin
-
-```ts
-import { mixins } from '@/utils/admate'
-
-export default {
-  mixins: [mixins],
-  data () {
-    return {
-      // 注意双下划线结尾
-      props__: {},
-      watchListFilter__: true,
-    }
-  },
-  methods: {
-    // 注意双下划线结尾
-    getListProxy__ (motive, res) {}
-  }
-}
-```
-
-#### apiGenerator
-
-```ts
-import { apiGenerator } from '@/utils/admate'
-
-export default {
-  data () {
-    return {
-      /**
-       * @param {string} - 接口模块前缀
-       * @param {object} - crud的请求配置（同全局配置）
-       */
-      api__: apiGenerator('/somepage', {
-        r: {
-          method: 'POST'
-        },
-      })
-    }
-  }
 }
 ```
 
@@ -581,6 +537,38 @@ export default {
 :three: 点击 `生成代码`，代码将被复制至剪贴板
 
 :four: 创建页面文件 `xxx.vue`，粘贴代码
+
+<br>
+
+### 在页面中使用
+
+```vue
+<!-- somepage.vue -->
+
+<script>
+import { mixins, apiGenerator } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      // 注意双下划线结尾
+      api__: apiGenerator('somepage', {
+        r: {
+          method: 'POST'
+        },
+      }),
+      //props__: {},
+      //watchListFilter__: true,
+    }
+  },
+  methods: {
+    // 注意双下划线结尾
+    //getListProxy__ (motive, res) {}
+  }
+}
+</script>
+```
 
 <br>
 
