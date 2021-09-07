@@ -4,7 +4,7 @@
 
 并在此基础上确保灵活可配，避免过度封装。
 
-技术栈：`Vue`, `Element`
+技术栈：`Vue` & `Element`
 
 ## Features
 
