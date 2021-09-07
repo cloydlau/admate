@@ -36,7 +36,7 @@ yarn add admate kikimore element-form-verify?
 - [kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中一些组件（必要）
 
 - [element-form-verify](https://github.com/a1067111756/vue-verify) :
-  Admate默认使用该库来校验输入（可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`）
+  Admate默认使用该库来校验表单（可以不安装该依赖，并在生成的代码模板中全局搜索删除 `verify`）
 
 <br>
 
@@ -46,16 +46,17 @@ yarn add admate kikimore element-form-verify?
 // @/utils/admate.ts
 
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { merge } from 'lodash'
-import ElementFormVerify from 'element-form-verify'
+import { mapGetters } from 'vuex' // 用于在mixin中融入业务逻辑，非必须
+import './admate.css' // 样式补丁，非必须
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
-import TimeRangePicker from 'time-range-picker'
-import { getPageBtnList } from '@/permission'
+import TimeRangePicker from 'time-range-picker' // 时间范围选择组件，非必须
+import { merge } from 'lodash' // 用于在mixin中融入业务逻辑，非必须
+import ElementFormVerify from 'element-form-verify' // 表单校验，非必须
+import { getPageBtnList } from '@/permission' // 权限按钮显隐逻辑，非必须 
 import request from '@/utils/request'
-import '@/utils/filters'
+import '@/utils/filters' // 过滤器，非必须
 
 /**
  * 单条记录的状态
@@ -237,17 +238,18 @@ Vue.use(ElementFormVerify)
 ```ts
 // @/utils/admate.ts
 
-import './admate.css' // todo: 如果你的系统已集成 windicss / tailwind，可删去
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
-import { merge } from 'lodash'
-import ElementFormVerify from 'element-form-verify'
+import { mapGetters } from 'vuex' // 用于在mixin中融入业务逻辑，非必须
+import './admate.css' // 样式补丁，非必须
 import { createMixin, createAPIGenerator, createAxiosShortcut } from 'admate'
 import 'kikimore/dist/style.css'
 import { FormDialog, PopButton, PopSwitch, Select, Swal } from 'kikimore'
-import { getPageBtnList } from '@/permission'
+import TimeRangePicker from 'time-range-picker' // 时间范围选择组件，非必须
+import { merge } from 'lodash' // 用于在mixin中融入业务逻辑，非必须
+import ElementFormVerify from 'element-form-verify' // 表单校验，非必须
+import { getPageBtnList } from '@/permission' // 权限按钮显隐逻辑，非必须 
 import request from '@/utils/request'
-import filters from '@/utils/filters'
+import filters from '@/utils/filters' // 过滤器，非必须
 
 /**
  * 单条记录的状态
@@ -303,7 +305,9 @@ const mixins = merge(mixin, {
    * 补充mixin
    */
   components: {
-    ...Object.fromEntries([FormDialog, PopButton, PopSwitch, Select].map(v => [v.name, v])),
+    ...Object.fromEntries([
+      FormDialog, PopButton, PopSwitch, Select, TimeRangePicker
+    ].map(v => [v.name, v])),
   },
   filters,
   data () {
