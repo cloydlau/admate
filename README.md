@@ -28,9 +28,8 @@
 
 ![NPM](https://nodei.co/npm/admate.png)
 
-
 ```bash
-yarn add admate kikimore element-form-verify?
+pnpm add admate axios element-ui kikimore element-form-verify? vue@2
 ```
 
 - [kikimore](https://github.com/cloydlau/kikimore) : Admate会用到其中一些组件（必要）
