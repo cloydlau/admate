@@ -997,14 +997,7 @@ export default {
 
 <template>
   <div class="p-20px">
-    <el-table
-      v-loading="list__.loading"
-      :data="list__.data"
-      fit
-      stripe
-      border
-      highlight-current-row
-    >
+    <el-table v-loading="list__.loading" :data="list__.data">
       <!-- -->
       <el-table-column label="操作" align="center">
         <template slot-scope="{row}">
@@ -1020,14 +1013,8 @@ export default {
 
     </el-table>
 
-    <KiFormDialog
-      :show.sync="subpage.show"
-      v-model="subpage.data"
-    >
-      <subpage
-        v-if="subpage.data.id"
-        :id="subpage.data.id"
-      />
+    <KiFormDialog :show.sync="subpage.show" v-model="subpage.data">
+      <subpage v-if="subpage.data.id" :id="subpage.data.id"/>
     </KiFormDialog>
   </div>
 </template>
@@ -1066,14 +1053,7 @@ export default {
 
 <template>
   <div class="p-20px">
-    <el-table
-      v-loading="list__.loading"
-      :data="list__.data"
-      fit
-      border
-      stripe
-      highlight-current-row
-    >
+    <el-table v-loading="list__.loading" :data="list__.data">
       <!-- -->
     </el-table>
   </div>
