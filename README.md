@@ -988,7 +988,120 @@ export default {
 
 <br>
 
-### 特殊页面：无列表，仅含表单
+### 例子：嵌套另一个使用mixin的列表
+
+场景：某个弹框打开后展示一个列表，这个列表也需要获得Admate的能力
+
+```vue
+<!-- 父页面 -->
+
+<template>
+  <div class="p-20px">
+    <el-table
+      v-loading="list__.loading"
+      :data="list__.data"
+      fit
+      stripe
+      border
+      highlight-current-row
+    >
+      <!-- -->
+      <el-table-column label="操作" align="center">
+        <template slot-scope="{row}">
+          <KiPopButton
+            v-if="pageBtnList.includes('查看子页面')"
+            size="mini"
+            @click="subpageShow(row)"
+          >
+            查看子页面
+          </KiPopButton>
+        </template>
+      </el-table-column>
+
+    </el-table>
+
+    <KiFormDialog
+      :show.sync="subpage.show"
+      v-model="subpage.data"
+    >
+      <subpage
+        v-if="subpage.data.id"
+        :id="subpage.data.id"
+      />
+    </KiFormDialog>
+  </div>
+</template>
+
+<script>
+import { apiGenerator, mixins } from '@/utils/admate'
+import subpage from './subpage'
+
+export default {
+  mixins: [mixins],
+  components: { subpage },
+  data () {
+    return {
+      api__: apiGenerator('somepage'),
+      subpage: {
+        show: false,
+        data: {},
+      },
+    }
+  },
+  methods: {
+    subpageShow (data) {
+      this.subpage.data = {
+        ...this.subpage.data,
+        ...data,
+      }
+      this.subpage.show = true
+    },
+  },
+}
+</script>
+```
+
+```vue
+<!-- 子页面 -->
+
+<template>
+  <div class="p-20px">
+    <el-table
+      v-loading="list__.loading"
+      :data="list__.data"
+      fit
+      border
+      stripe
+      highlight-current-row
+    >
+      <!-- -->
+    </el-table>
+  </div>
+</template>
+
+<script>
+import { apiGenerator, mixins } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      api__: apiGenerator('subpage'),
+      list__: {
+        filter: {
+          id: this.$attrs.id // 用父页面传过来的id作为初始参数
+        }
+      },
+    }
+  },
+}
+</script>
+
+```
+
+<br>
+
+### 例子：无列表，仅含表单的页面
 
 场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
 
