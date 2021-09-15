@@ -988,167 +988,6 @@ export default {
 
 <br>
 
-### 例子：嵌套另一个使用mixin的列表
-
-场景：某个弹框要展示一个列表，这个列表也需要获得Admate的能力
-
-```vue
-<!-- 父页面 -->
-
-<template>
-  <div class="p-20px">
-    <el-table v-loading="list__.loading" :data="list__.data">
-      <!-- -->
-      <el-table-column label="操作" align="center">
-        <template slot-scope="{row}">
-          <KiPopButton
-            v-if="pageBtnList.includes('查看子页面')"
-            size="mini"
-            @click="subpageShow(row)"
-          >
-            查看子页面
-          </KiPopButton>
-        </template>
-      </el-table-column>
-
-    </el-table>
-
-    <KiFormDialog :show.sync="subpage.show" v-model="subpage.data">
-      <subpage v-if="subpage.data.id" :id="subpage.data.id"/>
-    </KiFormDialog>
-  </div>
-</template>
-
-<script>
-import { apiGenerator, mixins } from '@/utils/admate'
-import subpage from './subpage'
-
-export default {
-  mixins: [mixins],
-  components: { subpage },
-  data () {
-    return {
-      api__: apiGenerator('somepage'),
-      subpage: {
-        show: false,
-        data: {},
-      },
-    }
-  },
-  methods: {
-    subpageShow (data) {
-      this.subpage.data = {
-        ...this.subpage.data,
-        ...data,
-      }
-      this.subpage.show = true
-    },
-  },
-}
-</script>
-```
-
-```vue
-<!-- 子页面 -->
-
-<template>
-  <div class="p-20px">
-    <el-table v-loading="list__.loading" :data="list__.data">
-      <!-- -->
-    </el-table>
-  </div>
-</template>
-
-<script>
-import { apiGenerator, mixins } from '@/utils/admate'
-
-export default {
-  mixins: [mixins],
-  data () {
-    return {
-      api__: apiGenerator('subpage'),
-      list__: {
-        filter: {
-          id: this.$attrs.id // 用父页面传过来的id作为初始参数
-        }
-      },
-    }
-  },
-}
-</script>
-
-```
-
-<br>
-
-### 例子：无列表，仅含表单的页面
-
-场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <div class="p-20px w-full">
-    <KiFormDialog
-      :show.sync="row__.show"
-      :title="row__.status | $dialogTitle"
-      v-model="row__.data"
-      :retrieve="retrieve__"
-      :submit="submit__"
-      ref="formDialog"
-      :show-close="false"
-      :modal="false"
-      class="relative"
-    >
-      <template #el-form>
-
-      </template>
-
-      <div slot="footer" class="text-right pt-50px">
-        <el-button
-          type="primary"
-          @click="formDialog.confirm"
-          :loading="formDialog.submitting"
-        >
-          保 存
-        </el-button>
-      </div>
-    </KiFormDialog>
-  </div>
-</template>
-
-<script>
-import { mixins, apiGenerator } from '@/utils/admate'
-
-export default {
-  mixins: [mixins],
-  mounted () {
-    this.formDialog = this.$refs.formDialog
-  },
-  data () {
-    return {
-      api__: apiGenerator(''),
-      formDialog: {},
-    }
-  },
-  methods: {
-    getListProxy__ (motive) {
-      if (motive === 'init') {
-        this.u__()
-      } else {
-        this.$Swal.success('操作成功').then(() => {
-          this.u__()
-        })
-      }
-    }
-  }
-}
-</script>
-```
-
-<br>
-
 ## 增删查改
 
 ### 查询列表
@@ -1439,6 +1278,165 @@ export default {
     }
   }
 }
+```
+
+<br>
+
+## 例：嵌套另一个使用Admate的页面
+
+```vue
+<!-- 示例：父页面中某个弹框要展示一个同样使用Admate的页面 -->
+
+<template>
+  <div class="p-20px">
+    <el-table v-loading="list__.loading" :data="list__.data">
+      <!-- -->
+      <el-table-column label="操作" align="center">
+        <template slot-scope="{row}">
+          <KiPopButton
+            v-if="pageBtnList.includes('查看子页面')"
+            size="mini"
+            @click="subpageShow(row)"
+          >
+            查看子页面
+          </KiPopButton>
+        </template>
+      </el-table-column>
+
+    </el-table>
+
+    <KiFormDialog :show.sync="subpage.show" v-model="subpage.data">
+      <subpage v-if="subpage.data.id" :id="subpage.data.id"/>
+    </KiFormDialog>
+  </div>
+</template>
+
+<script>
+import { apiGenerator, mixins } from '@/utils/admate'
+import subpage from './subpage'
+
+export default {
+  mixins: [mixins],
+  components: { subpage },
+  data () {
+    return {
+      api__: apiGenerator('somepage'),
+      subpage: {
+        show: false,
+        data: {},
+      },
+    }
+  },
+  methods: {
+    subpageShow (data) {
+      this.subpage.data = {
+        ...this.subpage.data,
+        ...data,
+      }
+      this.subpage.show = true
+    },
+  },
+}
+</script>
+```
+
+```vue
+<!-- 子页面 -->
+
+<template>
+  <div class="p-20px">
+    <el-table v-loading="list__.loading" :data="list__.data">
+      <!-- -->
+    </el-table>
+  </div>
+</template>
+
+<script>
+import { apiGenerator, mixins } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  data () {
+    return {
+      api__: apiGenerator('subpage'),
+      list__: {
+        filter: {
+          id: this.$attrs.id // 用父页面传过来的id作为初始参数
+        }
+      },
+    }
+  },
+}
+</script>
+
+```
+
+<br>
+
+## 例：无列表，直接展示表单的页面
+
+场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <div class="p-20px w-full">
+    <KiFormDialog
+      :show.sync="row__.show"
+      :title="row__.status | $dialogTitle"
+      v-model="row__.data"
+      :retrieve="retrieve__"
+      :submit="submit__"
+      ref="formDialog"
+      :show-close="false"
+      :modal="false"
+      class="relative"
+    >
+      <template #el-form>
+
+      </template>
+
+      <div slot="footer" class="text-right pt-50px">
+        <el-button
+          type="primary"
+          @click="formDialog.confirm"
+          :loading="formDialog.submitting"
+        >
+          保 存
+        </el-button>
+      </div>
+    </KiFormDialog>
+  </div>
+</template>
+
+<script>
+import { mixins, apiGenerator } from '@/utils/admate'
+
+export default {
+  mixins: [mixins],
+  mounted () {
+    this.formDialog = this.$refs.formDialog
+  },
+  data () {
+    return {
+      api__: apiGenerator(''),
+      formDialog: {},
+    }
+  },
+  methods: {
+    getListProxy__ (motive) {
+      if (motive === 'init') {
+        this.u__()
+      } else {
+        this.$Swal.success('操作成功').then(() => {
+          this.u__()
+        })
+      }
+    }
+  }
+}
+</script>
 ```
 
 <br>
