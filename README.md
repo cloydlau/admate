@@ -1262,17 +1262,19 @@ this.updateStatus__
     <template slot-scope="{row}">
       <KiPopButton
         v-if="pageBtnList.includes('查看')"
-        :elTooltipProps="{content:'查看'}"
         icon="el-icon-search"
         @click="r__(row,'config')"
-      />
+      >
+        查看
+      </KiPopButton>
       <KiPopButton
         v-if="pageBtnList.includes('编辑')"
-        :elTooltipProps="{content:'编辑'}"
         type="primary"
         icon="el-icon-edit"
         @click="u__(row,'config')"
-      />
+      >
+        编辑
+      </KiPopButton>
     </template>
   </el-table-column>
 </template>
@@ -1314,11 +1316,12 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
     <template slot-scope="{row:{id}}">
       <KiPopButton
         v-if="pageBtnList.includes('编辑')"
-        :elTooltipProps="{content:'编辑'}"
         type="primary"
         icon="el-icon-edit"
         @click="u__(FormData.from({id}))"
-      />
+      >
+        编辑
+      </KiPopButton>
     </template>
   </el-table-column>
 </template>
