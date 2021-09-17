@@ -18,7 +18,7 @@ function getInitialData () {
       loading: false,
       show: false,
       data: {},
-      initialData: {},
+      //initialData: {},
       payload: {},
       payloadUse: null,
       status: '',
@@ -86,7 +86,7 @@ function createMixin ({
           //setTimeout(() => {
           this.row__.status = ''
           //}, 300)
-          this.row__.data = cloneDeep(this.row__.initialData)
+          //this.row__.data = cloneDeep(this.row__.initialData)
           this.row__.payload = {}
           this.row__.payloadUse = null
           this.row__.loading = false
@@ -122,9 +122,9 @@ function createMixin ({
         ...this.list__.filter
       }
 
-      if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
+      /*if (Object.getOwnPropertyNames(this.row__.data).length > 0) {
         this.row__.initialData = cloneDeep(this.row__.data)
-      }
+      }*/
       this.getListProxy__('init')
     },
     mounted () {
