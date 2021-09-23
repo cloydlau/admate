@@ -114,7 +114,7 @@ export default function useAdmate ({
     getList
 
   // crud参数处理
-  const crudArgsHandler = (payload = {}, payloadUse = 'data', caller, Form) => {
+  const crudArgsHandler = (payload = {}, payloadUse = 'data', caller) => {
     const isRorU = ['r', 'u'].includes(caller)
     switch (payloadUse) {
       case 'data':
@@ -152,17 +152,17 @@ export default function useAdmate ({
 
   // 查看单条记录
   const r = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'r', Form)
+    crudArgsHandler(payload, payloadUse, 'r')
   }
 
   // 编辑单条记录
   const u = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'u', Form)
+    crudArgsHandler(payload, payloadUse, 'u')
   }
 
   // 删除单条记录
   const d = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'd', Form)
+    crudArgsHandler(payload, payloadUse, 'd')
     List.loading = true
     api.d(payload, payloadUse,).then(async response => {
       if (List.data?.length === 1) {
@@ -181,7 +181,7 @@ export default function useAdmate ({
 
   // 改变单条记录状态
   const updateStatus = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'updateStatus', Form)
+    crudArgsHandler(payload, payloadUse, 'updateStatus')
     List.loading = true
     api.updateStatus(payload, payloadUse,).then(async response => {
       await GetListProxy({ response })
@@ -192,7 +192,7 @@ export default function useAdmate ({
 
   // 启用单条记录
   const enable = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'enable', Form)
+    crudArgsHandler(payload, payloadUse, 'enable')
     List.loading = true
     api.enable(payload, payloadUse,).then(async response => {
       await GetListProxy({ response })
@@ -203,7 +203,7 @@ export default function useAdmate ({
 
   // 停用单条记录
   const disable = (payload?, payloadUse?: string) => {
-    crudArgsHandler(payload, payloadUse, 'disable', Form)
+    crudArgsHandler(payload, payloadUse, 'disable')
     List.loading = true
     api.disable(payload, payloadUse,).then(async response => {
       await GetListProxy({ response })
