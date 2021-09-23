@@ -220,16 +220,16 @@ export default function useAdmate ({
     }
 
     return new Promise((resolve, reject) => {
-      const responseult = api.r(Form.payload, Form.payloadUse)
+      const result = api.r(Form.payload, Form.payloadUse)
 
       if (Form.payloadUse === 'cache') {
-        resolve(responseult)
+        resolve(result)
         Form.data = {
           ...Form.data,
-          ...responseult
+          ...result
         }
       } else {
-        responseult.then(response => {
+        result.then(response => {
           const formData = At(response, Form.dataAt)
           // 坑：
           /*
@@ -335,7 +335,7 @@ export default function useAdmate ({
   })
 
   onUnmounted(() => {
-    // 页面销毁时如果还有查询请求 中止掉
+    // 页面销毁时如果还有查询请求，中止掉
     cancelAllRequest()
     // 重置所有数据
     listFilterForm.value = null
