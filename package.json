@@ -1,6 +1,5 @@
 {
   "name": "admate",
-  "displayName": "管理后台伴侣",
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
   "version": "0.5.4",
@@ -30,10 +29,11 @@
   "dependencies": {
     "kayran": "latest",
     "lodash-es": "latest",
-    "qs": "latest"
+    "qs": "latest",
+    "vue-demi": "latest"
   },
   "peerDependencies": {
-    "axios": "*"
+    "axios": "0"
   },
   "devDependencies": {
     "@types/jest": "latest",

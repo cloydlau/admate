@@ -1,8 +1,8 @@
 import createAPIGenerator, { createAxiosShortcut } from './api-generator'
-import createMixin from './mixin'
+import useAdmate from './useAdmate'
 
 export {
   createAPIGenerator,
   createAxiosShortcut,
-  createMixin,
+  useAdmate,
 }
