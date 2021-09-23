@@ -7,54 +7,59 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue-demi'
-import { isEmpty, notEmpty } from 'kayran'
+import { isEmpty, notEmpty, getFinalProp } from 'kayran'
 import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
 import { cancelAllRequest } from './api-generator'
-import type { apiType } from './api-generator'
+import type { APIType } from './api-generator'
 
 const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
+type StatusType = '' | 'c' | 'r' | 'u'
+
+const At = (response?: object, paths?: string | Function): any => {
+  return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
+}
+
 export default function useAdmate ({
   api,
-  getListProxy,
-  list,
   form,
+  list,
+  getListProxy,
 }: {
-  api: apiType,
-  getListProxy?: Function,
-  list?: {
-    data?: any[],
-    dataPath: string | Function,
-    loading?: boolean,
-    total?: number,
-    totalPath: string | Function,
-    filter?: object,
-    watchFilter?: boolean,
-    pageNoField?: string,
-  },
+  api: APIType,
   form?: {
-    loading?: boolean,
     show?: boolean,
     data?: any,
-    dataPath: string | Function,
-    status?: '' | 'c' | 'r' | 'u',
+    dataAt: string | Function,
+    loading?: boolean,
+    status?: StatusType,
   },
+  list?: {
+    filter?: object,
+    pageNumberParam: string,
+    watchFilter?: boolean,
+    data?: any[],
+    dataAt: string | Function,
+    total?: number,
+    totalAt: string | Function,
+    loading?: boolean,
+  },
+  getListProxy?: (getList: Function, caller: string, response?: any) => any,
 }): object {
   let listFilterForm = ref(null)
   let getListThrottled = ref(null)
 
-  const getInitialList = () => ({
-    data: [],
-    dataPath: 'list',
-    loading: false,
-    total: 0,
-    totalPath: 'total',
-    filter: {
-      //[props.pageNo]: 1,
-    },
-    watchFilter: true,
-    pageNoField: 'pageNo',
-    ...list,
+  const getInitialList = () => getFinalProp([list], {
+    default: userProp => ({
+      data: [],
+      loading: false,
+      total: 0,
+      filter: {
+        [userProp.pageNumberParam]: 1,
+      },
+      watchFilter: true,
+    }),
+    defaultIsDynamic: true,
   })
 
   let List = reactive(getInitialList())
@@ -63,7 +68,6 @@ export default function useAdmate ({
     loading: false,
     show: false,
     data: {},
-    dataPath: '',
     payload: {},
     payloadUse: null,
     status: '',
@@ -80,21 +84,16 @@ export default function useAdmate ({
     List.data.length = 0
     return new Promise((resolve, reject) => {
       api.list(payload, payloadUse)
-      .then(res => {
-        for (let v of at(res, List.dataPath)) {
-          if (Array.isArray(v)) {
-            List.data = v
-            List.total = at(res, List.totalPath)[0]
-            break
-          }
-        }
+      .then(response => {
+        List.data = At(response, List.dataAt)
+        List.total = At(response, List.totalAt)
         if (isEmpty(List.data)) {
           List.total = 0
         }
-        resolve(res)
+        resolve(response)
       })
-      .catch(res => {
-        reject(res)
+      .catch(response => {
+        reject(response)
       })
       .finally(e => {
         List.loading = false
@@ -102,15 +101,21 @@ export default function useAdmate ({
     })
   }
 
-  const GetListProxy = getListProxy ?? getList
+  const GetListProxy = getListProxy ?
+    ({
+      caller = Form.status,
+      response
+    }: {
+      caller?: string,
+      response?: any
+    }) => {
+      getListProxy(getList, caller, response)
+    } :
+    getList
 
-  const c = () => {
-    Form.status = 'c'
-    Form.show = true
-  }
-
-  const crudArgsHandler = (payload = {}, payloadUse = 'data', motive, Form) => {
-    const isRorU = ['r', 'u'].includes(motive)
+  // crud参数处理
+  const crudArgsHandler = (payload = {}, payloadUse = 'data', caller, Form) => {
+    const isRorU = ['r', 'u'].includes(caller)
     switch (payloadUse) {
       case 'data':
         break
@@ -127,74 +132,87 @@ export default function useAdmate ({
         }
         break
       default:
-        throw Error(`${CONSOLE_PREFIX}${motive}的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/cache\'` : ''}`)
+        throw Error(`${CONSOLE_PREFIX}${caller}的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/cache\'` : ''}`)
     }
 
     Form.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
     Form.payloadUse = payloadUse
 
     if (isRorU) {
-      Form.status = motive
+      Form.status = caller
       Form.show = true
     }
   }
 
+  // 新增单条记录
+  const c = () => {
+    Form.status = 'c'
+    Form.show = true
+  }
+
+  // 查看单条记录
   const r = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'r', Form)
   }
 
+  // 编辑单条记录
   const u = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'u', Form)
   }
 
+  // 删除单条记录
   const d = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'd', Form)
     List.loading = true
-    api.d(payload, payloadUse,).then(async res => {
+    api.d(payload, payloadUse,).then(async response => {
       if (List.data?.length === 1) {
-        if (List.filter[props.pageNo] === 1) {
-          await GetListProxy('d', res)
+        if (List.filter[List.pageNumberParam] === 1) {
+          await GetListProxy({ response })
         } else {
-          List.filter[props.pageNo]--
+          List.filter[List.pageNumberParam]--
         }
       } else {
-        await GetListProxy('d', res)
+        await GetListProxy({ response })
       }
     }).finally(e => {
       List.loading = false
     })
   }
 
+  // 改变单条记录状态
   const updateStatus = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'updateStatus', Form)
     List.loading = true
-    api.updateStatus(payload, payloadUse,).then(async res => {
-      await GetListProxy('updateStatus', res)
+    api.updateStatus(payload, payloadUse,).then(async response => {
+      await GetListProxy({ response })
     }).finally(e => {
       List.loading = false
     })
   }
 
+  // 启用单条记录
   const enable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'enable', Form)
     List.loading = true
-    api.enable(payload, payloadUse,).then(async res => {
-      await GetListProxy('enable', res)
+    api.enable(payload, payloadUse,).then(async response => {
+      await GetListProxy({ response })
     }).finally(e => {
       List.loading = false
     })
   }
 
+  // 停用单条记录
   const disable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'disable', Form)
     List.loading = true
-    api.disable(payload, payloadUse,).then(async res => {
-      await GetListProxy('disable', res)
+    api.disable(payload, payloadUse,).then(async response => {
+      await GetListProxy({ response })
     }).finally(e => {
       List.loading = false
     })
   }
 
+  // 表单回显
   const retrieve = () => {
     // 仅查看和编辑才调用
     if (!['r', 'u'].includes(Form.status)) {
@@ -202,17 +220,17 @@ export default function useAdmate ({
     }
 
     return new Promise((resolve, reject) => {
-      const result = api.r(Form.payload, Form.payloadUse)
+      const responseult = api.r(Form.payload, Form.payloadUse)
 
       if (Form.payloadUse === 'cache') {
-        resolve(result)
+        resolve(responseult)
         Form.data = {
           ...Form.data,
-          ...result
+          ...responseult
         }
       } else {
-        result.then(res => {
-          const formData = at(res, Form.dataPath)[0]
+        responseult.then(response => {
+          const formData = At(response, Form.dataAt)
           // 坑：
           /*
             let obj = { a: 1 }
@@ -237,18 +255,21 @@ export default function useAdmate ({
     })
   }
 
-  const submit = async (paramsHandler?) => {
+  // 表单提交
+  const submit = async (paramsHandler?: any) => {
     let params = Form.data
     if (typeof paramsHandler === 'function') {
       await paramsHandler()
     } else if (paramsHandler !== undefined) {
       params = paramsHandler
     }
-    return api[Form.status](params).then(async res => {
-      await GetListProxy(Form.status, res)
+    return api[Form.status](params)
+    .then(async response => {
+      await GetListProxy({ response })
     })
   }
 
+  // 表单关闭时，重置表单（Form.data交由KiFormDialog重置）
   watch('Form.show', n => {
     if (!n) {
       Form.status = ''
@@ -258,10 +279,11 @@ export default function useAdmate ({
     }
   })
 
-  GetListProxy('init')
+  // 首次获取列表
+  GetListProxy({ caller: 'init' })
 
   onMounted(() => {
-    // fix: 没有声明的筛选参数无法重置
+    // 给各筛选项赋初值，使得重置功能能够正常工作
     if (listFilterForm?.fields) {
       List.filter = {
         ...Object.fromEntries(
@@ -274,24 +296,23 @@ export default function useAdmate ({
       }
     }
 
+    // 筛选项改变时，刷新列表
     if (List.watchFilter) {
       watch('List.filter', newFilter => {
         if (!getListThrottled) {
           getListThrottled = throttle(() => {
             const callback = async valid => {
               if (valid) {
-                const pageNoField = props.pageNo
-
                 // 如果改变的不是页码 页码重置为1
-                if (List.prevPageNo === newFilter[pageNoField]) {
-                  List.filter[pageNoField] === 1 ?
-                    await GetListProxy('filterChange') :
-                    List.filter[pageNoField] = 1
+                if (List.prevPageNo === newFilter[List.pageNumberParam]) {
+                  List.filter[List.pageNumberParam] === 1 ?
+                    await GetListProxy({ caller: 'filterChange' }) :
+                    List.filter[List.pageNumberParam] = 1
                 } else {
                   // 刷新列表
-                  await GetListProxy('pageNoChange')
+                  await GetListProxy({ caller: 'pageNumberChange' })
                 }
-                List.prevPageNo = newFilter[pageNoField]
+                List.prevPageNo = newFilter[List.pageNumberParam]
               }
             }
             if (listFilterForm) {
@@ -316,6 +337,7 @@ export default function useAdmate ({
   onUnmounted(() => {
     // 页面销毁时如果还有查询请求 中止掉
     cancelAllRequest()
+    // 重置所有数据
     listFilterForm.value = null
     getListThrottled.value = null
     Object.assign(List, getInitialList())
@@ -324,8 +346,8 @@ export default function useAdmate ({
 
   return {
     listFilterForm,
-    List,
-    Form,
+    list: List,
+    form: Form,
     getList,
     c,
     r,

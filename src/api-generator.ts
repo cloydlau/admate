@@ -20,7 +20,7 @@ type configCatalogType = {
   disable?: object | ((objForConfig: object) => object),
 }
 
-export type apiType = {
+export type APIType = {
   list: Function,
   c: Function,
   r: Function,
@@ -82,7 +82,7 @@ export default function createAPIGenerator (
   return (
     urlSuffix: string = '',
     configCatalog: configCatalogType = {}
-  ): apiType => {
+  ): APIType => {
     source = CancelToken.source()
 
     let result = {}
