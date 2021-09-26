@@ -37,13 +37,22 @@
   },
   "devDependencies": {
     "@types/jest": "latest",
+    "@vitejs/plugin-vue": "latest",
+    "@vue/compiler-sfc": "latest",
+    "ant-design-vue": "2",
     "axios": "latest",
     "codecov": "latest",
+    "element-plus": "latest",
     "jest": "latest",
+    "mockjs": "latest",
+    "rollup-plugin-peer-deps-external": "latest",
     "ts-jest": "latest",
     "tslib": "latest",
     "typescript": "latest",
-    "vite": "latest"
+    "vite": "latest",
+    "vite-plugin-mock": "latest",
+    "vite-plugin-windicss": "latest",
+    "vue": "3"
   },
   "files": [
     "dist"
