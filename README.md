@@ -1116,7 +1116,7 @@ this.r__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
@@ -1141,7 +1141,7 @@ this.u__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
 
@@ -1160,7 +1160,7 @@ this.d__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
@@ -1178,7 +1178,7 @@ this.enable__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
@@ -1196,7 +1196,7 @@ this.disable__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
@@ -1214,7 +1214,7 @@ this.updateStatus__
 **参数2的可选值：**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET、HEAD时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 **状态变更的两种方式：**
@@ -1552,7 +1552,7 @@ export default {
 /**
  * 快捷方式
  * @param {string} url 接口地址
- * @param {object} data 接口参数（GET、HEAD请求默认使用params）
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
@@ -1573,7 +1573,7 @@ this.$HEAD
 ```ts
 /**
  * @param {string} url 接口地址
- * @param {object} data 接口参数（GET、HEAD请求默认使用params）
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
@@ -1589,7 +1589,7 @@ this.$POST.upload // 请求方式可以更换
 ```ts
 /**
  * @param {string} url 接口地址
- * @param {object} data 接口参数（GET、HEAD请求默认使用params）
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */

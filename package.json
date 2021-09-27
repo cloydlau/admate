@@ -37,14 +37,16 @@
   },
   "devDependencies": {
     "@types/jest": "latest",
+    "@types/overlayscrollbars": "latest",
     "@vitejs/plugin-vue": "latest",
     "@vue/compiler-sfc": "latest",
-    "ant-design-vue": "2",
+    "ant-design-vue": "latest",
     "axios": "latest",
     "codecov": "latest",
     "element-plus": "latest",
     "jest": "latest",
     "mockjs": "latest",
+    "overlayscrollbars": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "ts-jest": "latest",
     "tslib": "latest",
@@ -52,7 +54,8 @@
     "vite": "latest",
     "vite-plugin-mock": "latest",
     "vite-plugin-windicss": "latest",
-    "vue": "3"
+    "vue": "^3.2.19",
+    "windicss": "latest"
   },
   "files": [
     "dist"

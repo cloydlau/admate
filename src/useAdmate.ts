@@ -3,7 +3,7 @@ import {
   ref,
   reactive,
   watch,
-  toRaw,
+  nextTick,
   onMounted,
   onUnmounted,
 } from 'vue-demi'
@@ -27,14 +27,14 @@ export default function useAdmate ({
   getListProxy,
 }: {
   api: APIType,
-  form?: {
+  form: {
     show?: boolean,
     data?: any,
     dataAt: string | Function,
     loading?: boolean,
     status?: StatusType,
   },
-  list?: {
+  list: {
     filter?: object,
     pageNumberParam: string,
     watchFilter?: boolean,
@@ -46,8 +46,8 @@ export default function useAdmate ({
   },
   getListProxy?: (getList: Function, caller: string, response?: any) => any,
 }): object {
-  let listFilterForm = ref(null)
-  let getListThrottled = ref(null)
+  const listFilterForm = ref(null)
+  const getListThrottled = ref(null)
 
   const getInitialList = () => getFinalProp([list], {
     default: userProp => ({
@@ -62,9 +62,9 @@ export default function useAdmate ({
     defaultIsDynamic: true,
   })
 
-  let List = reactive(getInitialList())
+  const List = reactive(getInitialList())
 
-  const getInitialForm = () => ({
+  const getInitialForm = () => cloneDeep({
     loading: false,
     show: false,
     data: {},
@@ -74,7 +74,7 @@ export default function useAdmate ({
     ...form,
   })
 
-  let Form = reactive(getInitialForm())
+  const Form = reactive(getInitialForm())
 
   const getList = (
     payload = List.filter,
@@ -270,12 +270,17 @@ export default function useAdmate ({
   }
 
   // 表单关闭时，重置表单（Form.data交由KiFormDialog重置）
-  watch('Form.show', n => {
+  watch(() => Form.show, n => {
     if (!n) {
-      Form.status = ''
-      Form.payload = {}
-      Form.payloadUse = null
-      Form.loading = false
+      nextTick(() => {
+        console.log(getInitialForm().data)
+        Object.assign(Form, getInitialForm())
+        console.log(Form.data)
+        //Form.loading = false
+      })
+      //Form.status = ''
+      //Form.payload = {}
+      //Form.payloadUse = null
     }
   })
 
@@ -284,11 +289,11 @@ export default function useAdmate ({
 
   onMounted(() => {
     // 给各筛选项赋初值，使得重置功能能够正常工作
-    if (listFilterForm?.fields) {
+    if (listFilterForm.value?.fields) {
       List.filter = {
         ...Object.fromEntries(
           Array.from(
-            listFilterForm.fields,
+            listFilterForm.value.fields,
             (v: any) => [v.labelFor, undefined]
           )
         ),
@@ -298,9 +303,9 @@ export default function useAdmate ({
 
     // 筛选项改变时，刷新列表
     if (List.watchFilter) {
-      watch('List.filter', newFilter => {
-        if (!getListThrottled) {
-          getListThrottled = throttle(() => {
+      watch(() => List.filter, newFilter => {
+        if (!getListThrottled.value) {
+          getListThrottled.value = throttle(() => {
             const callback = async valid => {
               if (valid) {
                 // 如果改变的不是页码 页码重置为1
@@ -315,8 +320,8 @@ export default function useAdmate ({
                 List.prevPageNo = newFilter[List.pageNumberParam]
               }
             }
-            if (listFilterForm) {
-              listFilterForm.validate(callback)
+            if (listFilterForm.value) {
+              listFilterForm.value.validate(callback)
             } else {
               //console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilterForm`)
               callback(true)
@@ -327,7 +332,7 @@ export default function useAdmate ({
           })
         }
 
-        getListThrottled()
+        getListThrottled.value()
       }, {
         deep: true
       })
