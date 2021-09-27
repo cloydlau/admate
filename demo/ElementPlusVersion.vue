@@ -6,13 +6,13 @@
       inline
       @submit.native.prevent
     >
-      <el-form-item>
+      <el-form-item prop="title" required>
         <el-input v-model="list__.filter.title" placeholder="姓名"/>
       </el-form-item>
       <el-form-item>
         <el-button
           v-if="list__.watchFilter"
-          @click="()=>{listFilterForm__.value.resetFields()}"
+          @click="()=>{listFilterForm.resetFields()}"
         >
           重置
         </el-button>
@@ -59,8 +59,8 @@
         prop="name"
         label="姓名"
       />
-      <el-table-column show-overflow-tooltip label="操作" width="180px">
-        <template #default="{ row }">
+      <el-table-column label="操作">
+        <template #default="{row}">
           <el-button type="text" @click="u__(row)">编辑</el-button>
           <el-button type="text" @click="d__(row)">删除</el-button>
         </template>
@@ -70,9 +70,8 @@
     <el-dialog
       :title="formTitle"
       v-model="form__.show"
-      @close="close"
     >
-      <el-form ref="elFormRef" :model="form__.data">
+      <el-form ref="dialogForm" :model="form__.data">
         <el-form-item label="姓名" prop="name">
           <el-input v-model.trim="form__.data.name"/>
         </el-form-item>
@@ -92,6 +91,8 @@ import axios from 'axios'
 import { createAPIGenerator, useAdmate } from '../src/main'
 import { API_PREFIX } from '../mock/demo/crud'
 import { mapKeys } from 'lodash-es'
+
+const listFilterForm = ref(null)
 
 const {
   list__,
@@ -115,6 +116,7 @@ const {
     dataAt: 'data.result.items',
     totalAt: 'data.result.total',
     pageNumberParam: 'pageNo',
+    filterFormRef: null,
   },
   form: {
     data: {
@@ -123,8 +125,16 @@ const {
     dataAt: 'data'
   },
   getListProxy (getList, caller, response) {
-    console.log(`getList由于${caller}被调用，返回值：`, response)
-    getList()
+    console.log(`getListProxy因${caller}被调用，返回值：`, response)
+    if (caller === 'filterChange') {
+      listFilterForm.value.validate(valid => {
+        if (valid) {
+          getList()
+        }
+      })
+    } else {
+      getList()
+    }
   }
 }), (v, k) => `${k}__`)
 
@@ -134,7 +144,7 @@ let formTitle = computed(() => ({
   u: '编辑',
 }[form__.status]))
 
-let elFormRef = ref(null)
+let dialogForm = ref(null)
 
 let currentInstance = ref(null)
 
@@ -151,18 +161,18 @@ let currentInstance = ref(null)
 }
 
 function close () {
-  elFormRef.value.resetFields()
+  dialogForm.value.resetFields()
   form__.data = currentInstance.$options.data().form
   form__.show = false
   fetchData()
 }
 
 function save () {
-  elFormRef.value.validate(async (valid) => {
+  dialogForm.value.validate(async (valid) => {
     if (valid) {
       const { msg } = await api.u(form__.data)
       currentInstance.$message.success('操作成功')
-      elFormRef.value.resetFields()
+      dialogForm.value.resetFields()
       form__.show = false
       fetchData()
       form__.data = currentInstance.$options.data().form__.data

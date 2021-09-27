@@ -1,4 +1,5 @@
 import {
+  isVue2,
   isVue3,
   ref,
   reactive,
@@ -46,7 +47,7 @@ export default function useAdmate ({
   },
   getListProxy?: (getList: Function, caller: string, response?: any) => any,
 }): object {
-  const listFilterForm = ref(null)
+  const getListCaller = ref('')
   const getListThrottled = ref(null)
 
   const getInitialList = () => getFinalProp([list], {
@@ -64,7 +65,7 @@ export default function useAdmate ({
 
   const List = reactive(getInitialList())
 
-  const getInitialForm = () => cloneDeep({
+  const getInitialForm = () => ({
     loading: false,
     show: false,
     data: {},
@@ -76,12 +77,26 @@ export default function useAdmate ({
 
   const Form = reactive(getInitialForm())
 
-  const getList = (
+  const getList = async (
     payload = List.filter,
     payloadUse?: string
   ) => {
+
+    if (getListCaller.value === 'filterChange') {
+      const newPageNumber = List.filter[List.pageNumberParam]
+      // 如果改变的不是页码 页码重置为1
+      if (List.oldPageNumber === newPageNumber) {
+        if (newPageNumber !== 1) {
+          List.filter[List.pageNumberParam] = 1
+          return
+        }
+      }
+      List.oldPageNumber = newPageNumber
+    }
+
     List.loading = true
     List.data.length = 0
+    getListCaller.value = ''
     return new Promise((resolve, reject) => {
       api.list(payload, payloadUse)
       .then(response => {
@@ -95,21 +110,16 @@ export default function useAdmate ({
       .catch(response => {
         reject(response)
       })
-      .finally(e => {
+      .finally(() => {
         List.loading = false
       })
     })
   }
 
   const GetListProxy = getListProxy ?
-    ({
-      caller = Form.status,
-      response
-    }: {
-      caller?: string,
-      response?: any
-    }) => {
-      getListProxy(getList, caller, response)
+    async (response?: any) => {
+      getListCaller.value ??= Form.status
+      await getListProxy(getList, getListCaller.value, response)
     } :
     getList
 
@@ -164,17 +174,17 @@ export default function useAdmate ({
   const d = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'd')
     List.loading = true
-    api.d(payload, payloadUse,).then(async response => {
+    api.d(payload, payloadUse,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberParam] === 1) {
-          await GetListProxy({ response })
+          GetListProxy(response)
         } else {
           List.filter[List.pageNumberParam]--
         }
       } else {
-        await GetListProxy({ response })
+        GetListProxy(response)
       }
-    }).finally(e => {
+    }).finally(() => {
       List.loading = false
     })
   }
@@ -183,9 +193,9 @@ export default function useAdmate ({
   const updateStatus = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'updateStatus')
     List.loading = true
-    api.updateStatus(payload, payloadUse,).then(async response => {
-      await GetListProxy({ response })
-    }).finally(e => {
+    api.updateStatus(payload, payloadUse,).then(response => {
+      GetListProxy(response)
+    }).finally(() => {
       List.loading = false
     })
   }
@@ -194,9 +204,9 @@ export default function useAdmate ({
   const enable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'enable')
     List.loading = true
-    api.enable(payload, payloadUse,).then(async response => {
-      await GetListProxy({ response })
-    }).finally(e => {
+    api.enable(payload, payloadUse,).then(response => {
+      GetListProxy(response)
+    }).finally(() => {
       List.loading = false
     })
   }
@@ -205,9 +215,9 @@ export default function useAdmate ({
   const disable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'disable')
     List.loading = true
-    api.disable(payload, payloadUse,).then(async response => {
-      await GetListProxy({ response })
-    }).finally(e => {
+    api.disable(payload, payloadUse,).then(response => {
+      GetListProxy(response)
+    }).finally(() => {
       List.loading = false
     })
   }
@@ -264,8 +274,8 @@ export default function useAdmate ({
       params = paramsHandler
     }
     return api[Form.status](params)
-    .then(async response => {
-      await GetListProxy({ response })
+    .then(response => {
+      GetListProxy(response)
     })
   }
 
@@ -285,47 +295,17 @@ export default function useAdmate ({
   })
 
   // 首次获取列表
-  GetListProxy({ caller: 'init' })
+  getListCaller.value = 'init'
+  GetListProxy()
 
   onMounted(() => {
-    // 给各筛选项赋初值，使得重置功能能够正常工作
-    if (listFilterForm.value?.fields) {
-      List.filter = {
-        ...Object.fromEntries(
-          Array.from(
-            listFilterForm.value.fields,
-            (v: any) => [v.labelFor, undefined]
-          )
-        ),
-        ...List.filter,
-      }
-    }
-
     // 筛选项改变时，刷新列表
     if (List.watchFilter) {
-      watch(() => List.filter, newFilter => {
+      watch(() => List.filter, () => {
         if (!getListThrottled.value) {
           getListThrottled.value = throttle(() => {
-            const callback = async valid => {
-              if (valid) {
-                // 如果改变的不是页码 页码重置为1
-                if (List.prevPageNo === newFilter[List.pageNumberParam]) {
-                  List.filter[List.pageNumberParam] === 1 ?
-                    await GetListProxy({ caller: 'filterChange' }) :
-                    List.filter[List.pageNumberParam] = 1
-                } else {
-                  // 刷新列表
-                  await GetListProxy({ caller: 'pageNumberChange' })
-                }
-                List.prevPageNo = newFilter[List.pageNumberParam]
-              }
-            }
-            if (listFilterForm.value) {
-              listFilterForm.value.validate(callback)
-            } else {
-              //console.warn(`${CONSOLE_PREFIX}未找到$refs.listFilterForm`)
-              callback(true)
-            }
+            getListCaller.value = 'filterChange'
+            GetListProxy()
           }, 500, {
             leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
             trailing: true
@@ -343,14 +323,12 @@ export default function useAdmate ({
     // 页面销毁时如果还有查询请求，中止掉
     cancelAllRequest()
     // 重置所有数据
-    listFilterForm.value = null
     getListThrottled.value = null
     Object.assign(List, getInitialList())
     Object.assign(Form, getInitialForm())
   })
 
   return {
-    listFilterForm,
     list: List,
     form: Form,
     getList,
