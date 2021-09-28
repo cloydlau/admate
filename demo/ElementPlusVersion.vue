@@ -68,24 +68,23 @@
     </el-table>
 
     <el-dialog
-      :title="formTitle"
-      v-model="form__.show"
+      :title="dialogTitle"
+      v-model="row__.show"
     >
-      <el-form ref="dialogForm" :model="form__.data">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model.trim="form__.data.name"/>
+      <el-form ref="dialogForm" :model="row__.data">
+        <el-form-item label="姓名" prop="name" required>
+          <el-input v-model.trim="row__.data.name"/>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="()=>{form__.show = false}">取 消</el-button>
-        <el-button type="primary" @click="submit__">确 定</el-button>
+        <el-button @click="row__.show=false">取 消</el-button>
+        <el-button type="primary" @click="submit__" :loading="row__.loading">确 定</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-//import { getList, doDelete } from '@/api/table'
 import { ref, reactive, computed, getCurrentInstance, onMounted } from 'vue-demi'
 import axios from 'axios'
 import { createAPIGenerator, useAdmate } from '../src/main'
@@ -96,7 +95,7 @@ const listFilterForm = ref(null)
 
 const {
   list__,
-  form__,
+  row__,
   getList__,
   c__,
   r__,
@@ -108,17 +107,11 @@ const {
 } = mapKeys(useAdmate({
   api: createAPIGenerator(axios)(API_PREFIX),
   list: {
-    filter: {
-      pageNo: 1,
-      pageSize: 20,
-      title: '',
-    },
     dataAt: 'data.result.items',
     totalAt: 'data.result.total',
-    pageNumberParam: 'pageNo',
-    filterFormRef: null,
+    pageNumberKey: 'pageNo',
   },
-  form: {
+  row: {
     data: {
       name: 'default',
     },
@@ -130,58 +123,69 @@ const {
       listFilterForm.value.validate(valid => {
         if (valid) {
           getList()
+          console.log(`getList被调用`)
         }
       })
     } else {
       getList()
+      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+        currentInstance.proxy.$message.success('操作成功')
+      }
+      console.log(`getList被调用`)
     }
+  },
+  submitProxy (submit) {
+    dialogForm.value.validate(valid => {
+      if (valid) {
+        setTimeout(() => {
+          submit()
+        }, 1000)
+      }
+    })
   }
 }), (v, k) => `${k}__`)
 
-let formTitle = computed(() => ({
+let dialogTitle = computed(() => ({
   c: '新增',
   r: '查看',
   u: '编辑',
-}[form__.status]))
+}[row__.status]))
 
 let dialogForm = ref(null)
 
-let currentInstance = ref(null)
-
-//currentInstance.$message.success('操作成功')
-
 /*function showEdit (row) {
   if (!row) {
-    form__.status = 'c'
+    row__.status = 'c'
   } else {
-    form__.status = 'u'
-    form__.data = Object.assign({}, row)
+    row__.status = 'u'
+    row__.data = Object.assign({}, row)
   }
-  form__.show = true
+  row__.show = true
 }
 
 function close () {
   dialogForm.value.resetFields()
-  form__.data = currentInstance.$options.data().form
-  form__.show = false
+  row__.data = currentInstance.$options.data().row
+  row__.show = false
   fetchData()
 }
 
 function save () {
   dialogForm.value.validate(async (valid) => {
     if (valid) {
-      const { msg } = await api.u(form__.data)
+      const { msg } = await api.u(row__.data)
       currentInstance.$message.success('操作成功')
       dialogForm.value.resetFields()
-      form__.show = false
+      row__.show = false
       fetchData()
-      form__.data = currentInstance.$options.data().form__.data
+      row__.data = currentInstance.$options.data().row__.data
     } else {
       return false
     }
   })
 }*/
 
+let currentInstance = ref(null)
 onMounted(() => {
   currentInstance = getCurrentInstance()
 })

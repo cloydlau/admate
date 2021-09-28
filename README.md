@@ -1323,6 +1323,19 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
       </KiPopButton>
     </template>
   </el-table-column>
+
+  <KiFormDialog
+    :show.sync="row__.show"
+    :title="row__.status | $dialogTitle"
+    v-model="row__.data"
+    :retrieve="retrieve__"
+    :submit="submit__(FormData.from(row__.data))"
+    :readonly="row__.status==='r'"
+  >
+    <template #el-form>
+      <!-- 表单项 -->
+    </template>
+  </KiFormDialog>
 </template>
 
 <script>

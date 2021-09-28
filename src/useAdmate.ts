@@ -23,12 +23,13 @@ const At = (response?: object, paths?: string | Function): any => {
 
 export default function useAdmate ({
   api,
-  form,
+  row,
   list,
   getListProxy,
+  submitProxy,
 }: {
   api: APIType,
-  form: {
+  row: {
     show?: boolean,
     data?: any,
     dataAt: string | Function,
@@ -37,7 +38,7 @@ export default function useAdmate ({
   },
   list: {
     filter?: object,
-    pageNumberParam: string,
+    pageNumberKey: string,
     watchFilter?: boolean,
     data?: any[],
     dataAt: string | Function,
@@ -46,6 +47,7 @@ export default function useAdmate ({
     loading?: boolean,
   },
   getListProxy?: (getList: Function, caller: string, response?: any) => any,
+  submitProxy?: (submit: Function) => any,
 }): object {
   const getListCaller = ref('')
   const getListThrottled = ref(null)
@@ -56,7 +58,7 @@ export default function useAdmate ({
       loading: false,
       total: 0,
       filter: {
-        [userProp.pageNumberParam]: 1,
+        [userProp.pageNumberKey]: 1,
       },
       watchFilter: true,
     }),
@@ -65,37 +67,38 @@ export default function useAdmate ({
 
   const List = reactive(getInitialList())
 
-  const getInitialForm = () => ({
+  // todo: 为什么需要深拷贝？
+  const getInitialRow = () => cloneDeep({
     loading: false,
     show: false,
     data: {},
     payload: {},
     payloadUse: null,
     status: '',
-    ...form,
+    ...row,
   })
 
-  const Form = reactive(getInitialForm())
+  const Row = reactive(getInitialRow())
 
   const getList = async (
     payload = List.filter,
     payloadUse?: string
   ) => {
 
-    if (getListCaller.value === 'filterChange') {
-      const newPageNumber = List.filter[List.pageNumberParam]
-      // 如果改变的不是页码 页码重置为1
-      if (List.oldPageNumber === newPageNumber) {
-        if (newPageNumber !== 1) {
-          List.filter[List.pageNumberParam] = 1
-          return
-        }
-      }
-      List.oldPageNumber = newPageNumber
+    const newPageNumber = List.filter[List.pageNumberKey]
+    if (
+      getListCaller.value === 'filterChange' &&
+      newPageNumber !== 1 &&
+      List.oldPageNumber === newPageNumber
+    ) {
+      // 如果改变的不是页码 页码重置为1 并拦截本次请求
+      List.filter[List.pageNumberKey] = 1
+      return
     }
 
     List.loading = true
     List.data.length = 0
+    List.oldPageNumber = newPageNumber
     getListCaller.value = ''
     return new Promise((resolve, reject) => {
       api.list(payload, payloadUse)
@@ -118,7 +121,7 @@ export default function useAdmate ({
 
   const GetListProxy = getListProxy ?
     async (response?: any) => {
-      getListCaller.value ??= Form.status
+      getListCaller.value ||= Row.status
       await getListProxy(getList, getListCaller.value, response)
     } :
     getList
@@ -145,19 +148,19 @@ export default function useAdmate ({
         throw Error(`${CONSOLE_PREFIX}${caller}的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/cache\'` : ''}`)
     }
 
-    Form.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
-    Form.payloadUse = payloadUse
+    Row.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
+    Row.payloadUse = payloadUse
 
     if (isRorU) {
-      Form.status = caller
-      Form.show = true
+      Row.status = caller
+      Row.show = true
     }
   }
 
   // 新增单条记录
   const c = () => {
-    Form.status = 'c'
-    Form.show = true
+    Row.status = 'c'
+    Row.show = true
   }
 
   // 查看单条记录
@@ -176,10 +179,10 @@ export default function useAdmate ({
     List.loading = true
     api.d(payload, payloadUse,).then(response => {
       if (List.data?.length === 1) {
-        if (List.filter[List.pageNumberParam] === 1) {
+        if (List.filter[List.pageNumberKey] === 1) {
           GetListProxy(response)
         } else {
-          List.filter[List.pageNumberParam]--
+          List.filter[List.pageNumberKey]--
         }
       } else {
         GetListProxy(response)
@@ -225,22 +228,22 @@ export default function useAdmate ({
   // 表单回显
   const retrieve = () => {
     // 仅查看和编辑才调用
-    if (!['r', 'u'].includes(Form.status)) {
+    if (!['r', 'u'].includes(Row.status)) {
       return
     }
 
     return new Promise((resolve, reject) => {
-      const result = api.r(Form.payload, Form.payloadUse)
+      const result = api.r(Row.payload, Row.payloadUse)
 
-      if (Form.payloadUse === 'cache') {
+      if (Row.payloadUse === 'cache') {
         resolve(result)
-        Form.data = {
-          ...Form.data,
+        Row.data = {
+          ...Row.data,
           ...result
         }
       } else {
         result.then(response => {
-          const formData = At(response, Form.dataAt)
+          const rowData = At(response, Row.dataAt)
           // 坑：
           /*
             let obj = { a: 1 }
@@ -251,11 +254,11 @@ export default function useAdmate ({
               })()
             }
           */
-          resolve(formData)
-          // 将接口返回值混入form.data
-          Form.data = {
-            ...Form.data,
-            ...formData
+          resolve(rowData)
+          // 将接口返回值混入row.data
+          Row.data = {
+            ...Row.data,
+            ...rowData
           }
         })
         .catch(e => {
@@ -266,31 +269,33 @@ export default function useAdmate ({
   }
 
   // 表单提交
-  const submit = async (paramsHandler?: any) => {
-    let params = Form.data
-    if (typeof paramsHandler === 'function') {
-      await paramsHandler()
-    } else if (paramsHandler !== undefined) {
-      params = paramsHandler
-    }
-    return api[Form.status](params)
+  const submitRow = (params: any = Row.data) =>
+    api[Row.status](params)
     .then(response => {
       GetListProxy(response)
+      Row.show = false
     })
+    .catch(() => {
+      Row.loading = false
+    })
+  const submit = (params: any = Row.data) => {
+    Row.loading = true
+    const result = submitProxy ? submitProxy(submitRow) : submitRow(params)
+    if (result instanceof Promise) {
+      result.then(({ show, loading }) => {
+
+      })
+    } else {
+      const { show, loading } = result ?? {}
+    }
   }
 
-  // 表单关闭时，重置表单（Form.data交由KiFormDialog重置）
-  watch(() => Form.show, n => {
+  // 表单关闭时 重置表单
+  watch(() => Row.show, n => {
     if (!n) {
-      nextTick(() => {
-        console.log(getInitialForm().data)
-        Object.assign(Form, getInitialForm())
-        console.log(Form.data)
-        //Form.loading = false
-      })
-      //Form.status = ''
-      //Form.payload = {}
-      //Form.payloadUse = null
+      setTimeout(() => {
+        Object.assign(Row, getInitialRow())
+      }, 150)
     }
   })
 
@@ -325,13 +330,13 @@ export default function useAdmate ({
     // 重置所有数据
     getListThrottled.value = null
     Object.assign(List, getInitialList())
-    Object.assign(Form, getInitialForm())
+    Object.assign(Row, getInitialRow())
   })
 
   return {
     list: List,
-    form: Form,
-    getList,
+    row: Row,
+    getList: GetListProxy,
     c,
     r,
     u,
