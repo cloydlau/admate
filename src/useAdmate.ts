@@ -46,7 +46,7 @@ export default function useAdmate ({
     totalAt: string | Function,
     loading?: boolean,
   },
-  getListProxy?: (getList: Function, caller: string, response?: any) => any,
+  getListProxy?: (getList: Function, caller?: string, response?: any) => any,
   submitProxy?: (submit: Function) => any,
 }): object {
   const getListCaller = ref('')
@@ -120,8 +120,8 @@ export default function useAdmate ({
   }
 
   const GetListProxy = getListProxy ?
-    async (response?: any) => {
-      getListCaller.value ||= Row.status
+    async (caller?, response?: any) => {
+      getListCaller.value = caller
       await getListProxy(getList, getListCaller.value, response)
     } :
     getList
@@ -177,16 +177,17 @@ export default function useAdmate ({
   const d = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'd')
     List.loading = true
-    api.d(payload, payloadUse,).then(response => {
+    return api.d(payload, payloadUse,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
-          GetListProxy(response)
+          GetListProxy('d', response)
         } else {
           List.filter[List.pageNumberKey]--
         }
       } else {
-        GetListProxy(response)
+        GetListProxy('d', response)
       }
+      return response
     }).finally(() => {
       List.loading = false
     })
@@ -196,8 +197,9 @@ export default function useAdmate ({
   const updateStatus = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'updateStatus')
     List.loading = true
-    api.updateStatus(payload, payloadUse,).then(response => {
-      GetListProxy(response)
+    return api.updateStatus(payload, payloadUse,).then(response => {
+      GetListProxy('updateStatus', response)
+      return response
     }).finally(() => {
       List.loading = false
     })
@@ -207,8 +209,9 @@ export default function useAdmate ({
   const enable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'enable')
     List.loading = true
-    api.enable(payload, payloadUse,).then(response => {
-      GetListProxy(response)
+    return api.enable(payload, payloadUse,).then(response => {
+      GetListProxy('enable', response)
+      return response
     }).finally(() => {
       List.loading = false
     })
@@ -218,8 +221,9 @@ export default function useAdmate ({
   const disable = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'disable')
     List.loading = true
-    api.disable(payload, payloadUse,).then(response => {
-      GetListProxy(response)
+    return api.disable(payload, payloadUse,).then(response => {
+      GetListProxy('disable', response)
+      return response
     }).finally(() => {
       List.loading = false
     })
@@ -272,11 +276,8 @@ export default function useAdmate ({
   const submit = (params: any = Row.data) =>
     api[Row.status](params)
     .then(response => {
-      GetListProxy(response)
-      Row.show = false
-    })
-    .catch(() => {
-      Row.loading = false
+      GetListProxy(Row.status, response)
+      return response
     })
   const controlRowDialog = (
     options: { show?: boolean, loading?: boolean },
@@ -336,8 +337,7 @@ export default function useAdmate ({
   })
 
   // 首次获取列表
-  getListCaller.value = 'init'
-  GetListProxy()
+  GetListProxy('init')
 
   onMounted(() => {
     // 筛选项改变时，刷新列表
@@ -345,8 +345,7 @@ export default function useAdmate ({
       watch(() => List.filter, () => {
         if (!getListThrottled.value) {
           getListThrottled.value = throttle(() => {
-            getListCaller.value = 'filterChange'
-            GetListProxy()
+            GetListProxy('filterChange')
           }, 500, {
             leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
             trailing: true
