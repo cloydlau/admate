@@ -269,7 +269,7 @@ export default function useAdmate ({
   }
 
   // 表单提交
-  const submitRow = (params: any = Row.data) =>
+  const submit = (params: any = Row.data) =>
     api[Row.status](params)
     .then(response => {
       GetListProxy(response)
@@ -278,21 +278,57 @@ export default function useAdmate ({
     .catch(() => {
       Row.loading = false
     })
-  const submit = (params: any = Row.data) => {
+  const controlRowDialog = (
+    options: { show?: boolean, loading?: boolean },
+    defaultOptions,
+  ) => {
+    const { show, loading } = getFinalProp([options, defaultOptions])
+    if (typeof show === 'boolean') {
+      Row.show = show
+    }
+    if (typeof loading === 'boolean') {
+      Row.loading = loading
+    }
+  }
+  const SubmitProxy = (params: any = Row.data) => {
     Row.loading = true
-    const result = submitProxy ? submitProxy(submitRow) : submitRow(params)
+    const result = submitProxy ?
+      submitProxy(submit) :
+      submit(params)
     if (result instanceof Promise) {
-      result.then(({ show, loading }) => {
-
+      result.then(e => {
+        controlRowDialog(e, {
+          show: false
+        })
+      }).catch(e => {
+        controlRowDialog(e, {
+          loading: false
+        })
       })
     } else {
-      const { show, loading } = result ?? {}
+      controlRowDialog(result, {
+        show: false
+      })
     }
   }
 
   // 表单关闭时 重置表单
   watch(() => Row.show, n => {
-    if (!n) {
+    if (n) {
+      Row.loading = true
+      const result = retrieve()
+      if (result instanceof Promise) {
+        result.catch(e => {
+          console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
+          Row.show = false
+        }).finally(() => {
+          Row.loading = false
+        })
+      } else {
+        Row.loading = false
+      }
+    } else {
+      // 可能会有关闭动画 所以加延迟
       setTimeout(() => {
         Object.assign(Row, getInitialRow())
       }, 150)
@@ -336,6 +372,8 @@ export default function useAdmate ({
   return {
     list: List,
     row: Row,
+    retrieve,
+    submit: SubmitProxy,
     getList: GetListProxy,
     c,
     r,
@@ -344,7 +382,5 @@ export default function useAdmate ({
     updateStatus,
     enable,
     disable,
-    retrieve,
-    submit,
   }
 }

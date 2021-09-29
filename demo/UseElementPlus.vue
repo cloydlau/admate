@@ -135,6 +135,7 @@ const {
     }
   },
   submitProxy (submit) {
+    row__.loading = true
     dialogForm.value.validate(valid => {
       if (valid) {
         setTimeout(() => {

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <ElementPlusVersion/>
+    <UseElementPlus/>
   </div>
 </template>
 
 <script setup>
-import AntDesignVueVersion from './AntDesignVueVersion.vue'
-import ElementPlusVersion from './ElementPlusVersion.vue'
+import UseAntDesignVue from './UseAntDesignVue.vue'
+import UseElementPlus from './UseElementPlus.vue'
 
 </script>
 
