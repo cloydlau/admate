@@ -12,10 +12,14 @@ import ElementPlus from 'element-plus'
 import 'ant-design-vue/dist/antd.css'
 import Antd from 'ant-design-vue'
 
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+
 createApp(App)
 .use(router)
 .use(ElementPlus)
 .use(Antd)
+.use(createVuetify())
 .mount('#app')
 
 console.log(`isVue2: ${isVue2}`)
