@@ -43,8 +43,8 @@
       </div>
 
       <el-pagination
-        v-model:current-page="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
+        :current-page.sync="list__.filter.pageNo"
+        :page-size.sync="list__.filter.pageSize"
         :total="list__.total"
         @change="() => {
           // 使用【查询】按钮时，记得监听页码的切换
@@ -61,7 +61,7 @@
     >
       <el-table-column prop="name" label="姓名"/>
       <el-table-column label="操作">
-        <template #default="{ row }">
+        <template slot-scope="{ row }">
           <el-button type="text" @click="r__(row)">查看</el-button>
           <el-button type="text" @click="u__(row)">编辑</el-button>
           <el-button type="text" @click="d__(row)">删除</el-button>
@@ -71,7 +71,7 @@
 
     <el-dialog
       :title="dialogTitle"
-      v-model="row__.show"
+      :visible.sync="row__.show"
     >
       <el-form
         ref="rowDataFormRef"

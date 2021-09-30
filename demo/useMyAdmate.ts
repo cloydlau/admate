@@ -7,8 +7,8 @@ import { waitFor } from 'kayran'
 export const apiGenerator = createAPIGenerator(axios)
 
 export default ({
-  listFilterForm,
-  dialogForm,
+  listFilterFormRef,
+  rowDataFormRef,
   admateConfig,
 }) => {
   const admate = mapKeys(useAdmate(merge({
@@ -16,6 +16,7 @@ export default ({
       dataAt: 'data.result.items',
       totalAt: 'data.result.total',
       pageNumberKey: 'pageNo',
+      watchFilter: false,
     },
     row: {
       data: {
@@ -24,35 +25,33 @@ export default ({
       dataAt: 'data'
     },
     getListProxy (getList, caller, response) {
-      //console.log(`getListProxy因${caller}被调用，返回值：`, response)
+      console.log(`getListProxy因${caller}被调用，返回值：`, response)
       if (caller === 'filterChange') {
-        listFilterForm.value.validate(valid => {
-          if (valid) {
-            getList()
-            //console.log(`getList被调用`)
-          }
+        // element-plus支持回调和promise
+        // antd-vue-3只支持promise
+        listFilterFormRef.value.validate().then(() => {
+          getList()
+          console.log(`getList被调用`)
         })
       } else {
         getList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
           currentInstance.proxy.$message.success('操作成功')
         }
-        //console.log(`getList被调用`)
+        console.log(`getList被调用`)
       }
     },
     submitProxy (submit) {
       return new Promise((resolve, reject) => {
-        dialogForm.value.validate(valid => {
-          if (valid) {
-            setTimeout(async () => {
-              const [res, err] = await waitFor(submit())
-              err ? reject({
-                //loading: true, // reject时默认只停止加载不关闭弹框，可以在这里自定义该行为
-              }) : resolve({
-                //show: true, // resolve时默认禁止加载并关闭弹框，可以在这里自定义该行为
-              })
-            }, 1000)
-          }
+        rowDataFormRef.value.validate().then(() => {
+          setTimeout(async () => {
+            const [res, err] = await waitFor(submit())
+            err ? reject({
+              //loading: true, // reject时默认只停止加载不关闭弹框，可以在这里自定义该行为
+            }) : resolve({
+              //show: true, // resolve时默认禁止加载并关闭弹框，可以在这里自定义该行为
+            })
+          }, 1000)
         })
       })
     }
@@ -68,7 +67,7 @@ export default ({
   watch(() => admate.row__.show, n => {
     if (!n) {
       setTimeout(() => {
-        dialogForm.value.resetFields()
+        rowDataFormRef.value.resetFields()
       }, 150)
     }
   })

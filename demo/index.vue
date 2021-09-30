@@ -1,12 +1,16 @@
 <template>
   <div>
-    <UseElementPlus/>
+    <span v-for="({path},i) of routes">
+      <router-link :to="path">{{ path.substr(1) }}</router-link>
+      <span v-if="i!==routes.length-1"> | </span>
+    </span>
   </div>
+
+  <router-view></router-view>
 </template>
 
 <script setup>
-import UseAntDesignVue from './UseAntDesignVue.vue'
-import UseElementPlus from './UseElementPlus.vue'
+import { routes } from './router'
 
 </script>
 
