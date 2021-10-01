@@ -1,6 +1,6 @@
-import { ref, reactive, computed, getCurrentInstance, onMounted, watch } from 'vue-demi'
+import { ref, computed, getCurrentInstance, onMounted, watch } from 'vue-demi'
 import axios from 'axios'
-import { useAdmate } from '../src/main'
+import useAdmate from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
 import { waitFor } from 'kayran'
 
@@ -67,7 +67,7 @@ export default ({
             }) : resolve({
               //show: true, // resolve时默认禁止加载并关闭弹框，可以在这里自定义该行为
             })
-          }, 1000)
+          }, 500)
         })
       })
     }

@@ -26,7 +26,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       vue(),
       peerDepsExternal(),
       WindiCSS(),
-      configMockPlugin(command === 'build')
+      command !== 'build' && configMockPlugin(command === 'build')
     ],
     build: {
       lib: {
@@ -36,7 +36,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       rollupOptions: {
         output: {
           // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
-          globals: {}
+          globals: {
+            axios: 'axios'
+          }
         },
       }
     }
