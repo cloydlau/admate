@@ -86,7 +86,7 @@
 
 <script setup>
 import useMyAdmate from '../useMyAdmate'
-import { ref } from 'vue-demi'
+import { ref } from '@vue/composition-api'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 
 const listFilterFormRef = ref(null)

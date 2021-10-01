@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue-demi'
+import { ref, reactive, computed, watch } from '@vue/composition-api'
 import globalConfig from './config'
 import { loadStyle, getFinalProp, getGlobalAttrs } from 'kayran'
 import highlightError from './highlightErrorViaOverlayScrollbars'

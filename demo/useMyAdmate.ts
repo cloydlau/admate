@@ -1,4 +1,4 @@
-import { ref, computed, getCurrentInstance, onMounted, watch } from 'vue-demi'
+import { ref, computed, getCurrentInstance, onMounted, watch } from '@vue/composition-api'
 import axios from 'axios'
 import useAdmate from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
