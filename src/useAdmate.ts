@@ -1,17 +1,13 @@
 import {
-  isVue2,
-  isVue3,
   ref,
   reactive,
   watch,
-  nextTick,
   onMounted,
-  onUnmounted,
 } from 'vue-demi'
 import { isEmpty, notEmpty, getFinalProp } from 'kayran'
 import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
-import { cancelAllRequest } from './api-generator'
-import type { APIType } from './api-generator'
+import createAPIGenerator from './api-generator'
+import type { ConfigCatalogType } from './api-generator'
 
 const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
@@ -22,13 +18,17 @@ const At = (response?: object, paths?: string | Function): any => {
 }
 
 export default function useAdmate ({
-  api,
+  axios,
+  axiosConfig,
+  urlPrefix,
   row,
   list,
   getListProxy,
   submitProxy,
 }: {
-  api: APIType,
+  axios,
+  axiosConfig: ConfigCatalogType,
+  urlPrefix?: string,
   row: {
     show?: boolean,
     data?: any,
@@ -46,9 +46,12 @@ export default function useAdmate ({
     totalAt: string | Function,
     loading?: boolean,
   },
-  getListProxy?: (getList: Function, caller?: string, response?: any) => any,
+  getListProxy?: (getList: Function, caller?: string) => any,
   submitProxy?: (submit: Function) => any,
 }): object {
+  const apiGenerator = createAPIGenerator(axios)
+  const api = apiGenerator(urlPrefix, axiosConfig)
+
   const getListCaller = ref('')
   const getListThrottled = ref(null)
 
@@ -84,12 +87,12 @@ export default function useAdmate ({
     payload = List.filter,
     payloadUse?: string
   ) => {
+    console.log(`getList被调用`)
 
     const newPageNumber = List.filter[List.pageNumberKey]
     if (
       getListCaller.value === 'filterChange' &&
-      newPageNumber !== 1 &&
-      List.oldPageNumber === newPageNumber
+      newPageNumber !== 1
     ) {
       // 如果改变的不是页码 页码重置为1 并拦截本次请求
       List.filter[List.pageNumberKey] = 1
@@ -101,7 +104,7 @@ export default function useAdmate ({
     List.oldPageNumber = newPageNumber
     getListCaller.value = ''
     return new Promise((resolve, reject) => {
-      api.list(payload, payloadUse)
+      api.getList(payload, payloadUse)
       .then(response => {
         List.data = At(response, List.dataAt)
         List.total = At(response, List.totalAt)
@@ -120,9 +123,10 @@ export default function useAdmate ({
   }
 
   const GetListProxy = getListProxy ?
-    async (caller?, response?: any) => {
+    async (caller?) => {
+      console.log(`getListProxy因${caller}被调用`)
       getListCaller.value = caller
-      await getListProxy(getList, getListCaller.value, response)
+      await getListProxy(getList, getListCaller.value)
     } :
     getList
 
@@ -180,12 +184,12 @@ export default function useAdmate ({
     return api.d(payload, payloadUse,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
-          GetListProxy('d', response)
+          GetListProxy('d')
         } else {
           List.filter[List.pageNumberKey]--
         }
       } else {
-        GetListProxy('d', response)
+        GetListProxy('d')
       }
       return response
     }).finally(() => {
@@ -198,7 +202,7 @@ export default function useAdmate ({
     crudArgsHandler(payload, payloadUse, 'updateStatus')
     List.loading = true
     return api.updateStatus(payload, payloadUse,).then(response => {
-      GetListProxy('updateStatus', response)
+      GetListProxy('updateStatus')
       return response
     }).finally(() => {
       List.loading = false
@@ -210,7 +214,7 @@ export default function useAdmate ({
     crudArgsHandler(payload, payloadUse, 'enable')
     List.loading = true
     return api.enable(payload, payloadUse,).then(response => {
-      GetListProxy('enable', response)
+      GetListProxy('enable')
       return response
     }).finally(() => {
       List.loading = false
@@ -222,7 +226,7 @@ export default function useAdmate ({
     crudArgsHandler(payload, payloadUse, 'disable')
     List.loading = true
     return api.disable(payload, payloadUse,).then(response => {
-      GetListProxy('disable', response)
+      GetListProxy('disable')
       return response
     }).finally(() => {
       List.loading = false
@@ -276,7 +280,7 @@ export default function useAdmate ({
   const submit = (params: any = Row.data) =>
     api[Row.status](params)
     .then(response => {
-      GetListProxy(Row.status, response)
+      GetListProxy(Row.status)
       return response
     })
   const controlRowDialog = (
@@ -336,6 +340,13 @@ export default function useAdmate ({
     }
   })
 
+  // 重置所有数据
+  /*const destroy = () => {
+    getListThrottled.value = null
+    Object.assign(List, getInitialList())
+    Object.assign(Row, getInitialRow())
+  }*/
+
   // 首次获取列表
   GetListProxy('init')
 
@@ -345,7 +356,10 @@ export default function useAdmate ({
       watch(() => List.filter, () => {
         if (!getListThrottled.value) {
           getListThrottled.value = throttle(() => {
-            GetListProxy('filterChange')
+            GetListProxy(List.filter[List.pageNumberKey] ===
+              List.oldPageNumber ?
+                'filterChange' : 'pageNumberChange'
+            )
           }, 500, {
             leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
             trailing: true
@@ -359,14 +373,16 @@ export default function useAdmate ({
     }
   })
 
-  onUnmounted(() => {
-    // 页面销毁时如果还有查询请求，中止掉
-    cancelAllRequest()
-    // 重置所有数据
-    getListThrottled.value = null
-    Object.assign(List, getInitialList())
-    Object.assign(Row, getInitialRow())
-  })
+  /*onUnmounted(() => {
+    /!**
+     * 页面销毁时如果还有查询请求，中止掉
+     * 不能在onUnmounted调用cancelAllRequest，
+     * 因为下一个页面的setup会早于上一个页面的onUnmounted执行，
+     * 导致中止掉下一个页面的请求
+     *!/
+    //cancelAllRequest()
+    //destroy()
+  })*/
 
   return {
     list: List,

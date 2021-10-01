@@ -43,8 +43,9 @@
     "@types/overlayscrollbars": "latest",
     "@vitejs/plugin-vue": "latest",
     "@vue/compiler-sfc": "latest",
-    "@vue/composition-api": "^1.2.2",
+    "@vue/composition-api": "latest",
     "ant-design-vue": "^2.2.8",
+    "ant-design-vue2": "npm:ant-design-vue@1",
     "axios": "latest",
     "codecov": "latest",
     "element-plus": "latest",
@@ -60,8 +61,10 @@
     "vite-plugin-windicss": "latest",
     "vue": "^3.2.19",
     "vue-router": "^4.0.11",
-    "vue2": "npm:vue@2",
+    "vue2": "npm:vue@^2.6.14",
+    "vue2-router": "npm:vue-router@3",
     "vuetify": "^3.0.0-alpha.11",
+    "vuetify2": "npm:vuetify@2",
     "windicss": "latest"
   },
   "files": [

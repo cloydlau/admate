@@ -9,19 +9,19 @@ const METHODS_WITHOUT_REQUEST_BODY = ['GET', 'HEAD']
 const METHODS = METHODS_WITH_REQUEST_BODY.concat(METHODS_WITHOUT_REQUEST_BODY)
 let source
 
-type configCatalogType = {
+export type ConfigCatalogType = {
   c?: object | ((objForConfig: object) => object),
   r?: object | ((objForConfig: object) => object),
   u?: object | ((objForConfig: object) => object),
   d?: object | ((objForConfig: object) => object),
-  list?: object | ((objForConfig: object) => object),
+  getList?: object | ((objForConfig: object) => object),
   updateStatus?: object | ((objForConfig: object) => object),
   enable?: object | ((objForConfig: object) => object),
   disable?: object | ((objForConfig: object) => object),
 }
 
-export type APIType = {
-  list: Function,
+type APIType = {
+  getList: Function,
   c: Function,
   r: Function,
   u: Function,
@@ -33,42 +33,34 @@ export type APIType = {
 
 export default function createAPIGenerator (
   axios: (args: any) => Promise<any>,
-  configCatalog_global: configCatalogType = {},
+  configCatalog_global: ConfigCatalogType = {},
 ): (
   urlSuffix: string,
-  configCatalog?: configCatalogType
+  configCatalog?: ConfigCatalogType
 ) => object {
   const configCatalog_default = {
     c: {
-      url: 'create',
       method: 'POST',
     },
     r: {
-      url: 'read',
       method: 'GET',
     },
     u: {
-      url: 'update',
       method: 'PUT',
     },
     d: {
-      url: 'delete',
       method: 'DELETE',
     },
-    list: {
-      url: 'list',
+    getList: {
       method: 'GET',
     },
     updateStatus: {
-      url: 'updateStatus',
       method: 'PUT',
     },
     enable: {
-      url: 'enable',
       method: 'PUT',
     },
     disable: {
-      url: 'disable',
       method: 'PUT',
     },
   }
@@ -81,8 +73,9 @@ export default function createAPIGenerator (
 
   return (
     urlSuffix: string = '',
-    configCatalog: configCatalogType = {}
+    configCatalog: ConfigCatalogType = {}
   ): APIType => {
+    cancelAllRequest()
     source = CancelToken.source()
 
     let result = {}
@@ -204,5 +197,8 @@ export const createAxiosShortcut = (axios: (args: any) => Promise<any>): {
 
 export const cancelAllRequest = () => {
   // 即使不存在pending的请求 cancel()也会触发axios.interceptors.response.use.onRejected
-  source?.cancel()
+  if (source) {
+    source.cancel()
+    source = undefined
+  }
 }

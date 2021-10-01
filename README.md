@@ -848,8 +848,8 @@ export default {
 ```ts
 methods: {
   /**
-   * @param {string} motive 调用动机 可能的值：'init' 'pageNoChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   * @param {object} res 调用动机的接口返回值（首次进入页面、查询列表参数改变时为空）
+   * @param {Function} getList 被代理的方法 
+   * @param {string} caller 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
   getListProxy__(motive, res)
   {

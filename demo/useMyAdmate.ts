@@ -1,10 +1,8 @@
 import { ref, reactive, computed, getCurrentInstance, onMounted, watch } from 'vue-demi'
 import axios from 'axios'
-import { createAPIGenerator, useAdmate } from '../src/main'
+import { useAdmate } from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
 import { waitFor } from 'kayran'
-
-export const apiGenerator = createAPIGenerator(axios)
 
 export default ({
   listFilterFormRef,
@@ -12,11 +10,32 @@ export default ({
   admateConfig,
 }) => {
   const admate = mapKeys(useAdmate(merge({
+    axios,
+    axiosConfig: {
+      c: {
+        url: 'create',
+      },
+      r: {
+        url: 'read',
+      },
+      u: {
+        url: 'update',
+      },
+      d: {
+        url: 'delete',
+      },
+      getList: {
+        url: 'list',
+      },
+      updateStatus: {
+        url: 'updateStatus',
+      },
+    },
     list: {
       dataAt: 'data.result.items',
       totalAt: 'data.result.total',
       pageNumberKey: 'pageNo',
-      watchFilter: false,
+      //watchFilter: false,
     },
     row: {
       data: {
@@ -24,21 +43,18 @@ export default ({
       },
       dataAt: 'data'
     },
-    getListProxy (getList, caller, response) {
-      console.log(`getListProxy因${caller}被调用，返回值：`, response)
+    getListProxy (getList, caller) {
       if (caller === 'filterChange') {
         // element-plus支持回调和promise
-        // antd-vue-3只支持promise
+        // ant-design-vue只支持promise
         listFilterFormRef.value.validate().then(() => {
           getList()
-          console.log(`getList被调用`)
         })
       } else {
         getList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
           currentInstance.proxy.$message.success('操作成功')
         }
-        console.log(`getList被调用`)
       }
     },
     submitProxy (submit) {
@@ -57,11 +73,29 @@ export default ({
     }
   }, admateConfig)), (v, k) => `${k}__`)
 
-  let dialogTitle = computed(() => ({
+  const dialogTitle = computed(() => ({
     c: '新增',
     r: '查看',
     u: '编辑',
   }[admate.row__.status]))
+
+  const queryList = () => {
+    listFilterFormRef.value.validate().then(() => {
+      admate.list__.filter.pageNo = 1
+      admate.getList__()
+    })
+  }
+
+  const reset = () => {
+    listFilterFormRef.value.resetFields()
+  }
+
+  const onPageNumberChange = () => {
+    // 使用【查询】按钮时，监听页码的切换
+    if (!admate.list__.watchFilter) {
+      admate.getList__()
+    }
+  }
 
   // 关闭表单时，重置校验
   watch(() => admate.row__.show, n => {
@@ -80,6 +114,9 @@ export default ({
   return {
     ...admate,
     dialogTitle,
-    currentInstance
+    queryList,
+    reset,
+    onPageNumberChange,
+    currentInstance,
   }
 }

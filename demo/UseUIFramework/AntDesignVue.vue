@@ -4,29 +4,22 @@
       ref="listFilterFormRef"
       layout="inline"
       :model="list__.filter"
-      @finish="() => {
-        // 使用【查询】按钮时，筛选参数校验通过后触发列表刷新
-        if ( !list__.watchFilter ) {
-          list__.filter.pageNo = 1
-          getList__()
-        }
-      }"
     >
       <a-form-item name="name" required>
         <a-input v-model:value="list__.filter.name" placeholder="姓名"/>
       </a-form-item>
       <a-button
-        v-if="list__.watchFilter"
-        @click="() => { listFilterFormRef.resetFields() }"
-      >
-        重置
-      </a-button>
-      <a-button
-        v-else
+        v-if="!list__.watchFilter"
         type="primary"
-        html-type="submit"
+        @click="queryList"
       >
         查询
+      </a-button>
+      <a-button
+        class="ml-10px"
+        @click="reset"
+      >
+        重置
       </a-button>
     </a-form>
 
@@ -44,18 +37,11 @@
         v-model:current="list__.filter.pageNo"
         v-model:page-size="list__.filter.pageSize"
         :total="list__.total"
-        @change="() => {
-          // 使用【查询】按钮时，记得监听页码的切换
-          if (!list__.watchFilter) {
-            getList__()
-          }
-        }"
+        @change="onPageNumberChange"
       />
     </div>
 
     <a-table
-      :loading="list__.loading"
-      :dataSource="list__.data"
       rowKey="name"
       :columns="[{
         title:'姓名',
@@ -64,6 +50,8 @@
         title: '操作',
         slots: { customRender: 'action' },
       },]"
+      :dataSource="list__.data"
+      :loading="list__.loading"
     >
       <template #action="{ row }">
         <a-button type="link" @click="r__(row)">查看</a-button>
@@ -101,9 +89,9 @@
 </template>
 
 <script setup>
-import useMyAdmate, { apiGenerator } from './useMyAdmate'
+import useMyAdmate from '../useMyAdmate'
 import { ref } from 'vue-demi'
-import { API_PREFIX } from '../mock/demo/crud'
+import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 
 const listFilterFormRef = ref(null)
 const rowDataFormRef = ref(null)
@@ -119,12 +107,15 @@ const {
   updateStatus__,
   submit__,
   dialogTitle,
+  queryList,
+  reset,
+  onPageNumberChange,
   currentInstance,
 } = useMyAdmate({
   listFilterFormRef,
   rowDataFormRef,
   admateConfig: {
-    api: apiGenerator(API_PREFIX),
+    urlPrefix,
   }
 })
 </script>
