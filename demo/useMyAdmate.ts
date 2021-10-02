@@ -1,7 +1,5 @@
 import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from 'vue-demi'
-// 替换为你自己的axios封装
-// 如import request as axios from '@/utils/request'
-import axios from 'axios'
+import request from './utils/request'
 import useAdmate from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
 import { waitFor } from 'kayran'
@@ -10,7 +8,7 @@ export default (admateConfig) => {
   // 初始化admate，并给导出的变量添加自定义的命名标识
   const admate = mapKeys(useAdmate(merge({
     // axios或axios实例
-    axios,
+    axios: request,
     // crud接口的axios配置
     axiosConfig: {
       c: {

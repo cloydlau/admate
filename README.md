@@ -292,30 +292,6 @@ export default {
 </script>
 ```
 
-```vue
-<!-- 在查询单条记录之前做点什么 -->
-
-<template>
-  <KiFormDialog :retrieve="retrieve"/>
-</template>
-
-<script>
-export default {
-  methods: {
-    retrieve () {
-      // retrieve方法在FormDialog打开时会被调用 包括新增时
-      // retrieve帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
-      if ('c' !== this.row.status) {
-        // 在查询单条记录之前做点什么
-      }
-
-      return this.retrieve()
-    }
-  }
-}
-</script>
-```
-
 <br>
 
 ### Hook: 提交表单时

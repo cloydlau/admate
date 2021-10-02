@@ -81,6 +81,8 @@ export default function useAdmate ({
     payload: {},
     payloadUse: null,
     status: '',
+    resolve: null,
+    reject: null,
     ...row,
   })
 
@@ -173,11 +175,19 @@ export default function useAdmate ({
   // 查看单条记录
   const r = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'r')
+    return new Promise((resolve, reject) => {
+      Row.resolve = resolve
+      Row.reject = reject
+    })
   }
 
   // 编辑单条记录
   const u = (payload?, payloadUse?: string) => {
     crudArgsHandler(payload, payloadUse, 'u')
+    return new Promise((resolve, reject) => {
+      Row.resolve = resolve
+      Row.reject = reject
+    })
   }
 
   // 删除单条记录
@@ -265,7 +275,7 @@ export default function useAdmate ({
               })()
             }
           */
-          resolve(rowData)
+          resolve(response)
           // 将接口返回值混入row.data
           Row.data = {
             ...Row.data,
@@ -326,13 +336,21 @@ export default function useAdmate ({
       Row.loading = true
       const result = retrieve()
       if (result instanceof Promise) {
-        result.catch(e => {
+        result.then(e => {
+          Row.resolve(e)
+        }).catch(e => {
           console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
           Row.show = false
+          Row.reject(e)
         }).finally(() => {
+          Row.resolve = null
+          Row.reject = null
           Row.loading = false
         })
       } else {
+        Row.resolve(result)
+        Row.resolve = null
+        Row.reject = null
         Row.loading = false
       }
     } else {
