@@ -1,14 +1,10 @@
-import { ref, computed, getCurrentInstance, onMounted, watch } from '@vue/composition-api'
+import { ref, reactive, toRefs, computed, getCurrentInstance, onMounted, watch } from '@vue/composition-api'
 import axios from 'axios'
 import useAdmate from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
 import { waitFor } from 'kayran'
 
-export default ({
-  listFilterFormRef,
-  rowDataFormRef,
-  admateConfig,
-}) => {
+export default (admateConfig) => {
   const admate = mapKeys(useAdmate(merge({
     axios,
     axiosConfig: {
@@ -53,7 +49,7 @@ export default ({
       } else {
         getList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
-          currentInstance.proxy.$message.success('操作成功')
+          currentInstance.value.$message.success('操作成功')
         }
       }
     },
@@ -72,6 +68,9 @@ export default ({
       })
     }
   }, admateConfig)), (v, k) => `${k}__`)
+
+  const listFilterFormRef = ref(null)
+  const rowDataFormRef = ref(null)
 
   const dialogTitle = computed(() => ({
     c: '新增',
@@ -106,17 +105,19 @@ export default ({
     }
   })
 
-  let currentInstance = ref(null)
+  const currentInstance = ref(null)
   onMounted(() => {
-    currentInstance = getCurrentInstance()
+    currentInstance.value = getCurrentInstance().proxy
   })
 
-  return {
+  return toRefs(reactive({
     ...admate,
     dialogTitle,
     queryList,
     reset,
     onPageNumberChange,
     currentInstance,
-  }
+    listFilterFormRef,
+    rowDataFormRef,
+  }))
 }

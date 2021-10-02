@@ -1,6 +1,6 @@
 import type { UserConfigExport, ConfigEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import peerDepsExternal from 'rollup-plugin-peer-deps-external'
+//import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import { name } from './package.json'
 import { viteMockServe } from 'vite-plugin-mock'
 import WindiCSS from 'vite-plugin-windicss'
@@ -22,11 +22,16 @@ export function configMockPlugin (isBuild: boolean) {
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
+    optimizeDeps: {
+      exclude: ['vue-demi']
+    },
     plugins: [
       vue(),
-      peerDepsExternal(),
-      WindiCSS(),
-      command !== 'build' && configMockPlugin(command === 'build')
+      //peerDepsExternal(),
+      ...command === 'build' ? [] : [
+        WindiCSS(),
+        configMockPlugin(false)
+      ]
     ],
     build: {
       lib: {
@@ -34,10 +39,17 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         entry: 'src/main.ts'
       },
       rollupOptions: {
+        external: [
+          'axios',
+          'vue',
+          'vue-demi',
+        ],
         output: {
           // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
           globals: {
-            axios: 'axios'
+            'axios': 'axios',
+            'vue': 'Vue',
+            'vue-demi': 'VueDemi',
           }
         },
       }

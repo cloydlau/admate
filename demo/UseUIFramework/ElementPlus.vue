@@ -86,11 +86,7 @@
 
 <script setup>
 import useMyAdmate from '../useMyAdmate'
-import { ref } from '@vue/composition-api'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-
-const listFilterFormRef = ref(null)
-const rowDataFormRef = ref(null)
 
 const {
   list__,
@@ -107,12 +103,10 @@ const {
   reset,
   onPageNumberChange,
   currentInstance,
-} = useMyAdmate({
   listFilterFormRef,
   rowDataFormRef,
-  admateConfig: {
-    urlPrefix,
-  }
+} = useMyAdmate({
+  urlPrefix,
 })
 </script>
 
