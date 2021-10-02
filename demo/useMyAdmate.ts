@@ -71,7 +71,7 @@ export default (admateConfig) => {
     // submit代理
     submitProxy (submit) {
       return new Promise((resolve, reject) => {
-        rowDataFormRef.value.$refs.elForm.validate().then(async () => {
+        rowDataFormRef.value.validate().then(async () => {
           const [res, err] = await waitFor(submit())
           err ? reject() : resolve()
         })
@@ -86,7 +86,7 @@ export default (admateConfig) => {
   watch(() => admate.row__.show, n => {
     if (!n) {
       setTimeout(() => {
-        rowDataFormRef.value.$refs.elForm.resetFields()
+        rowDataFormRef.value.resetFields()
       }, 150)
     } else {
 

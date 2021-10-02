@@ -49,7 +49,7 @@
       <el-table-column prop="name" label="姓名"/>
       <el-table-column label="操作">
         <template #default="{ row }">
-          <el-button type="text" @click="r__(row)">查看</el-button>
+          <el-button type="text" @click="r(row)">查看</el-button>
           <el-button type="text" @click="u__(row)">编辑</el-button>
           <el-button type="text" @click="d__(row)">删除</el-button>
         </template>
@@ -108,6 +108,12 @@ const {
 } = useMyAdmate({
   urlPrefix,
 })
+
+function r (row) {
+  r__.value(row).then(rowData => {
+    row__.value.data.name = 1
+  })
+}
 </script>
 
 <style lang="scss" scoped>

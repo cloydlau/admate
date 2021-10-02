@@ -257,11 +257,12 @@ export default function useAdmate ({
       const result = api.r(Row.payload, Row.payloadUse)
 
       if (Row.payloadUse === 'cache') {
-        resolve(result)
         Row.data = {
           ...Row.data,
           ...result
         }
+        Row.resolve(result)
+        resolve(result)
       } else {
         result.then(response => {
           const rowData = At(response, Row.dataAt)
@@ -275,14 +276,17 @@ export default function useAdmate ({
               })()
             }
           */
-          resolve(response)
+
           // 将接口返回值混入row.data
           Row.data = {
             ...Row.data,
             ...rowData
           }
+          Row.resolve(response)
+          resolve(response)
         })
         .catch(e => {
+          Row.reject(e)
           reject(e)
         })
       }
@@ -336,19 +340,15 @@ export default function useAdmate ({
       Row.loading = true
       const result = retrieve()
       if (result instanceof Promise) {
-        result.then(e => {
-          Row.resolve(e)
-        }).catch(e => {
+        result.catch(e => {
           console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
           Row.show = false
-          Row.reject(e)
         }).finally(() => {
           Row.resolve = null
           Row.reject = null
           Row.loading = false
         })
       } else {
-        Row.resolve(result)
         Row.resolve = null
         Row.reject = null
         Row.loading = false
