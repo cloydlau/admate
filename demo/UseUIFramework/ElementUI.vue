@@ -4,7 +4,6 @@
       ref="listFilterFormRef"
       :model="list__.filter"
       inline
-      @submit.native.prevent
     >
       <el-form-item prop="name" required>
         <el-input v-model="list__.filter.name" placeholder="姓名"/>
@@ -13,7 +12,6 @@
         <el-button
           v-if="!list__.watchFilter"
           type="primary"
-          native-type="submit"
           @click="queryList"
         >
           查询
@@ -37,8 +35,8 @@
       </div>
 
       <el-pagination
-        :current-page.sync="list__.filter.pageNo"
-        :page-size.sync="list__.filter.pageSize"
+        v-model:current-page="list__.filter.pageNo"
+        v-model:page-size="list__.filter.pageSize"
         :total="list__.total"
         @current-change="onPageNumberChange"
       />
@@ -50,7 +48,7 @@
     >
       <el-table-column prop="name" label="姓名"/>
       <el-table-column label="操作">
-        <template slot-scope="{ row }">
+        <template #default="{ row }">
           <el-button type="text" @click="r__(row)">查看</el-button>
           <el-button type="text" @click="u__(row)">编辑</el-button>
           <el-button type="text" @click="d__(row)">删除</el-button>
@@ -86,36 +84,15 @@
   </div>
 </template>
 
-<script setup>
-import useMyAdmate from '../useMyAdmate'
-import { ref } from '@vue/composition-api'
+<script>
+import useMyAdmate from '@/utils/useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 
-const listFilterFormRef = ref(null)
-const rowDataFormRef = ref(null)
-
-const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
-  dialogTitle,
-  queryList,
-  reset,
-  onPageNumberChange,
-  currentInstance,
-} = useMyAdmate({
-  listFilterFormRef,
-  rowDataFormRef,
-  admateConfig: {
+export default {
+  setup: () => useMyAdmate({
     urlPrefix,
-  }
-})
+  }),
+}
 </script>
 
 <style lang="scss" scoped>

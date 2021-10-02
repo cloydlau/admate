@@ -45,9 +45,9 @@ export const API_PREFIX = `${BASE}${MODULE}`
 
 export default [
   {
-    url: `${API_PREFIX}/list`,
+    url: `${API_PREFIX}/queryForPage`,
     timeout: 100,
-    method: 'get',
+    method: 'post',
     response: ({ query }) => {
       const { page = 1, pageSize = 20 } = query
       return resultPageSuccess(page, pageSize, demoList)
@@ -62,28 +62,28 @@ export default [
   },
   {
     url: `${API_PREFIX}/delete`,
-    method: 'DELETE',
+    method: 'POST',
     response: () => {
       return resultSuccess()
     },
   },
   {
-    url: `${API_PREFIX}/read`,
-    method: 'GET',
+    url: `${API_PREFIX}/queryForDetail`,
+    method: 'POST',
     response: () => {
       return resultSuccess(demoList[0])
     },
   },
   {
     url: `${API_PREFIX}/update`,
-    method: 'PUT',
+    method: 'POST',
     response: () => {
       return resultSuccess()
     },
   },
   {
     url: `${API_PREFIX}/updateStatus`,
-    method: 'PUT',
+    method: 'POST',
     response: () => {
       return resultSuccess()
     },

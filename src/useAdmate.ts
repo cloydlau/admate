@@ -87,7 +87,7 @@ export default function useAdmate ({
     payload = List.filter,
     payloadUse?: string
   ) => {
-    console.log(`getList被调用`)
+    //console.log(`getList被调用`)
 
     const newPageNumber = List.filter[List.pageNumberKey]
     if (
@@ -124,7 +124,7 @@ export default function useAdmate ({
 
   const GetListProxy = getListProxy ?
     async (caller?) => {
-      console.log(`getListProxy因${caller}被调用`)
+      //console.log(`getListProxy因${caller}被调用`)
       getListCaller.value = caller
       await getListProxy(getList, getListCaller.value)
     } :
