@@ -36,7 +36,14 @@
     "vue-demi": "latest"
   },
   "peerDependencies": {
-    "axios": "0"
+    "@vue/composition-api": "*",
+    "axios": "*",
+    "vue": "^2.0.0 || >=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/jest": "latest",
