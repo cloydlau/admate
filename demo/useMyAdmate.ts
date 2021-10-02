@@ -1,8 +1,8 @@
-import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from '@vue/composition-api'
+import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from 'vue-demi'
 // 替换为你自己的axios封装
 // 如import request as axios from '@/utils/request'
 import axios from 'axios'
-import useAdmate from 'admate'
+import useAdmate from '../src/main'
 import { mapKeys, merge } from 'lodash-es'
 import { waitFor } from 'kayran'
 
@@ -78,7 +78,7 @@ export default (admateConfig) => {
           err ? reject() : resolve()
         })
       })
-    }
+    },
   }, admateConfig)), (v, k) => `${k}__`)
 
   const listFilterFormRef = ref(null)

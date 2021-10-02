@@ -1,5 +1,5 @@
 import { install } from 'vue-demi'
-import { createApp } from '@vue/composition-api'
+import { createApp } from 'vue-demi'
 import router from './router'
 import App from './index.vue'
 

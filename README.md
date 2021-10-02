@@ -2,35 +2,45 @@
 
 `Admate` 的目标是以快速简洁的方式开发管理后台页面，
 
-并在此基础上确保灵活可配，避免过度封装。
+并在此基础上确保灵活可配，杜绝过度封装。
 
 ## Features
 
 - 同时支持Vue2 & Vue3
-- 不限制UI框架
-- 列表、单条记录的CRUD
-- 除了标配的CRUD封装，也为其他请求提供调用捷径（含上传、下载）
+- 不限制UI框架，只要技术栈是Vue和axios，便可以使用
+- 提供列表、单条记录CRUD的贴心封装
+- 提供接口调用捷径（含上传、下载）
 - 节流控制筛选列表的接口调用频率（监听筛选参数时）
 
 周全的收尾工作，没有“后顾之忧”：
 
-- 关闭表单对话框时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
+- 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
 - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
 - 离开页面时，自动终止尚未完成的请求
 
 <br>
 
+## 过往版本的文档
+
+<a href="https://www.npmjs.com/package/admate/v/0.6.0-alpha.0">https://www.npmjs.com/package/admate/v/0.5.4</a>
+
+> 将链接末尾替换为你想要查看的版本号即可
+
+<br>
+
 ## Installation
 
-### Vue3
-
 ![NPM](https://nodei.co/npm/admate.png)
+
+### Vue 3
 
 ```bash
 pnpm add admate vue@3 axios
 ```
 
-### Vue2
+<br>
+
+### Vue 2
 
 ```bash
 pnpm add admate vue@2 axios @vue/composition-api
@@ -38,178 +48,11 @@ pnpm add admate vue@2 axios @vue/composition-api
 
 ### 初始化
 
-```ts
-// @/utils/useMyAdmate.ts
-
-import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from '@vue/composition-api'
-// 替换为你自己的axios封装
-// 如import request as axios from '@/utils/request'
-import axios from 'axios'
-import useAdmate from 'admate'
-import { mapKeys, merge } from 'lodash-es'
-import { waitFor } from 'kayran'
-
-export default (admateConfig) => {
-  // 初始化admate，并给导出的变量添加自定义的命名标识
-  const admate = mapKeys(useAdmate(merge({
-    // axios或axios实例
-    axios,
-    // crud接口的axios配置
-    axiosConfig: {
-      c: {
-        url: 'create',
-        method: 'POST',
-      },
-      r: {
-        url: 'queryForDetail',
-        method: 'POST',
-      },
-      u: {
-        url: 'update',
-        method: 'POST',
-      },
-      d: {
-        url: 'delete',
-        method: 'POST',
-      },
-      getList: {
-        url: 'queryForPage',
-        method: 'POST',
-      },
-      updateStatus: {
-        url: 'updateStatus',
-        method: 'POST',
-      },
-    },
-    // 列表相关配置
-    list: {
-      // 查询列表接口的默认参数
-      filter: {
-        // 页容量
-        // 注意：如果修改了默认值，需要同步修改el-pagination组件pageSize参数的值
-        pageSize: 10,
-      },
-      dataAt: 'data.list',
-      totalAt: 'data.total',
-      pageNumberKey: 'pageNo',
-    },
-    // 单条记录相关配置
-    row: {
-      data: {
-        name: 'default',
-      },
-      dataAt: 'data'
-    },
-    // getList代理
-    getListProxy (getList, caller) {
-      if (caller === 'filterChange') {
-        listFilterFormRef.value.validate().then(() => {
-          getList()
-        })
-      } else {
-        getList()
-        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
-          currentInstance.value.$Swal.success('操作成功')
-        }
-      }
-    },
-    // submit代理
-    submitProxy (submit) {
-      return new Promise((resolve, reject) => {
-        rowDataFormRef.value.$refs.elForm.validate().then(async () => {
-          const [res, err] = await waitFor(submit())
-          err ? reject() : resolve()
-        })
-      })
-    }
-  }, admateConfig)), (v, k) => `${k}__`)
-
-  const listFilterFormRef = ref(null)
-  const rowDataFormRef = ref(null)
-
-  // 关闭表单时，重置校验
-  watch(() => admate.row__.show, n => {
-    if (!n) {
-      setTimeout(() => {
-        rowDataFormRef.value.$refs.elForm.resetFields()
-      }, 150)
-    } else {
-
-    }
-  })
-
-  // 获取当前Vue实例
-  const currentInstance = ref(null)
-  onMounted(() => {
-    currentInstance.value = getCurrentInstance().proxy
-  })
-
-  return toRefs(reactive({
-    ...admate,
-    // 单条记录表单的标题
-    dialogTitle: computed(() => ({
-      c: '新增',
-      r: '查看',
-      u: '编辑',
-    }[admate.row__.status])),
-    // 重置筛选条件
-    reset: () => {
-      listFilterFormRef.value.resetFields()
-    },
-    // 查询列表（监听筛选条件时不需要）
-    queryList: () => {
-      listFilterFormRef.value.validate().then(() => {
-        admate.list__.filter.pageNo = 1
-        admate.getList__()
-      })
-    },
-    // 监听页码切换（监听筛选条件时不需要）
-    onPageNumberChange: () => {
-      if (!admate.list__.watchFilter) {
-        admate.getList__()
-      }
-    },
-    // 当前Vue实例
-    currentInstance,
-    // 列表筛选条件表单的ref
-    listFilterFormRef,
-    // 单条记录表单的ref
-    rowDataFormRef,
-  }))
-}
-
-```
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/useMyAdmate.ts)
 
 <br>
 
-### 样式
-
-如果你的系统没有集成 `windicss` / `tailwind`，需要引入下方样式补丁：
-
-```scss
-/* @/utils/admate.css */
-
-.p-20px {
-  padding: 20px;
-}
-
-.flex {
-  display: flex;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.my-20px {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-```
-
-<br>
-
-### 搭配代码生成器使用
+### 使用代码生成器
 
 使用代码生成器生成页面模板
 
@@ -235,368 +78,27 @@ export default (admateConfig) => {
 
 <br>
 
-### ElementPlus 示例
+### 搭配ElementPlus
 
-```vue
-<!-- somepage.vue -->
-
-<template>
-  <div class="p-20px">
-    <el-form
-      ref="listFilterFormRef"
-      :model="list__.filter"
-      inline
-    >
-      <el-form-item prop="name" required>
-        <el-input v-model="list__.filter.name" placeholder="姓名"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          v-if="!list__.watchFilter"
-          type="primary"
-          @click="queryList"
-        >
-          查询
-        </el-button>
-        <el-button
-          @click="reset"
-        >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-
-    <div class="flex justify-between my-20px">
-      <div>
-        <el-button
-          type="primary"
-          @click="c__"
-        >
-          新增
-        </el-button>
-      </div>
-
-      <el-pagination
-        v-model:current-page="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
-        :total="list__.total"
-        @current-change="onPageNumberChange"
-      />
-    </div>
-
-    <el-table
-      :data="list__.data"
-      :loading="list__.loading"
-    >
-      <el-table-column prop="name" label="姓名"/>
-      <el-table-column label="操作">
-        <template #default="{ row }">
-          <el-button type="text" @click="r__(row)">查看</el-button>
-          <el-button type="text" @click="u__(row)">编辑</el-button>
-          <el-button type="text" @click="d__(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-dialog
-      :title="dialogTitle"
-      v-model="row__.show"
-    >
-      <el-form
-        ref="rowDataFormRef"
-        :model="row__.data"
-        :disabled="row__.status==='r'"
-      >
-        <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="row__.data.name"/>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="row__.show=false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="submit__"
-          :loading="row__.loading"
-          v-if="row__.status!=='r'"
-        >
-          确 定
-        </el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
-<script setup>
-import useMyAdmate from '../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-
-const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
-  dialogTitle,
-  queryList,
-  reset,
-  onPageNumberChange,
-  currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
-} = useMyAdmate({
-  urlPrefix,
-})
-</script>
-
-<style lang="scss" scoped>
-
-</style>
-```
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/ElementPlus.vue)
 
 <br>
 
-### ElementUI 示例
+### 搭配ElementUI
 
-```vue
-<!-- somepage.vue -->
-
-<template>
-  <div class="p-20px">
-    <el-form
-      ref="listFilterFormRef"
-      :model="list__.filter"
-      inline
-    >
-      <el-form-item prop="name" required>
-        <el-input v-model="list__.filter.name" placeholder="姓名"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          v-if="!list__.watchFilter"
-          type="primary"
-          @click="queryList"
-        >
-          查询
-        </el-button>
-        <el-button
-          @click="reset"
-        >
-          重置
-        </el-button>
-      </el-form-item>
-    </el-form>
-
-    <div class="flex justify-between my-20px">
-      <div>
-        <el-button
-          type="primary"
-          @click="c__"
-        >
-          新增
-        </el-button>
-      </div>
-
-      <el-pagination
-        v-model:current-page="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
-        :total="list__.total"
-        @current-change="onPageNumberChange"
-      />
-    </div>
-
-    <el-table
-      :data="list__.data"
-      :loading="list__.loading"
-    >
-      <el-table-column prop="name" label="姓名"/>
-      <el-table-column label="操作">
-        <template #default="{ row }">
-          <el-button type="text" @click="r__(row)">查看</el-button>
-          <el-button type="text" @click="u__(row)">编辑</el-button>
-          <el-button type="text" @click="d__(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-dialog
-      :title="dialogTitle"
-      :visible.sync="row__.show"
-    >
-      <el-form
-        ref="rowDataFormRef"
-        :model="row__.data"
-        :disabled="row__.status==='r'"
-      >
-        <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="row__.data.name"/>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="row__.show=false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="submit__"
-          :loading="row__.loading"
-          v-if="row__.status!=='r'"
-        >
-          确 定
-        </el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
-<script>
-import useMyAdmate from '@/utils/useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-
-export default {
-  setup: () => useMyAdmate({
-    urlPrefix,
-  }),
-}
-</script>
-
-<style lang="scss" scoped>
-
-</style>
-```
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/ElementUI.vue)
 
 <br>
 
-### AntDesignVue 2.x 示例
+### 搭配AntDesignVue@2.x
 
-```vue
-<!-- somepage.vue -->
-
-<template>
-  <div class="p-20px">
-    <a-form
-      ref="listFilterFormRef"
-      layout="inline"
-      :model="list__.filter"
-    >
-      <a-form-item name="name" required>
-        <a-input v-model:value="list__.filter.name" placeholder="姓名"/>
-      </a-form-item>
-      <a-button
-        v-if="!list__.watchFilter"
-        type="primary"
-        @click="queryList"
-      >
-        查询
-      </a-button>
-      <a-button
-        class="ml-10px"
-        @click="reset"
-      >
-        重置
-      </a-button>
-    </a-form>
-
-    <div class="flex justify-between my-20px">
-      <div>
-        <a-button
-          type="primary"
-          @click="c__"
-        >
-          新增
-        </a-button>
-      </div>
-
-      <a-pagination
-        v-model:current="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
-        :total="list__.total"
-        @change="onPageNumberChange"
-      />
-    </div>
-
-    <a-table
-      rowKey="name"
-      :columns="[{
-        title:'姓名',
-        dataIndex:'name',
-      }, {
-        title: '操作',
-        slots: { customRender: 'action' },
-      },]"
-      :dataSource="list__.data"
-      :loading="list__.loading"
-    >
-      <template #action="{ row }">
-        <a-button type="link" @click="r__(row)">查看</a-button>
-        <a-button type="link" @click="u__(row)">编辑</a-button>
-        <a-button type="link" @click="d__(row)">删除</a-button>
-      </template>
-    </a-table>
-
-    <a-modal
-      v-model:visible="row__.show"
-      :title="dialogTitle"
-    >
-      <a-form
-        ref="rowDataFormRef"
-        :model="row__.data"
-      >
-        <a-form-item name="name" required label="姓名">
-          <a-input v-model:value="row__.data.name" :disabled="row__.status==='r'"/>
-        </a-form-item>
-      </a-form>
-      <template #footer>
-        <a-button key="cancel" @click="row__.show=false">取 消</a-button>
-        <a-button
-          key="submit"
-          type="primary"
-          @click="submit__"
-          :loading="row__.loading"
-          v-if="row__.status!=='r'"
-        >
-          确 定
-        </a-button>
-      </template>
-    </a-modal>
-  </div>
-</template>
-
-<script setup>
-import useMyAdmate from '../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-
-const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
-  dialogTitle,
-  queryList,
-  reset,
-  onPageNumberChange,
-  currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
-} = useMyAdmate({
-  urlPrefix,
-})
-</script>
-
-<style lang="scss" scoped>
-
-</style>
-```
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
-### AntDesignVue 1.x 示例
+### 搭配AntDesignVue@1.x
+
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue2.vue)
 
 <br>
 
@@ -621,13 +123,13 @@ const {
 `list.filter`：数据对象
 
 ```ts
-// 绑定默认值
+// 赋默认值
 
 useAdmate({
   list: {
     filter: {
-      pageSize: 15, // 覆盖全局配置
-      status: 1 // 新增的
+      pageSize: 15,
+      status: 1,
     }
   }
 })
@@ -641,10 +143,10 @@ useAdmate({
 <!-- 示例 -->
 
 <template>
-  <el-form ref="listFilterFormRef" :model="list__.filter" inline>
+  <el-form ref="listFilterFormRef" :model="list.filter" inline>
     <el-form-item prop="effect">
       <el-checkbox
-        v-model="list__.filter.effect"
+        v-model="list.filter.effect"
         label="生效"
         border
       />
@@ -673,16 +175,16 @@ export default {
 
 ### 加载状态
 
-`this.list__.loading`
+`list.loading`
 
 ```ts
 export default {
   methods: {
     xxx () {
-      this.list__.loading = true
+      this.list.loading = true
       this.$POST('')
       .finally(() => {
-        this.list__.loading = false
+        this.list.loading = false
       })
     }
   }
@@ -693,19 +195,21 @@ export default {
 
 ### Hook: 查询列表时
 
-`getList` ：获取列表，admate内部方法，在首次进入页面、查询列表参数改变、单条记录增删查改后会被调用
+`getList` ：获取列表，在首次进入页面、查询列表参数改变、单条记录增删查改后会被调用
 
-`getListProxy`：你可以 `getListProxy` 方法来代理 `getList`
+`getListProxy`：你可以用 `getListProxy` 来代理 `getList`
 
 ```ts
 useAdmate({
   /**
-   * @param {Function} getList 被代理的方法
+   * @param {(payload?: object, payloadUse?: string) => Promise<any> | void,} getList 被代理的方法
    * @param {string} caller 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
   getListProxy (getList, caller) {
     // 在查询列表之前做点什么...
-    this.getList__()
+    getList({
+      // 自定义接口参数
+    })
     .then(res => {
       // 在查询列表之后做点什么...
     })
@@ -721,63 +225,27 @@ useAdmate({
 
 ### 数据对象
 
-`this.row__.data`
+`row.data`
 
 ```ts
 // 绑定默认值
 // 默认值主要用于表单新增时，查看/编辑时，默认值将与接口返回值进行浅混入（Spread Syntax）
 
-export default {
-  data () {
-    return {
-      row__: {
-        data: {
-          arr: [],
-          num: 100
-        }
-      },
+useAdmate({
+  row: {
+    data: {
+      arr: [],
+      num: 100
     }
-  }
-}
-```
-
-<br>
-
-### 提交校验
-
-给绑定表单参数的el-form添加校验逻辑即可
-
-```vue
-<!-- 示例：额外的校验，自行控制表单的关闭 -->
-
-<template>
-  <KiFormDialog :submit="submit"/>
-</template>
-
-<script>
-export default {
-  methods: {
-    submit () {
-      let valid = false
-      if (valid) {
-        return this.submit__()
-      } else {
-        this.$Swal.warning('校验失败')
-        return {
-          close: false
-        }
-      }
-    }
-  }
-}
-</script>
+  },
+})
 ```
 
 <br>
 
 ### 表单形态
 
-`this.row__.status`
+`row.status`
 
 可能的值：
 
@@ -788,30 +256,6 @@ export default {
 
 <br>
 
-### 表单标题
-
-dialogTitle
-
-```html
-
-<KiFormDialog :title="row__.status | $dialogTitle"/>
-```
-
-默认对应关系：
-
-- c：新增
-- r：查看
-- u：编辑
-
-修改默认值或补充其他：
-
-```html
-
-<KiFormDialog :title="row__.status | $dialogTitle({ c: '注册' })"/>
-```
-
-<br>
-
 ### Hook: 打开表单时
 
 ```ts
@@ -819,7 +263,7 @@ dialogTitle
  * 为FormDialog组件retrieve属性定制的方法
  * @returns {Promise<any>}
  */
-this.retrieve__
+this.retrieve
 ```
 
 ```vue
@@ -833,13 +277,13 @@ this.retrieve__
 export default {
   methods: {
     retrieve () {
-      return this.retrieve__()
-      ?.then( // 新增时 retrieve__返回为空 需要判空
+      return this.retrieve()
+      ?.then( // 新增时 retrieve返回为空 需要判空
         /**
          * @param {object} rowData - 单条记录数据
          */
         rowData => {
-          this.row__.data.status = 1
+          this.row.data.status = 1
         }
       )
     }
@@ -860,12 +304,12 @@ export default {
   methods: {
     retrieve () {
       // retrieve方法在FormDialog打开时会被调用 包括新增时
-      // retrieve__帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
-      if ('c' !== this.row__.status) {
+      // retrieve帮你排除了新增的情况 但当该方法被你覆写时 需要自行排除
+      if ('c' !== this.row.status) {
         // 在查询单条记录之前做点什么
       }
 
-      return this.retrieve__()
+      return this.retrieve()
     }
   }
 }
@@ -882,59 +326,31 @@ export default {
  * @param {any} 提交前的钩子函数或指定表单参数
  * @returns {Promise<any>} 提交表单接口返回
  */
-this.submit__
+this.submit
 ```
 
-```vue
-<!-- 示例：修改提交参数 -->
-
-<template>
-  <KiFormDialog :submit="submit"/>
-</template>
-
-<script>
-export default {
-  methods: {
-    submit () {
-      // 在提交之前做点什么（无论表单校验是否通过）...
-      return this.submit__(
-        async () => {
-          // 在提交之前做点什么（表单校验通过后）...
-          if (this.row__.status === 'c') {
-            this.row__.data.status = 1
-          }
-
-          // 支持在提交之前等待一个异步操作的完成
-          // await ... 
-        })
-      .then(() => {
-        // 在提交成功后做点什么...
-      })
-    }
-  }
-}
-</script>
-```
-
-```vue
+```ts
 <!-- 示例：指定提交参数 -->
 
-<template>
-  <KiFormDialog :submit="submit"/>
-</template>
+submit({
+  ...row.data,
+  status: 1,
+})
 
-<script>
-export default {
-  methods: {
-    submit () {
-      return this.submit__({
-        ...this.row__.data,
-        status: 1
+// submit被代理
+useAdmate({
+  submitProxy (submit) {
+    return new Promise((resolve, reject) => {
+      rowDataFormRef.value.$refs.elForm.validate().then(async () => {
+        const [res, err] = await waitFor(submit({
+          ...row.data,
+          status: 1,
+        }))
+        err ? reject() : resolve()
       })
-    }
+    })
   }
-}
-</script>
+})
 ```
 
 <br>
@@ -949,7 +365,7 @@ export default {
  * @param {string} [payloadUse] 指定payload的用途
  * @returns {Promise<any>} 接口返回值
  */
-this.getList__
+getList
 ```
 
 <br>
@@ -961,7 +377,7 @@ this.getList__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.r__
+r
 ```
 
 **参数2的可选值：**
@@ -975,7 +391,7 @@ this.r__
 
 ### 新增单条记录
 
-`this.c__`
+`c`
 
 <br>
 
@@ -986,7 +402,7 @@ this.r__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.u__
+u
 ```
 
 **参数2的可选值：**
@@ -1005,7 +421,7 @@ this.u__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.d__
+d
 ```
 
 **参数2的可选值：**
@@ -1023,7 +439,7 @@ this.d__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.enable__
+enable
 ```
 
 **参数2的可选值：**
@@ -1041,7 +457,7 @@ this.enable__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.disable__
+disable
 ```
 
 **参数2的可选值：**
@@ -1059,7 +475,7 @@ this.disable__
  * @param {any} [payload]
  * @param {string} [payloadUse] 指定payload的用途
  */
-this.updateStatus__
+updateStatus
 ```
 
 **参数2的可选值：**
@@ -1078,7 +494,7 @@ this.updateStatus__
   <template slot-scope="{row:{id,status}}">
     <KiPopSwitch
       v-bind="popSwitchProps(status)"
-      @change="updateStatus__({id,status:status^1})"
+      @change="updateStatus({id,status:status^1})"
     />
   </template>
 </el-table-column>
@@ -1092,7 +508,7 @@ this.updateStatus__
   <template slot-scope="{row:{id,status}}">
     <KiPopSwitch
       v-bind="popSwitchProps(status)"
-      @change="[enable__,disable__][status]({id})"
+      @change="[enable,disable][status]({id})"
     />
   </template>
 </el-table-column>
@@ -1113,7 +529,7 @@ this.updateStatus__
       <KiPopButton
         v-if="pageBtnList.includes('查看')"
         icon="el-icon-search"
-        @click="r__(row,'config')"
+        @click="r(row,'config')"
       >
         查看
       </KiPopButton>
@@ -1121,7 +537,7 @@ this.updateStatus__
         v-if="pageBtnList.includes('编辑')"
         type="primary"
         icon="el-icon-edit"
-        @click="u__(row,'config')"
+        @click="u(row,'config')"
       >
         编辑
       </KiPopButton>
@@ -1129,18 +545,33 @@ this.updateStatus__
   </el-table-column>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      api__: apiGenerator('/somepage', {
-        r: config => ({
-          url: 'module/' + config.id
-        }),
-      })
-    }
+<script setup>
+import useMyAdmate from '@/utils/useMyAdmate'
+
+const {
+  list__,
+  row__,
+  getList__,
+  c__,
+  r__,
+  u__,
+  d__,
+  updateStatus__,
+  submit__,
+  dialogTitle,
+  queryList,
+  reset,
+  onPageNumberChange,
+  currentInstance,
+  listFilterFormRef,
+  rowDataFormRef,
+} = useMyAdmate({
+  axiosConfig: {
+    r: config => ({
+      url: 'module/' + config.id
+    }),
   }
-}
+})
 </script>
 ```
 
@@ -1156,7 +587,7 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
 
 - 局部配置
 
-`r__`、`u__`、`d__`、`updateStatus__`、`enable__`、`disable__` 的payload参数均支持FormData类型。
+`r`、`u`、`d`、`updateStatus`、`enable`、`disable` 的payload参数均支持FormData类型。
 
 ```vue
 <!-- 示例：局部配置 -->
@@ -1168,7 +599,7 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
         v-if="pageBtnList.includes('编辑')"
         type="primary"
         icon="el-icon-edit"
-        @click="u__(FormData.from({id}))"
+        @click="u(FormData.from({id}))"
       >
         编辑
       </KiPopButton>
@@ -1176,12 +607,12 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
   </el-table-column>
 
   <KiFormDialog
-    :show.sync="row__.show"
-    :title="row__.status | $dialogTitle"
-    v-model="row__.data"
-    :retrieve="retrieve__"
-    :submit="submit__(FormData.from(row__.data))"
-    :readonly="row__.status==='r'"
+    :show.sync="row.show"
+    :title="row.status | $dialogTitle"
+    v-model="row.data"
+    :retrieve="retrieve"
+    :submit="submit(FormData.from(row.data))"
+    :readonly="row.status==='r'"
   >
     <template #el-form>
       <!-- 表单项 -->
@@ -1189,36 +620,44 @@ axios的data默认以application/json作为MIME type，如果你需要使用 `mu
   </KiFormDialog>
 </template>
 
-<script>
-import { mixins, apiGenerator } from '@/utils/admate'
+<script setup>
+import useMyAdmate from '@/utils/useMyAdmate'
 import { jsonToFormData, pickDeepBy } from 'kayran'
 
 // 过滤参数并转换为FormData
 FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) =>
   ![NaN, null, undefined].includes(v) &&
-  !k.startsWith('__')
+  !k.startsWith('')
 ))
 
 // 直接转换为FormData
 //FormData.from = jsonToFormData
 
-export default {
-  mixins: [mixins],
-  data () {
-    return {
-      api__: apiGenerator('xxx'),
-      FormData,
+const {
+  list__,
+  row__,
+  getList__,
+  c__,
+  r__,
+  u__,
+  d__,
+  updateStatus__,
+  submit__,
+  dialogTitle,
+  queryList,
+  reset,
+  onPageNumberChange,
+  currentInstance,
+  listFilterFormRef,
+  rowDataFormRef,
+} = useMyAdmate({
+  getListProxy (motive) {
+    getList(FormData.from(list.filter))
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
+      $Swal.success('操作成功')
     }
   },
-  methods: {
-    getListProxy__ (motive) {
-      this.getList__(FormData.from(this.list__.filter))
-      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-        this.$Swal.success('操作成功')
-      }
-    },
-  }
-}
+})
 </script>
 ```
 
@@ -1231,20 +670,15 @@ APIGenerator以统一的URL前缀生成接口调用，当然，也可以不统�
 ```ts
 // 示例
 
-import { apiGenerator } from '@/utils/admate'
-
-export default {
-  data () {
-    return {
-      api__: apiGenerator('somepage', {
-        r: {
-          // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀。
-          url: '/anotherpage/selectOne',
-        },
-      })
-    }
+useAdmate({
+  urlPrefix: 'somepage',
+  axiosConfig: {
+    r: {
+      // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀。
+      url: '/anotherpage/selectOne',
+    },
   }
-}
+})
 ```
 
 <br>
@@ -1256,7 +690,7 @@ export default {
 
 <template>
   <div class="p-20px">
-    <el-table v-loading="list__.loading" :data="list__.data">
+    <el-table v-loading="list.loading" :data="list.data">
       <!-- -->
       <el-table-column label="操作" align="center">
         <template slot-scope="{row}">
@@ -1287,7 +721,7 @@ export default {
   components: { subpage },
   data () {
     return {
-      api__: apiGenerator('somepage'),
+      api: apiGenerator('somepage'),
       subpage: {
         show: false,
         data: {},
@@ -1296,11 +730,11 @@ export default {
   },
   methods: {
     subpageShow (data) {
-      this.subpage.data = {
-        ...this.subpage.data,
+      subpage.data = {
+        ...subpage.data,
         ...data,
       }
-      this.subpage.show = true
+      subpage.show = true
     },
   },
 }
@@ -1312,7 +746,7 @@ export default {
 
 <template>
   <div class="p-20px">
-    <el-table v-loading="list__.loading" :data="list__.data">
+    <el-table v-loading="list.loading" :data="list.data">
       <!-- -->
     </el-table>
   </div>
@@ -1325,10 +759,10 @@ export default {
   mixins: [mixins],
   data () {
     return {
-      api__: apiGenerator('subpage'),
-      list__: {
+      api: apiGenerator('subpage'),
+      list: {
         filter: {
-          id: this.$attrs.id // 用父页面传过来的id作为初始参数
+          id: $attrs.id // 用父页面传过来的id作为初始参数
         }
       },
     }
@@ -1350,11 +784,11 @@ export default {
 <template>
   <div class="p-20px w-full">
     <KiFormDialog
-      :show.sync="row__.show"
-      :title="row__.status | $dialogTitle"
-      v-model="row__.data"
-      :retrieve="retrieve__"
-      :submit="submit__"
+      :show.sync="row.show"
+      :title="row.status | $dialogTitle"
+      v-model="row.data"
+      :retrieve="retrieve"
+      :submit="submit"
       ref="formDialog"
       :show-close="false"
       :modal="false"
@@ -1383,21 +817,21 @@ import { mixins, apiGenerator } from '@/utils/admate'
 export default {
   mixins: [mixins],
   mounted () {
-    this.formDialog = this.$refs.formDialog
+    formDialog = $refs.formDialog
   },
   data () {
     return {
-      api__: apiGenerator(''),
+      api: apiGenerator(''),
       formDialog: {},
     }
   },
   methods: {
-    getListProxy__ (motive) {
+    getListProxy (motive) {
       if (motive === 'init') {
-        this.u__()
+        u()
       } else {
-        this.$Swal.success('操作成功').then(() => {
-          this.u__()
+        $Swal.success('操作成功').then(() => {
+          u()
         })
       }
     }
@@ -1408,7 +842,7 @@ export default {
 
 <br>
 
-## 接口调用
+## 接口调用捷径
 
 ### AJAX
 
@@ -1420,12 +854,12 @@ export default {
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
-this.$POST
-this.$GET
-this.$PATCH
-this.$PUT
-this.$DELETE
-this.$HEAD
+$POST
+$GET
+$PATCH
+$PUT
+$DELETE
+$HEAD
 ```
 
 <br>
@@ -1441,7 +875,7 @@ this.$HEAD
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
-this.$POST.upload // 请求方式可以更换
+$POST.upload // 请求方式可以更换
 ```
 
 <br>
@@ -1457,7 +891,7 @@ this.$POST.upload // 请求方式可以更换
  * @param {object} config axios配置
  * @returns {Promise<any>} 接口返回
  */
-this.$GET.download // 请求方式可以更换
+$GET.download // 请求方式可以更换
 ```
 
 **HTTP请求**
@@ -1468,7 +902,7 @@ this.$GET.download // 请求方式可以更换
  * @param {object} params 接口参数
  * @param {object} config axios配置
  */
-this.$DOWNLOAD
+$DOWNLOAD
 ```
 
 <br>

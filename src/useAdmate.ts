@@ -46,7 +46,10 @@ export default function useAdmate ({
     totalAt: string | Function,
     loading?: boolean,
   },
-  getListProxy?: (getList: Function, caller?: string) => any,
+  getListProxy?: (
+    getList: (payload?: object, payloadUse?: string) => Promise<any> | void,
+    caller?: string
+  ) => any,
   submitProxy?: (submit: Function) => any,
 }): object {
   const apiGenerator = createAPIGenerator(axios)
