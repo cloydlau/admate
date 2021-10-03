@@ -98,7 +98,33 @@ pnpm add admate vue@2 axios @vue/composition-api
 
 ### 搭配AntDesignVue@1.x
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue2.vue)
+暂无示例
+
+<br>
+
+### 搭配Vuetify@3.x
+
+[Vuetify@3.x](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段
+
+<br>
+
+### 搭配Vuetify@2.x
+
+暂无示例
+
+<br>
+
+### 搭配Quasar@2.x
+
+Quasar@2.x尚不支持 `Vite`
+
+[进度追踪](https://github.com/quasarframework/quasar/issues/10398)
+
+<br>
+
+### 搭配Quasar@1.x
+
+暂无示例
 
 <br>
 

@@ -1,12 +1,12 @@
 import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from 'vue-demi'
 import request from './utils/request'
 import useAdmate from '../src/main'
-import { mapKeys, merge } from 'lodash-es'
+import { merge } from 'lodash-es'
 import { waitFor } from 'kayran'
 
 export default (admateConfig) => {
-  // 初始化admate，并给导出的变量添加自定义的命名标识
-  const admate = mapKeys(useAdmate(merge({
+  // 初始化admate
+  const admate = useAdmate(merge({
     // axios或axios实例
     axios: request,
     // crud接口的axios配置
@@ -64,7 +64,7 @@ export default (admateConfig) => {
       } else {
         getList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
-          currentInstance.value.$Swal.success('操作成功')
+          currentInstance.value.$message.success('操作成功')
         }
       }
     },
@@ -72,24 +72,28 @@ export default (admateConfig) => {
     submitProxy (submit) {
       return new Promise((resolve, reject) => {
         rowDataFormRef.value.validate().then(async () => {
-          const [res, err] = await waitFor(submit())
-          err ? reject() : resolve()
+          submit().then(() => {
+            resolve()
+          }).catch(() => {
+            reject()
+          })
         })
       })
     },
-  }, admateConfig)), (v, k) => `${k}__`)
+  }, admateConfig))
+
+  // 给暴露的变量加命名标识
+  //admate = mapKeys(admate, (v, k) => `${k}__`)
 
   const listFilterFormRef = ref(null)
   const rowDataFormRef = ref(null)
 
   // 关闭表单时，重置校验
-  watch(() => admate.row__.show, n => {
+  watch(() => admate.row.show, n => {
     if (!n) {
       setTimeout(() => {
         rowDataFormRef.value.resetFields()
       }, 150)
-    } else {
-
     }
   })
 
@@ -106,7 +110,7 @@ export default (admateConfig) => {
       c: '新增',
       r: '查看',
       u: '编辑',
-    }[admate.row__.status])),
+    }[admate.row.status])),
     // 重置筛选条件
     reset: () => {
       listFilterFormRef.value.resetFields()
@@ -114,14 +118,14 @@ export default (admateConfig) => {
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
       listFilterFormRef.value.validate().then(() => {
-        admate.list__.filter.pageNo = 1
-        admate.getList__()
+        admate.list.filter.pageNo = 1
+        admate.getList()
       })
     },
     // 监听页码切换（监听筛选条件时不需要）
     onPageNumberChange: () => {
-      if (!admate.list__.watchFilter) {
-        admate.getList__()
+      if (!admate.list.watchFilter) {
+        admate.getList()
       }
     },
     // 当前Vue实例

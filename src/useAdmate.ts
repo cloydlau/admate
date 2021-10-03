@@ -5,16 +5,37 @@ import {
   onMounted,
 } from 'vue-demi'
 import { isEmpty, notEmpty, getFinalProp } from 'kayran'
-import { throttle, cloneDeep, isPlainObject, at } from 'lodash-es'
+import { throttle, cloneDeep, isPlainObject, at, merge, assignIn } from 'lodash-es'
 import createAPIGenerator from './api-generator'
 import type { ConfigCatalogType } from './api-generator'
 
 const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 type StatusType = '' | 'c' | 'r' | 'u'
+type DataMergeType = 'deep' | 'shallow' | false
+type RRowType = 'data' | 'params' | 'config' | 'cache'
+type CUDRowType = 'data' | 'params' | 'config'
 
 const At = (response?: object, paths?: string | Function): any => {
   return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
+}
+
+// 将接口返回值混入row.data
+const mergeRowData = (
+  Row: {
+    data: any,
+    dataMerge: DataMergeType,
+  },
+  newRowData,
+) => {
+  if (Row.dataMerge) {
+    // merge, assignIn会改变原始对象
+    Row.dataMerge === 'deep' ?
+      merge(Row.data, newRowData) :
+      assignIn(Row.data, newRowData)
+  } else {
+    Row.data = newRowData
+  }
 }
 
 export default function useAdmate ({
@@ -29,21 +50,23 @@ export default function useAdmate ({
   axios,
   axiosConfig: ConfigCatalogType,
   urlPrefix?: string,
-  row: {
+  row?: {
     show?: boolean,
     data?: any,
-    dataAt: string | Function,
+    dataAt?: string | Function,
+    dataMerge?: DataMergeType,
     loading?: boolean,
+    submitting?: boolean,
     status?: StatusType,
   },
-  list: {
+  list?: {
     filter?: object,
-    pageNumberKey: string,
+    pageNumberKey?: string,
     watchFilter?: boolean,
     data?: any[],
-    dataAt: string | Function,
+    dataAt?: string | Function,
     total?: number,
-    totalAt: string | Function,
+    totalAt?: string | Function,
     loading?: boolean,
   },
   getListProxy?: (
@@ -76,8 +99,10 @@ export default function useAdmate ({
   // todo: 为什么需要深拷贝？
   const getInitialRow = () => cloneDeep({
     loading: false,
+    submitting: false,
     show: false,
     data: {},
+    dataMerge: 'shallow',
     payload: {},
     payloadUse: null,
     status: '',
@@ -173,7 +198,7 @@ export default function useAdmate ({
   }
 
   // 查看单条记录
-  const r = (payload?, payloadUse?: string) => {
+  const r = (payload?, payloadUse?: RRowType) => {
     crudArgsHandler(payload, payloadUse, 'r')
     return new Promise((resolve, reject) => {
       Row.resolve = resolve
@@ -182,7 +207,7 @@ export default function useAdmate ({
   }
 
   // 编辑单条记录
-  const u = (payload?, payloadUse?: string) => {
+  const u = (payload?, payloadUse?: RRowType) => {
     crudArgsHandler(payload, payloadUse, 'u')
     return new Promise((resolve, reject) => {
       Row.resolve = resolve
@@ -191,7 +216,7 @@ export default function useAdmate ({
   }
 
   // 删除单条记录
-  const d = (payload?, payloadUse?: string) => {
+  const d = (payload?, payloadUse?: CUDRowType) => {
     crudArgsHandler(payload, payloadUse, 'd')
     List.loading = true
     return api.d(payload, payloadUse,).then(response => {
@@ -211,7 +236,7 @@ export default function useAdmate ({
   }
 
   // 改变单条记录状态
-  const updateStatus = (payload?, payloadUse?: string) => {
+  const updateStatus = (payload?, payloadUse?: CUDRowType) => {
     crudArgsHandler(payload, payloadUse, 'updateStatus')
     List.loading = true
     return api.updateStatus(payload, payloadUse,).then(response => {
@@ -223,7 +248,7 @@ export default function useAdmate ({
   }
 
   // 启用单条记录
-  const enable = (payload?, payloadUse?: string) => {
+  const enable = (payload?, payloadUse?: CUDRowType) => {
     crudArgsHandler(payload, payloadUse, 'enable')
     List.loading = true
     return api.enable(payload, payloadUse,).then(response => {
@@ -235,7 +260,7 @@ export default function useAdmate ({
   }
 
   // 停用单条记录
-  const disable = (payload?, payloadUse?: string) => {
+  const disable = (payload?, payloadUse?: CUDRowType) => {
     crudArgsHandler(payload, payloadUse, 'disable')
     List.loading = true
     return api.disable(payload, payloadUse,).then(response => {
@@ -246,52 +271,16 @@ export default function useAdmate ({
     })
   }
 
-  // 表单回显
-  const retrieve = () => {
-    // 仅查看和编辑才调用
-    if (!['r', 'u'].includes(Row.status)) {
-      return
+  // 坑：
+  /*
+    let obj = { a: 1 }
+    obj = {
+      ...obj,
+      ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
+        obj.x = 1
+      })()
     }
-
-    return new Promise((resolve, reject) => {
-      const result = api.r(Row.payload, Row.payloadUse)
-
-      if (Row.payloadUse === 'cache') {
-        Row.data = {
-          ...Row.data,
-          ...result
-        }
-        Row.resolve(result)
-        resolve(result)
-      } else {
-        result.then(response => {
-          const rowData = At(response, Row.dataAt)
-          // 坑：
-          /*
-            let obj = { a: 1 }
-            obj = {
-              ...obj,
-              ...(obj => { // 该方法中对obj的修改不会对上一行中的obj生效
-                obj.x = 1
-              })()
-            }
-          */
-
-          // 将接口返回值混入row.data
-          Row.data = {
-            ...Row.data,
-            ...rowData
-          }
-          Row.resolve(response)
-          resolve(response)
-        })
-        .catch(e => {
-          Row.reject(e)
-          reject(e)
-        })
-      }
-    })
-  }
+  */
 
   // 表单提交
   const submit = (params: any = Row.data) =>
@@ -301,19 +290,19 @@ export default function useAdmate ({
       return response
     })
   const controlRowDialog = (
-    options: { show?: boolean, loading?: boolean },
+    options: { show?: boolean, submitting?: boolean },
     defaultOptions,
   ) => {
-    const { show, loading } = getFinalProp([options, defaultOptions])
+    const { show, submitting } = getFinalProp([options, defaultOptions])
     if (typeof show === 'boolean') {
       Row.show = show
     }
-    if (typeof loading === 'boolean') {
-      Row.loading = loading
+    if (typeof submitting === 'boolean') {
+      Row.submitting = submitting
     }
   }
   const SubmitProxy = (params: any = Row.data) => {
-    Row.loading = true
+    Row.submitting = true
     const result = submitProxy ?
       submitProxy(submit) :
       submit(params)
@@ -324,7 +313,7 @@ export default function useAdmate ({
         })
       }).catch(e => {
         controlRowDialog(e, {
-          loading: false
+          submitting: false
         })
       })
     } else {
@@ -334,26 +323,33 @@ export default function useAdmate ({
     }
   }
 
-  // 表单关闭时 重置表单
   watch(() => Row.show, n => {
     if (n) {
-      Row.loading = true
-      const result = retrieve()
-      if (result instanceof Promise) {
-        result.catch(e => {
-          console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
-          Row.show = false
-        }).finally(() => {
+      // 查看和编辑时，回显单条记录数据
+      if (['r', 'u'].includes(Row.status)) {
+        if (Row.payloadUse === 'cache') {
+          mergeRowData(Row, Row.payload)
+          Row.resolve(Row.payload)
           Row.resolve = null
           Row.reject = null
-          Row.loading = false
-        })
-      } else {
-        Row.resolve = null
-        Row.reject = null
-        Row.loading = false
+        } else {
+          Row.loading = true
+          api.r(Row.payload, Row.payloadUse).then(response => {
+            mergeRowData(Row, At(response, Row.dataAt))
+            Row.resolve(response)
+          }).catch(e => {
+            //console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
+            Row.show = false
+            Row.reject(e)
+          }).finally(() => {
+            Row.resolve = null
+            Row.reject = null
+            Row.loading = false
+          })
+        }
       }
     } else {
+      // 表单关闭时 重置表单
       // 可能会有关闭动画 所以加延迟
       setTimeout(() => {
         Object.assign(Row, getInitialRow())
@@ -408,7 +404,6 @@ export default function useAdmate ({
   return {
     list: List,
     row: Row,
-    retrieve,
     submit: SubmitProxy,
     getList: GetListProxy,
     c,

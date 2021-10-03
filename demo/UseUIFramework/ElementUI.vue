@@ -2,15 +2,15 @@
   <div class="p-20px">
     <el-form
       ref="listFilterFormRef"
-      :model="list__.filter"
+      :model="list.filter"
       inline
     >
       <el-form-item prop="name" required>
-        <el-input v-model="list__.filter.name" placeholder="姓名"/>
+        <el-input v-model="list.filter.name" placeholder="姓名"/>
       </el-form-item>
       <el-form-item>
         <el-button
-          v-if="!list__.watchFilter"
+          v-if="!list.watchFilter"
           type="primary"
           @click="queryList"
         >
@@ -28,54 +28,55 @@
       <div>
         <el-button
           type="primary"
-          @click="c__"
+          @click="c"
         >
           新增
         </el-button>
       </div>
 
       <el-pagination
-        v-model:current-page="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
-        :total="list__.total"
+        v-model:current-page="list.filter.pageNo"
+        v-model:page-size="list.filter.pageSize"
+        :total="list.total"
         @current-change="onPageNumberChange"
       />
     </div>
 
     <el-table
-      :data="list__.data"
-      :loading="list__.loading"
+      :data="list.data"
+      :loading="list.loading"
     >
       <el-table-column prop="name" label="姓名"/>
       <el-table-column label="操作">
         <template #default="{ row }">
-          <el-button type="text" @click="r__(row)">查看</el-button>
-          <el-button type="text" @click="u__(row)">编辑</el-button>
-          <el-button type="text" @click="d__(row)">删除</el-button>
+          <el-button type="text" @click="r(row)">查看</el-button>
+          <el-button type="text" @click="u(row)">编辑</el-button>
+          <el-button type="text" @click="d(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-dialog
       :title="dialogTitle"
-      :visible.sync="row__.show"
+      :visible.sync="row.show"
     >
       <el-form
         ref="rowDataFormRef"
-        :model="row__.data"
-        :disabled="row__.status==='r'"
+        :model="row.data"
+        :disabled="row.status==='r'"
+        v-loading="row.loading"
       >
         <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="row__.data.name"/>
+          <el-input v-model="row.data.name"/>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="row__.show=false">取 消</el-button>
+        <el-button @click="row.show=false">取 消</el-button>
         <el-button
           type="primary"
-          @click="submit__"
-          :loading="row__.loading"
-          v-if="row__.status!=='r'"
+          @click="submit"
+          :loading="row.submitting"
+          v-if="row.status!=='r'&&!row.loading"
         >
           确 定
         </el-button>

@@ -81,34 +81,30 @@ export default function createAPIGenerator (
     let result = {}
     for (let k in configCatalog_default) {
       result[k] = (payload, payloadUse) => {
-        if (payloadUse === 'cache') {
-          return payload
-        } else {
-          const configObj_default = configCatalog_default[k]
+        const configObj_default = configCatalog_default[k]
 
-          const configObj_global =
-            typeof configCatalog_global[k] === 'function' ?
-              configCatalog_global[k](payload) :
-              configCatalog_global[k]
+        const configObj_global =
+          typeof configCatalog_global[k] === 'function' ?
+            configCatalog_global[k](payload) :
+            configCatalog_global[k]
 
-          const configObj = {
-            cancelToken: source.token,
-            ...typeof configCatalog[k] === 'function' ?
-              configCatalog[k](payload) :
-              configCatalog[k]
-          }
-
-          const config = merge(configObj_default, configObj_global, configObj)
-
-          payloadUse ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
-
-          return axios({
-            ...payloadUse === 'data' && { data: payload },
-            ...payloadUse === 'params' && { params: payload },
-            ...config,
-            url: getUrl(urlSuffix, config.url)
-          })
+        const configObj = {
+          cancelToken: source.token,
+          ...typeof configCatalog[k] === 'function' ?
+            configCatalog[k](payload) :
+            configCatalog[k]
         }
+
+        const config = merge(configObj_default, configObj_global, configObj)
+
+        payloadUse ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
+
+        return axios({
+          ...payloadUse === 'data' && { data: payload },
+          ...payloadUse === 'params' && { params: payload },
+          ...config,
+          url: getUrl(urlSuffix, config.url)
+        })
       }
     }
 

@@ -3,13 +3,13 @@
     <a-form
       ref="listFilterFormRef"
       layout="inline"
-      :model="list__.filter"
+      :model="list.filter"
     >
       <a-form-item name="name" required>
-        <a-input v-model:value="list__.filter.name" placeholder="姓名"/>
+        <a-input v-model:value="list.filter.name" placeholder="姓名"/>
       </a-form-item>
       <a-button
-        v-if="!list__.watchFilter"
+        v-if="!list.watchFilter"
         type="primary"
         @click="queryList"
       >
@@ -27,16 +27,16 @@
       <div>
         <a-button
           type="primary"
-          @click="c__"
+          @click="c"
         >
           新增
         </a-button>
       </div>
 
       <a-pagination
-        v-model:current="list__.filter.pageNo"
-        v-model:page-size="list__.filter.pageSize"
-        :total="list__.total"
+        v-model:current="list.filter.pageNo"
+        v-model:page-size="list.filter.pageSize"
+        :total="list.total"
         @change="onPageNumberChange"
       />
     </div>
@@ -50,36 +50,37 @@
         title: '操作',
         slots: { customRender: 'action' },
       },]"
-      :dataSource="list__.data"
-      :loading="list__.loading"
+      :dataSource="list.data"
+      :loading="list.loading"
     >
       <template #action="{ row }">
-        <a-button type="link" @click="r__(row)">查看</a-button>
-        <a-button type="link" @click="u__(row)">编辑</a-button>
-        <a-button type="link" @click="d__(row)">删除</a-button>
+        <a-button type="link" @click="r(row)">查看</a-button>
+        <a-button type="link" @click="u(row)">编辑</a-button>
+        <a-button type="link" @click="d(row)">删除</a-button>
       </template>
     </a-table>
 
     <a-modal
-      v-model:visible="row__.show"
+      v-model:visible="row.show"
       :title="dialogTitle"
     >
       <a-form
         ref="rowDataFormRef"
-        :model="row__.data"
+        :model="row.data"
+        v-loading="row.loading"
       >
         <a-form-item name="name" required label="姓名">
-          <a-input v-model:value="row__.data.name" :disabled="row__.status==='r'"/>
+          <a-input v-model:value="row.data.name" :disabled="row.status==='r'"/>
         </a-form-item>
       </a-form>
       <template #footer>
-        <a-button key="cancel" @click="row__.show=false">取 消</a-button>
+        <a-button key="cancel" @click="row.show=false">取 消</a-button>
         <a-button
           key="submit"
           type="primary"
-          @click="submit__"
-          :loading="row__.loading"
-          v-if="row__.status!=='r'"
+          @click="submit"
+          :loading="row.submitting"
+          v-if="row.status!=='r'&&!row.loading"
         >
           确 定
         </a-button>
@@ -93,15 +94,15 @@ import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 
 const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
+  list,
+  row,
+  getList,
+  c,
+  r,
+  u,
+  d,
+  updateStatus,
+  submit,
   dialogTitle,
   queryList,
   reset,
