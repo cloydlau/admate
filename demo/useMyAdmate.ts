@@ -4,7 +4,12 @@ import useAdmate from '../src/main'
 import { merge } from 'lodash-es'
 import { waitFor } from 'kayran'
 
-export default (admateConfig) => {
+export default ({
+  admateConfig,
+  validateListFilterForm,
+  validateRowDataForm,
+  clearValidateOfRowDataForm,
+}) => {
   // 初始化admate
   const admate = useAdmate(merge({
     // axios或axios实例
@@ -58,7 +63,7 @@ export default (admateConfig) => {
     // getList代理
     getListProxy (getList, caller) {
       if (caller === 'filterChange') {
-        listFilterFormRef.value.validate().then(() => {
+        validateListFilterForm().then(() => {
           getList()
         })
       } else {
@@ -71,7 +76,7 @@ export default (admateConfig) => {
     // submit代理
     submitProxy (submit) {
       return new Promise((resolve, reject) => {
-        rowDataFormRef.value.validate().then(async () => {
+        validateRowDataForm().then(async () => {
           submit().then(() => {
             resolve()
           }).catch(() => {
@@ -85,14 +90,11 @@ export default (admateConfig) => {
   // 给暴露的变量加命名标识
   //admate = mapKeys(admate, (v, k) => `${k}__`)
 
-  const listFilterFormRef = ref(null)
-  const rowDataFormRef = ref(null)
-
   // 关闭表单时，重置校验
   watch(() => admate.row.show, n => {
     if (!n) {
       setTimeout(() => {
-        rowDataFormRef.value.resetFields()
+        clearValidateOfRowDataForm()
       }, 150)
     }
   })
@@ -111,13 +113,9 @@ export default (admateConfig) => {
       r: '查看',
       u: '编辑',
     }[admate.row.status])),
-    // 重置筛选条件
-    reset: () => {
-      listFilterFormRef.value.resetFields()
-    },
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
-      listFilterFormRef.value.validate().then(() => {
+      validateListFilterForm().then(() => {
         admate.list.filter.pageNo = 1
         admate.getList()
       })
@@ -130,9 +128,5 @@ export default (admateConfig) => {
     },
     // 当前Vue实例
     currentInstance,
-    // 列表筛选条件表单的ref
-    listFilterFormRef,
-    // 单条记录表单的ref
-    rowDataFormRef,
   }))
 }

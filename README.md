@@ -22,7 +22,7 @@
 
 ## 过往版本的文档
 
-<a href="https://www.npmjs.com/package/admate/v/0.6.0-alpha.0">https://www.npmjs.com/package/admate/v/0.5.4</a>
+<a href="https://www.npmjs.com/package/admate/v/0.5.4">https://www.npmjs.com/package/admate/v/0.5.4</a>
 
 > 将链接末尾替换为你想要查看的版本号即可
 
@@ -90,66 +90,325 @@ pnpm add admate vue@2 axios @vue/composition-api
 
 <br>
 
-### 搭配AntDesignVue@2.x
+### 搭配AntDesignVue@2
 
 [示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
-### 搭配AntDesignVue@1.x
+### 搭配AntDesignVue@1
 
-暂无示例
-
-<br>
-
-### 搭配Vuetify@3.x
-
-[Vuetify@3.x](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue1.vue)
 
 <br>
 
-### 搭配Vuetify@2.x
+### 搭配Vuetify@3
 
-暂无示例
-
-<br>
-
-### 搭配Quasar@2.x
-
-Quasar@2.x尚不支持 `Vite`
-
-[进度追踪](https://github.com/quasarframework/quasar/issues/10398)
+[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段
 
 <br>
 
-### 搭配Quasar@1.x
+### 搭配Vuetify@2
 
-暂无示例
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/Vuetify2.vue)
+
+<br>
+
+### 搭配Quasar@2
+
+Quasar@2尚不支持 `Vite`，[进度追踪](https://github.com/quasarframework/quasar/issues/10398)
+
+<br>
+
+### 搭配Quasar@1
+
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/Quasar1.vue)
+
+<br>
+
+## 接口配置
+
+### axios
+
+```ts
+useAdmate({
+  // axios或axios实例
+  // 用于调用接口
+  axios,
+})
+```
+
+<br>
+
+### axiosConfig
+
+```ts
+useAdmate({
+  axiosConfig: {
+    // 查询列表
+    getList: {
+      method: 'GET',
+    },
+    // 新增一条记录
+    c: {
+      method: 'POST',
+    },
+    // 查询一条记录
+    r: {
+      method: 'GET',
+    },
+    // 编辑一条记录
+    u: {
+      method: 'PUT',
+    },
+    // 删除一条记录
+    d: {
+      method: 'DELETE',
+    },
+    // 启用一条记录
+    enable: {
+      method: 'PUT',
+    },
+    // 禁用一条记录
+    disable: {
+      method: 'PUT',
+    },
+    // 变更一条记录的状态
+    updateStatus: {
+      method: 'PUT',
+    },
+  },
+})
+```
+
+<br>
+
+### urlPrefix
+
+```ts
+useAdmate({
+  // axiosConfig中各个接口的url前缀
+  urlPrefix: '',
+})
+```
+
+```ts
+// 示例：URL前缀不统一
+
+useAdmate({
+  urlPrefix: 'somepage',
+  axiosConfig: {
+    r: {
+      // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀
+      url: '/anotherpage/selectOne',
+    },
+  }
+})
+```
+
+<br>
+
+<a name="RESTful"><br></a>
+
+### RESTful
+
+如果接口地址需要进行动态拼接
+
+```ts
+<!-- 示例 -->
+
+// 配置
+const { r, u } = useAdmate({
+  axiosConfig: {
+    r: config => ({
+      url: 'module/' + config.id
+    }),
+  }
+})
+
+// 使用
+r(row, 'config')
+u(row, 'config')
+```
+
+<br>
+
+### FormData
+
+axios的data默认以 `application/json` 作为MIME type，如果你需要使用 `multipart/form-data`：
+
+- 全局配置
+
+给你的axios配置 `transformRequest`、`headers['Content-Type']`
+
+- 局部配置
+
+`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submit` 的参数1均支持FormData类型
+
+```vue
+<!-- 示例：局部配置 -->
+
+<script setup>
+import { ref } from '@vue/composition-api'
+import useAdmate from 'admate'
+import { jsonToFormData, pickDeepBy } from 'kayran'
+
+// 过滤参数并转换为FormData
+// 此处示例为将过滤方法绑定到window.FormData，方便其他地方使用
+window.FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) =>
+  ![NaN, null, undefined].includes(v) &&
+  !k.startsWith('')
+))
+
+// 直接转换为FormData
+//window.FormData.from = jsonToFormData
+
+useAdmate({
+  getListProxy (getList, caller) {
+    getList(FormData.from(list.value.filter))
+  },
+})
+
+// 以便在template中使用
+const FormData = ref(window.FormData)
+</script>
+```
+
+<br>
+
+### 接口调用捷径
+
+#### AJAX
+
+```ts
+import { createAxiosShortcut } from 'admate'
+import request from '@/utils/request'
+const axiosShortcut = createAxiosShortcut(
+  request // axios或axios实例
+)
+
+// 注册全局方法
+for (let k in axiosShortcut) {
+  // Vue 3
+  app.config.globalProperties[`$${k}`] = axiosShortcut[k]
+
+  // Vue 2
+  Object.defineProperty(Vue.prototype, `$${k}`, {
+    value: axiosShortcut[k]
+  })
+}
+
+/**
+ * 快捷方式
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
+ * @param {object} config axios配置
+ * @returns {Promise<any>} 接口返回
+ */
+this.$POST
+this.$GET
+this.$PATCH
+this.$PUT
+this.$DELETE
+this.$HEAD
+
+// 或者直接使用
+axiosShortcut.POST()
+```
+
+<br>
+
+#### 上传
+
+> MIME type为multipart/form-data
+
+```ts
+/**
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
+ * @param {object} config axios配置
+ * @returns {Promise<any>} 接口返回
+ */
+this.$POST.upload // 请求方式可以更换
+```
+
+<br>
+
+#### 下载
+
+**AJAX请求**
+
+```ts
+/**
+ * @param {string} url 接口地址
+ * @param {object} data 接口参数（GET/HEAD请求默认使用params）
+ * @param {object} config axios配置
+ * @returns {Promise<any>} 接口返回
+ */
+this.$GET.download // 请求方式可以更换
+```
+
+**HTTP请求**
+
+```ts
+/**
+ * @param {string} url 接口地址
+ * @param {object} params 接口参数
+ * @param {object} config axios配置
+ */
+this.$DOWNLOAD
+```
+
+<br>
+
+**给上传、下载添加全局回调**
+
+```ts
+// 可以在响应拦截器中判断
+
+request.interceptors.response.use(
+  response => {
+    // download
+    if (response.config.responseType === 'blob') {
+      console.log('导出成功')
+    }
+  },
+)
+```
 
 <br>
 
 ## 列表
 
-### 筛选触发列表更新的方式
+### 列表数据
 
-- 点击专用的 `查询` 按钮触发（`list.watchFilter === false`）
-    - :x: 操作相对繁琐。
-    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
-    - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+`list.data`
 
-- **改变筛选条件后即时触发（`list.watchFilter === true`，默认）**
-    - :heavy_check_mark: 操作相对简便。
-    - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-    - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
+```ts
+useAdmate({
+  list: {
+    // 列表数据
+    data: [],
+
+    // 指定接口返回值中列表数据所在的位置
+    // 支持属性名如'data'，属性路径如'data.records'
+    // 还支持function，如response => response.data
+    dataAt: undefined,
+
+    // 指定接口返回值中记录总数所在的位置
+    totalAt: undefined,
+  }
+})
+```
 
 <br>
 
 ### 筛选参数
 
-`list.filter`：数据对象
+`list.filter`
 
 ```ts
-// 赋默认值
+// 绑定默认值
 
 useAdmate({
   list: {
@@ -182,10 +441,10 @@ useAdmate({
 </template>
 
 <script>
-import useMyAdmate from '@/utils/useMyAdmate'
+import useAdmate from 'admate'
 
 export default {
-  setup: () => useMyAdmate({
+  setup: () => useAdmate({
     urlPrefix: '',
     list: {
       filter: {
@@ -199,6 +458,53 @@ export default {
 
 <br>
 
+### 触发查询
+
+- 点击专用的 `查询` 按钮触发
+  - :x: 操作相对繁琐。
+  - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
+  - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+
+```ts
+useAdmate({
+  list: {
+    watchFilter: false,
+  }
+})
+```
+
+<br>
+
+- **改变筛选条件后即时触发**
+  - :heavy_check_mark: 操作相对简便。
+  - :heavy_check_mark: 列表数据与筛选条件即时绑定。
+  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
+
+```ts
+useAdmate({
+  list: {
+    watchFilter: true, // 默认
+  }
+})
+```
+
+<a name="query-table"><br></a>
+
+### 手动查询
+
+```ts
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} 接口返回值
+   */
+  getList
+} = useAdmate()
+```
+
+<br>
+
 ### 加载状态
 
 `list.loading`
@@ -206,24 +512,24 @@ export default {
 ```ts
 export default {
   methods: {
-    xxx () {
-      this.list.loading = true
+    handleTable () {
+      this.list.value.loading = true
       this.$POST('')
       .finally(() => {
-        this.list.loading = false
+        this.list.value.loading = false
       })
     }
   }
 }
 ```
 
-<a name="query-table"><br></a>
+<br>
 
 ### Hook: 查询列表时
 
-`getList` ：获取列表，在首次进入页面、查询列表参数改变、单条记录增删查改后会被调用
+`getList` ：获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
-`getListProxy`：你可以用 `getListProxy` 来代理 `getList`
+`getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在getList前后做一些操作，或改变getList的行为
 
 ```ts
 useAdmate({
@@ -239,30 +545,38 @@ useAdmate({
     .then(res => {
       // 在查询列表之后做点什么...
     })
-    .catch(res => {})
-    .finally()
   },
 })
 ```
 
 <br>
 
-## 表单
+## 单条记录
 
-### 数据对象
+### 表单数据
 
 `row.data`
 
 ```ts
-// 绑定默认值
-// 默认值主要用于表单新增时，查看/编辑时，默认值将与接口返回值进行浅混入（Spread Syntax）
-
 useAdmate({
   row: {
+    // 绑定默认值
+    // 新增时会有用
     data: {
       arr: [],
       num: 100
-    }
+    },
+
+    // 在查看、编辑单条记录时，可能需要调用接口回显单条记录的数据
+    // dataAt用于指定接口返回值中单条记录数据所在的位置
+    // 支持属性名如'data'，属性路径如'data.records'
+    // 还支持function，如response => response.data
+    dataAt: undefined,
+
+    // 将接口返回值与默认值合并的方式
+    // 默认浅合并
+    // 可选值 'deep', 'shallow', false
+    dataMerge: 'shallow',
   },
 })
 ```
@@ -282,104 +596,16 @@ useAdmate({
 
 <br>
 
-### Hook: 打开表单时
+### 查看
 
 ```ts
-/**
- * 为FormDialog组件retrieve属性定制的方法
- * @returns {Promise<any>}
- */
-this.retrieve
-```
-
-```vue
-<!-- 示例：修改接口返回值 -->
-
-<template>
-  <KiFormDialog :retrieve="retrieve"/>
-</template>
-
-<script>
-export default {
-  methods: {
-    retrieve () {
-      return this.retrieve()
-      ?.then( // 新增时 retrieve返回为空 需要判空
-        /**
-         * @param {object} rowData - 单条记录数据
-         */
-        rowData => {
-          this.row.data.status = 1
-        }
-      )
-    }
-  }
-}
-</script>
-```
-
-<br>
-
-### Hook: 提交表单时
-
-```ts
-/**
- * 为FormDialog组件submit属性定制的方法
- * @param {any} 提交前的钩子函数或指定表单参数
- * @returns {Promise<any>} 提交表单接口返回
- */
-this.submit
-```
-
-```ts
-<!-- 示例：指定提交参数 -->
-
-submit({
-  ...row.data,
-  status: 1,
-})
-
-// submit被代理
-useAdmate({
-  submitProxy (submit) {
-    return new Promise((resolve, reject) => {
-      rowDataFormRef.value.$refs.elForm.validate().then(async () => {
-        const [res, err] = await waitFor(submit({
-          ...row.data,
-          status: 1,
-        }))
-        err ? reject() : resolve()
-      })
-    })
-  }
-})
-```
-
-<br>
-
-## 增删查改
-
-### 查询列表
-
-```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- * @returns {Promise<any>} 接口返回值
- */
-getList
-```
-
-<br>
-
-### 查询单条记录
-
-```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-r
+const {
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+   */
+  r
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -391,20 +617,28 @@ r
 
 <br>
 
-### 新增单条记录
+### 新增
 
-`c`
+打开表单，提交时会调用 `axiosConfig.c`
+
+```ts
+const { c } = useAdmate()
+```
 
 <br>
 
-### 编辑单条记录
+### 编辑
+
+打开表单，提交时会调用 `axiosConfig.u`
 
 ```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-u
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} ['data'|'params'|'config'|'cache'] 指定payload的用途
+   */
+  u
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -416,14 +650,16 @@ u
 
 <br>
 
-### 删除单条记录
+### 删除
 
 ```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-d
+const {
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   */
+  d
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -434,14 +670,16 @@ d
 
 <br>
 
-### 启用单条记录
+### 启用
 
 ```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-enable
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   */
+  enable
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -452,14 +690,16 @@ enable
 
 <br>
 
-### 停用单条记录
+### 停用
 
 ```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-disable
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   */
+  disable
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -470,14 +710,16 @@ disable
 
 <br>
 
-### 变更单条记录状态
+### 变更状态
 
 ```ts
-/**
- * @param {any} [payload]
- * @param {string} [payloadUse] 指定payload的用途
- */
-updateStatus
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   */
+  updateStatus
+} = useAdmate()
 ```
 
 **参数2的可选值：**
@@ -516,169 +758,60 @@ updateStatus
 </el-table-column>
 ```
 
-<a name="RESTful"><br></a>
-
-## RESTful
-
-如果接口地址需要进行动态拼接
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <el-table-column label="操作" align="center">
-    <template slot-scope="{row}">
-      <KiPopButton
-        v-if="pageBtnList.includes('查看')"
-        icon="el-icon-search"
-        @click="r(row,'config')"
-      >
-        查看
-      </KiPopButton>
-      <KiPopButton
-        v-if="pageBtnList.includes('编辑')"
-        type="primary"
-        icon="el-icon-edit"
-        @click="u(row,'config')"
-      >
-        编辑
-      </KiPopButton>
-    </template>
-  </el-table-column>
-</template>
-
-<script setup>
-import useMyAdmate from '@/utils/useMyAdmate'
-
-const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
-  dialogTitle,
-  queryList,
-  reset,
-  onPageNumberChange,
-  currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
-} = useMyAdmate({
-  axiosConfig: {
-    r: config => ({
-      url: 'module/' + config.id
-    }),
-  }
-})
-</script>
-```
-
 <br>
 
-## FormData
-
-axios的data默认以application/json作为MIME type，如果你需要使用 `multipart/form-data`：
-
-- 全局配置
-
-给你的axios配置 `transformRequest`、`headers['Content-Type']`
-
-- 局部配置
-
-`r`、`u`、`d`、`updateStatus`、`enable`、`disable` 的payload参数均支持FormData类型。
-
-```vue
-<!-- 示例：局部配置 -->
-
-<template>
-  <el-table-column label="操作" align="center">
-    <template slot-scope="{row:{id}}">
-      <KiPopButton
-        v-if="pageBtnList.includes('编辑')"
-        type="primary"
-        icon="el-icon-edit"
-        @click="u(FormData.from({id}))"
-      >
-        编辑
-      </KiPopButton>
-    </template>
-  </el-table-column>
-
-  <KiFormDialog
-    :show.sync="row.show"
-    :title="row.status | $dialogTitle"
-    v-model="row.data"
-    :retrieve="retrieve"
-    :submit="submit(FormData.from(row.data))"
-    :readonly="row.status==='r'"
-  >
-    <template #el-form>
-      <!-- 表单项 -->
-    </template>
-  </KiFormDialog>
-</template>
-
-<script setup>
-import useMyAdmate from '@/utils/useMyAdmate'
-import { jsonToFormData, pickDeepBy } from 'kayran'
-
-// 过滤参数并转换为FormData
-FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) =>
-  ![NaN, null, undefined].includes(v) &&
-  !k.startsWith('')
-))
-
-// 直接转换为FormData
-//FormData.from = jsonToFormData
-
-const {
-  list__,
-  row__,
-  getList__,
-  c__,
-  r__,
-  u__,
-  d__,
-  updateStatus__,
-  submit__,
-  dialogTitle,
-  queryList,
-  reset,
-  onPageNumberChange,
-  currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
-} = useMyAdmate({
-  getListProxy (motive) {
-    getList(FormData.from(list.filter))
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(motive)) {
-      $Swal.success('操作成功')
-    }
-  },
-})
-</script>
-```
-
-<br>
-
-## URL前缀不统一
-
-APIGenerator以统一的URL前缀生成接口调用，当然，也可以不统一：
+### Hook: 打开表单后
 
 ```ts
-// 示例
+const { r, u } = useAdmate()
 
+r().then(response => {
+  // response为axiosConfig.r的接口返回值
+  // 修改表单数据
+  row.value.data.status = 1
+})
+
+u().then(response => {
+  // response为axiosConfig.r的接口返回值
+  // 修改表单数据
+  row.value.data.status = 1
+})
+```
+
+<br>
+
+### Hook: 提交表单时
+
+```ts
+const {
+  /**
+   * @param {any} 指定表单参数
+   * @returns {Promise<any>} 接口返回值
+   */
+  submit
+} = useAdmate()
+
+// 示例：指定提交参数
+submit({
+  ...row.value.data,
+  status: 1,
+})
+
+// submit被代理时
 useAdmate({
-  urlPrefix: 'somepage',
-  axiosConfig: {
-    r: {
-      // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀。
-      url: '/anotherpage/selectOne',
-    },
+  submitProxy (submit) {
+    return new Promise((resolve, reject) => {
+      rowDataFormRef.value.$refs.elForm.validate().then(async () => {
+        submit({
+          ...row.value.data,
+          status: 1,
+        }).then(() => {
+          resolve()
+        }).catch(() => {
+          reject()
+        })
+      })
+    })
   }
 })
 ```
@@ -695,36 +828,34 @@ useAdmate({
     <el-table v-loading="list.loading" :data="list.data">
       <!-- -->
       <el-table-column label="操作" align="center">
-        <template slot-scope="{row}">
-          <KiPopButton
-            v-if="pageBtnList.includes('查看子页面')"
-            size="mini"
+        <template slot-scope="{ row }">
+          <el-button
             @click="subpageShow(row)"
           >
             查看子页面
-          </KiPopButton>
+          </el-button>
         </template>
       </el-table-column>
-
     </el-table>
 
-    <KiFormDialog :show.sync="subpage.show" v-model="subpage.data">
-      <subpage v-if="subpage.data.id" :id="subpage.data.id"/>
-    </KiFormDialog>
+    <el-dialog v-model="SubPage.show">
+      <SubPage v-if="SubPage.data.id" :id="SubPage.data.id"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { apiGenerator, mixins } from '@/utils/admate'
-import subpage from './subpage'
+import useAdmate from 'admate'
+import SubPage from './SubPage'
 
 export default {
-  mixins: [mixins],
-  components: { subpage },
+  setup: () => useAdmate({
+    urlPrefix: 'somepage',
+  }),
+  components: { SubPage },
   data () {
     return {
-      api: apiGenerator('somepage'),
-      subpage: {
+      SubPage: {
         show: false,
         data: {},
       },
@@ -732,11 +863,11 @@ export default {
   },
   methods: {
     subpageShow (data) {
-      subpage.data = {
-        ...subpage.data,
+      this.SubPage.data = {
+        ...this.SubPage.data,
         ...data,
       }
-      subpage.show = true
+      this.SubPage.show = true
     },
   },
 }
@@ -755,20 +886,16 @@ export default {
 </template>
 
 <script>
-import { apiGenerator, mixins } from '@/utils/admate'
+import useAdmate from 'admate'
 
 export default {
-  mixins: [mixins],
-  data () {
-    return {
-      api: apiGenerator('subpage'),
-      list: {
-        filter: {
-          id: $attrs.id // 用父页面传过来的id作为初始参数
-        }
-      },
-    }
-  },
+  setup: (props, { attrs }) => useAdmate({
+    list: {
+      filter: {
+        id: attrs.id // 用父页面传过来的id作为初始参数
+      }
+    },
+  }),
 }
 </script>
 
@@ -785,143 +912,46 @@ export default {
 
 <template>
   <div class="p-20px w-full">
-    <KiFormDialog
-      :show.sync="row.show"
-      :title="row.status | $dialogTitle"
-      v-model="row.data"
-      :retrieve="retrieve"
-      :submit="submit"
-      ref="formDialog"
+    <el-dialog
+      v-model="row.show"
       :show-close="false"
       :modal="false"
       class="relative"
     >
-      <template #el-form>
-
-      </template>
-
       <div slot="footer" class="text-right pt-50px">
         <el-button
           type="primary"
-          @click="formDialog.confirm"
-          :loading="formDialog.submitting"
+          @click="submit"
+          :loading="row.submitting"
         >
           保 存
         </el-button>
       </div>
-    </KiFormDialog>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mixins, apiGenerator } from '@/utils/admate'
+import useAdmate from 'admate'
 
 export default {
-  mixins: [mixins],
-  mounted () {
-    formDialog = $refs.formDialog
-  },
-  data () {
-    return {
-      api: apiGenerator(''),
-      formDialog: {},
-    }
-  },
-  methods: {
-    getListProxy (motive) {
-      if (motive === 'init') {
-        u()
-      } else {
-        $Swal.success('操作成功').then(() => {
-          u()
-        })
+  setup: () => {
+    const admate = useAdmate({
+      getListProxy (getList, caller) {
+        if (caller === 'init') {
+          admate.u()
+        } else {
+          admate.currentInstance.value.$message.success('操作成功').then(() => {
+            admate.u()
+          })
+        }
       }
-    }
+    })
+
+    return admate
   }
 }
 </script>
-```
-
-<br>
-
-## 接口调用捷径
-
-### AJAX
-
-```ts
-/**
- * 快捷方式
- * @param {string} url 接口地址
- * @param {object} data 接口参数（GET/HEAD请求默认使用params）
- * @param {object} config axios配置
- * @returns {Promise<any>} 接口返回
- */
-$POST
-$GET
-$PATCH
-$PUT
-$DELETE
-$HEAD
-```
-
-<br>
-
-### 上传
-
-> MIME type为multipart/form-data
-
-```ts
-/**
- * @param {string} url 接口地址
- * @param {object} data 接口参数（GET/HEAD请求默认使用params）
- * @param {object} config axios配置
- * @returns {Promise<any>} 接口返回
- */
-$POST.upload // 请求方式可以更换
-```
-
-<br>
-
-### 下载
-
-**AJAX请求**
-
-```ts
-/**
- * @param {string} url 接口地址
- * @param {object} data 接口参数（GET/HEAD请求默认使用params）
- * @param {object} config axios配置
- * @returns {Promise<any>} 接口返回
- */
-$GET.download // 请求方式可以更换
-```
-
-**HTTP请求**
-
-```ts
-/**
- * @param {string} url 接口地址
- * @param {object} params 接口参数
- * @param {object} config axios配置
- */
-$DOWNLOAD
-```
-
-<br>
-
-**给上传、下载添加全局回调**
-
-```ts
-// 可以在响应拦截器中判断
-
-request.interceptors.response.use(
-  response => {
-    // download
-    if (response.config.responseType === 'blob') {
-      console.log('导出成功')
-    }
-  },
-)
 ```
 
 <br>

@@ -1,0 +1,20 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "errno": 2,
+    "code": "ELIFECYCLE",
+    "pkgid": "admate@0.6.0-alpha.0",
+    "stage": "ri",
+    "script": "rd /s /q .\\node_modules && pnpm i",
+    "pkgname": "admate",
+    "err": {
+      "name": "pnpm",
+      "message": "admate@0.6.0-alpha.0 ri: `rd /s /q .\\node_modules && pnpm i`\nExit status 2",
+      "code": "ELIFECYCLE",
+      "stack": "pnpm: admate@0.6.0-alpha.0 ri: `rd /s /q .\\node_modules && pnpm i`\nExit status 2\n    at EventEmitter.<anonymous> (C:\\Users\\admin\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\pnpm@6.16.0\\node_modules\\pnpm\\dist\\pnpm.cjs:104931:20)\n    at EventEmitter.emit (events.js:314:20)\n    at ChildProcess.<anonymous> (C:\\Users\\admin\\AppData\\Roaming\\npm\\pnpm-global\\5\\node_modules\\.pnpm\\pnpm@6.16.0\\node_modules\\pnpm\\dist\\pnpm.cjs:92920:18)\n    at ChildProcess.emit (events.js:314:20)\n    at maybeClose (internal/child_process.js:1022:16)\n    at Process.ChildProcess._handle.onexit (internal/child_process.js:287:5)"
+    }
+  },
+  "2 warn pnpm:global": " Local package.json exists, but node_modules missing, did you mean to install?"
+}

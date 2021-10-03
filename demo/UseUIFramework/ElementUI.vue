@@ -35,8 +35,8 @@
       </div>
 
       <el-pagination
-        v-model:current-page="list.filter.pageNo"
-        v-model:page-size="list.filter.pageSize"
+        :current-page.sync="list.filter.pageNo"
+        :page-size.sync="list.filter.pageSize"
         :total="list.total"
         @current-change="onPageNumberChange"
       />
@@ -63,7 +63,7 @@
       <el-form
         ref="rowDataFormRef"
         :model="row.data"
-        :disabled="row.status==='r'"
+        :disabled="row.status==='r'||row.submitting"
         v-loading="row.loading"
       >
         <el-form-item label="姓名" prop="name" required>
@@ -88,14 +88,27 @@
 <script>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
+import { ref } from 'vue-demi'
 
 export default {
-  setup: () => useMyAdmate({
-    urlPrefix,
-  }),
+  setup: () => {
+    const listFilterFormRef = ref(null)
+    const rowDataFormRef = ref(null)
+
+    const admate = useMyAdmate({
+      admateConfig: {
+        urlPrefix,
+      },
+      validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
+      validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
+      clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
+    })
+
+    return {
+      ...admate,
+      listFilterFormRef,
+      rowDataFormRef,
+    }
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

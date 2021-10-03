@@ -18,16 +18,16 @@
     }
   },
   "scripts": {
-    "dev": "vue-demi-switch 3 && vite",
-    "dev:2": "vue-demi-switch 2 vue2 && vite",
+    "dev": "vue-demi-switch 3 vue && vite",
+    "dev:2": "vue-demi-switch 2 vue && vite --config vite.config.vue2.ts",
     "build": "vite build",
     "serve": "vite preview",
     "cov": "jest --ci --coverage",
     "jest": "jest --watchAll",
     "clean": "rd /s /q .\\node_modules",
     "ri": "rd /s /q .\\node_modules && pnpm i",
-    "test:2": "vue-demi-switch 2 vue2 && jest",
-    "test:3": "vue-demi-switch 3 && jest"
+    "test:2": "vue-demi-switch 2 && jest",
+    "test:3": "vue-demi-switch 3 vue3 && jest"
   },
   "dependencies": {
     "kayran": "latest",
@@ -56,6 +56,7 @@
     "axios": "latest",
     "codecov": "latest",
     "element-plus": "latest",
+    "element-ui": "^2.15.6",
     "jest": "latest",
     "mockjs": "latest",
     "overlayscrollbars": "latest",
@@ -65,11 +66,13 @@
     "typescript": "latest",
     "vite": "latest",
     "vite-plugin-mock": "latest",
+    "vite-plugin-vue2": "latest",
     "vite-plugin-windicss": "latest",
-    "vue": "^3.2.19",
+    "vue": "npm:vue@^2.6.14",
     "vue-router": "^4.0.11",
-    "vue2": "npm:vue@^2.6.14",
+    "vue-template-compiler": "latest",
     "vue2-router": "npm:vue-router@^3.5.2",
+    "vue3": "npm:vue@^3.2.19",
     "vuetify": "^3.0.0-alpha.11",
     "vuetify2": "npm:vuetify@^2.5.9",
     "windicss": "latest"

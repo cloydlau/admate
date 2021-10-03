@@ -70,7 +70,7 @@
         v-loading="row.loading"
       >
         <a-form-item name="name" required label="姓名">
-          <a-input v-model:value="row.data.name" :disabled="row.status==='r'"/>
+          <a-input v-model:value="row.data.name" :disabled="row.status==='r'||row.submitting"/>
         </a-form-item>
       </a-form>
       <template #footer>
@@ -92,6 +92,10 @@
 <script setup>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
+import { ref } from 'vue-demi'
+
+const listFilterFormRef = ref(null)
+const rowDataFormRef = ref(null)
 
 const {
   list,
@@ -105,16 +109,14 @@ const {
   submit,
   dialogTitle,
   queryList,
-  reset,
   onPageNumberChange,
   currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
 } = useMyAdmate({
-  urlPrefix,
+  admateConfig: {
+    urlPrefix,
+  },
+  validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
+  validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
+  clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
 })
 </script>
-
-<style lang="scss" scoped>
-
-</style>

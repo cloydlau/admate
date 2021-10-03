@@ -63,7 +63,7 @@
       <el-form
         ref="rowDataFormRef"
         :model="row.data"
-        :disabled="row.status==='r'"
+        :disabled="row.status==='r'||row.submitting"
         v-loading="row.loading"
       >
         <el-form-item label="姓名" prop="name" required>
@@ -88,6 +88,10 @@
 <script setup>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
+import { ref } from 'vue-demi'
+
+const listFilterFormRef = ref(null)
+const rowDataFormRef = ref(null)
 
 const {
   list,
@@ -101,16 +105,14 @@ const {
   submit,
   dialogTitle,
   queryList,
-  reset,
   onPageNumberChange,
   currentInstance,
-  listFilterFormRef,
-  rowDataFormRef,
 } = useMyAdmate({
-  urlPrefix,
+  admateConfig: {
+    urlPrefix,
+  },
+  validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
+  validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
+  clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
 })
 </script>
-
-<style lang="scss" scoped>
-
-</style>
