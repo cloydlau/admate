@@ -17,7 +17,9 @@
           查询
         </el-button>
         <el-button
-          @click="reset"
+          @click="() => {
+            listFilterFormRef.resetFields()
+          }"
         >
           重置
         </el-button>
@@ -44,7 +46,7 @@
 
     <el-table
       :data="list.data"
-      :loading="list.loading"
+      v-loading="list.loading"
     >
       <el-table-column prop="name" label="姓名"/>
       <el-table-column label="操作">

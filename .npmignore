@@ -22,7 +22,8 @@ yarn-error.log*
 
 src/
 public/
-vue.config.js
+/*.config.js
+/*.config.ts
 babel.config.js
 .browserslistrc
 tsconfig.json

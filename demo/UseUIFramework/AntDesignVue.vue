@@ -17,7 +17,9 @@
       </a-button>
       <a-button
         class="ml-10px"
-        @click="reset"
+        @click="() => {
+          listFilterFormRef.resetFields()
+        }"
       >
         重置
       </a-button>

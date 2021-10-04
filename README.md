@@ -8,9 +8,11 @@
 
 - 同时支持Vue2 & Vue3
 - 不限制UI框架，只要技术栈是Vue和axios，便可以使用
+- 同一系统内，CRUD的请求配置通常是相似的，同一模块内，接口前缀通常是一致的，Admate可以帮助你减少冗余代码
 - 提供列表、单条记录CRUD的贴心封装
+    - 你不再操心列表、表单的加载状态
+    - 支持监听筛选参数自动刷新列表，且节流控制接口调用频率
 - 提供接口调用捷径（含上传、下载）
-- 节流控制筛选列表的接口调用频率（监听筛选参数时）
 
 周全的收尾工作，没有“后顾之忧”：
 
@@ -55,6 +57,10 @@ pnpm add admate vue@2 axios @vue/composition-api
 ### 使用代码生成器
 
 使用代码生成器生成页面模板
+
+::: warning  
+目前仅支持 `element-ui`
+:::
 
 #### Installation
 
@@ -117,12 +123,6 @@ pnpm add admate vue@2 axios @vue/composition-api
 ### 搭配Quasar@2
 
 Quasar@2尚不支持 `Vite`，[进度追踪](https://github.com/quasarframework/quasar/issues/10398)
-
-<br>
-
-### 搭配Quasar@1
-
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/Quasar1.vue)
 
 <br>
 
@@ -255,10 +255,7 @@ import { jsonToFormData, pickDeepBy } from 'kayran'
 
 // 过滤参数并转换为FormData
 // 此处示例为将过滤方法绑定到window.FormData，方便其他地方使用
-window.FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) =>
-  ![NaN, null, undefined].includes(v) &&
-  !k.startsWith('')
-))
+window.FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v))
 
 // 直接转换为FormData
 //window.FormData.from = jsonToFormData
@@ -461,9 +458,9 @@ export default {
 ### 触发查询
 
 - 点击专用的 `查询` 按钮触发
-  - :x: 操作相对繁琐。
-  - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
-  - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+    - :x: 操作相对繁琐。
+    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
+    - :heavy_check_mark: 想要同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
 
 ```ts
 useAdmate({
@@ -476,14 +473,20 @@ useAdmate({
 <br>
 
 - **改变筛选条件后即时触发**
-  - :heavy_check_mark: 操作相对简便。
-  - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-  - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
+    - :heavy_check_mark: 操作相对简便。
+    - :heavy_check_mark: 列表数据与筛选条件即时绑定。
+    - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
 
 ```ts
 useAdmate({
   list: {
     watchFilter: true, // 默认
+
+    // 节流间隔，单位毫秒
+    // 如果筛选参数不含input类型，可以设置为0，即不节流
+    // 翻页不会触发节流
+    // watchFilter开启时有效
+    throttleInterval: 500, // 默认
   }
 })
 ```
@@ -576,7 +579,7 @@ useAdmate({
     // 将接口返回值与默认值合并的方式
     // 默认浅合并
     // 可选值 'deep', 'shallow', false
-    dataMerge: 'shallow',
+    mergeData: 'shallow',
   },
 })
 ```
@@ -736,8 +739,7 @@ const {
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <KiPopSwitch
-      v-bind="popSwitchProps(status)"
+    <el-switch
       @change="updateStatus({id,status:status^1})"
     />
   </template>
@@ -750,8 +752,7 @@ const {
 
 <el-table-column label="操作" align="center">
   <template slot-scope="{row:{id,status}}">
-    <KiPopSwitch
-      v-bind="popSwitchProps(status)"
+    <el-switch
       @change="[enable,disable][status]({id})"
     />
   </template>
@@ -782,16 +783,23 @@ u().then(response => {
 
 ### Hook: 提交表单时
 
+`submit` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
+
+`submitProxy`：你可以使用 `submitProxy` 来代理 `submit`，以便在submit前后做一些操作，或改变submit的行为
+
 ```ts
 const {
   /**
-   * @param {any} 指定表单参数
+   * @param {any} [params = row.value.data] - 接口参数
    * @returns {Promise<any>} 接口返回值
    */
   submit
 } = useAdmate()
+```
 
+```ts
 // 示例：指定提交参数
+
 submit({
   ...row.value.data,
   status: 1,
@@ -800,12 +808,22 @@ submit({
 // submit被代理时
 useAdmate({
   submitProxy (submit) {
+    submit({
+      ...row.value.data,
+      status: 1,
+    })
+  }
+})
+```
+
+```ts
+// 示例：提交前校验表单
+
+useAdmate({
+  submitProxy (submit) {
     return new Promise((resolve, reject) => {
-      rowDataFormRef.value.$refs.elForm.validate().then(async () => {
-        submit({
-          ...row.value.data,
-          status: 1,
-        }).then(() => {
+      rowDataFormRef.value.validate().then(() => {
+        submit().then(() => {
           resolve()
         }).catch(() => {
           reject()
@@ -816,12 +834,49 @@ useAdmate({
 })
 ```
 
+```ts
+// 示例：提交表单后，自定义表单的开闭和加载状态
+
+// return a promise
+useAdmate({
+  submitProxy (submit) {
+    return new Promise((resolve, reject) => {
+      rowDataFormRef.value.validate().then(() => {
+        submit().then(() => {
+          // 提交成功后，默认关闭表单，并停止加载
+          resolve({
+            show: false,
+            submitting: false,
+          })
+        }).catch(() => {
+          // 提交失败后，默认仅停止加载
+          reject({
+            show: true,
+            submitting: false,
+          })
+        })
+      })
+    })
+  }
+})
+
+// return an object
+useAdmate({
+  submitProxy (submit) {
+    return {
+      show: false,
+      submitting: false,
+    }
+  }
+})
+```
+
 <br>
 
 ## 例：嵌套另一个使用Admate的页面
 
 ```vue
-<!-- 示例：父页面中某个弹框要展示一个同样使用Admate的页面 -->
+<!-- 示例：父页面中某个对话框要展示一个同样使用Admate的页面 -->
 
 <template>
   <div class="p-20px">

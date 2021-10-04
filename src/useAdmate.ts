@@ -1,9 +1,4 @@
-import {
-  ref,
-  reactive,
-  watch,
-  onMounted,
-} from 'vue-demi'
+import { ref, reactive, watch, onMounted, } from 'vue-demi'
 import { isEmpty, notEmpty, getFinalProp } from 'kayran'
 import { throttle, cloneDeep, isPlainObject, at, merge, assignIn } from 'lodash-es'
 import createAPIGenerator from './api-generator'
@@ -12,9 +7,11 @@ import type { ConfigCatalogType } from './api-generator'
 const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 type StatusType = '' | 'c' | 'r' | 'u'
-type DataMergeType = 'deep' | 'shallow' | false
+type MergeDataType = 'deep' | 'shallow' | false
 type RRowType = 'data' | 'params' | 'config' | 'cache'
 type CUDRowType = 'data' | 'params' | 'config'
+type SubmitTerminalState = { show?: boolean, submitting?: boolean } | void
+type SubmitType = (params: any) => Promise<any>
 
 const At = (response?: object, paths?: string | Function): any => {
   return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
@@ -24,13 +21,13 @@ const At = (response?: object, paths?: string | Function): any => {
 const mergeRowData = (
   Row: {
     data: any,
-    dataMerge: DataMergeType,
+    mergeData: MergeDataType,
   },
   newRowData,
 ) => {
-  if (Row.dataMerge) {
+  if (Row.mergeData) {
     // merge, assignIn会改变原始对象
-    Row.dataMerge === 'deep' ?
+    Row.mergeData === 'deep' ?
       merge(Row.data, newRowData) :
       assignIn(Row.data, newRowData)
   } else {
@@ -54,7 +51,7 @@ export default function useAdmate ({
     show?: boolean,
     data?: any,
     dataAt?: string | Function,
-    dataMerge?: DataMergeType,
+    mergeData?: MergeDataType,
     loading?: boolean,
     submitting?: boolean,
     status?: StatusType,
@@ -63,6 +60,7 @@ export default function useAdmate ({
     filter?: object,
     pageNumberKey?: string,
     watchFilter?: boolean,
+    throttleInterval?: number,
     data?: any[],
     dataAt?: string | Function,
     total?: number,
@@ -73,7 +71,7 @@ export default function useAdmate ({
     getList: (payload?: object, payloadUse?: string) => Promise<any> | void,
     caller?: string
   ) => any,
-  submitProxy?: (submit: Function) => any,
+  submitProxy?: (submit: SubmitType) => SubmitTerminalState | Promise<SubmitTerminalState>,
 }): object {
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
@@ -90,6 +88,7 @@ export default function useAdmate ({
         [userProp.pageNumberKey]: 1,
       },
       watchFilter: true,
+      throttleInterval: 500,
     }),
     defaultIsDynamic: true,
   })
@@ -102,7 +101,7 @@ export default function useAdmate ({
     submitting: false,
     show: false,
     data: {},
-    dataMerge: 'shallow',
+    mergeData: 'shallow',
     payload: {},
     payloadUse: null,
     status: '',
@@ -113,7 +112,7 @@ export default function useAdmate ({
 
   const Row = reactive(getInitialRow())
 
-  const getList = async (
+  const getList = (
     payload = List.filter,
     payloadUse?: string
   ) => {
@@ -156,6 +155,7 @@ export default function useAdmate ({
     async (caller?) => {
       //console.log(`getListProxy因${caller}被调用`)
       getListCaller.value = caller
+      List.loading = false
       await getListProxy(getList, getListCaller.value)
     } :
     getList
@@ -283,12 +283,14 @@ export default function useAdmate ({
   */
 
   // 表单提交
-  const submit = (params: any = Row.data) =>
-    api[Row.status](params)
+  const submit: SubmitType = (params = Row.data) => {
+    Row.submitting = true
+    return api[Row.status](params)
     .then(response => {
       GetListProxy(Row.status)
       return response
     })
+  }
   const controlRowDialog = (
     options: { show?: boolean, submitting?: boolean },
     defaultOptions,
@@ -302,7 +304,6 @@ export default function useAdmate ({
     }
   }
   const SubmitProxy = (params: any = Row.data) => {
-    Row.submitting = true
     const result = submitProxy ?
       submitProxy(submit) :
       submit(params)
@@ -371,19 +372,22 @@ export default function useAdmate ({
     // 筛选项改变时，刷新列表
     if (List.watchFilter) {
       watch(() => List.filter, () => {
-        if (!getListThrottled.value) {
-          getListThrottled.value = throttle(() => {
-            GetListProxy(List.filter[List.pageNumberKey] ===
-              List.oldPageNumber ?
-                'filterChange' : 'pageNumberChange'
-            )
-          }, 500, {
-            leading: false, // true会导致：如果调用≥2次 则至少触发2次 但此时可能只期望触发1次
-            trailing: true
-          })
-        }
+        if (List.filter[List.pageNumberKey] === List.oldPageNumber) {
+          List.loading = true
+          if (!getListThrottled.value) {
+            getListThrottled.value = throttle(() => {
+              GetListProxy('filterChange')
+            }, List.throttleInterval, {
+              leading: false,
+              trailing: true
+            })
+          }
 
-        getListThrottled.value()
+          getListThrottled.value()
+        } else {
+          // 翻页不需要节流
+          GetListProxy('pageNumberChange')
+        }
       }, {
         deep: true
       })

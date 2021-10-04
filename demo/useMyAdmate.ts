@@ -76,7 +76,7 @@ export default ({
     // submit代理
     submitProxy (submit) {
       return new Promise((resolve, reject) => {
-        validateRowDataForm().then(async () => {
+        validateRowDataForm().then(() => {
           submit().then(() => {
             resolve()
           }).catch(() => {

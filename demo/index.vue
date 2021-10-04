@@ -19,7 +19,7 @@
 
 <script>
 import { isVue2 } from 'vue-demi'
-import { routes } from './vue2-router'
+import routes from './router/routes'
 
 export default {
   data () {

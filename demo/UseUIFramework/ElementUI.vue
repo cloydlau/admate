@@ -17,7 +17,9 @@
           查询
         </el-button>
         <el-button
-          @click="reset"
+          @click="() => {
+            listFilterFormRef.resetFields()
+          }"
         >
           重置
         </el-button>
