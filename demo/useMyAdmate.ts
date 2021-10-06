@@ -2,7 +2,6 @@ import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance }
 import request from './utils/request'
 import useAdmate from '../src/main'
 import { merge } from 'lodash-es'
-import { waitFor } from 'kayran'
 
 export default ({
   admateConfig,
