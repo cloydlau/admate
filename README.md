@@ -638,7 +638,7 @@ const { c } = useAdmate()
 const {
   /**
    * @param {any} [payload]
-   * @param {string} ['data'|'params'|'config'|'cache'] 指定payload的用途
+   * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
    */
   u
 } = useAdmate()
@@ -679,7 +679,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
    */
   enable
 } = useAdmate()
@@ -699,7 +699,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
    */
   disable
 } = useAdmate()
@@ -719,7 +719,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {string} ['data'|'params'|'config'] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
    */
   updateStatus
 } = useAdmate()
