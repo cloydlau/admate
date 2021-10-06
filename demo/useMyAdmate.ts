@@ -1,6 +1,10 @@
+// 使用Vue3时，来源替换为 'vue'
+// 使用Vue2时，来源替换为 '@vue/composition-api'
 import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from 'vue-demi'
-import request from './utils/request'
+// 来源替换为 'admate'
 import useAdmate from '../src/main'
+// 来源替换为 'axios'，或你的axios封装
+import request from './utils/request'
 import { merge } from 'lodash-es'
 
 export default ({
