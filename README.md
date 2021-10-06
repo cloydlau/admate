@@ -10,7 +10,7 @@
 - 不限制UI框架，只要技术栈是Vue和axios，便可以使用
 - 同一系统内，CRUD的请求配置通常是相似的，同一模块内，接口前缀通常是一致的，Admate可以帮助你减少冗余代码
 - 提供列表、单条记录CRUD的贴心封装
-    - 你不再操心列表、表单的加载状态
+    - 你不再操心列表的读取状态、表单的读取和提交状态
     - 支持监听筛选参数自动刷新列表，且节流控制接口调用频率
 - 提供接口调用捷径（含上传、下载）
 
@@ -405,15 +405,17 @@ useAdmate({
 `list.filter`
 
 ```ts
-// 绑定默认值
-
 useAdmate({
   list: {
+    // 可以在这里提供筛选参数的默认值
     filter: {
-      pageSize: 15,
-      status: 1,
-    }
-  }
+      [list.pageNumberKey]: 1,
+    },
+
+    // 必填
+    // 页码的参数名
+    pageNumberKey: undefined,
+  },
 })
 ```
 
@@ -480,13 +482,13 @@ useAdmate({
 ```ts
 useAdmate({
   list: {
-    watchFilter: true, // 默认
+    watchFilter: true, // 默认值
 
     // 节流间隔，单位毫秒
     // 如果筛选参数不含input类型，可以设置为0，即不节流
     // 翻页不会触发节流
     // watchFilter开启时有效
-    throttleInterval: 500, // 默认
+    throttleInterval: 500, // 默认值
   }
 })
 ```
@@ -563,12 +565,8 @@ useAdmate({
 ```ts
 useAdmate({
   row: {
-    // 绑定默认值
-    // 新增时会有用
-    data: {
-      arr: [],
-      num: 100
-    },
+    // 可以在这里提供表单数据的默认值，新增时会有用
+    data: {},
 
     // 在查看、编辑单条记录时，可能需要调用接口回显单条记录的数据
     // dataAt用于指定接口返回值中单条记录数据所在的位置
@@ -577,8 +575,10 @@ useAdmate({
     dataAt: undefined,
 
     // 将接口返回值与默认值合并的方式
-    // 默认浅合并
-    // 可选值 'deep', 'shallow', false
+    // 可选值：
+    // 'shallow': 浅合并（默认）
+    // 'deep': 深合并
+    // false: 不合并，直接替换
     mergeData: 'shallow',
   },
 })
