@@ -8,6 +8,16 @@
       <el-form-item prop="name" required>
         <el-input v-model="list.filter.name" placeholder="姓名"/>
       </el-form-item>
+      <el-form-item prop="status">
+        <el-select v-model="list.filter.status" placeholder="状态">
+          <el-option
+            v-for="(v,i) of ['停用','启用']"
+            :key="i"
+            :label="v"
+            :value="v"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button
           v-if="!list.watchFilter"
@@ -90,7 +100,7 @@
 <script>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-import { ref } from 'vue-demi'
+import { ref, onMounted } from 'vue-demi'
 
 export default {
   setup: () => {
@@ -104,6 +114,14 @@ export default {
       validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
       validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
       clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
+    })
+
+    // fix element-ui bug: 给筛选项赋初值，使得重置功能能够正常工作
+    onMounted(() => {
+      admate.list.value.filter = {
+        ...Object.fromEntries(Array.from(listFilterFormRef.value.fields || [], v => [v.labelFor, undefined])),
+        ...admate.list.value.filter,
+      }
     })
 
     return {

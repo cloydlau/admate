@@ -8,6 +8,16 @@
       <el-form-item prop="name" required>
         <el-input v-model="list.filter.name" placeholder="姓名"/>
       </el-form-item>
+      <el-form-item prop="status">
+        <el-select v-model="list.filter.status" placeholder="状态">
+          <el-option
+            v-for="(v,i) of ['停用','启用']"
+            :key="i"
+            :label="v"
+            :value="v"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button
           v-if="!list.watchFilter"
