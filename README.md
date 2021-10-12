@@ -292,29 +292,6 @@ export default {
 
 ## 列表
 
-### 列表数据
-
-`list.data`
-
-```ts
-useAdmate({
-  list: {
-    // 列表数据
-    data: [],
-
-    // 指定接口返回值中列表数据所在的位置
-    // 支持属性名如'data'，属性路径如'data.records'
-    // 还支持function，如response => response.data
-    dataAt: undefined,
-
-    // 指定接口返回值中记录总数所在的位置
-    totalAt: undefined,
-  }
-})
-```
-
-<br>
-
 ### 筛选参数
 
 `list.filter`
@@ -408,19 +385,27 @@ useAdmate({
 })
 ```
 
-<a name="query-table"><br></a>
+<br>
 
-### 手动查询
+### 列表数据
+
+`list.data`
 
 ```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {string} [payloadUse] 指定payload的用途
-   * @returns {Promise<any>} 接口返回值
-   */
-  getList
-} = useAdmate()
+useAdmate({
+  list: {
+    // 列表数据
+    data: [],
+
+    // 指定接口返回值中列表数据所在的位置
+    // 支持属性名如'data'，属性路径如'data.records'
+    // 还支持function，如response => response.data
+    dataAt: undefined,
+
+    // 指定接口返回值中记录总数所在的位置
+    totalAt: undefined,
+  }
+})
 ```
 
 <br>
@@ -428,6 +413,8 @@ const {
 ### 读取状态
 
 `list.loading`
+
+`axiosConfig.getList` 被调用时值为 `true`
 
 ```vue
 <!-- 示例 -->
@@ -456,7 +443,20 @@ export default {
 </script>
 ```
 
-`axiosConfig.getList` 被调用时值为 `true`
+<a name="query-table"><br></a>
+
+### 手动查询
+
+```ts
+const {
+  /**
+   * @param {any} [payload]
+   * @param {string} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} 接口返回值
+   */
+  getList
+} = useAdmate()
+```
 
 <br>
 
@@ -487,47 +487,6 @@ useAdmate({
 <br>
 
 ## 单条记录
-
-### 表单数据
-
-`row.data`
-
-```ts
-useAdmate({
-  row: {
-    // 可以在这里提供表单数据的默认值，新增时会有用
-    data: {},
-
-    // 在查看、编辑单条记录时，可能需要调用接口回显单条记录的数据
-    // dataAt用于指定接口返回值中单条记录数据所在的位置
-    // 支持属性名如'data'，属性路径如'data.records'
-    // 还支持function，如response => response.data
-    dataAt: undefined,
-
-    // 将接口返回值与默认值合并的方式
-    // 可选值：
-    // 'shallow': 浅合并（默认）
-    // 'deep': 深合并
-    // false: 不合并，直接替换
-    mergeData: 'shallow',
-  },
-})
-```
-
-<br>
-
-### 表单形态
-
-`row.status`
-
-可能的值：
-
-- `'c'` 新增
-- `'r'` 查看
-- `'u'` 编辑
-- `''` 关闭
-
-<br>
 
 ### 查看
 
@@ -697,9 +656,52 @@ const {
 
 <br>
 
+### 表单数据
+
+`row.data`
+
+```ts
+useAdmate({
+  row: {
+    // 可以在这里提供表单数据的默认值，新增时会有用
+    data: {},
+
+    // 在查看、编辑单条记录时，可能需要调用接口回显单条记录的数据
+    // dataAt用于指定接口返回值中单条记录数据所在的位置
+    // 支持属性名如'data'，属性路径如'data.records'
+    // 还支持function，如response => response.data
+    dataAt: undefined,
+
+    // 将接口返回值与默认值合并的方式
+    // 可选值：
+    // 'shallow': 浅合并（默认）
+    // 'deep': 深合并
+    // false: 不合并，直接替换
+    mergeData: 'shallow',
+  },
+})
+```
+
+<br>
+
+### 表单形态
+
+`row.status`
+
+可能的值：
+
+- `'c'` 新增
+- `'r'` 查看
+- `'u'` 编辑
+- `''` 关闭
+
+<br>
+
 ### 读取状态
 
 `row.loading`
+
+`axiosConfig.r` 被调用时值为 `true`
 
 ```vue
 <!-- 示例 -->
@@ -722,13 +724,13 @@ export default {
 </script>
 ```
 
-`axiosConfig.r` 被调用时值为 `true`
-
 <br>
 
 ### 提交状态
 
 `row.submitting`
+
+`axiosConfig.c` 和 `axiosConfig.u` 被调用时值为 `true`
 
 ```vue
 <!-- 示例 -->
@@ -754,8 +756,6 @@ export default {
 }
 </script>
 ```
-
-调用 `axiosConfig.c` 和 `axiosConfig.u` 接口时值为 `true`
 
 <br>
 
