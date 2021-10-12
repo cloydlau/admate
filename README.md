@@ -36,7 +36,7 @@
 ### Vue 3
 
 ```bash
-pnpm add admate vue@3 axios
+npm add admate vue@3 axios
 ```
 
 <br>
@@ -44,7 +44,7 @@ pnpm add admate vue@3 axios
 ### Vue 2
 
 ```bash
-pnpm add admate vue@2 axios @vue/composition-api
+npm add admate vue@2 axios @vue/composition-api
 ```
 
 ### 初始化
