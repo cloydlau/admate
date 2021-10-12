@@ -339,8 +339,7 @@ export default function useAdmate ({
             mergeRowData(Row, At(response, Row.dataAt))
             Row.resolve(response)
           }).catch(e => {
-            //console.error(import.meta.env.VITE_APP_CONSOLE_PREFIX, e)
-            Row.show = false
+            Row.show = false // todo: 是否需要动态配置
             Row.reject(e)
           }).finally(() => {
             Row.resolve = null
