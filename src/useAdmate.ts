@@ -328,13 +328,14 @@ export default function useAdmate ({
     if (n) {
       // 查看和编辑时，回显单条记录数据
       if (['r', 'u'].includes(Row.status)) {
+        Row.loading = true
         if (Row.payloadUse === 'cache') {
           mergeRowData(Row, Row.payload)
           Row.resolve(Row.payload)
           Row.resolve = null
           Row.reject = null
+          Row.loading = false
         } else {
-          Row.loading = true
           api.r(Row.payload, Row.payloadUse).then(response => {
             mergeRowData(Row, At(response, Row.dataAt))
             Row.resolve(response)

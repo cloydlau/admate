@@ -2,7 +2,7 @@
   "name": "admate",
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
-  "version": "0.6.0-beta.0",
+  "version": "0.6.0-beta.1",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -36,8 +36,8 @@
     "vue-demi": "latest"
   },
   "peerDependencies": {
-    "@vue/composition-api": "*",
-    "axios": "*",
+    "@vue/composition-api": "1",
+    "axios": "0",
     "vue": "^2.0.0 || >=3.0.0"
   },
   "peerDependenciesMeta": {

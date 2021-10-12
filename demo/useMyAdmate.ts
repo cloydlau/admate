@@ -93,12 +93,19 @@ export default ({
   // 给暴露的变量加命名标识
   //admate = mapKeys(admate, (v, k) => `${k}__`)
 
-  // 关闭表单时，重置校验
+  // 关闭表单时，清除校验
   watch(() => admate.row.show, n => {
     if (!n) {
       setTimeout(() => {
         clearValidateOfRowDataForm()
       }, 150)
+    }
+  })
+
+  // 回显表单后，清除校验
+  watch(() => admate.row.loading, n => {
+    if (!n) {
+      clearValidateOfRowDataForm()
     }
   })
 

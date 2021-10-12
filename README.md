@@ -275,10 +275,10 @@ export default {
     return {
       ...useAdmate({
         getListProxy (getList, caller) {
-          getList(FormData.from(list.value.filter))
+          getList(FormData.from(list.filter))
         },
         submitProxy (submit) {
-          return submit(FormData.from(row.value.data))
+          return submit(FormData.from(row.data))
         }
       }),
       FormData
@@ -433,9 +433,9 @@ export default {
   },
   methods: {
     handleTable () {
-      this.list.value.loading = true
+      this.list.loading = true
       this.$POST('').finally(() => {
-        this.list.value.loading = false
+        this.list.loading = false
       })
     }
   }
@@ -767,13 +767,13 @@ const { r, u } = useAdmate()
 r().then(response => {
   // response为axiosConfig.r的接口返回值
   // 修改表单数据
-  row.value.data.status = 1
+  row.data.status = 1
 })
 
 u().then(response => {
   // response为axiosConfig.r的接口返回值
   // 修改表单数据
-  row.value.data.status = 1
+  row.data.status = 1
 })
 ```
 
@@ -788,7 +788,7 @@ u().then(response => {
 ```ts
 const {
   /**
-   * @param {any} [params = row.value.data] - 接口参数
+   * @param {any} [params = row.data] - 接口参数
    * @returns {Promise<any>} 接口返回值
    */
   submit
@@ -799,7 +799,7 @@ const {
 // 示例：指定提交参数
 
 submit({
-  ...row.value.data,
+  ...row.data,
   status: 1,
 })
 
@@ -807,7 +807,7 @@ submit({
 useAdmate({
   submitProxy (submit) {
     return submit({
-      ...row.value.data,
+      ...row.data,
       status: 1,
     })
   }
