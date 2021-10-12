@@ -247,26 +247,44 @@ axios的data默认以 `application/json` 作为MIME type，如果你需要使用
 ```vue
 <!-- 示例：局部配置 -->
 
-<script setup>
-import { ref } from '@vue/composition-api'
+<template>
+  <el-table>
+    <el-table-column label="操作">
+      <template #default="{ row: { id } }">
+        <el-button @click="r(FormData.from({ id }))">查看</el-button>
+        <el-button @click="u(FormData.from({ id }))">编辑</el-button>
+        <el-button @click="d(FormData.from({ id }))">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script>
 import useAdmate from 'admate'
 import { jsonToFormData, pickDeepBy } from 'kayran'
 
-// 过滤参数并转换为FormData
-// 此处示例为将过滤方法绑定到window.FormData，方便其他地方使用
-window.FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v))
+export default {
+  setup: () => {
+    // 过滤参数并转换为FormData
+    // 此处示例为将过滤方法绑定到window.FormData，方便其他地方使用
+    FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v)))
 
-// 直接转换为FormData
-//window.FormData.from = jsonToFormData
+    // 直接转换为FormData
+    //FormData.from = jsonToFormData
 
-useAdmate({
-  getListProxy (getList, caller) {
-    getList(FormData.from(list.value.filter))
-  },
-})
-
-// 以便在template中使用
-const FormData = ref(window.FormData)
+    return {
+      ...useAdmate({
+        getListProxy (getList, caller) {
+          getList(FormData.from(list.value.filter))
+        },
+        submitProxy (submit) {
+          return submit(FormData.from(row.value.data))
+        }
+      }),
+      FormData
+    }
+  }
+}
 </script>
 ```
 
@@ -407,23 +425,38 @@ const {
 
 <br>
 
-### 加载状态
+### 读取状态
 
 `list.loading`
 
-```ts
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-table v-loading="list.loading"/>
+</template>
+
+<script>
+import useAdmate from 'admate'
+
 export default {
+  setup: () => {
+    const { list } = useAdmate()
+    return { list }
+  },
   methods: {
     handleTable () {
       this.list.value.loading = true
-      this.$POST('')
-      .finally(() => {
+      this.$POST('').finally(() => {
         this.list.value.loading = false
       })
     }
   }
 }
+</script>
 ```
+
+`axiosConfig.getList` 被调用时值为 `true`
 
 <br>
 
@@ -503,6 +536,7 @@ const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.r的返回值
    */
   r
 } = useAdmate()
@@ -536,6 +570,7 @@ const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.r的返回值
    */
   u
 } = useAdmate()
@@ -557,6 +592,7 @@ const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.d的返回值
    */
   d
 } = useAdmate()
@@ -577,6 +613,7 @@ const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.enable的返回值
    */
   enable
 } = useAdmate()
@@ -597,6 +634,7 @@ const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.disable的返回值
    */
   disable
 } = useAdmate()
@@ -610,13 +648,14 @@ const {
 
 <br>
 
-### 变更状态
+### 状态变更
 
 ```ts
 const {
   /**
    * @param {any} [payload]
    * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @returns {Promise<any>} axiosConfig.updateStatus的返回值
    */
   updateStatus
 } = useAdmate()
@@ -655,6 +694,68 @@ const {
   </template>
 </el-table-column>
 ```
+
+<br>
+
+### 读取状态
+
+`row.loading`
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-dialog>
+    <el-form v-loading="row.loading"/>
+  </el-dialog>
+</template>
+
+<script>
+import useAdmate from 'admate'
+
+export default {
+  setup: () => {
+    const { row } = useAdmate()
+    return { row }
+  }
+}
+</script>
+```
+
+`axiosConfig.r` 被调用时值为 `true`
+
+<br>
+
+### 提交状态
+
+`row.submitting`
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-dialog>
+    <template #footer>
+      <el-button :loading="row.submitting">
+        确 定
+      </el-button>
+    </template>
+  </el-dialog>
+</template>
+
+<script>
+import useAdmate from 'admate'
+
+export default {
+  setup: () => {
+    const { row } = useAdmate()
+    return { row }
+  }
+}
+</script>
+```
+
+调用 `axiosConfig.c` 和 `axiosConfig.u` 接口时值为 `true`
 
 <br>
 
@@ -705,7 +806,7 @@ submit({
 // submit被代理时
 useAdmate({
   submitProxy (submit) {
-    submit({
+    return submit({
       ...row.value.data,
       status: 1,
     })
