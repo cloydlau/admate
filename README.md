@@ -703,6 +703,10 @@ useAdmate({
 
 `axiosConfig.r` 被调用时值为 `true`，否则为 `false`
 
+::: warning  
+不能将该值当作表单回显结束的标志，因为复用列表数据时不会调用axiosConfig.r
+:::
+
 ```vue
 <!-- 示例 -->
 

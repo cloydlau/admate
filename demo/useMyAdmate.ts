@@ -102,21 +102,30 @@ export default ({
     }
   })
 
-  // 回显表单后，清除校验
-  watch(() => admate.row.loading, n => {
-    if (!n) {
-      clearValidateOfRowDataForm()
-    }
-  })
-
   // 获取当前Vue实例
   const currentInstance = ref(null)
   onMounted(() => {
     currentInstance.value = getCurrentInstance().proxy
   })
 
+  // 封装r和u
+  const retrieveRowData = rOrU => (...args) => new Promise((resolve, reject) => {
+    rOrU(...args).then(() => {
+      resolve()
+    }).catch(() => {
+      // 获取单条记录失败，关闭表单
+      admate.row.show = false
+      reject()
+    }).finally(() => {
+      // 回显表单后，清除校验
+      clearValidateOfRowDataForm()
+    })
+  })
+
   return toRefs(reactive({
     ...admate,
+    r: retrieveRowData(admate.r),
+    u: retrieveRowData(admate.u),
     // 单条记录表单的标题
     dialogTitle: computed(() => ({
       c: '新增',
