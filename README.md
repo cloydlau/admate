@@ -414,7 +414,7 @@ useAdmate({
 
 `list.loading`
 
-`axiosConfig.getList` 被调用时值为 `true`
+`axiosConfig.getList` 被调用时值为 `true`，否则为 `false`
 
 ```vue
 <!-- 示例 -->
@@ -701,7 +701,7 @@ useAdmate({
 
 `row.loading`
 
-`axiosConfig.r` 被调用时值为 `true`
+`axiosConfig.r` 被调用时值为 `true`，否则为 `false`
 
 ```vue
 <!-- 示例 -->
@@ -730,7 +730,7 @@ export default {
 
 `row.submitting`
 
-`axiosConfig.c` 和 `axiosConfig.u` 被调用时值为 `true`
+`axiosConfig.c` 或 `axiosConfig.u` 被调用时值为 `true`，否则为 `false`
 
 ```vue
 <!-- 示例 -->
