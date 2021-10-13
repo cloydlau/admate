@@ -63,26 +63,26 @@
     </a-table>
 
     <a-modal
-      v-model:visible="row.show"
-      :title="dialogTitle"
+      v-model:visible="form.show"
+      :title="formTitle"
     >
       <a-form
-        ref="rowDataFormRef"
-        :model="row.data"
-        v-loading="row.loading"
+        ref="formDataFormRef"
+        :model="form.data"
+        v-loading="form.loading"
       >
         <a-form-item name="name" required label="姓名">
-          <a-input v-model:value="row.data.name" :disabled="row.status==='r'||row.submitting"/>
+          <a-input v-model:value="form.data.name" :disabled="form.status==='r'||form.submitting"/>
         </a-form-item>
       </a-form>
       <template #footer>
-        <a-button key="cancel" @click="row.show=false">取 消</a-button>
+        <a-button key="cancel" @click="form.show=false">取 消</a-button>
         <a-button
           key="submit"
           type="primary"
-          @click="submit"
-          :loading="row.submitting"
-          v-if="row.status!=='r'&&!row.loading"
+          @click="submitForm"
+          :loading="form.submitting"
+          v-if="form.status!=='r'&&!form.loading"
         >
           确 定
         </a-button>
@@ -97,19 +97,19 @@ import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 import { ref } from 'vue-demi'
 
 const listFilterFormRef = ref(null)
-const rowDataFormRef = ref(null)
+const formDataFormRef = ref(null)
 
 const {
   list,
-  row,
+  form,
   getList,
   c,
   r,
   u,
   d,
   updateStatus,
-  submit,
-  dialogTitle,
+  submitForm,
+  formTitle,
   queryList,
   onPageNumberChange,
   currentInstance,
@@ -117,8 +117,8 @@ const {
   admateConfig: {
     urlPrefix,
   },
-  validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
-  validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
-  clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
+  validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
+  validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
+  clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
 })
 </script>

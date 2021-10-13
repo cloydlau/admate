@@ -30,15 +30,15 @@ export default [].concat(isVue2 ? [
       import('../UseUIFramework/ElementPlus.vue')
   },
   {
-    path: '/element-plus-without-row-form', component: () =>
-      import('../UseUIFramework/ElementPlusWithoutRowForm.vue')
+    path: '/element-plus-without-form', component: () =>
+      import('../UseUIFramework/ElementPlusWithoutForm.vue')
   },
   {
-    path: '/row-form',
+    path: '/form',
     hidden: true,
     props: true,
     component: () =>
-      import('../UseUIFramework/RowForm.vue')
+      import('../UseUIFramework/Form.vue')
   },
   /*{
     path: '/vuetify', component: () =>

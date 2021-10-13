@@ -73,41 +73,39 @@
 <script setup>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-import { ref, watch, toRaw } from 'vue-demi'
+import { ref, toRaw } from 'vue-demi'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const listFilterFormRef = ref(null)
 
 const {
   list,
-  row,
+  form,
   getList,
   c,
   r,
   u,
   d,
   updateStatus,
-  submit,
-  dialogTitle,
+  submitForm,
+  formTitle,
   queryList,
   onPageNumberChange,
   currentInstance,
 } = useMyAdmate({
   admateConfig: {
     urlPrefix,
+    openFormProxy (openForm) {
+      router.push({
+        path: '/form',
+        query: {
+          urlPrefix,
+          form: JSON.stringify(toRaw(form.value)),
+        }
+      })
+    },
   },
-  validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
-})
-
-watch(() => row.value.show, n => {
-  if (n) {
-    row.value.show = false
-    currentInstance.value.$router.push({
-      path: '/row-form',
-      query: {
-        urlPrefix,
-        row: JSON.stringify(toRaw(row.value)),
-      }
-    })
-  }
+  validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
 })
 </script>

@@ -69,26 +69,26 @@
     </el-table>
 
     <el-dialog
-      :title="dialogTitle"
-      :visible.sync="row.show"
+      :title="formTitle"
+      :visible.sync="form.show"
     >
       <el-form
-        ref="rowDataFormRef"
-        :model="row.data"
-        :disabled="row.status==='r'||row.submitting"
-        v-loading="row.loading"
+        ref="formDataFormRef"
+        :model="form.data"
+        :disabled="form.status==='r'||form.submitting"
+        v-loading="form.loading"
       >
         <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="row.data.name"/>
+          <el-input v-model="form.data.name"/>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="row.show=false">取 消</el-button>
+        <el-button @click="form.show=false">取 消</el-button>
         <el-button
           type="primary"
-          @click="submit"
-          :loading="row.submitting"
-          v-if="row.status!=='r'&&!row.loading"
+          @click="submitForm"
+          :loading="form.submitting"
+          v-if="form.status!=='r'&&!form.loading"
         >
           确 定
         </el-button>
@@ -105,15 +105,15 @@ import { ref, onMounted } from 'vue-demi'
 export default {
   setup: () => {
     const listFilterFormRef = ref(null)
-    const rowDataFormRef = ref(null)
+    const formDataFormRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
-      validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
-      clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
+      validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
+      validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
+      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
     })
 
     // fix element-ui bug: 给筛选项赋初值，使得重置功能能够正常工作
@@ -127,7 +127,7 @@ export default {
     return {
       ...admate,
       listFilterFormRef,
-      rowDataFormRef,
+      formDataFormRef,
     }
   }
 }

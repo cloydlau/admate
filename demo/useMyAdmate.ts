@@ -10,8 +10,8 @@ import { merge } from 'lodash-es'
 export default ({
   admateConfig,
   validateListFilterForm,
-  validateRowDataForm = () => {},
-  clearValidateOfRowDataForm = () => {},
+  validateFormDataForm = () => {},
+  clearValidateOfFormDataForm = () => {},
 }) => {
   // 初始化admate
   const admate = useAdmate(merge({
@@ -57,7 +57,7 @@ export default ({
       pageNumberKey: 'pageNo',
     },
     // 单条记录相关配置
-    row: {
+    form: {
       data: {
         name: 'default',
       },
@@ -76,11 +76,19 @@ export default ({
         }
       }
     },
-    // submit代理
-    submitProxy (submit) {
+    // openForm代理
+    openFormProxy (openForm) {
+      // 新增时openForm没有返回值
+      return openForm()?.finally(() => {
+        // 回显表单后，清除校验
+        clearValidateOfFormDataForm()
+      })
+    },
+    // submitForm代理
+    submitFormProxy (submitForm) {
       return new Promise((resolve, reject) => {
-        validateRowDataForm().then(() => {
-          submit().then(() => {
+        validateFormDataForm().then(() => {
+          submitForm().then(() => {
             resolve()
           }).catch(() => {
             reject()
@@ -94,10 +102,10 @@ export default ({
   //admate = mapKeys(admate, (v, k) => `${k}__`)
 
   // 关闭表单时，清除校验
-  watch(() => admate.row.show, n => {
+  watch(() => admate.form.show, n => {
     if (!n) {
       setTimeout(() => {
-        clearValidateOfRowDataForm()
+        clearValidateOfFormDataForm()
       }, 150)
     }
   })
@@ -108,30 +116,26 @@ export default ({
     currentInstance.value = getCurrentInstance().proxy
   })
 
-  // 封装r和u
-  const retrieveRowData = rOrU => (...args) => new Promise((resolve, reject) => {
-    rOrU(...args).then(() => {
-      resolve()
-    }).catch(() => {
-      // 获取单条记录失败，关闭表单
-      admate.row.show = false
-      reject()
-    }).finally(() => {
-      // 回显表单后，清除校验
-      clearValidateOfRowDataForm()
-    })
-  })
-
   return toRefs(reactive({
     ...admate,
-    r: retrieveRowData(admate.r),
-    u: retrieveRowData(admate.u),
+    c: (...args) => {
+      admate.form.status = 'c'
+      admate.openForm(...args)
+    },
+    r: (...args) => {
+      admate.form.status = 'r'
+      admate.openForm(...args)
+    },
+    u: (...args) => {
+      admate.form.status = 'u'
+      admate.openForm(...args)
+    },
     // 单条记录表单的标题
-    dialogTitle: computed(() => ({
+    formTitle: computed(() => ({
       c: '新增',
       r: '查看',
       u: '编辑',
-    }[admate.row.status])),
+    }[admate.form.status])),
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
       validateListFilterForm().then(() => {

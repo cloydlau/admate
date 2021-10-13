@@ -75,19 +75,19 @@
     </v-simple-table>
 
     <v-dialog
-      v-model="row.show"
+      v-model="form.show"
     >
       <v-card>
         <v-card-title>
-          <span class="text-h5">{{ dialogTitle }}</span>
+          <span class="text-h5">{{ formTitle }}</span>
         </v-card-title>
         <v-card-text>
           <v-form
-            ref="rowDataFormRef"
-            :disabled="row.status==='r'||row.submitting"
+            ref="formDataFormRef"
+            :disabled="form.status==='r'||form.submitting"
           >
             <v-text-field
-              v-model="row.data.name"
+              v-model="form.data.name"
               label="姓名*"
               :rules="[v => !!v || 'Name is required',]"
               required
@@ -97,16 +97,16 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn
-            @click="row.show=false"
+            @click="form.show=false"
           >
             取 消
           </v-btn>
           <v-btn
             dark
             color="#2A73C5"
-            @click="submit"
-            :loading="row.submitting"
-            v-if="row.status!=='r'&&!row.loading"
+            @click="submitForm"
+            :loading="form.submitting"
+            v-if="form.status!=='r'&&!form.loading"
           >
             确 定
           </v-btn>
@@ -124,25 +124,25 @@ import { ref } from 'vue-demi'
 export default {
   setup: () => {
     const listFilterFormRef = ref(null)
-    const rowDataFormRef = ref(null)
+    const formDataFormRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
       validateListFilterForm: (...args) => new Promise((resolve, reject) => {
-        listFilterFormRef.value.validate(args) ? resolve() : reject()
+        listFilterFormRef.value.validate(...args) ? resolve() : reject()
       }),
-      validateRowDataForm: (...args) => new Promise((resolve, reject) => {
-        rowDataFormRef.value.validate(args) ? resolve() : reject()
+      validateFormDataForm: (...args) => new Promise((resolve, reject) => {
+        formDataFormRef.value.validate(...args) ? resolve() : reject()
       }),
-      clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.resetValidation(args),
+      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.resetValidation(...args),
     })
 
     return {
       ...admate,
       listFilterFormRef,
-      rowDataFormRef,
+      formDataFormRef,
     }
   }
 }

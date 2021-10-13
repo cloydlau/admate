@@ -9,7 +9,7 @@
 - 同时支持Vue2 & Vue3
 - 不限制UI框架，只要技术栈是Vue和axios，便可以使用
 - 同一系统内，CRUD的请求配置通常是相似的，同一模块内，接口前缀通常是一致的，Admate可以帮助你减少冗余代码
-- 提供列表、单条记录CRUD的贴心封装
+- 提供列表、表单CRUD的贴心封装
     - 你不再操心列表的读取状态、表单的读取和提交状态
     - 支持监听筛选参数自动刷新列表，且节流控制接口调用频率
 
@@ -226,8 +226,8 @@ const { r, u } = useAdmate({
 })
 
 // 使用
-r(row, 'config')
-u(row, 'config')
+r(form, 'config')
+u(form, 'config')
 ```
 
 <br>
@@ -242,7 +242,7 @@ axios的data默认以 `application/json` 作为MIME type，如果你需要使用
 
 - 局部配置
 
-`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submit` 的参数1均支持FormData类型
+`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数1均支持FormData类型
 
 ```vue
 <!-- 示例：局部配置 -->
@@ -277,8 +277,8 @@ export default {
         getListProxy (getList, caller) {
           getList(FormData.from(list.filter))
         },
-        submitProxy (submit) {
-          return submit(FormData.from(row.data))
+        submitFormProxy (submitForm) {
+          return submitForm(FormData.from(form.data))
         }
       }),
       FormData
@@ -486,19 +486,20 @@ useAdmate({
 
 <br>
 
-## 单条记录
+## 表单
 
 ### 查看
 
 ```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.r的返回值
-   */
-  r
-} = useAdmate()
+const { form, openForm } = useAdmate()
+
+form.status = 'r'
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+ * @returns {Promise<any>} axiosConfig.r的返回值
+ */
+openForm()
 ```
 
 **参数2的可选值：**
@@ -515,7 +516,10 @@ const {
 打开表单，提交时会调用 `axiosConfig.c`
 
 ```ts
-const { c } = useAdmate()
+const { form, openForm } = useAdmate()
+
+form.status = 'c'
+openForm()
 ```
 
 <br>
@@ -525,14 +529,15 @@ const { c } = useAdmate()
 打开表单，提交时会调用 `axiosConfig.u`
 
 ```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.r的返回值
-   */
-  u
-} = useAdmate()
+const { form, openForm } = useAdmate()
+
+form.status = 'u'
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+ * @returns {Promise<any>} axiosConfig.r的返回值
+ */
+openForm()
 ```
 
 **参数2的可选值：**
@@ -658,16 +663,16 @@ const {
 
 ### 表单数据
 
-`row.data`
+`form.data`
 
 ```ts
 useAdmate({
-  row: {
+  form: {
     // 可以在这里提供表单数据的默认值，新增时会有用
     data: {},
 
-    // 在查看、编辑单条记录时，可能需要调用接口回显单条记录的数据
-    // dataAt用于指定接口返回值中单条记录数据所在的位置
+    // 在查看、编辑表单时，可能需要调用接口回显表单的数据
+    // dataAt用于指定接口返回值中表单数据所在的位置
     // 支持属性名如'data'，属性路径如'data.records'
     // 还支持function，如response => response.data
     dataAt: undefined,
@@ -686,7 +691,7 @@ useAdmate({
 
 ### 表单形态
 
-`row.status`
+`form.status`
 
 可能的值：
 
@@ -699,7 +704,7 @@ useAdmate({
 
 ### 读取状态
 
-`row.loading`
+`form.loading`
 
 `axiosConfig.r` 被调用时值为 `true`，否则为 `false`
 
@@ -712,7 +717,7 @@ useAdmate({
 
 <template>
   <el-dialog>
-    <el-form v-loading="row.loading"/>
+    <el-form v-loading="form.loading"/>
   </el-dialog>
 </template>
 
@@ -721,8 +726,8 @@ import useAdmate from 'admate'
 
 export default {
   setup: () => {
-    const { row } = useAdmate()
-    return { row }
+    const { form } = useAdmate()
+    return { form }
   }
 }
 </script>
@@ -732,7 +737,7 @@ export default {
 
 ### 提交状态
 
-`row.submitting`
+`form.submitting`
 
 `axiosConfig.c` 或 `axiosConfig.u` 被调用时值为 `true`，否则为 `false`
 
@@ -742,7 +747,7 @@ export default {
 <template>
   <el-dialog>
     <template #footer>
-      <el-button :loading="row.submitting">
+      <el-button :loading="form.submitting">
         确 定
       </el-button>
     </template>
@@ -754,8 +759,8 @@ import useAdmate from 'admate'
 
 export default {
   setup: () => {
-    const { row } = useAdmate()
-    return { row }
+    const { form } = useAdmate()
+    return { form }
   }
 }
 </script>
@@ -765,19 +770,57 @@ export default {
 
 ### Hook: 打开表单后
 
-```ts
-const { r, u } = useAdmate()
+`openForm` ：打开表单，查看和编辑时调用 `axiosConfig.r`，新增时不调用接口
 
-r().then(response => {
-  // response为axiosConfig.r的接口返回值
-  // 修改表单数据
-  row.data.status = 1
+`openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在openForm前后做一些操作，或改变openForm的行为
+
+```ts
+// 示例：回显表单后，清除校验
+
+const { openForm, form } = useAdmate({
+  openFormProxy (openForm) {
+    // 新增时openForm没有返回值
+    return openForm()?.then(response => {
+      // response为axiosConfig.r的接口返回值
+      // 修改表单数据
+      form.data.status = 1
+    }).finally(() => {
+      clearValidateOfFormDataForm()
+    })
+  },
+})
+```
+
+```ts
+// 示例：回显表单后，自定义表单的开闭和读取状态
+
+// return a promise
+useAdmate({
+  openFormProxy (openForm) {
+    return new Promise((resolve, reject) => {
+      openForm().then(() => {
+        // 回显成功后，默认停止加载
+        resolve({
+          loading: false,
+        })
+      }).catch(() => {
+        // 回显失败后，默认关闭表单并停止加载
+        reject({
+          show: false,
+          loading: false,
+        })
+      })
+    })
+  }
 })
 
-u().then(response => {
-  // response为axiosConfig.r的接口返回值
-  // 修改表单数据
-  row.data.status = 1
+// return an object
+useAdmate({
+  openFormProxy (openForm) {
+    return {
+      loading: false
+    }
+  }
 })
 ```
 
@@ -785,33 +828,33 @@ u().then(response => {
 
 ### Hook: 提交表单时
 
-`submit` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
+`submitForm` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
 
-`submitProxy`：你可以使用 `submitProxy` 来代理 `submit`，以便在submit前后做一些操作，或改变submit的行为
+`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在submitForm前后做一些操作，或改变submitForm的行为
 
 ```ts
 const {
   /**
-   * @param {any} [params = row.data] - 接口参数
+   * @param {any} [params = form.data] - 接口参数
    * @returns {Promise<any>} 接口返回值
    */
-  submit
+  submitForm
 } = useAdmate()
 ```
 
 ```ts
 // 示例：指定提交参数
 
-submit({
-  ...row.data,
+submitForm({
+  ...form.data,
   status: 1,
 })
 
-// submit被代理时
+// submitForm被代理时
 useAdmate({
-  submitProxy (submit) {
-    return submit({
-      ...row.data,
+  submitFormProxy (submitForm) {
+    return submitForm({
+      ...form.data,
       status: 1,
     })
   }
@@ -822,10 +865,10 @@ useAdmate({
 // 示例：提交前校验表单
 
 useAdmate({
-  submitProxy (submit) {
+  submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
-      rowDataFormRef.value.validate().then(() => {
-        submit().then(() => {
+      formDataFormRef.value.validate().then(() => {
+        submitForm().then(() => {
           resolve()
         }).catch(() => {
           reject()
@@ -837,14 +880,14 @@ useAdmate({
 ```
 
 ```ts
-// 示例：提交表单后，自定义表单的开闭和加载状态
+// 示例：提交表单后，自定义表单的开闭和提交状态
 
 // return a promise
 useAdmate({
-  submitProxy (submit) {
+  submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
-      rowDataFormRef.value.validate().then(() => {
-        submit().then(() => {
+      formDataFormRef.value.validate().then(() => {
+        submitForm().then(() => {
           // 提交成功后，默认关闭表单，并停止加载
           resolve({
             show: false,
@@ -864,7 +907,7 @@ useAdmate({
 
 // return an object
 useAdmate({
-  submitProxy (submit) {
+  submitFormProxy (submitForm) {
     return {
       show: false,
       submitting: false,
@@ -970,7 +1013,7 @@ export default {
 <template>
   <div class="p-20px w-full">
     <el-dialog
-      v-model="row.show"
+      v-model="form.show"
       :show-close="false"
       :modal="false"
       class="relative"
@@ -978,8 +1021,8 @@ export default {
       <div slot="footer" class="text-right pt-50px">
         <el-button
           type="primary"
-          @click="submit"
-          :loading="row.submitting"
+          @click="submitForm"
+          :loading="form.submitting"
         >
           保 存
         </el-button>

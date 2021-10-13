@@ -8,30 +8,31 @@ const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 type StatusType = '' | 'c' | 'r' | 'u'
 type MergeDataType = 'deep' | 'shallow' | false
-type RRowType = 'data' | 'params' | 'config' | 'cache'
-type CUDRowType = 'data' | 'params' | 'config'
-type SubmitTerminalState = { show?: boolean, submitting?: boolean } | void
-type SubmitType = (params: any) => Promise<any>
+type RFormType = 'data' | 'params' | 'config' | 'cache'
+type CUDFormType = 'data' | 'params' | 'config'
+type SubmitFormType = (params: any) => Promise<any>
+type OpenFormTerminalState = { show?: boolean, loading?: boolean } | void
+type SubmitFormTerminalState = { show?: boolean, submitting?: boolean } | void
 
 const At = (response?: object, paths?: string | Function): any => {
   return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
 }
 
-// 将接口返回值混入row.data
-const mergeRowData = (
-  Row: {
+// 将接口返回值混入form.data
+const mergeFormData = (
+  Form: {
     data: any,
     mergeData: MergeDataType,
   },
-  newRowData,
+  newFormData,
 ) => {
-  if (Row.mergeData) {
+  if (Form.mergeData) {
     // merge, assignIn会改变原始对象
-    Row.mergeData === 'deep' ?
-      merge(Row.data, newRowData) :
-      assignIn(Row.data, newRowData)
+    Form.mergeData === 'deep' ?
+      merge(Form.data, newFormData) :
+      assignIn(Form.data, newFormData)
   } else {
-    Row.data = newRowData
+    Form.data = newFormData
   }
 }
 
@@ -39,15 +40,16 @@ export default function useAdmate ({
   axios,
   axiosConfig,
   urlPrefix,
-  row,
+  form,
   list,
   getListProxy,
-  submitProxy,
+  openFormProxy,
+  submitFormProxy,
 }: {
   axios,
   axiosConfig: ConfigCatalogType,
   urlPrefix?: string,
-  row?: {
+  form?: {
     show?: boolean,
     data?: any,
     dataAt?: string | Function,
@@ -71,7 +73,8 @@ export default function useAdmate ({
     getList: (payload?: object, payloadUse?: string) => Promise<any> | void,
     caller?: string
   ) => any,
-  submitProxy?: (submit: SubmitType) => SubmitTerminalState | Promise<SubmitTerminalState>,
+  openFormProxy?: (openForm: Function) => OpenFormTerminalState | Promise<OpenFormTerminalState>,
+  submitFormProxy?: (submitForm: SubmitFormType) => SubmitFormTerminalState | Promise<SubmitFormTerminalState>,
 }): object {
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
@@ -96,21 +99,19 @@ export default function useAdmate ({
   const List = reactive(getInitialList())
 
   // todo: 为什么需要深拷贝？
-  const getInitialRow = () => cloneDeep({
+  const getInitialForm = () => cloneDeep({
     loading: false,
     submitting: false,
     show: false,
     data: {},
     mergeData: 'shallow',
     payload: {},
-    payloadUse: null,
+    payloadUse: 'data',
     status: '',
-    resolve: null,
-    reject: null,
-    ...row,
+    ...form,
   })
 
-  const Row = reactive(getInitialRow())
+  const Form = reactive(getInitialForm())
 
   const getList = (
     payload = List.filter,
@@ -161,63 +162,45 @@ export default function useAdmate ({
     getList
 
   // crud参数处理
-  const crudArgsHandler = (payload = {}, payloadUse = 'data', caller) => {
-    const isRorU = ['r', 'u'].includes(caller)
-    switch (payloadUse) {
-      case 'data':
-        break
-      case 'params':
-        break
-      case 'config':
-        break
-      case 'cache':
-        if (!isRorU) {
-          throw Error(`${CONSOLE_PREFIX}只有r和u的参数2可以使用\'cache\'`)
+  const payloadHandler = (payload = {}, payloadUse = 'data') => {
+    Form.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
+    Form.payloadUse = payloadUse
+  }
+
+  const openForm = (payload?, payloadUse?: RFormType) => {
+    payloadHandler(payload, payloadUse)
+
+    switch (Form.status) {
+      // 查看和编辑时，回显单条记录数据
+      case 'r':
+      case 'u':
+        if (Form.payloadUse === 'cache') {
+          mergeFormData(Form, Form.payload)
+          Form.show = true
+        } else {
+          Form.loading = true
+          Form.show = true
+          return api.r(Form.payload, Form.payloadUse).then(response => {
+            mergeFormData(Form, At(response, Form.dataAt))
+          })
         }
-        if (notEmpty(payload) && !isPlainObject(payload)) {
-          throw Error(`${CONSOLE_PREFIX}直接使用列表数据时，参数1的类型需为object`)
-        }
+
         break
+      // 新增单条记录
+      case 'c':
+        if (payloadUse === 'cache') {
+          throw Error(`${CONSOLE_PREFIX}只有当form.status为r或u时，参数2才可以使用\'cache\'`)
+        }
+
+        Form.status = 'c'
       default:
-        throw Error(`${CONSOLE_PREFIX}${caller}的参数2需为\'params\'/\'data\'/\'config\'${isRorU ? `\'/cache\'` : ''}`)
+        Form.show = true
     }
-
-    Row.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
-    Row.payloadUse = payloadUse
-
-    if (isRorU) {
-      Row.status = caller
-      Row.show = true
-    }
-  }
-
-  // 新增单条记录
-  const c = () => {
-    Row.status = 'c'
-    Row.show = true
-  }
-
-  // 查看单条记录
-  const r = (payload?, payloadUse?: RRowType) => {
-    crudArgsHandler(payload, payloadUse, 'r')
-    return new Promise((resolve, reject) => {
-      Row.resolve = resolve
-      Row.reject = reject
-    })
-  }
-
-  // 编辑单条记录
-  const u = (payload?, payloadUse?: RRowType) => {
-    crudArgsHandler(payload, payloadUse, 'u')
-    return new Promise((resolve, reject) => {
-      Row.resolve = resolve
-      Row.reject = reject
-    })
   }
 
   // 删除单条记录
-  const d = (payload?, payloadUse?: CUDRowType) => {
-    crudArgsHandler(payload, payloadUse, 'd')
+  const d = (payload?, payloadUse?: CUDFormType) => {
+    payloadHandler(payload, payloadUse)
     List.loading = true
     return api.d(payload, payloadUse,).then(response => {
       if (List.data?.length === 1) {
@@ -236,8 +219,8 @@ export default function useAdmate ({
   }
 
   // 改变单条记录状态
-  const updateStatus = (payload?, payloadUse?: CUDRowType) => {
-    crudArgsHandler(payload, payloadUse, 'updateStatus')
+  const updateStatus = (payload?, payloadUse?: CUDFormType) => {
+    payloadHandler(payload, payloadUse)
     List.loading = true
     return api.updateStatus(payload, payloadUse,).then(response => {
       GetListProxy('updateStatus')
@@ -248,8 +231,8 @@ export default function useAdmate ({
   }
 
   // 启用单条记录
-  const enable = (payload?, payloadUse?: CUDRowType) => {
-    crudArgsHandler(payload, payloadUse, 'enable')
+  const enable = (payload?, payloadUse?: CUDFormType) => {
+    payloadHandler(payload, payloadUse)
     List.loading = true
     return api.enable(payload, payloadUse,).then(response => {
       GetListProxy('enable')
@@ -260,8 +243,8 @@ export default function useAdmate ({
   }
 
   // 停用单条记录
-  const disable = (payload?, payloadUse?: CUDRowType) => {
-    crudArgsHandler(payload, payloadUse, 'disable')
+  const disable = (payload?, payloadUse?: CUDFormType) => {
+    payloadHandler(payload, payloadUse)
     List.loading = true
     return api.disable(payload, payloadUse,).then(response => {
       GetListProxy('disable')
@@ -282,77 +265,80 @@ export default function useAdmate ({
     }
   */
 
+  const controlFormDialog = (
+    options: OpenFormTerminalState | SubmitFormTerminalState,
+    defaultOptions,
+  ) => {
+    const { show, submitting, loading } = getFinalProp([options, defaultOptions])
+    if (typeof show === 'boolean') {
+      Form.show = show
+    }
+    if (typeof submitting === 'boolean') {
+      Form.submitting = submitting
+    }
+    if (typeof loading === 'boolean') {
+      Form.loading = loading
+    }
+  }
+
+  const OpenFormProxy = (...args) => {
+    const result = openFormProxy ?
+      openFormProxy(openForm) :
+      openForm(...args)
+    if (result instanceof Promise) {
+      result.then(e => {
+        controlFormDialog(e, {
+          loading: false
+        })
+      }).catch(e => {
+        controlFormDialog(e, {
+          show: false,
+        })
+      })
+    } else {
+      controlFormDialog(result, {
+        loading: false
+      })
+    }
+  }
+
   // 表单提交
-  const submit: SubmitType = (params = Row.data) => {
-    Row.submitting = true
-    return api[Row.status](params)
+  const submitForm: SubmitFormType = (params = Form.data) => {
+    Form.submitting = true
+    return api[Form.status](params)
     .then(response => {
-      GetListProxy(Row.status)
+      GetListProxy(Form.status)
       return response
     })
   }
-  const controlRowDialog = (
-    options: { show?: boolean, submitting?: boolean },
-    defaultOptions,
-  ) => {
-    const { show, submitting } = getFinalProp([options, defaultOptions])
-    if (typeof show === 'boolean') {
-      Row.show = show
-    }
-    if (typeof submitting === 'boolean') {
-      Row.submitting = submitting
-    }
-  }
-  const SubmitProxy = (params: any = Row.data) => {
-    const result = submitProxy ?
-      submitProxy(submit) :
-      submit(params)
+
+  const SubmitFormProxy = (params: any = Form.data) => {
+    const result = submitFormProxy ?
+      submitFormProxy(submitForm) :
+      submitForm(params)
     if (result instanceof Promise) {
       result.then(e => {
-        controlRowDialog(e, {
+        controlFormDialog(e, {
           show: false
         })
       }).catch(e => {
-        controlRowDialog(e, {
+        controlFormDialog(e, {
           submitting: false
         })
       })
     } else {
-      controlRowDialog(result, {
+      controlFormDialog(result, {
         show: false
       })
     }
   }
 
-  watch(() => Row.show, n => {
-    if (n) {
-      // 查看和编辑时，回显单条记录数据
-      if (['r', 'u'].includes(Row.status)) {
-        if (Row.payloadUse === 'cache') {
-          mergeRowData(Row, Row.payload)
-          Row.resolve(Row.payload)
-          Row.resolve = null
-          Row.reject = null
-        } else {
-          Row.loading = true
-          api.r(Row.payload, Row.payloadUse).then(response => {
-            mergeRowData(Row, At(response, Row.dataAt))
-            Row.resolve(response)
-          }).catch(e => {
-            //Row.show = false // todo: 是否需要动态配置
-            Row.reject(e)
-          }).finally(() => {
-            Row.resolve = null
-            Row.reject = null
-            Row.loading = false
-          })
-        }
-      }
-    } else {
+  watch(() => Form.show, n => {
+    if (!n) {
       // 表单关闭时 重置表单
       // 可能会有关闭动画 所以加延迟
       setTimeout(() => {
-        Object.assign(Row, getInitialRow())
+        Object.assign(Form, getInitialForm())
       }, 150)
     }
   })
@@ -361,7 +347,7 @@ export default function useAdmate ({
   /*const destroy = () => {
     getListThrottled.value = null
     Object.assign(List, getInitialList())
-    Object.assign(Row, getInitialRow())
+    Object.assign(Form, getInitialForm())
   }*/
 
   // 首次获取列表
@@ -406,15 +392,14 @@ export default function useAdmate ({
 
   return {
     list: List,
-    row: Row,
-    submit: SubmitProxy,
     getList: GetListProxy,
-    c,
-    r,
-    u,
+
+    form: Form,
+    openForm: OpenFormProxy,
+    submitForm: SubmitFormProxy,
     d,
-    updateStatus,
     enable,
     disable,
+    updateStatus,
   }
 }

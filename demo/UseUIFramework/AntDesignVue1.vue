@@ -64,25 +64,25 @@
     </a-table>
 
     <a-modal
-      :visible.sync="row.show"
-      :title="dialogTitle"
+      :visible.sync="form.show"
+      :title="formTitle"
     >
       <a-form-model
-        ref="rowDataFormRef"
-        :model="row.data"
+        ref="formDataFormRef"
+        :model="form.data"
       >
         <a-form-item prop="name" required label="姓名">
-          <a-input v-model="row.data.name" :disabled="row.status==='r'||row.submitting"/>
+          <a-input v-model="form.data.name" :disabled="form.status==='r'||form.submitting"/>
         </a-form-item>
       </a-form-model>
       <template #footer>
-        <a-button key="cancel" @click="row.show=false">取 消</a-button>
+        <a-button key="cancel" @click="form.show=false">取 消</a-button>
         <a-button
           key="submit"
           type="primary"
-          @click="submit"
-          :loading="row.submitting"
-          v-if="row.status!=='r'"
+          @click="submitForm"
+          :loading="form.submitting"
+          v-if="form.status!=='r'"
         >
           确 定
         </a-button>
@@ -99,21 +99,21 @@ import { ref } from 'vue-demi'
 export default {
   setup: () => {
     const listFilterFormRef = ref(null)
-    const rowDataFormRef = ref(null)
+    const formDataFormRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilterForm: (...args) => listFilterFormRef.value.validate(args),
-      validateRowDataForm: (...args) => rowDataFormRef.value.validate(args),
-      clearValidateOfRowDataForm: (...args) => rowDataFormRef.value.clearValidate(args),
+      validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
+      validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
+      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
     })
 
     return {
       ...admate,
       listFilterFormRef,
-      rowDataFormRef,
+      formDataFormRef,
     }
   }
 }
