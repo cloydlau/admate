@@ -1,6 +1,7 @@
 import { install, createApp } from 'vue-demi'
 import router from './router/vue-router'
 import App from './index.vue'
+import mitt from 'mitt'
 
 install()
 
@@ -15,9 +16,11 @@ import Antd from 'ant-design-vue'
 //import 'vuetify/styles'
 //import { createVuetify } from 'vuetify'
 
-createApp(App)
+const app = createApp(App)
 .use(router)
 .use(ElementPlus)
 .use(Antd)
 //.use(createVuetify())
-.mount('#app')
+
+app.config.globalProperties.$eventBus = mitt()
+app.mount('#app')

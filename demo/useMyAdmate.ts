@@ -10,8 +10,8 @@ import { merge } from 'lodash-es'
 export default ({
   admateConfig,
   validateListFilterForm,
-  validateRowDataForm,
-  clearValidateOfRowDataForm,
+  validateRowDataForm = () => {},
+  clearValidateOfRowDataForm = () => {},
 }) => {
   // 初始化admate
   const admate = useAdmate(merge({
