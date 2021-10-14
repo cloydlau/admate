@@ -1,7 +1,7 @@
 <template>
   <div class="p-20px">
     <el-form
-      ref="listFilterFormRef"
+      ref="listFilterRef"
       :model="list.filter"
       inline
     >
@@ -28,7 +28,7 @@
         </el-button>
         <el-button
           @click="() => {
-            listFilterFormRef.resetFields()
+            listFilterRef.resetFields()
           }"
         >
           重置
@@ -73,7 +73,7 @@
       :visible.sync="form.show"
     >
       <el-form
-        ref="formDataFormRef"
+        ref="formRef"
         :model="form.data"
         :disabled="form.status==='r'||form.submitting"
         v-loading="form.loading"
@@ -104,30 +104,30 @@ import { ref, onMounted } from 'vue-demi'
 
 export default {
   setup: () => {
-    const listFilterFormRef = ref(null)
-    const formDataFormRef = ref(null)
+    const listFilterRef = ref(null)
+    const formRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
-      validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
-      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
+      validateListFilter: (...args) => listFilterRef.value.validate(...args),
+      validateFormData: (...args) => formRef.value.validate(...args),
+      clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
     // fix element-ui bug: 给筛选项赋初值，使得重置功能能够正常工作
     onMounted(() => {
       admate.list.value.filter = {
-        ...Object.fromEntries(Array.from(listFilterFormRef.value.fields || [], v => [v.labelFor, undefined])),
+        ...Object.fromEntries(Array.from(listFilterRef.value.fields || [], v => [v.labelFor, undefined])),
         ...admate.list.value.filter,
       }
     })
 
     return {
       ...admate,
-      listFilterFormRef,
-      formDataFormRef,
+      listFilterRef,
+      formRef,
     }
   }
 }

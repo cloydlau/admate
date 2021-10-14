@@ -1,7 +1,7 @@
 <template>
   <div class="p-20px">
     <a-form-model
-      ref="listFilterFormRef"
+      ref="listFilterRef"
       layout="inline"
       :model="list.filter"
     >
@@ -19,7 +19,7 @@
         class="ml-10px"
         @click="() => {
           // todo: 无效果
-          listFilterFormRef.resetFields()
+          listFilterRef.resetFields()
         }"
       >
         重置
@@ -68,7 +68,7 @@
       :title="formTitle"
     >
       <a-form-model
-        ref="formDataFormRef"
+        ref="formRef"
         :model="form.data"
       >
         <a-form-item prop="name" required label="姓名">
@@ -98,22 +98,22 @@ import { ref } from 'vue-demi'
 
 export default {
   setup: () => {
-    const listFilterFormRef = ref(null)
-    const formDataFormRef = ref(null)
+    const listFilterRef = ref(null)
+    const formRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
-      validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
-      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
+      validateListFilter: (...args) => listFilterRef.value.validate(...args),
+      validateFormData: (...args) => formRef.value.validate(...args),
+      clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
     return {
       ...admate,
-      listFilterFormRef,
-      formDataFormRef,
+      listFilterRef,
+      formRef,
     }
   }
 }

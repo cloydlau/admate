@@ -1,7 +1,7 @@
 <template>
   <div class="p-20px">
     <el-form
-      ref="listFilterFormRef"
+      ref="listFilterRef"
       :model="list.filter"
       inline
     >
@@ -28,7 +28,7 @@
         </el-button>
         <el-button
           @click="() => {
-            listFilterFormRef.resetFields()
+            listFilterRef.resetFields()
           }"
         >
           重置
@@ -77,7 +77,7 @@ import { ref, toRaw } from 'vue-demi'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const listFilterFormRef = ref(null)
+const listFilterRef = ref(null)
 
 const {
   list,
@@ -98,7 +98,7 @@ const {
     urlPrefix,
     openFormProxy (openForm) {
       router.push({
-        path: '/form',
+        path: '/form-page',
         query: {
           urlPrefix,
           form: JSON.stringify(toRaw(form.value)),
@@ -106,6 +106,6 @@ const {
       })
     },
   },
-  validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
+  validateListFilter: (...args) => listFilterRef.value.validate(...args),
 })
 </script>

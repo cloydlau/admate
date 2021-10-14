@@ -30,15 +30,27 @@ export default [].concat(isVue2 ? [
       import('../UseUIFramework/ElementPlus.vue')
   },
   {
-    path: '/element-plus-without-form', component: () =>
-      import('../UseUIFramework/ElementPlusWithoutForm.vue')
+    path: '/form-externalized', component: () =>
+      import('../examples/FormExternalized.vue')
   },
   {
-    path: '/form',
+    path: '/form-decoupled', component: () =>
+      import('../examples/FormDecoupled.vue')
+  },
+  {
+    path: '/form-page',
     hidden: true,
     props: true,
     component: () =>
-      import('../UseUIFramework/Form.vue')
+      import('../examples/FormPage.vue')
+  },
+  {
+    path: '/nested', component: () =>
+      import('../examples/Nested.vue')
+  },
+  {
+    path: '/form-only', component: () =>
+      import('../examples/FormOnly.vue')
   },
   /*{
     path: '/vuetify', component: () =>

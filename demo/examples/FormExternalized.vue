@@ -68,32 +68,12 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog
-      :title="formTitle"
-      v-model="form.show"
-    >
-      <el-form
-        ref="formRef"
-        :model="form.data"
-        :disabled="form.status==='r'||form.submitting"
-        v-loading="form.loading"
-      >
-        <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="form.data.name"/>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="form.show=false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="submitForm"
-          :loading="form.submitting"
-          v-if="form.status!=='r'&&!form.loading"
-        >
-          确 定
-        </el-button>
-      </template>
-    </el-dialog>
+    <FormDialog
+      v-model:form="form"
+      :formTitle="formTitle"
+      :submitForm="submitForm"
+      @update:formRef="e => { formRef = e }"
+    />
   </div>
 </template>
 
@@ -101,6 +81,7 @@
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 import { ref } from 'vue-demi'
+import FormDialog from './FormDialog.vue'
 
 const listFilterRef = ref(null)
 const formRef = ref(null)

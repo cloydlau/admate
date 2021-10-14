@@ -2,7 +2,7 @@
   <div class="p-20px">
     <h2>{{ formTitle }}</h2>
     <el-form
-      ref="formDataFormRef"
+      ref="formRef"
       :model="form.data"
       :disabled="form.status==='r'||form.submitting"
       v-loading="form.loading"
@@ -28,7 +28,7 @@ import useMyAdmate from '../useMyAdmate'
 import { ref } from 'vue-demi'
 import { useRoute, useRouter } from 'vue-router'
 
-const formDataFormRef = ref(null)
+const formRef = ref(null)
 const route = useRoute()
 const router = useRouter()
 
@@ -42,21 +42,30 @@ const {
   admateConfig: {
     urlPrefix: route.query.urlPrefix,
     getListProxy (getList, caller) {
-      if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
-        currentInstance.value.$message.success('操作成功')
-        back()
-      }
+      // 什么也不做
+    },
+    submitFormProxy (submitForm) {
+      return new Promise((resolve, reject) => {
+        validateFormData().then(() => {
+          submitForm().then(() => {
+            currentInstance.value.$message.success('操作成功')
+            back()
+          }).catch(() => {
+            reject()
+          })
+        })
+      })
     },
     form: JSON.parse(route.query.form),
   },
-  validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
-  clearValidateOfFormDataForm: (...args) => formDataFormRef.value?.clearValidate(...args),
+  validateFormData: (...args) => formRef.value.validate(...args),
+  clearFormDataValidation: (...args) => formRef.value?.clearValidate(...args),
 })
 
 openForm.value()
 
 const back = function () {
-  router.push('/element-plus-without-form')
+  router.push('/form-decoupled')
 }
 </script>
 

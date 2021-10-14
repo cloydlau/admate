@@ -1,7 +1,7 @@
 <template>
   <div class="p-20px">
     <a-form
-      ref="listFilterFormRef"
+      ref="listFilterRef"
       layout="inline"
       :model="list.filter"
     >
@@ -18,7 +18,7 @@
       <a-button
         class="ml-10px"
         @click="() => {
-          listFilterFormRef.resetFields()
+          listFilterRef.resetFields()
         }"
       >
         重置
@@ -67,7 +67,7 @@
       :title="formTitle"
     >
       <a-form
-        ref="formDataFormRef"
+        ref="formRef"
         :model="form.data"
         v-loading="form.loading"
       >
@@ -96,8 +96,8 @@ import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
 import { ref } from 'vue-demi'
 
-const listFilterFormRef = ref(null)
-const formDataFormRef = ref(null)
+const listFilterRef = ref(null)
+const formRef = ref(null)
 
 const {
   list,
@@ -117,8 +117,8 @@ const {
   admateConfig: {
     urlPrefix,
   },
-  validateListFilterForm: (...args) => listFilterFormRef.value.validate(...args),
-  validateFormDataForm: (...args) => formDataFormRef.value.validate(...args),
-  clearValidateOfFormDataForm: (...args) => formDataFormRef.value.clearValidate(...args),
+  validateListFilter: (...args) => listFilterRef.value.validate(...args),
+  validateFormData: (...args) => formRef.value.validate(...args),
+  clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
 })
 </script>

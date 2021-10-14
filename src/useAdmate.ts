@@ -189,7 +189,7 @@ export default function useAdmate ({
       // 新增单条记录
       case 'c':
         if (payloadUse === 'cache') {
-          throw Error(`${CONSOLE_PREFIX}只有当form.status为r或u时，参数2才可以使用\'cache\'`)
+          throw Error(`${CONSOLE_PREFIX}只有当表单状态为 'r' 或 'u' 时，参数2才可以使用 'cache'`)
         }
 
         Form.status = 'c'
@@ -304,6 +304,9 @@ export default function useAdmate ({
 
   // 表单提交
   const submitForm: SubmitFormType = (params = Form.data) => {
+    if (!['c', 'u'].includes(Form.status)) {
+      throw Error(`${CONSOLE_PREFIX}submitForm 仅能在表单状态为 'c' 或 'u' 时被调用`)
+    }
     Form.submitting = true
     return api[Form.status](params)
     .then(response => {

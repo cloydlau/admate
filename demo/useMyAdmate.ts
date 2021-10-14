@@ -9,9 +9,9 @@ import { merge } from 'lodash-es'
 
 export default ({
   admateConfig,
-  validateListFilterForm,
-  validateFormDataForm = () => {},
-  clearValidateOfFormDataForm = () => {},
+  validateListFilter,
+  validateFormData = () => {},
+  clearFormDataValidation = () => {},
 }) => {
   // 初始化admate
   const admate = useAdmate(merge({
@@ -66,7 +66,7 @@ export default ({
     // getList代理
     getListProxy (getList, caller) {
       if (caller === 'filterChange') {
-        validateListFilterForm().then(() => {
+        validateListFilter().then(() => {
           getList()
         })
       } else {
@@ -81,13 +81,13 @@ export default ({
       // 新增时openForm没有返回值
       return openForm()?.finally(() => {
         // 回显表单后，清除校验
-        clearValidateOfFormDataForm()
+        clearFormDataValidation()
       })
     },
     // submitForm代理
     submitFormProxy (submitForm) {
       return new Promise((resolve, reject) => {
-        validateFormDataForm().then(() => {
+        validateFormData().then(() => {
           submitForm().then(() => {
             resolve()
           }).catch(() => {
@@ -105,7 +105,7 @@ export default ({
   watch(() => admate.form.show, n => {
     if (!n) {
       setTimeout(() => {
-        clearValidateOfFormDataForm()
+        clearFormDataValidation()
       }, 150)
     }
   })
@@ -138,7 +138,7 @@ export default ({
     }[admate.form.status])),
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
-      validateListFilterForm().then(() => {
+      validateListFilter().then(() => {
         admate.list.filter.pageNo = 1
         admate.getList()
       })

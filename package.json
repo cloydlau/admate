@@ -61,6 +61,7 @@
     "mitt": "latest",
     "mockjs": "latest",
     "rollup-plugin-peer-deps-external": "latest",
+    "sass": "latest",
     "ts-jest": "latest",
     "tslib": "latest",
     "typescript": "latest",

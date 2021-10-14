@@ -1,7 +1,7 @@
 <template>
   <div class="p-20px" data-app>
     <v-form
-      ref="listFilterFormRef"
+      ref="listFilterRef"
     >
       <v-text-field
         v-model="list.filter.name"
@@ -22,7 +22,7 @@
       <v-btn
         class="ml-10px"
         @click="() => {
-          listFilterFormRef.reset()
+          listFilterRef.reset()
         }">
         重置
       </v-btn>
@@ -83,7 +83,7 @@
         </v-card-title>
         <v-card-text>
           <v-form
-            ref="formDataFormRef"
+            ref="formRef"
             :disabled="form.status==='r'||form.submitting"
           >
             <v-text-field
@@ -123,26 +123,26 @@ import { ref } from 'vue-demi'
 
 export default {
   setup: () => {
-    const listFilterFormRef = ref(null)
-    const formDataFormRef = ref(null)
+    const listFilterRef = ref(null)
+    const formRef = ref(null)
 
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilterForm: (...args) => new Promise((resolve, reject) => {
-        listFilterFormRef.value.validate(...args) ? resolve() : reject()
+      validateListFilter: (...args) => new Promise((resolve, reject) => {
+        listFilterRef.value.validate(...args) ? resolve() : reject()
       }),
-      validateFormDataForm: (...args) => new Promise((resolve, reject) => {
-        formDataFormRef.value.validate(...args) ? resolve() : reject()
+      validateFormData: (...args) => new Promise((resolve, reject) => {
+        formRef.value.validate(...args) ? resolve() : reject()
       }),
-      clearValidateOfFormDataForm: (...args) => formDataFormRef.value.resetValidation(...args),
+      clearFormDataValidation: (...args) => formRef.value.resetValidation(...args),
     })
 
     return {
       ...admate,
-      listFilterFormRef,
-      formDataFormRef,
+      listFilterRef,
+      formRef,
     }
   }
 }
