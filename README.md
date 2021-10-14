@@ -148,15 +148,15 @@ useAdmate({
     getList: {
       method: 'GET',
     },
-    // 新增一条记录
+    // 新增一条记录（submitForm在新增时调用）
     c: {
       method: 'POST',
     },
-    // 查询一条记录
+    // 查询一条记录（openForm在查看、编辑时调用）
     r: {
       method: 'GET',
     },
-    // 编辑一条记录
+    // 编辑一条记录（submitForm在编辑时调用）
     u: {
       method: 'PUT',
     },
@@ -319,7 +319,7 @@ useAdmate({
 <!-- 示例 -->
 
 <template>
-  <el-form ref="listFilterFormRef" :model="list.filter" inline>
+  <el-form ref="listFilterRef" :model="list.filter" inline>
     <el-form-item prop="effect">
       <el-checkbox
         v-model="list.filter.effect"
@@ -493,6 +493,7 @@ useAdmate({
 ```ts
 const { form, openForm } = useAdmate()
 
+// 将表单形态设为“查看”，然后打开表单
 form.status = 'r'
 /**
  * @param {any} [payload]
@@ -518,6 +519,7 @@ openForm()
 ```ts
 const { form, openForm } = useAdmate()
 
+// 将表单形态设为“新增”，然后打开表单
 form.status = 'c'
 openForm()
 ```
@@ -531,6 +533,7 @@ openForm()
 ```ts
 const { form, openForm } = useAdmate()
 
+// 将表单形态设为“编辑”，然后打开表单
 form.status = 'u'
 /**
  * @param {any} [payload]
@@ -775,7 +778,7 @@ export default {
 `openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在openForm前后做一些操作，或改变openForm的行为
 
 ```ts
-// 示例：回显表单后，清除校验
+// 示例：回显表单后，修改表单数据
 
 const { openForm, form } = useAdmate({
   openFormProxy (openForm) {
@@ -784,8 +787,18 @@ const { openForm, form } = useAdmate({
       // response为axiosConfig.r的接口返回值
       // 修改表单数据
       form.data.status = 1
-    }).finally(() => {
-      clearValidateOfFormDataForm()
+    })
+  },
+})
+```
+
+```ts
+// 示例：回显表单后，清除校验
+
+const { openForm, form } = useAdmate({
+  openFormProxy (openForm) {
+    return openForm()?.finally(() => {
+      formRef.value.clearValidate()
     })
   },
 })
@@ -867,7 +880,7 @@ useAdmate({
 useAdmate({
   submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
-      formDataFormRef.value.validate().then(() => {
+      formRef.value.validate().then(() => {
         submitForm().then(() => {
           resolve()
         }).catch(() => {
@@ -886,7 +899,7 @@ useAdmate({
 useAdmate({
   submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
-      formDataFormRef.value.validate().then(() => {
+      formRef.value.validate().then(() => {
         submitForm().then(() => {
           // 提交成功后，默认关闭表单，并停止加载
           resolve({
@@ -918,140 +931,28 @@ useAdmate({
 
 <br>
 
-## 例：嵌套另一个使用Admate的页面
+## 例：表单是子组件
 
-```vue
-<!-- 示例：父页面中某个对话框要展示一个同样使用Admate的页面 -->
-
-<template>
-  <div class="p-20px">
-    <el-table v-loading="list.loading" :data="list.data">
-      <!-- -->
-      <el-table-column label="操作" align="center">
-        <template slot-scope="{ row }">
-          <el-button
-            @click="subpageShow(row)"
-          >
-            查看子页面
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-dialog v-model="SubPage.show">
-      <SubPage v-if="SubPage.data.id" :id="SubPage.data.id"/>
-    </el-dialog>
-  </div>
-</template>
-
-<script>
-import useAdmate from 'admate'
-import SubPage from './SubPage'
-
-export default {
-  setup: () => useAdmate({
-    urlPrefix: 'somepage',
-  }),
-  components: { SubPage },
-  data () {
-    return {
-      SubPage: {
-        show: false,
-        data: {},
-      },
-    }
-  },
-  methods: {
-    subpageShow (data) {
-      this.SubPage.data = {
-        ...this.SubPage.data,
-        ...data,
-      }
-      this.SubPage.show = true
-    },
-  },
-}
-</script>
-```
-
-```vue
-<!-- 子页面 -->
-
-<template>
-  <div class="p-20px">
-    <el-table v-loading="list.loading" :data="list.data">
-      <!-- -->
-    </el-table>
-  </div>
-</template>
-
-<script>
-import useAdmate from 'admate'
-
-export default {
-  setup: (props, { attrs }) => useAdmate({
-    list: {
-      filter: {
-        id: attrs.id // 用父页面传过来的id作为初始参数
-      }
-    },
-  }),
-}
-</script>
-
-```
+[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/examples/)
 
 <br>
 
-## 例：无列表，直接展示表单的页面
+## 例：表单是独立页面
+
+[示例代码]()
+
+<br>
+
+## 例：嵌套其它使用Admate的页面
+
+[示例代码]()
+
+<br>
+
+## 例：无列表，直接展示表单
 
 场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
 
-```vue
-<!-- 示例 -->
-
-<template>
-  <div class="p-20px w-full">
-    <el-dialog
-      v-model="form.show"
-      :show-close="false"
-      :modal="false"
-      class="relative"
-    >
-      <div slot="footer" class="text-right pt-50px">
-        <el-button
-          type="primary"
-          @click="submitForm"
-          :loading="form.submitting"
-        >
-          保 存
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
-</template>
-
-<script>
-import useAdmate from 'admate'
-
-export default {
-  setup: () => {
-    const admate = useAdmate({
-      getListProxy (getList, caller) {
-        if (caller === 'init') {
-          admate.u()
-        } else {
-          admate.currentInstance.value.$message.success('操作成功').then(() => {
-            admate.u()
-          })
-        }
-      }
-    })
-
-    return admate
-  }
-}
-</script>
-```
+[示例代码]()
 
 <br>
