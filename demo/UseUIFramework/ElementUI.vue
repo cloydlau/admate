@@ -107,11 +107,30 @@ export default {
     const listFilterRef = ref(null)
     const formRef = ref(null)
 
+    const validateListFilter = (...args) => listFilterRef.value.validate(...args)
+
     const admate = useMyAdmate({
       admateConfig: {
         urlPrefix,
       },
-      validateListFilter: (...args) => listFilterRef.value.validate(...args),
+      getListProxy (getList, caller) {
+        // onMounted中给筛选项赋初值已经触发调用
+        if (caller === 'init') {
+          return
+        }
+
+        if (caller === 'filterChange') {
+          validateListFilter().then(() => {
+            getList()
+          })
+        } else {
+          getList()
+          if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+            admate.currentInstance.value.$message.success('操作成功')
+          }
+        }
+      },
+      validateListFilter,
       validateFormData: (...args) => formRef.value.validate(...args),
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
