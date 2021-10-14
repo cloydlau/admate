@@ -75,7 +75,7 @@ export default function createAPIGenerator (
 
     let result = {}
     for (let k in configCatalog_default) {
-      result[k] = (payload, payloadUse) => {
+      result[k] = (payload, payloadAs) => {
         const configObj_default = configCatalog_default[k]
 
         const configObj_global =
@@ -92,11 +92,11 @@ export default function createAPIGenerator (
 
         const config = merge(configObj_default, configObj_global, configObj)
 
-        payloadUse ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
+        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
 
         return axios({
-          ...payloadUse === 'data' && { data: payload },
-          ...payloadUse === 'params' && { params: payload },
+          ...payloadAs === 'data' && { data: payload },
+          ...payloadAs === 'params' && { params: payload },
           ...config,
           url: getUrl(urlSuffix, config.url)
         })

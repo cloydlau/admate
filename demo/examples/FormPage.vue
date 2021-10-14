@@ -32,6 +32,8 @@ const formRef = ref(null)
 const route = useRoute()
 const router = useRouter()
 
+const validateFormData = (...args) => formRef.value.validate(...args)
+
 const {
   form,
   openForm,
@@ -42,7 +44,7 @@ const {
   admateConfig: {
     urlPrefix: route.query.urlPrefix,
     getListProxy (getList, caller) {
-      // 什么也不做
+      // 不需要获取列表
     },
     submitFormProxy (submitForm) {
       return new Promise((resolve, reject) => {
@@ -58,7 +60,6 @@ const {
     },
     form: JSON.parse(route.query.form),
   },
-  validateFormData: (...args) => formRef.value.validate(...args),
   clearFormDataValidation: (...args) => formRef.value?.clearValidate(...args),
 })
 

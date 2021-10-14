@@ -6,8 +6,8 @@
 
 ## Features
 
-- 同时支持Vue2 & Vue3
-- 不限制UI框架，只要技术栈是Vue和axios，便可以使用
+- 同时支持 `Vue2` & `Vue3`
+- 不限制UI框架，只要技术栈是 `Vue` 和 `axios`，便可以使用
 - 同一系统内，CRUD的请求配置通常是相似的，同一模块内，接口前缀通常是一致的，Admate可以帮助你减少冗余代码
 - 提供列表、表单CRUD的贴心封装
     - 你不再操心列表的读取状态、表单的读取和提交状态
@@ -49,7 +49,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 初始化
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/useMyAdmate.ts)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/useMyAdmate.ts)
 
 <br>
 
@@ -85,25 +85,25 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配ElementPlus
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/ElementPlus.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/ElementPlus.vue)
 
 <br>
 
 ### 搭配ElementUI
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/ElementUI.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/ElementUI.vue)
 
 <br>
 
 ### 搭配AntDesignVue@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
 ### 搭配AntDesignVue@1
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/AntDesignVue1.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/AntDesignVue1.vue)
 
 <br>
 
@@ -115,7 +115,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配Vuetify@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/UseUIFramework/Vuetify2.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/Vuetify2.vue)
 
 <br>
 
@@ -451,7 +451,7 @@ export default {
 const {
   /**
    * @param {any} [payload]
-   * @param {string} [payloadUse] 指定payload的用途
+   * @param {string} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} 接口返回值
    */
   getList
@@ -469,7 +469,7 @@ const {
 ```ts
 useAdmate({
   /**
-   * @param {(payload?: object, payloadUse?: string) => Promise<any> | void,} getList 被代理的方法
+   * @param {(payload?: object, payloadAs?: string) => Promise<any> | void,} getList 被代理的方法
    * @param {string} caller 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
   getListProxy (getList, caller) {
@@ -493,11 +493,11 @@ useAdmate({
 ```ts
 const { form, openForm } = useAdmate()
 
-// 将表单形态设为“查看”，然后打开表单
+// 将表单形态设置为“查看”，然后打开表单
 form.status = 'r'
 /**
  * @param {any} [payload]
- * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
@@ -519,7 +519,7 @@ openForm()
 ```ts
 const { form, openForm } = useAdmate()
 
-// 将表单形态设为“新增”，然后打开表单
+// 将表单形态设置为“新增”，然后打开表单
 form.status = 'c'
 openForm()
 ```
@@ -533,11 +533,11 @@ openForm()
 ```ts
 const { form, openForm } = useAdmate()
 
-// 将表单形态设为“编辑”，然后打开表单
+// 将表单形态设置为“编辑”，然后打开表单
 form.status = 'u'
 /**
  * @param {any} [payload]
- * @param {'data'|'params'|'config'|'cache'} [payloadUse] 指定payload的用途
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
@@ -558,7 +558,7 @@ openForm()
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} axiosConfig.d的返回值
    */
   d
@@ -579,7 +579,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} axiosConfig.enable的返回值
    */
   enable
@@ -600,7 +600,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} axiosConfig.disable的返回值
    */
   disable
@@ -621,7 +621,7 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadUse] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} axiosConfig.updateStatus的返回值
    */
   updateStatus
@@ -771,7 +771,7 @@ export default {
 
 <br>
 
-### Hook: 打开表单后
+### Hook: 打开表单时
 
 `openForm` ：打开表单，查看和编辑时调用 `axiosConfig.r`，新增时不调用接口
 
@@ -931,28 +931,34 @@ useAdmate({
 
 <br>
 
-## 例：表单是子组件
+## 示例：表单是子组件
 
-[示例代码](https://github.com/cloydlau/admate/blob/vue3/demo/examples/)
+将表单抽离为子组件
 
-<br>
-
-## 例：表单是独立页面
-
-[示例代码]()
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormExternalized.vue)
 
 <br>
 
-## 例：嵌套其它使用Admate的页面
+## 示例：表单是独立页面
 
-[示例代码]()
+操作单条记录时，跳转到专用的表单页面，操作完毕后返回
+
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormDecoupled.vue)
 
 <br>
 
-## 例：无列表，直接展示表单
+## 示例：只有表单没有列表
 
-场景：列表中只有一条数据，故列表被省略，默认弹出编辑框
+表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
 
-[示例代码]()
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormOnly.vue)
+
+<br>
+
+## 示例：嵌套使用
+
+嵌套其它也使用Admate的页面
+
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/Nested.vue)
 
 <br>

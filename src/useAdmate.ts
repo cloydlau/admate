@@ -1,6 +1,6 @@
 import { ref, reactive, watch, onMounted, } from 'vue-demi'
-import { isEmpty, notEmpty, getFinalProp } from 'kayran'
-import { throttle, cloneDeep, isPlainObject, at, merge, assignIn } from 'lodash-es'
+import { isEmpty, getFinalProp } from 'kayran'
+import { throttle, cloneDeep, at, merge, assignIn } from 'lodash-es'
 import createAPIGenerator from './api-generator'
 import type { ConfigCatalogType } from './api-generator'
 
@@ -70,7 +70,7 @@ export default function useAdmate ({
     loading?: boolean,
   },
   getListProxy?: (
-    getList: (payload?: object, payloadUse?: string) => Promise<any> | void,
+    getList: (payload?: object, payloadAs?: string) => Promise<any> | void,
     caller?: string
   ) => any,
   openFormProxy?: (openForm: Function) => OpenFormTerminalState | Promise<OpenFormTerminalState>,
@@ -105,8 +105,6 @@ export default function useAdmate ({
     show: false,
     data: {},
     mergeData: 'shallow',
-    payload: {},
-    payloadUse: 'data',
     status: '',
     ...form,
   })
@@ -115,7 +113,7 @@ export default function useAdmate ({
 
   const getList = (
     payload = List.filter,
-    payloadUse?: string
+    payloadAs?: string
   ) => {
     //console.log(`getList被调用`)
 
@@ -134,7 +132,7 @@ export default function useAdmate ({
     List.oldPageNumber = newPageNumber
     getListCaller.value = ''
     return new Promise((resolve, reject) => {
-      api.getList(payload, payloadUse)
+      api.getList(payload, payloadAs)
       .then(response => {
         List.data = At(response, List.dataAt)
         List.total = At(response, List.totalAt)
@@ -161,26 +159,18 @@ export default function useAdmate ({
     } :
     getList
 
-  // crud参数处理
-  const payloadHandler = (payload = {}, payloadUse = 'data') => {
-    Form.payload = payloadUse === 'cache' ? cloneDeep(payload) : payload
-    Form.payloadUse = payloadUse
-  }
-
-  const openForm = (payload?, payloadUse?: RFormType) => {
-    payloadHandler(payload, payloadUse)
-
+  const openForm = (payload?, payloadAs?: RFormType) => {
     switch (Form.status) {
       // 查看和编辑时，回显单条记录数据
       case 'r':
       case 'u':
-        if (Form.payloadUse === 'cache') {
-          mergeFormData(Form, Form.payload)
+        if (payloadAs === 'cache') {
+          mergeFormData(Form, cloneDeep(payload))
           Form.show = true
         } else {
           Form.loading = true
           Form.show = true
-          return api.r(Form.payload, Form.payloadUse).then(response => {
+          return api.r(payload, payloadAs).then(response => {
             mergeFormData(Form, At(response, Form.dataAt))
           })
         }
@@ -188,7 +178,7 @@ export default function useAdmate ({
         break
       // 新增单条记录
       case 'c':
-        if (payloadUse === 'cache') {
+        if (payloadAs === 'cache') {
           throw Error(`${CONSOLE_PREFIX}只有当表单状态为 'r' 或 'u' 时，参数2才可以使用 'cache'`)
         }
 
@@ -199,10 +189,9 @@ export default function useAdmate ({
   }
 
   // 删除单条记录
-  const d = (payload?, payloadUse?: CUDFormType) => {
-    payloadHandler(payload, payloadUse)
+  const d = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
-    return api.d(payload, payloadUse,).then(response => {
+    return api.d(payload, payloadAs,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
           GetListProxy('d')
@@ -219,10 +208,9 @@ export default function useAdmate ({
   }
 
   // 改变单条记录状态
-  const updateStatus = (payload?, payloadUse?: CUDFormType) => {
-    payloadHandler(payload, payloadUse)
+  const updateStatus = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
-    return api.updateStatus(payload, payloadUse,).then(response => {
+    return api.updateStatus(payload, payloadAs,).then(response => {
       GetListProxy('updateStatus')
       return response
     }).finally(() => {
@@ -231,10 +219,9 @@ export default function useAdmate ({
   }
 
   // 启用单条记录
-  const enable = (payload?, payloadUse?: CUDFormType) => {
-    payloadHandler(payload, payloadUse)
+  const enable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
-    return api.enable(payload, payloadUse,).then(response => {
+    return api.enable(payload, payloadAs,).then(response => {
       GetListProxy('enable')
       return response
     }).finally(() => {
@@ -243,10 +230,9 @@ export default function useAdmate ({
   }
 
   // 停用单条记录
-  const disable = (payload?, payloadUse?: CUDFormType) => {
-    payloadHandler(payload, payloadUse)
+  const disable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
-    return api.disable(payload, payloadUse,).then(response => {
+    return api.disable(payload, payloadAs,).then(response => {
       GetListProxy('disable')
       return response
     }).finally(() => {
@@ -341,7 +327,12 @@ export default function useAdmate ({
       // 表单关闭时 重置表单
       // 可能会有关闭动画 所以加延迟
       setTimeout(() => {
-        Object.assign(Form, getInitialForm())
+        Object.assign(Form, {
+          ...getInitialForm(),
+          // 不能重置被监听的show
+          // 因为重置是异步的，如果在此150ms期间show被外部赋为true，将导致死循环
+          show: Form.show,
+        })
       }, 150)
     }
   })

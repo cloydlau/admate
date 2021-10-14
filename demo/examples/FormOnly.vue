@@ -8,7 +8,6 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      {{ form.loading }}
       <el-form
         ref="formRef"
         :model="form.data"
@@ -29,7 +28,6 @@
           确 定
         </el-button>
       </template>
-      {{ form.show }}
     </el-dialog>
   </div>
 </template>
@@ -37,7 +35,8 @@
 <script>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
-import { ref, watch } from 'vue-demi'
+import { ref } from 'vue-demi'
+import { cloneDeep } from 'lodash-es'
 
 export default {
   setup: () => {
@@ -58,15 +57,27 @@ export default {
           status: 'u'
         },
         getListProxy (getList, caller) {
-          // 什么也不做
+          // 不需要获取列表
         },
         submitFormProxy (submitForm) {
           return new Promise((resolve, reject) => {
             validateFormData().then(() => {
               submitForm().then(() => {
                 currentInstance.value.$message.success('操作成功')
-                resolve()
+                resolve({
+                  // 避免触发admate内部的表单重置
+                  // admate内部在表单关闭后会重置表单（异步，有150毫秒的延迟）
+                  // 延迟的原因：关闭表单可能有动画渐变效果，
+                  // 如果不延迟：表单还没有完全消失，表单内容就被瞬间清空，体验不好
+                  show: true,
+                })
 
+                // 手动重置表单（无延迟）
+                // 这样才能确保openForm在重置之后执行
+                Object.assign(form.value, initialForm)
+
+                // 刷新表单
+                openForm.value()
               }).catch(() => {
                 reject()
               })
@@ -77,14 +88,9 @@ export default {
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
-    openForm.value()
+    const initialForm = cloneDeep(form.value)
 
-    watch(() => form.value.show, (n, o) => {
-      console.log(n)
-      if (!n) {
-        openForm.value()
-      }
-    })
+    openForm.value()
 
     return {
       form,

@@ -2,7 +2,7 @@
   "name": "admate",
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
-  "version": "0.6.0-beta.1",
+  "version": "0.7.0",
   "private": false,
   "license": "MIT",
   "repository": {
