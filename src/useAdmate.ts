@@ -269,7 +269,9 @@ export default function useAdmate ({
 
   const OpenFormProxy = (...args) => {
     const result = openFormProxy ?
-      openFormProxy(openForm) :
+      openFormProxy((...args_proxy) =>
+        openForm(...args_proxy.length ? args_proxy : args)
+      ) :
       openForm(...args)
     if (result instanceof Promise) {
       result.then(e => {
@@ -303,7 +305,9 @@ export default function useAdmate ({
 
   const SubmitFormProxy = (params: any = Form.data) => {
     const result = submitFormProxy ?
-      submitFormProxy(submitForm) :
+      submitFormProxy((...args) =>
+        args.length ? submitForm(...args) : submitForm(params)
+      ) :
       submitForm(params)
     if (result instanceof Promise) {
       result.then(e => {

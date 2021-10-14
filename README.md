@@ -257,6 +257,14 @@ axios的data默认以 `application/json` 作为MIME type，如果你需要使用
       </template>
     </el-table-column>
   </el-table>
+
+  <el-dialog>
+    <template #footer>
+      <el-button @click="submitForm(FormData.from( form.data ))">
+        确 定
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -277,9 +285,6 @@ export default {
         getListProxy (getList, caller) {
           getList(FormData.from(list.filter))
         },
-        submitFormProxy (submitForm) {
-          return submitForm(FormData.from(form.data))
-        }
       }),
       FormData
     }
