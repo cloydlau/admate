@@ -14,7 +14,7 @@
     <el-button @click="back">取 消</el-button>
     <el-button
       type="primary"
-      @click="submitForm"
+      @click="() => { submitForm() }"
       :loading="form.submitting"
       v-if="form.status!=='r'&&!form.loading"
     >

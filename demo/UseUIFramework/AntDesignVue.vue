@@ -80,7 +80,7 @@
         <a-button
           key="submit"
           type="primary"
-          @click="submitForm"
+          @click="() => { submitForm() }"
           :loading="form.submitting"
           v-if="form.status!=='r'&&!form.loading"
         >

@@ -86,7 +86,7 @@
         <el-button @click="form.show=false">取 消</el-button>
         <el-button
           type="primary"
-          @click="submitForm"
+          @click="() => { submitForm() }"
           :loading="form.submitting"
           v-if="form.status!=='r'&&!form.loading"
         >

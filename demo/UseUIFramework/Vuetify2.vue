@@ -104,7 +104,7 @@
           <v-btn
             dark
             color="#2A73C5"
-            @click="submitForm"
+            @click="() => { submitForm() }"
             :loading="form.submitting"
             v-if="form.status!=='r'&&!form.loading"
           >

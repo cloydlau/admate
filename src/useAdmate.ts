@@ -1,4 +1,4 @@
-import { ref, reactive, watch, onMounted, } from 'vue-demi'
+import { ref, reactive, watch, onMounted, isVue3 } from 'vue-demi'
 import { isEmpty, getFinalProp } from 'kayran'
 import { throttle, cloneDeep, at, merge, assignIn } from 'lodash-es'
 import createAPIGenerator from './api-generator'
@@ -27,10 +27,22 @@ const mergeFormData = (
   newFormData,
 ) => {
   if (Form.mergeData) {
-    // merge, assignIn会改变原始对象
-    Form.mergeData === 'deep' ?
-      merge(Form.data, newFormData) :
-      assignIn(Form.data, newFormData)
+    //if (isProxy(Form.data)) { // vue2中报错
+    if (isVue3) {
+      // merge, assignIn会改变原始对象
+      Form.mergeData === 'deep' ?
+        merge(Form.data, newFormData) :
+        assignIn(Form.data, newFormData)
+    }
+    else {
+      // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
+      Form.data = Form.mergeData === 'deep' ?
+        merge(cloneDeep(Form.data), newFormData) :
+        {
+          ...Form.data,
+          ...newFormData,
+        }
+    }
   } else {
     Form.data = newFormData
   }
@@ -288,6 +300,7 @@ export default function useAdmate ({
         loading: false
       })
     }
+    return result
   }
 
   // 表单提交
@@ -303,7 +316,7 @@ export default function useAdmate ({
     })
   }
 
-  const SubmitFormProxy = (params: any = Form.data) => {
+  const SubmitFormProxy = (params: any) => {
     const result = submitFormProxy ?
       submitFormProxy((...args) =>
         args.length ? submitForm(...args) : submitForm(params)
@@ -324,6 +337,7 @@ export default function useAdmate ({
         show: false
       })
     }
+    return result
   }
 
   watch(() => Form.show, n => {
