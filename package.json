@@ -2,7 +2,7 @@
   "name": "admate",
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -70,7 +70,7 @@
     "vite-plugin-vue2": "latest",
     "vite-plugin-windicss": "latest",
     "vue": "npm:vue@^3.2.20",
-    "vue-router": "^4.0.11",
+    "vue-router": "^4.0.12",
     "vue-template-compiler": "latest",
     "vue2": "npm:vue@^2.6.14",
     "vue2-router": "npm:vue-router@^3.5.2",

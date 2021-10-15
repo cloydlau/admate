@@ -33,8 +33,7 @@ const mergeFormData = (
       Form.mergeData === 'deep' ?
         merge(Form.data, newFormData) :
         assignIn(Form.data, newFormData)
-    }
-    else {
+    } else {
       // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
       Form.data = Form.mergeData === 'deep' ?
         merge(cloneDeep(Form.data), newFormData) :
@@ -163,11 +162,15 @@ export default function useAdmate ({
   }
 
   const GetListProxy = getListProxy ?
-    async (caller?) => {
+    async (...args) => {
       //console.log(`getListProxy因${caller}被调用`)
-      getListCaller.value = caller
       List.loading = false
-      await getListProxy(getList, getListCaller.value)
+
+      // args是用户直接调用getList传的参，优先级低
+      // args_proxy是用户在getListProxy内部调用getList传的参，优先级高
+      await getListProxy((...args_proxy) =>
+          getList(...args_proxy.length ? args_proxy : args)
+        , getListCaller.value)
     } :
     getList
 
@@ -206,12 +209,14 @@ export default function useAdmate ({
     return api.d(payload, payloadAs,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
-          GetListProxy('d')
+          getListCaller.value = 'd'
+          GetListProxy()
         } else {
           List.filter[List.pageNumberKey]--
         }
       } else {
-        GetListProxy('d')
+        getListCaller.value = 'd'
+        GetListProxy()
       }
       return response
     }).finally(() => {
@@ -223,7 +228,8 @@ export default function useAdmate ({
   const updateStatus = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.updateStatus(payload, payloadAs,).then(response => {
-      GetListProxy('updateStatus')
+      getListCaller.value = 'updateStatus'
+      GetListProxy()
       return response
     }).finally(() => {
       List.loading = false
@@ -234,7 +240,8 @@ export default function useAdmate ({
   const enable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.enable(payload, payloadAs,).then(response => {
-      GetListProxy('enable')
+      getListCaller.value = 'enable'
+      GetListProxy()
       return response
     }).finally(() => {
       List.loading = false
@@ -245,7 +252,8 @@ export default function useAdmate ({
   const disable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.disable(payload, payloadAs,).then(response => {
-      GetListProxy('disable')
+      getListCaller.value = 'disable'
+      GetListProxy()
       return response
     }).finally(() => {
       List.loading = false
@@ -282,6 +290,8 @@ export default function useAdmate ({
   const OpenFormProxy = (...args) => {
     const result = openFormProxy ?
       openFormProxy((...args_proxy) =>
+        // args是用户直接调用openForm传的参，优先级低
+        // args_proxy是用户在openFormProxy内部调用openForm传的参，优先级高
         openForm(...args_proxy.length ? args_proxy : args)
       ) :
       openForm(...args)
@@ -311,7 +321,8 @@ export default function useAdmate ({
     Form.submitting = true
     return api[Form.status](params)
     .then(response => {
-      GetListProxy(Form.status)
+      getListCaller.value = Form.status
+      GetListProxy()
       return response
     })
   }
@@ -319,6 +330,8 @@ export default function useAdmate ({
   const SubmitFormProxy = (params: any) => {
     const result = submitFormProxy ?
       submitFormProxy((...args) =>
+        // params是用户直接调用submitForm传的参，优先级低
+        // args是用户在submitFormProxy内部调用submitForm传的参，优先级高
         args.length ? submitForm(...args) : submitForm(params)
       ) :
       submitForm(params)
@@ -373,7 +386,8 @@ export default function useAdmate ({
           List.loading = true
           if (!getListThrottled.value) {
             getListThrottled.value = throttle(() => {
-              GetListProxy('filterChange')
+              getListCaller.value = 'filterChange'
+              GetListProxy()
             }, List.throttleInterval, {
               leading: false,
               trailing: true
@@ -383,7 +397,8 @@ export default function useAdmate ({
           getListThrottled.value()
         } else {
           // 翻页不需要节流
-          GetListProxy('pageNumberChange')
+          getListCaller.value = 'pageNumberChange'
+          GetListProxy()
         }
       }, {
         deep: true
