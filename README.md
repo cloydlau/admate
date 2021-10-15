@@ -180,6 +180,40 @@ useAdmate({
 })
 ```
 
+```ts
+// 示例：根据传参动态生成配置，常用于RESTful中
+// 动态生成配置时，payloadAs将会失效
+
+useAdmate({
+  axiosConfig: {
+    getList: payload => ({
+      method: 'GET',
+    }),
+    c: payload => ({
+      method: 'POST',
+    }),
+    r: payload => ({
+      method: 'GET',
+    }),
+    u: payload => ({
+      method: 'PUT',
+    }),
+    d: payload => ({
+      method: 'DELETE',
+    }),
+    enable: payload => ({
+      method: 'PUT',
+    }),
+    disable: payload => ({
+      method: 'PUT',
+    }),
+    updateStatus: payload => ({
+      method: 'PUT',
+    }),
+  },
+})
+```
+
 <br>
 
 ### urlPrefix
@@ -282,7 +316,7 @@ export default {
 
     return {
       ...useAdmate({
-        getListProxy (getList, caller) {
+        getListProxy (getList, trigger) {
           getList(FormData.from(list.filter))
         },
       }),
@@ -455,8 +489,8 @@ export default {
 ```ts
 const {
   /**
-   * @param {any} [payload]
-   * @param {string} [payloadAs] 指定payload的用途
+   * @param {any} [payload = list.filter]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} 接口返回值
    */
   getList
@@ -474,10 +508,10 @@ const {
 ```ts
 useAdmate({
   /**
-   * @param {(payload?: object, payloadAs?: string) => Promise<any> | void,} getList 被代理的方法
-   * @param {string} caller 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
+   * @param {Function} getList 被代理的方法
+   * @param {string} trigger 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
-  getListProxy (getList, caller) {
+  getListProxy (getList, trigger) {
     // 在查询列表之前做点什么...
     getList({
       // 自定义接口参数
@@ -853,7 +887,8 @@ useAdmate({
 ```ts
 const {
   /**
-   * @param {any} [params = form.data] - 接口参数
+   * @param {any} [payload = form.data]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} 接口返回值
    */
   submitForm

@@ -12,7 +12,7 @@ function getRandomPics (count = 10): string[] {
 
 const demoList = (() => {
   const result: any[] = []
-  for (let index = 0; index < 10; index++) {
+  for (let index = 0; index < 50; index++) {
     result.push({
       id: `${index}`,
       beginTime: '@datetime',
@@ -49,7 +49,7 @@ export default [
     timeout: 100,
     method: 'post',
     response: ({ query }) => {
-      const { page = 1, pageSize = 20 } = query
+      const { page = 1, pageSize = 10 } = query
       return resultPageSuccess(page, pageSize, demoList)
     },
   },

@@ -11,8 +11,26 @@ type MergeDataType = 'deep' | 'shallow' | false
 type RFormType = 'data' | 'params' | 'config' | 'cache'
 type CUDFormType = 'data' | 'params' | 'config'
 type SubmitFormType = (params: any) => Promise<any>
-type OpenFormTerminalState = { show?: boolean, loading?: boolean } | void
-type SubmitFormTerminalState = { show?: boolean, submitting?: boolean } | void
+type FormType = {
+  show?: boolean,
+  data?: any,
+  dataAt?: string | Function,
+  mergeData?: MergeDataType,
+  loading?: boolean,
+  submitting?: boolean,
+  status?: StatusType,
+}
+type ListType = {
+  filter?: object,
+  pageNumberKey?: string,
+  watchFilter?: boolean,
+  throttleInterval?: number,
+  data?: any[],
+  dataAt?: string | Function,
+  total?: number,
+  totalAt?: string | Function,
+  loading?: boolean,
+}
 
 const At = (response?: object, paths?: string | Function): any => {
   return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
@@ -60,29 +78,11 @@ export default function useAdmate ({
   axios,
   axiosConfig: ConfigCatalogType,
   urlPrefix?: string,
-  form?: {
-    show?: boolean,
-    data?: any,
-    dataAt?: string | Function,
-    mergeData?: MergeDataType,
-    loading?: boolean,
-    submitting?: boolean,
-    status?: StatusType,
-  },
-  list?: {
-    filter?: object,
-    pageNumberKey?: string,
-    watchFilter?: boolean,
-    throttleInterval?: number,
-    data?: any[],
-    dataAt?: string | Function,
-    total?: number,
-    totalAt?: string | Function,
-    loading?: boolean,
-  },
+  form?: FormType,
+  list?: ListType,
   getListProxy?: (
     getList: (payload?: object, payloadAs?: string) => Promise<any> | void,
-    caller?: string
+    trigger?: string
   ) => any,
   openFormProxy?: (openForm: Function) => OpenFormTerminalState | Promise<OpenFormTerminalState>,
   submitFormProxy?: (submitForm: SubmitFormType) => SubmitFormTerminalState | Promise<SubmitFormTerminalState>,
@@ -90,7 +90,7 @@ export default function useAdmate ({
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
 
-  const getListCaller = ref()
+  const getListTrigger = ref()
   const getListThrottled = ref(null)
 
   const getInitialList = () => getFinalProp([list], {
@@ -124,23 +124,12 @@ export default function useAdmate ({
 
   const getList = (
     payload = List.filter,
-    payloadAs?: string
+    payloadAs?: CUDFormType
   ) => {
     //console.log(`getList被调用`)
 
-    const newPageNumber = List.filter[List.pageNumberKey]
-    if (
-      getListCaller.value === 'filterChange' &&
-      newPageNumber !== 1
-    ) {
-      // 如果改变的不是页码 页码重置为1 并拦截本次请求
-      List.filter[List.pageNumberKey] = 1
-      return
-    }
-    
     List.loading = true
     List.data.length = 0
-    List.oldPageNumber = newPageNumber
     return new Promise((resolve, reject) => {
       api.getList(payload, payloadAs)
       .then(response => {
@@ -154,27 +143,52 @@ export default function useAdmate ({
       .catch(response => {
         reject(response)
       })
-      .finally(() => {
-        List.loading = false
-      })
     })
   }
 
-  const GetListProxy = getListProxy ?
-    (...args) => {
-      //console.log(`getListProxy因${caller}被调用`)
-      List.loading = false
+  const GetListProxy = (...args) => {
+    //console.log(`getListProxy因${trigger}被调用`)
+    const newPageNumber = List.filter[List.pageNumberKey]
+    const triggeredByFilterChange = getListTrigger.value === 'filterChange'
+    getListTrigger.value = undefined
+    if (triggeredByFilterChange && newPageNumber !== 1) {
+      // 如果改变的不是页码 页码重置为1 并拦截本次请求
+      List.filter[List.pageNumberKey] = 1
+      return
+    }
 
-      // args是用户直接调用getList传的参，优先级低
-      // args_proxy是用户在getListProxy内部调用getList传的参，优先级高
-      const result = getListProxy((...args_proxy) =>
+    List.oldPageNumber = newPageNumber
+
+    // args是用户直接调用getList传的参，优先级低
+    // args_proxy是用户在getListProxy内部调用getList传的参，优先级高
+    const result = getListProxy ?
+      getListProxy((...args_proxy) =>
           getList(...args_proxy.length ? args_proxy : args)
-        , getListCaller.value)
-      getListCaller.value = undefined
+        , getListTrigger.value) :
+      getList(...args)
 
-      return result
-    } :
-    getList
+    if (result instanceof Promise) {
+      // 不能统一写在finally中，因为：
+      // 在then中能拿到用户resolve的参数
+      // 在catch中能拿到用户reject的参数
+      // 在finally中拿不到参数
+      result.then(state => {
+        setTerminalState(List, state, {
+          loading: false
+        })
+      }).catch(state => {
+        setTerminalState(List, state, {
+          loading: false
+        })
+      })
+    } else {
+      setTerminalState(List, result, {
+        loading: false
+      })
+    }
+
+    return result
+  }
 
   const openForm = (payload?, payloadAs?: RFormType) => {
     switch (Form.status) {
@@ -211,13 +225,13 @@ export default function useAdmate ({
     return api.d(payload, payloadAs,).then(response => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
-          getListCaller.value = 'd'
+          getListTrigger.value = 'd'
           GetListProxy()
         } else {
           List.filter[List.pageNumberKey]--
         }
       } else {
-        getListCaller.value = 'd'
+        getListTrigger.value = 'd'
         GetListProxy()
       }
       return response
@@ -230,7 +244,7 @@ export default function useAdmate ({
   const updateStatus = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.updateStatus(payload, payloadAs,).then(response => {
-      getListCaller.value = 'updateStatus'
+      getListTrigger.value = 'updateStatus'
       GetListProxy()
       return response
     }).finally(() => {
@@ -242,7 +256,7 @@ export default function useAdmate ({
   const enable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.enable(payload, payloadAs,).then(response => {
-      getListCaller.value = 'enable'
+      getListTrigger.value = 'enable'
       GetListProxy()
       return response
     }).finally(() => {
@@ -254,7 +268,7 @@ export default function useAdmate ({
   const disable = (payload?, payloadAs?: CUDFormType) => {
     List.loading = true
     return api.disable(payload, payloadAs,).then(response => {
-      getListCaller.value = 'disable'
+      getListTrigger.value = 'disable'
       GetListProxy()
       return response
     }).finally(() => {
@@ -273,19 +287,14 @@ export default function useAdmate ({
     }
   */
 
-  const controlFormDialog = (
-    options: OpenFormTerminalState | SubmitFormTerminalState,
-    defaultOptions,
+  const setTerminalState = (
+    target: object,
+    state: FormType | ListType,
+    defaultState,
   ) => {
-    const { show, submitting, loading } = getFinalProp([options, defaultOptions])
-    if (typeof show === 'boolean') {
-      Form.show = show
-    }
-    if (typeof submitting === 'boolean') {
-      Form.submitting = submitting
-    }
-    if (typeof loading === 'boolean') {
-      Form.loading = loading
+    target = {
+      ...target,
+      ...getFinalProp([state, defaultState]),
     }
   }
 
@@ -298,17 +307,17 @@ export default function useAdmate ({
       ) :
       openForm(...args)
     if (result instanceof Promise) {
-      result.then(e => {
-        controlFormDialog(e, {
+      result.then(state => {
+        setTerminalState(Form, state, {
           loading: false
         })
-      }).catch(e => {
-        controlFormDialog(e, {
+      }).catch(state => {
+        setTerminalState(Form, state, {
           show: false,
         })
       })
     } else {
-      controlFormDialog(result, {
+      setTerminalState(Form, result, {
         loading: false
       })
     }
@@ -316,14 +325,14 @@ export default function useAdmate ({
   }
 
   // 表单提交
-  const submitForm: SubmitFormType = (params = Form.data) => {
+  const submitForm: SubmitFormType = (payload = Form.data, payloadAs?: CUDFormType) => {
     if (!['c', 'u'].includes(Form.status)) {
       throw Error(`${CONSOLE_PREFIX}submitForm 仅能在表单状态为 'c' 或 'u' 时被调用`)
     }
     Form.submitting = true
-    return api[Form.status](params)
+    return api[Form.status](payload, payloadAs)
     .then(response => {
-      getListCaller.value = Form.status
+      getListTrigger.value = Form.status
       GetListProxy()
       return response
     })
@@ -339,16 +348,16 @@ export default function useAdmate ({
       submitForm(params)
     if (result instanceof Promise) {
       result.then(e => {
-        controlFormDialog(e, {
+        setTerminalState(Form, e, {
           show: false
         })
       }).catch(e => {
-        controlFormDialog(e, {
+        setTerminalState(Form, e, {
           submitting: false
         })
       })
     } else {
-      controlFormDialog(result, {
+      setTerminalState(Form, result, {
         show: false
       })
     }
@@ -378,7 +387,7 @@ export default function useAdmate ({
   }*/
 
   // 首次获取列表
-  getListCaller.value = 'init'
+  getListTrigger.value = 'init'
   GetListProxy()
 
   onMounted(() => {
@@ -389,7 +398,7 @@ export default function useAdmate ({
           List.loading = true
           if (!getListThrottled.value) {
             getListThrottled.value = throttle(() => {
-              getListCaller.value = 'filterChange'
+              getListTrigger.value = 'filterChange'
               GetListProxy()
             }, List.throttleInterval, {
               leading: false,
@@ -400,7 +409,7 @@ export default function useAdmate ({
           getListThrottled.value()
         } else {
           // 翻页不需要节流
-          getListCaller.value = 'pageNumberChange'
+          getListTrigger.value = 'pageNumberChange'
           GetListProxy()
         }
       }, {
