@@ -90,7 +90,7 @@ export default function useAdmate ({
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
 
-  const getListCaller = ref('')
+  const getListCaller = ref()
   const getListThrottled = ref(null)
 
   const getInitialList = () => getFinalProp([list], {
@@ -137,11 +137,10 @@ export default function useAdmate ({
       List.filter[List.pageNumberKey] = 1
       return
     }
-
+    
     List.loading = true
     List.data.length = 0
     List.oldPageNumber = newPageNumber
-    getListCaller.value = ''
     return new Promise((resolve, reject) => {
       api.getList(payload, payloadAs)
       .then(response => {
@@ -162,15 +161,18 @@ export default function useAdmate ({
   }
 
   const GetListProxy = getListProxy ?
-    async (...args) => {
+    (...args) => {
       //console.log(`getListProxy因${caller}被调用`)
       List.loading = false
 
       // args是用户直接调用getList传的参，优先级低
       // args_proxy是用户在getListProxy内部调用getList传的参，优先级高
-      await getListProxy((...args_proxy) =>
+      const result = getListProxy((...args_proxy) =>
           getList(...args_proxy.length ? args_proxy : args)
         , getListCaller.value)
+      getListCaller.value = undefined
+
+      return result
     } :
     getList
 
@@ -376,7 +378,8 @@ export default function useAdmate ({
   }*/
 
   // 首次获取列表
-  GetListProxy('init')
+  getListCaller.value = 'init'
+  GetListProxy()
 
   onMounted(() => {
     // 筛选项改变时，刷新列表
