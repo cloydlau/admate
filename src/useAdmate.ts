@@ -1,6 +1,6 @@
 import { ref, reactive, watch, onMounted, isVue3 } from 'vue-demi'
 import { isEmpty, getFinalProp } from 'kayran'
-import { throttle, cloneDeep, at, merge, assignIn } from 'lodash-es'
+import { throttle, cloneDeep, at, merge, assignIn, isPlainObject } from 'lodash-es'
 import createAPIGenerator from './api-generator'
 import type { ConfigCatalogType } from './api-generator'
 
@@ -8,14 +8,15 @@ const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 type StatusType = '' | 'c' | 'r' | 'u'
 type MergeDataType = 'deep' | 'shallow' | false
+type MergeStateType = 'deep' | 'shallow'
 type RFormType = 'data' | 'params' | 'config' | 'cache'
 type CUDFormType = 'data' | 'params' | 'config'
+type GetListType = (payload?: any, payloadAs?: string) => Promise<any>
 type SubmitFormType = (params: any) => Promise<any>
 type FormType = {
   show?: boolean,
   data?: any,
   dataAt?: string | Function,
-  mergeData?: MergeDataType,
   loading?: boolean,
   submitting?: boolean,
   status?: StatusType,
@@ -38,30 +39,61 @@ const At = (response?: object, paths?: string | Function): any => {
 
 // 将接口返回值混入form.data
 const mergeFormData = (
-  Form: {
-    data: any,
-    mergeData: MergeDataType,
-  },
-  newFormData,
+  formData?: any,
+  newFormData?: any,
+  mergeData: MergeDataType = 'shallow',
 ) => {
-  if (Form.mergeData) {
+  if (
+    mergeData &&
+    isPlainObject(formData) &&
+    isPlainObject(newFormData)
+  ) {
     //if (isProxy(Form.data)) { // vue2中报错
     if (isVue3) {
       // merge, assignIn会改变原始对象
-      Form.mergeData === 'deep' ?
-        merge(Form.data, newFormData) :
-        assignIn(Form.data, newFormData)
+      mergeData === 'deep' ?
+        merge(formData, newFormData) :
+        assignIn(formData, newFormData)
     } else {
       // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-      Form.data = Form.mergeData === 'deep' ?
-        merge(cloneDeep(Form.data), newFormData) :
+      formData = mergeData === 'deep' ?
+        merge(cloneDeep(formData), newFormData) :
         {
-          ...Form.data,
+          ...formData,
           ...newFormData,
         }
     }
   } else {
-    Form.data = newFormData
+    formData = newFormData
+  }
+}
+
+// 设置列表或表单的终态
+const setTerminalState = ({
+  target,
+  state,
+  defaultState,
+  mergeState = 'shallow',
+}: {
+  target: object,
+  state?: FormType | ListType,
+  defaultState?: FormType | ListType,
+  mergeState: MergeStateType,
+}) => {
+  const TERMINAL_STATE = getFinalProp([state, defaultState])
+  if (isVue3) {
+    // merge, assignIn会改变原始对象
+    mergeState === 'deep' ?
+      merge(target, TERMINAL_STATE) :
+      assignIn(target, TERMINAL_STATE)
+  } else {
+    // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
+    target = mergeState === 'deep' ?
+      merge(cloneDeep(target), TERMINAL_STATE) :
+      {
+        ...target,
+        ...TERMINAL_STATE,
+      }
   }
 }
 
@@ -81,11 +113,11 @@ export default function useAdmate ({
   form?: FormType,
   list?: ListType,
   getListProxy?: (
-    getList: (payload?: object, payloadAs?: string) => Promise<any> | void,
+    getList: GetListType,
     trigger?: string
-  ) => any,
-  openFormProxy?: (openForm: Function) => OpenFormTerminalState | Promise<OpenFormTerminalState>,
-  submitFormProxy?: (submitForm: SubmitFormType) => SubmitFormTerminalState | Promise<SubmitFormTerminalState>,
+  ) => void,
+  openFormProxy?: (openForm: Function) => Promise<FormType> | FormType | void,
+  submitFormProxy?: (submitForm: SubmitFormType) => Promise<FormType> | FormType | void,
 }): object {
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
@@ -115,7 +147,6 @@ export default function useAdmate ({
     submitting: false,
     show: false,
     data: {},
-    mergeData: 'shallow',
     status: '',
     ...form,
   })
@@ -125,35 +156,34 @@ export default function useAdmate ({
   const getList = (
     payload = List.filter,
     payloadAs?: CUDFormType
-  ) => {
+  ): GetListType => {
     //console.log(`getList被调用`)
 
     List.loading = true
     List.data.length = 0
-    return new Promise((resolve, reject) => {
-      api.getList(payload, payloadAs)
-      .then(response => {
-        List.data = At(response, List.dataAt)
-        List.total = At(response, List.totalAt)
-        if (isEmpty(List.data)) {
-          List.total = 0
-        }
-        resolve(response)
-      })
-      .catch(response => {
-        reject(response)
-      })
+    return api.getList(payload, payloadAs)
+    .then(response => {
+      List.data = At(response, List.dataAt)
+      List.total = At(response, List.totalAt)
+      if (isEmpty(List.data)) {
+        List.total = 0
+      }
+      return response
+    }).finally(() => {
+      List.loading = false
     })
   }
 
   const GetListProxy = (...args) => {
     //console.log(`getListProxy因${trigger}被调用`)
     const newPageNumber = List.filter[List.pageNumberKey]
-    const triggeredByFilterChange = getListTrigger.value === 'filterChange'
-    getListTrigger.value = undefined
-    if (triggeredByFilterChange && newPageNumber !== 1) {
+    if (
+      getListTrigger.value === 'filterChange' &&
+      newPageNumber !== 1
+    ) {
       // 如果改变的不是页码 页码重置为1 并拦截本次请求
       List.filter[List.pageNumberKey] = 1
+      getListTrigger.value = undefined
       return
     }
 
@@ -167,55 +197,62 @@ export default function useAdmate ({
         , getListTrigger.value) :
       getList(...args)
 
-    if (result instanceof Promise) {
+    getListTrigger.value = undefined
+
+    return result
+
+    /*if (result instanceof Promise) {
       // 不能统一写在finally中，因为：
-      // 在then中能拿到用户resolve的参数
-      // 在catch中能拿到用户reject的参数
+      // 在then中能拿到用户resolve或者在then中return的参数
+      // 在catch中能拿到用户reject或者在catch中return的参数
       // 在finally中拿不到参数
-      result.then(state => {
-        setTerminalState(List, state, {
-          loading: false
+      result.then((state?: ListType) => {
+        setTerminalState({
+          target: List,
+          state,
+          defaultState: {
+            loading: false
+          }
         })
-      }).catch(state => {
-        setTerminalState(List, state, {
-          loading: false
+      }).catch((state?: ListType) => {
+        setTerminalState({
+          target: List,
+          state,
+          defaultState: {
+            loading: false
+          }
         })
       })
     } else {
-      setTerminalState(List, result, {
-        loading: false
+      setTerminalState({
+        target: List,
+        state: result,
+        defaultState: {
+          loading: false
+        }
       })
-    }
-
-    return result
+    }*/
   }
 
-  const openForm = (payload?, payloadAs?: RFormType) => {
-    switch (Form.status) {
-      // 查看和编辑时，回显单条记录数据
-      case 'r':
-      case 'u':
-        if (payloadAs === 'cache') {
-          mergeFormData(Form, cloneDeep(payload))
-          Form.show = true
-        } else {
-          Form.loading = true
-          Form.show = true
-          return api.r(payload, payloadAs).then(response => {
-            mergeFormData(Form, At(response, Form.dataAt))
-          })
-        }
-
-        break
-      // 新增单条记录
-      case 'c':
-        if (payloadAs === 'cache') {
-          throw Error(`${CONSOLE_PREFIX}只有当表单状态为 'r' 或 'u' 时，参数2才可以使用 'cache'`)
-        }
-
-        Form.status = 'c'
-      default:
+  function openForm (payload?, payloadAs?: RFormType, mergeData?) {
+    // 查看和编辑时，回显单条记录数据
+    if (['r', 'u'].includes(Form.status)) {
+      if (payloadAs === 'cache') {
+        mergeFormData(Form.data, cloneDeep(payload), mergeData)
         Form.show = true
+      } else {
+        Form.loading = true
+        Form.show = true
+        return api.r(payload, payloadAs).then(response => {
+          mergeFormData(Form.data, At(response, Form.dataAt), mergeData)
+          return response
+        })
+      }
+    } else {
+      if (arguments.length) {
+        console.warn(`${CONSOLE_PREFIX}openForm仅在表单状态为 'r' 或 'u' 时需要传参`)
+      }
+      Form.show = true
     }
   }
 
@@ -287,17 +324,6 @@ export default function useAdmate ({
     }
   */
 
-  const setTerminalState = (
-    target: object,
-    state: FormType | ListType,
-    defaultState,
-  ) => {
-    target = {
-      ...target,
-      ...getFinalProp([state, defaultState]),
-    }
-  }
-
   const OpenFormProxy = (...args) => {
     const result = openFormProxy ?
       openFormProxy((...args_proxy) =>
@@ -307,18 +333,30 @@ export default function useAdmate ({
       ) :
       openForm(...args)
     if (result instanceof Promise) {
-      result.then(state => {
-        setTerminalState(Form, state, {
-          loading: false
+      result.then((state?: FormType) => {
+        setTerminalState({
+          target: Form,
+          state,
+          defaultState: {
+            loading: false
+          }
         })
-      }).catch(state => {
-        setTerminalState(Form, state, {
-          show: false,
+      }).catch((state?: FormType) => {
+        setTerminalState({
+          target: Form,
+          state,
+          defaultState: {
+            show: false,
+          }
         })
       })
     } else {
-      setTerminalState(Form, result, {
-        loading: false
+      setTerminalState({
+        target: Form,
+        state: result,
+        defaultState: {
+          loading: false
+        }
       })
     }
     return result
@@ -347,18 +385,30 @@ export default function useAdmate ({
       ) :
       submitForm(params)
     if (result instanceof Promise) {
-      result.then(e => {
-        setTerminalState(Form, e, {
-          show: false
+      result.then((state?: FormType) => {
+        setTerminalState({
+          target: Form,
+          state,
+          defaultState: {
+            show: false
+          }
         })
-      }).catch(e => {
-        setTerminalState(Form, e, {
-          submitting: false
+      }).catch((state?: FormType) => {
+        setTerminalState({
+          target: Form,
+          state,
+          defaultState: {
+            submitting: false
+          }
         })
       })
     } else {
-      setTerminalState(Form, result, {
-        show: false
+      setTerminalState({
+        target: Form,
+        state: result,
+        defaultState: {
+          show: false
+        }
       })
     }
     return result
@@ -399,6 +449,7 @@ export default function useAdmate ({
           if (!getListThrottled.value) {
             getListThrottled.value = throttle(() => {
               getListTrigger.value = 'filterChange'
+              List.loading = false
               GetListProxy()
             }, List.throttleInterval, {
               leading: false,

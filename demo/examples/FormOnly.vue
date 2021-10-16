@@ -56,7 +56,7 @@ export default {
         form: {
           status: 'u'
         },
-        getListProxy (getList, caller) {
+        getListProxy (getList, trigger) {
           // 不需要获取列表
         },
         submitFormProxy (submitForm) {

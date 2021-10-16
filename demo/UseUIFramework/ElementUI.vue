@@ -113,19 +113,19 @@ export default {
       admateConfig: {
         urlPrefix,
       },
-      getListProxy (getList, caller) {
+      getListProxy (getList, trigger) {
         // onMounted中给筛选项赋初值已经触发调用
-        if (caller === 'init') {
+        if (trigger === 'init') {
           return
         }
 
-        if (caller === 'filterChange') {
+        if (trigger === 'filterChange') {
           validateListFilter().then(() => {
             getList()
           })
         } else {
           getList()
-          if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+          if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
             admate.currentInstance.value.$message.success('操作成功')
           }
         }

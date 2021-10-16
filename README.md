@@ -186,27 +186,35 @@ useAdmate({
 
 useAdmate({
   axiosConfig: {
+    // 查询列表
     getList: payload => ({
       method: 'GET',
     }),
+    // 新增一条记录（submitForm在新增时调用）
     c: payload => ({
       method: 'POST',
     }),
+    // 查询一条记录（openForm在查看、编辑时调用）
     r: payload => ({
       method: 'GET',
     }),
+    // 编辑一条记录（submitForm在编辑时调用）
     u: payload => ({
       method: 'PUT',
     }),
+    // 删除一条记录
     d: payload => ({
       method: 'DELETE',
     }),
+    // 启用一条记录
     enable: payload => ({
       method: 'PUT',
     }),
+    // 禁用一条记录
     disable: payload => ({
       method: 'PUT',
     }),
+    // 变更一条记录的状态
     updateStatus: payload => ({
       method: 'PUT',
     }),
@@ -482,42 +490,76 @@ export default {
 </script>
 ```
 
-<a name="query-table"><br></a>
-
-### 手动查询
-
-```ts
-const {
-  /**
-   * @param {any} [payload = list.filter]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
-   * @returns {Promise<any>} 接口返回值
-   */
-  getList
-} = useAdmate()
-```
-
 <br>
 
 ### Hook: 查询列表时
 
 `getList` ：获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
+```ts
+const {
+  /**
+   * PS：以下为原始getList的函数签名，如果你配置了getListProxy，则以getListProxy为准
+   *
+   * @param {any} [payload = list.filter]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
+   * @returns {Promise<any>} 接口返回值
+   */
+  getList
+} = useAdmate()
+
+getList() // 手动查询
+```
+
 `getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在getList前后做一些操作，或改变getList的行为
 
 ```ts
 useAdmate({
   /**
-   * @param {Function} getList 被代理的方法
+   * @param {Function} getList 被代理的原始getList
    * @param {string} trigger 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
+  getListProxy (getList, trigger) {},
+})
+```
+
+```ts
+// 示例：获取列表之前，校验参数
+
+useAdmate({
   getListProxy (getList, trigger) {
-    // 在查询列表之前做点什么...
-    getList({
-      // 自定义接口参数
-    })
-    .then(res => {
-      // 在查询列表之后做点什么...
+    if (trigger === 'filterChange') {
+      listFilterRef.value.validate().then(() => {
+        getList()
+      })
+    } else {
+      getList()
+    }
+  },
+})
+```
+
+```ts
+// 示例：单条记录操作成功后，弹出提示
+
+useAdmate({
+  getListProxy (getList, trigger) {
+    getList()
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+      currentInstance.value.$message.success('操作成功')
+    }
+  },
+})
+```
+
+```ts
+// 示例：获取列表后，修改列表数据
+
+const { list } = useAdmate({
+  getListProxy (getList, trigger) {
+    getList().then(response => {
+      // response为axiosConfig.getList的接口返回值
+      list.data = response.data?.filter(v => !v.disabled)
     })
   },
 })
@@ -527,29 +569,7 @@ useAdmate({
 
 ## 表单
 
-### 查看
-
-```ts
-const { form, openForm } = useAdmate()
-
-// 将表单形态设置为“查看”，然后打开表单
-form.status = 'r'
-/**
- * @param {any} [payload]
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @returns {Promise<any>} axiosConfig.r的返回值
- */
-openForm()
-```
-
-**参数2的可选值：**
-
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
-- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
-
-<br>
+<a name="openForm-c"><br></a>
 
 ### 新增
 
@@ -563,11 +583,46 @@ form.status = 'c'
 openForm()
 ```
 
-<br>
+<a name="openForm-r"><br></a>
+
+### 查看
+
+打开表单，并调用 `axiosConfig.r` 回显表单内容
+
+```ts
+const { form, openForm } = useAdmate()
+
+// 将表单形态设置为“查看”，然后打开表单
+form.status = 'r'
+/**
+ * PS：以下为原始openForm的函数签名，如果你配置了openFormProxy，则以openFormProxy为准
+ *
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
+ * @param {'shallow'|'deep'|false} [mergeData = 'shallow'] 接口返回值与form.data合并的方式
+ * @returns {Promise<any>} axiosConfig.r的返回值
+ */
+openForm()
+```
+
+**payloadAs:**
+
+- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
+- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
+- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
+
+**mergeData:**
+
+- `shallow`: 浅合并（默认）
+- `deep`: 深合并
+- `false`: 不合并，直接替换
+
+<a name="openForm-u"><br></a>
 
 ### 编辑
 
-打开表单，提交时会调用 `axiosConfig.u`
+打开表单，并调用 `axiosConfig.r` 回显表单内容，提交时会调用 `axiosConfig.u`
 
 ```ts
 const { form, openForm } = useAdmate()
@@ -575,19 +630,28 @@ const { form, openForm } = useAdmate()
 // 将表单形态设置为“编辑”，然后打开表单
 form.status = 'u'
 /**
+ * PS：以下为原始openForm的函数签名，如果你配置了openFormProxy，则以openFormProxy为准
+ *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
+ * @param {'shallow'|'deep'|false} [mergeData = 'shallow'] 接口返回值与form.data合并的方式
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
 ```
 
-**参数2的可选值：**
+**payloadAs:**
 
 - `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
+
+**mergeData:**
+
+- `shallow`: 浅合并（默认）
+- `deep`: 深合并
+- `false`: 不合并，直接替换
 
 <br>
 
@@ -718,13 +782,6 @@ useAdmate({
     // 支持属性名如'data'，属性路径如'data.records'
     // 还支持function，如response => response.data
     dataAt: undefined,
-
-    // 将接口返回值与默认值合并的方式
-    // 可选值：
-    // 'shallow': 浅合并（默认）
-    // 'deep': 深合并
-    // false: 不合并，直接替换
-    mergeData: 'shallow',
   },
 })
 ```
@@ -812,14 +869,30 @@ export default {
 
 ### Hook: 打开表单时
 
-`openForm` ：打开表单，查看和编辑时调用 `axiosConfig.r`，新增时不调用接口
+`openForm` ：打开表单，函数签名要分情况：
+
+- [新增时](#openForm-c)
+- [查看时](#openForm-r)
+- [编辑时](#openForm-u)
 
 `openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在openForm前后做一些操作，或改变openForm的行为
 
 ```ts
+useAdmate({
+  /**
+   * @param {Function} openForm 被代理的原始openForm
+   * @returns {Promise<object> | object | void} object为打开表单后form的终态
+   */
+  openFormProxy (openForm) {},
+})
+```
+
+<br>
+
+```ts
 // 示例：回显表单后，修改表单数据
 
-const { openForm, form } = useAdmate({
+const { form } = useAdmate({
   openFormProxy (openForm) {
     // 新增时openForm没有返回值
     return openForm()?.then(response => {
@@ -834,7 +907,7 @@ const { openForm, form } = useAdmate({
 ```ts
 // 示例：回显表单后，清除校验
 
-const { openForm, form } = useAdmate({
+useAdmate({
   openFormProxy (openForm) {
     return openForm()?.finally(() => {
       formRef.value.clearValidate()
@@ -846,10 +919,31 @@ const { openForm, form } = useAdmate({
 ```ts
 // 示例：回显表单后，自定义表单的开闭和读取状态
 
-// return a promise
+// 返回一个promise
+useAdmate({
+  openFormProxy (openForm) {
+    return openForm().then(() => {
+      // 回显成功后，默认停止加载
+      return {
+        loading: false,
+      }
+    }).catch(() => {
+      // 回显失败后，默认关闭表单并停止加载
+      return {
+        show: false,
+        loading: false,
+      }
+    }).finally(() => {
+      // 注意：在finally中return是无效的，无法获取到finally中的返回
+    })
+  }
+})
+
+// 也可以再包装一层promise再返回
 useAdmate({
   openFormProxy (openForm) {
     return new Promise((resolve, reject) => {
+      // 可以在finally中resolve
       openForm().then(() => {
         // 回显成功后，默认停止加载
         resolve({
@@ -866,7 +960,7 @@ useAdmate({
   }
 })
 
-// return an object
+// 也可以返回一个对象（如果没有异步操作）
 useAdmate({
   openFormProxy (openForm) {
     return {
@@ -882,11 +976,11 @@ useAdmate({
 
 `submitForm` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
 
-`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在submitForm前后做一些操作，或改变submitForm的行为
-
 ```ts
 const {
   /**
+   * PS：以下为原始submitForm的函数签名，如果你配置了submitFormProxy，则以submitFormProxy为准
+   *
    * @param {any} [payload = form.data]
    * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
    * @returns {Promise<any>} 接口返回值
@@ -894,6 +988,20 @@ const {
   submitForm
 } = useAdmate()
 ```
+
+`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在submitForm前后做一些操作，或改变submitForm的行为
+
+```ts
+useAdmate({
+  /**
+   * @param {Function} submitForm 被代理的原始submitForm
+   * @returns {Promise<object> | object | void} object为提交表单后form的终态
+   */
+  submitFormProxy (submitForm) {}
+})
+```
+
+<br>
 
 ```ts
 // 示例：指定提交参数
@@ -935,7 +1043,7 @@ useAdmate({
 ```ts
 // 示例：提交表单后，自定义表单的开闭和提交状态
 
-// return a promise
+// 返回一个promise
 useAdmate({
   submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
@@ -958,7 +1066,7 @@ useAdmate({
   }
 })
 
-// return an object
+// 也可以返回一个对象（如果没有异步操作）
 useAdmate({
   submitFormProxy (submitForm) {
     return {

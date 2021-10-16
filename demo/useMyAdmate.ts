@@ -64,14 +64,14 @@ export default ({
       dataAt: 'data'
     },
     // getList代理
-    getListProxy (getList, caller) {
-      if (caller === 'filterChange') {
+    getListProxy (getList, trigger) {
+      if (trigger === 'filterChange') {
         validateListFilter().then(() => {
           getList()
         })
       } else {
         getList()
-        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
           currentInstance.value.$message.success('操作成功')
         }
       }
@@ -118,9 +118,9 @@ export default ({
 
   return toRefs(reactive({
     ...admate,
-    c: (...args) => {
+    c: () => {
       admate.form.status = 'c'
-      admate.openForm(...args)
+      admate.openForm()
     },
     r: (...args) => {
       admate.form.status = 'r'
