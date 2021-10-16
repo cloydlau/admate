@@ -39,32 +39,34 @@ const At = (response?: object, paths?: string | Function): any => {
 
 // 将接口返回值混入form.data
 const mergeFormData = (
-  formData?: any,
+  // 对象的对象属性作为参数传递时，属于值传递而不是引用传递
+  // 对form这个响应式对象本身进行修改，才会被vue2检测到
+  form: FormType,
   newFormData?: any,
   mergeData: MergeDataType = 'shallow',
 ) => {
   if (
     mergeData &&
-    isPlainObject(formData) &&
+    isPlainObject(form.data) &&
     isPlainObject(newFormData)
   ) {
     //if (isProxy(Form.data)) { // vue2中报错
     if (isVue3) {
       // merge, assignIn会改变原始对象
       mergeData === 'deep' ?
-        merge(formData, newFormData) :
-        assignIn(formData, newFormData)
+        merge(form.data, newFormData) :
+        assignIn(form.data, newFormData)
     } else {
       // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-      formData = mergeData === 'deep' ?
-        merge(cloneDeep(formData), newFormData) :
+      form.data = mergeData === 'deep' ?
+        merge(cloneDeep(form.data), newFormData) :
         {
-          ...formData,
+          ...form.data,
           ...newFormData,
         }
     }
   } else {
-    formData = newFormData
+    form.data = newFormData
   }
 }
 
@@ -238,13 +240,13 @@ export default function useAdmate ({
     // 查看和编辑时，回显单条记录数据
     if (['r', 'u'].includes(Form.status)) {
       if (payloadAs === 'cache') {
-        mergeFormData(Form.data, cloneDeep(payload), mergeData)
+        mergeFormData(Form, cloneDeep(payload), mergeData)
         Form.show = true
       } else {
         Form.loading = true
         Form.show = true
         return api.r(payload, payloadAs).then(response => {
-          mergeFormData(Form.data, At(response, Form.dataAt), mergeData)
+          mergeFormData(Form, At(response, Form.dataAt), mergeData)
           return response
         })
       }
