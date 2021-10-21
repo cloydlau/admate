@@ -78,11 +78,17 @@ export default ({
     },
     // openForm代理
     openFormProxy (openForm) {
-      // 新增时openForm没有返回值
-      return openForm()?.finally(() => {
-        // 回显表单后，清除校验
+      const promise = openForm()
+      if (promise) {
+        promise.finally(() => {
+          // 回显表单后，清除校验
+          clearFormDataValidation()
+        })
+      } else {
+        // 新增、复用列表数据时openForm没有返回值
         clearFormDataValidation()
-      })
+      }
+      return promise
     },
     // submitForm代理
     submitFormProxy (submitForm) {
