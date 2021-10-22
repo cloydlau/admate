@@ -135,7 +135,8 @@ export default {
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
-    // fix element-ui bug: 给筛选项赋初值，使得重置功能能够正常工作
+    // fix: 给筛选项赋初值，使得重置功能能够正常工作
+    // Object.defineProperty对不存在的属性无法拦截
     onMounted(() => {
       admate.list.value.filter = {
         ...Object.fromEntries(Array.from(listFilterRef.value.fields || [], v => [v.labelFor, undefined])),
