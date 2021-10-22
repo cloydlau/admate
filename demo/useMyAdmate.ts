@@ -78,15 +78,21 @@ export default ({
     },
     // openForm代理
     openFormProxy (openForm) {
+      function callback () {
+        // 回显表单后，清除校验
+        clearFormDataValidation()
+      }
+
       const promise = openForm()
       if (promise) {
         promise.finally(() => {
-          // 回显表单后，清除校验
-          clearFormDataValidation()
+          callback()
         })
       } else {
         // 新增、复用列表数据时openForm没有返回值
-        clearFormDataValidation()
+        setTimeout(() => {
+          callback()
+        }, 0)
       }
       return promise
     },
