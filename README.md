@@ -790,7 +790,7 @@ useAdmate({
 ```vue
 
 <template>
-  {{ form.data.a.b }}
+  {{ form.data.a.b.c }}
 </template>
 
 <script>
