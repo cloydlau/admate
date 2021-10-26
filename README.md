@@ -599,7 +599,6 @@ form.status = 'r'
  *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @param {'shallow'|'deep'|false} [mergeData = 'deep'] 接口返回值与form.data合并的方式
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
@@ -611,29 +610,6 @@ openForm()
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
-
-**mergeData:**
-
-- `deep`: 深合并（默认）
-- `shallow`: 浅合并
-- `false`: 不合并，直接替换
-
-::: tip 为什么默认是深合并？
-```ts
-// 在vue2中，template不支持比如你的form.data默认值为
-
-useAdmate({
-  form: {
-    data: {
-      a: {
-        b: {}
-      }
-    }
-  }
-})
-```
-
-:::
 
 <a name="openForm-u"><br></a>
 
@@ -651,7 +627,6 @@ form.status = 'u'
  *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @param {'shallow'|'deep'|false} [mergeData = 'shallow'] 接口返回值与form.data合并的方式
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
@@ -663,12 +638,6 @@ openForm()
 - `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
 - `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
 - `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
-
-**mergeData:**
-
-- `shallow`: 浅合并（默认）
-- `deep`: 深合并
-- `false`: 不合并，直接替换
 
 <br>
 
@@ -799,9 +768,47 @@ useAdmate({
     // 支持属性名如'data'，属性路径如'data.records'
     // 还支持function，如response => response.data
     dataAt: undefined,
+
+    // 接口返回值与form.data合并的方式
+    mergeData: 'deep',
   },
 })
 ```
+
+**mergeData:**
+
+- `deep`: 深合并（默认）
+- `shallow`: 浅合并
+- `false`: 不合并，直接替换
+
+::: tip 为什么默认是深合并？
+
+在vue2中，template不支持 `?.` 语法，要在template中判空，代码写起来会非常冗余，通常的做法是在data中声明空对象
+
+比如给form.data提供默认值：
+
+```ts
+useAdmate({
+  form: {
+    data: {
+      a: {
+        b: {}
+      }
+    }
+  }
+})
+```
+
+如果 axiosConfig.r 的返回值为：
+`{ a: {} }`
+
+如果与默认值<span style="color:red">浅合并</span>后将得到：
+`{ a: {} }` —— 默认值中的对象b丢失了，引发空指针异常。
+
+如果与默认值<span style="color:red">深合并</span>后将得到：
+`{ a: { b: {} } }` —— 代码正常工作。
+
+:::
 
 <br>
 

@@ -17,6 +17,7 @@ type FormType = {
   show?: boolean,
   data?: any,
   dataAt?: string | Function,
+  mergeData?: MergeDataType,
   loading?: boolean,
   submitting?: boolean,
   status?: StatusType,
@@ -43,22 +44,21 @@ const mergeFormData = (
   // 对form这个响应式对象本身进行修改，才会被vue2检测到
   form: FormType,
   newFormData?: any,
-  mergeData: MergeDataType = 'deep',
 ) => {
   if (
-    mergeData &&
+    form.mergeData &&
     isPlainObject(form.data) &&
     isPlainObject(newFormData)
   ) {
     //if (isProxy(Form.data)) { // vue2中报错
     if (isVue3) {
       // merge, assignIn会改变原始对象
-      mergeData === 'deep' ?
+      form.mergeData === 'deep' ?
         merge(form.data, newFormData) :
         assignIn(form.data, newFormData)
     } else {
       // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-      form.data = mergeData === 'deep' ?
+      form.data = form.mergeData === 'deep' ?
         merge(cloneDeep(form.data), newFormData) :
         {
           ...form.data,
@@ -149,6 +149,7 @@ export default function useAdmate ({
     submitting: false,
     show: false,
     data: {},
+    mergeData: 'deep',
     status: '',
     ...form,
   })
@@ -236,17 +237,17 @@ export default function useAdmate ({
     }*/
   }
 
-  function openForm (payload?, payloadAs?: RFormType, mergeData?) {
+  function openForm (payload?, payloadAs?: RFormType) {
     // 查看和编辑时，回显单条记录数据
     if (['r', 'u'].includes(Form.status)) {
       if (payloadAs === 'cache') {
-        mergeFormData(Form, cloneDeep(payload), mergeData)
+        mergeFormData(Form, cloneDeep(payload))
         Form.show = true
       } else {
         Form.loading = true
         Form.show = true
         return api.r(payload, payloadAs).then(response => {
-          mergeFormData(Form, At(response, Form.dataAt), mergeData)
+          mergeFormData(Form, At(response, Form.dataAt))
           return response
         })
       }
