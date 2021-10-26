@@ -599,7 +599,7 @@ form.status = 'r'
  *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @param {'shallow'|'deep'|false} [mergeData = 'shallow'] 接口返回值与form.data合并的方式
+ * @param {'shallow'|'deep'|false} [mergeData = 'deep'] 接口返回值与form.data合并的方式
  * @returns {Promise<any>} axiosConfig.r的返回值
  */
 openForm()
@@ -614,9 +614,26 @@ openForm()
 
 **mergeData:**
 
-- `shallow`: 浅合并（默认）
-- `deep`: 深合并
+- `deep`: 深合并（默认）
+- `shallow`: 浅合并
 - `false`: 不合并，直接替换
+
+::: tip 为什么默认是深合并？
+```ts
+// 在vue2中，template不支持比如你的form.data默认值为
+
+useAdmate({
+  form: {
+    data: {
+      a: {
+        b: {}
+      }
+    }
+  }
+})
+```
+
+:::
 
 <a name="openForm-u"><br></a>
 

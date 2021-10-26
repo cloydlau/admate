@@ -43,7 +43,7 @@ const mergeFormData = (
   // 对form这个响应式对象本身进行修改，才会被vue2检测到
   form: FormType,
   newFormData?: any,
-  mergeData: MergeDataType = 'shallow',
+  mergeData: MergeDataType = 'deep',
 ) => {
   if (
     mergeData &&
