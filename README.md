@@ -787,16 +787,30 @@ useAdmate({
 
 比如给form.data提供默认值：
 
-```ts
-useAdmate({
-  form: {
-    data: {
-      a: {
-        b: {}
+```vue
+
+<template>
+  {{ form.data.a.b }}
+</template>
+
+<script>
+import useAdmate from 'admate'
+
+export default {
+  setup: () => {
+    const { form } = useAdmate({
+      form: {
+        data: {
+          a: {
+            b: {}
+          }
+        }
       }
-    }
+    })
+    return { form }
   }
-})
+}
+</script>
 ```
 
 如果 axiosConfig.r 的返回值为：
