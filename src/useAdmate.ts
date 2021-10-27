@@ -70,35 +70,6 @@ const mergeFormData = (
   }
 }
 
-// 设置列表或表单的终态
-const setTerminalState = ({
-  target,
-  state,
-  defaultState,
-  mergeState = 'shallow',
-}: {
-  target: object,
-  state?: FormType | ListType,
-  defaultState?: FormType | ListType,
-  mergeState: MergeStateType,
-}) => {
-  const TERMINAL_STATE = getFinalProp([state, defaultState])
-  if (isVue3) {
-    // merge, assignIn会改变原始对象
-    mergeState === 'deep' ?
-      merge(target, TERMINAL_STATE) :
-      assignIn(target, TERMINAL_STATE)
-  } else {
-    // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-    target = mergeState === 'deep' ?
-      merge(cloneDeep(target), TERMINAL_STATE) :
-      {
-        ...target,
-        ...TERMINAL_STATE,
-      }
-  }
-}
-
 export default function useAdmate ({
   axios,
   axiosConfig,
@@ -154,7 +125,39 @@ export default function useAdmate ({
     ...form,
   })
 
-  const Form = reactive(getInitialForm())
+  let Form = reactive(getInitialForm())
+
+  // 设置表单的终态
+  const setTerminalState = ({
+    //target,
+    state,
+    defaultState,
+    mergeState = 'shallow',
+  }: {
+    target: object,
+    state?: FormType | ListType,
+    defaultState?: FormType | ListType,
+    mergeState: MergeStateType,
+  }) => {
+    const TERMINAL_STATE = getFinalProp([state, defaultState])
+    if (isVue3) {
+      // merge, assignIn会改变原始对象
+      mergeState === 'deep' ?
+        merge(Form, TERMINAL_STATE) :
+        assignIn(Form, TERMINAL_STATE)
+    } else {
+      // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
+      // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
+      // 必须直接赋值，不能仅使用Object.assign
+      // 直接赋值给参数是无效的，因为js没有引用传递
+      Form = mergeState === 'deep' ?
+        merge(cloneDeep(Form), TERMINAL_STATE) :
+        {
+          ...Form,
+          ...TERMINAL_STATE,
+        }
+    }
+  }
 
   const getList = (
     payload = List.filter,
@@ -211,7 +214,7 @@ export default function useAdmate ({
       // 在finally中拿不到参数
       result.then((state?: ListType) => {
         setTerminalState({
-          target: List,
+          //target: List,
           state,
           defaultState: {
             loading: false
@@ -219,7 +222,7 @@ export default function useAdmate ({
         })
       }).catch((state?: ListType) => {
         setTerminalState({
-          target: List,
+          //target: List,
           state,
           defaultState: {
             loading: false
@@ -228,7 +231,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        target: List,
+        //target: List,
         state: result,
         defaultState: {
           loading: false
@@ -338,7 +341,7 @@ export default function useAdmate ({
     if (result instanceof Promise) {
       result.then((state?: FormType) => {
         setTerminalState({
-          target: Form,
+          //target: Form,
           state,
           defaultState: {
             loading: false
@@ -346,7 +349,7 @@ export default function useAdmate ({
         })
       }).catch((state?: FormType) => {
         setTerminalState({
-          target: Form,
+          //target: Form,
           state,
           defaultState: {
             show: false,
@@ -355,7 +358,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        target: Form,
+        //target: Form,
         state: result,
         defaultState: {
           loading: false
@@ -390,7 +393,7 @@ export default function useAdmate ({
     if (result instanceof Promise) {
       result.then((state?: FormType) => {
         setTerminalState({
-          target: Form,
+          //target: Form,
           state,
           defaultState: {
             show: false
@@ -398,7 +401,7 @@ export default function useAdmate ({
         })
       }).catch((state?: FormType) => {
         setTerminalState({
-          target: Form,
+          //target: Form,
           state,
           defaultState: {
             submitting: false
@@ -407,7 +410,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        target: Form,
+        //target: Form,
         state: result,
         defaultState: {
           show: false

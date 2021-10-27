@@ -85,8 +85,14 @@ export default ({
 
       const promise = openForm()
       if (promise) {
-        promise.finally(() => {
-          callback()
+        return new Promise((resolve, reject) => {
+          promise.then(() => {
+            resolve()
+          }).catch(() => {
+            reject()
+          }).finally(() => {
+            callback()
+          })
         })
       } else {
         // 新增、复用列表数据时openForm没有返回值
@@ -94,7 +100,6 @@ export default ({
           callback()
         }, 0)
       }
-      return promise
     },
     // submitForm代理
     submitFormProxy (submitForm) {
