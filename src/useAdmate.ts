@@ -35,38 +35,43 @@ type ListType = {
 }
 
 const At = (response?: object, paths?: string | Function): any => {
-  return typeof paths === 'function' ? paths(response) : at(response, paths)[0]
+  return isEmpty(paths) ? response :
+    typeof paths === 'function' ? paths(response) :
+      // paths为undefined或''时结果为undefined
+      at(response, paths)[0]
 }
 
 // 将接口返回值混入form.data
 const mergeFormData = (
   // 对象的对象属性作为参数传递时，属于值传递而不是引用传递
   // 对form这个响应式对象本身进行修改，才会被vue2检测到
-  form: FormType,
+  Form: FormType,
   newFormData?: any,
 ) => {
   if (
-    form.mergeData &&
-    isPlainObject(form.data) &&
+    Form.mergeData &&
+    isPlainObject(Form.data) &&
     isPlainObject(newFormData)
   ) {
     //if (isProxy(Form.data)) { // vue2中报错
     if (isVue3) {
       // merge, assignIn会改变原始对象
-      form.mergeData === 'deep' ?
-        merge(form.data, newFormData) :
-        assignIn(form.data, newFormData)
+      Form.mergeData === 'deep' ?
+        merge(Form.data, newFormData) :
+        assignIn(Form.data, newFormData)
     } else {
-      // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-      form.data = form.mergeData === 'deep' ?
-        merge(cloneDeep(form.data), newFormData) :
+      // merge, assignIn, Object.assign对对象属性的修改在vue2中无法触发更新
+      // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
+      // 可选择直接赋值，或者Vue.set
+      Form.data = Form.mergeData === 'deep' ?
+        merge(cloneDeep(Form.data), newFormData) :
         {
-          ...form.data,
+          ...Form.data,
           ...newFormData,
         }
     }
   } else {
-    form.data = newFormData
+    Form.data = newFormData
   }
 }
 
@@ -129,34 +134,23 @@ export default function useAdmate ({
 
   // 设置表单的终态
   const setTerminalState = ({
+    // todo: vue2中传参后再修改会丢失响应性
     //target,
     state,
     defaultState,
     mergeState = 'shallow',
   }: {
-    target: object,
+    target: FormType | ListType,
     state?: FormType | ListType,
     defaultState?: FormType | ListType,
     mergeState: MergeStateType,
   }) => {
     const TERMINAL_STATE = getFinalProp([state, defaultState])
-    if (isVue3) {
-      // merge, assignIn会改变原始对象
-      mergeState === 'deep' ?
-        merge(Form, TERMINAL_STATE) :
-        assignIn(Form, TERMINAL_STATE)
-    } else {
-      // merge和assignIn会破坏vue2中对象的__ob__属性，导致丢失响应性
-      // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
-      // 必须直接赋值，不能仅使用Object.assign
-      // 直接赋值给参数是无效的，因为js没有引用传递
-      Form = mergeState === 'deep' ?
-        merge(cloneDeep(Form), TERMINAL_STATE) :
-        {
-          ...Form,
-          ...TERMINAL_STATE,
-        }
-    }
+    // merge, assignIn, Object.assign对对象属性的修改在vue2中无法触发更新
+    // 但是对于对象本身是可以生效的，且直接赋值反而无效
+    mergeState === 'deep' ?
+      merge(Form, TERMINAL_STATE) :
+      assignIn(Form, TERMINAL_STATE)
   }
 
   const getList = (
@@ -214,7 +208,7 @@ export default function useAdmate ({
       // 在finally中拿不到参数
       result.then((state?: ListType) => {
         setTerminalState({
-          //target: List,
+          target: List,
           state,
           defaultState: {
             loading: false
@@ -222,7 +216,7 @@ export default function useAdmate ({
         })
       }).catch((state?: ListType) => {
         setTerminalState({
-          //target: List,
+          target: List,
           state,
           defaultState: {
             loading: false
@@ -231,7 +225,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        //target: List,
+        target: List,
         state: result,
         defaultState: {
           loading: false
@@ -341,7 +335,7 @@ export default function useAdmate ({
     if (result instanceof Promise) {
       result.then((state?: FormType) => {
         setTerminalState({
-          //target: Form,
+          target: Form,
           state,
           defaultState: {
             loading: false
@@ -349,7 +343,7 @@ export default function useAdmate ({
         })
       }).catch((state?: FormType) => {
         setTerminalState({
-          //target: Form,
+          target: Form,
           state,
           defaultState: {
             show: false,
@@ -358,7 +352,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        //target: Form,
+        target: Form,
         state: result,
         defaultState: {
           loading: false
@@ -393,7 +387,7 @@ export default function useAdmate ({
     if (result instanceof Promise) {
       result.then((state?: FormType) => {
         setTerminalState({
-          //target: Form,
+          target: Form,
           state,
           defaultState: {
             show: false
@@ -401,7 +395,7 @@ export default function useAdmate ({
         })
       }).catch((state?: FormType) => {
         setTerminalState({
-          //target: Form,
+          target: Form,
           state,
           defaultState: {
             submitting: false
@@ -410,7 +404,7 @@ export default function useAdmate ({
       })
     } else {
       setTerminalState({
-        //target: Form,
+        target: Form,
         state: result,
         defaultState: {
           show: false

@@ -949,10 +949,15 @@ useAdmate({
 const { form } = useAdmate({
   openFormProxy (openForm) {
     // 新增时openForm没有返回值
-    return openForm()?.then(response => {
-      // response为axiosConfig.r的接口返回值
-      // 修改表单数据
-      form.data.status = 1
+    return new Promise((resolve, reject) => {
+      openForm()?.then(response => {
+        // response为axiosConfig.r的接口返回值
+        // 修改表单数据
+        form.data.status = 1
+        resolve()
+      }).catch(() => {
+        reject()  
+      })
     })
   },
 })
@@ -963,8 +968,14 @@ const { form } = useAdmate({
 
 useAdmate({
   openFormProxy (openForm) {
-    return openForm()?.finally(() => {
-      formRef.value.clearValidate()
+    return new Promise((resolve, reject) => {
+      openForm()?.finally(() => {
+        formRef.value.clearValidate()
+      }).then(() => {
+        resolve()
+      }).catch(() => {
+        reject()
+      })
     })
   },
 })
@@ -972,28 +983,6 @@ useAdmate({
 
 ```ts
 // 示例：回显表单后，自定义表单的开闭和读取状态
-
-// 返回一个promise
-useAdmate({
-  openFormProxy (openForm) {
-    return openForm().then(() => {
-      // 回显成功后，默认停止加载
-      return {
-        loading: false,
-      }
-    }).catch(() => {
-      // 回显失败后，默认关闭表单并停止加载
-      return {
-        show: false,
-        loading: false,
-      }
-    }).finally(() => {
-      // 注意：在finally中return是无效的，无法获取到finally中的返回
-    })
-  }
-})
-
-// 也可以再包装一层promise再返回
 useAdmate({
   openFormProxy (openForm) {
     return new Promise((resolve, reject) => {
@@ -1068,9 +1057,15 @@ submitForm({
 // submitForm被代理时
 useAdmate({
   submitFormProxy (submitForm) {
-    return submitForm({
-      ...form.data,
-      status: 1,
+    return new Promise((resolve, reject) => {
+      submitForm({
+        ...form.data,
+        status: 1,
+      }).then(() => {
+        resolve()
+      }).catch(() => {
+        reject()
+      })
     })
   }
 })
