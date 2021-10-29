@@ -765,13 +765,13 @@ useAdmate({
     // 可以在这里提供表单数据的默认值，新增时会有用
     data: {},
 
-    // 在查看、编辑表单时，可能需要调用接口回显表单的数据
+    // 在查看、编辑表单时，可能需要调用接口（axiosConfig.r）回显表单的数据
     // dataAt用于指定接口返回值中表单数据所在的位置
     // 支持属性名如'data'，属性路径如'data.records'
     // 还支持function，如response => response.data
     dataAt: undefined,
 
-    // 接口返回值与form.data合并的方式
+    // 接口（axiosConfig.r）返回值与form.data合并的方式
     mergeData: 'deep',
   },
 })
@@ -781,7 +781,7 @@ useAdmate({
 
 - `deep`: 深合并（默认）
 - `shallow`: 浅合并
-- `(formData: any) => any`: 自定义合并方式
+- `(newFormData: any) => any`: 自定义合并方式
 - `false`: 不合并，直接替换
 
 ::: tip 为什么默认是深合并？
@@ -842,7 +842,10 @@ const { form } = useAdmate({
   form: {
     data: defaultFormData(),
     // 接口返回值中嵌套的对象可能为null，会覆盖默认值中的空对象
-    mergeData (newFormData) {
+    mergeData (
+      // 接口返回值在通过 form.dataAt 计算过后的值
+      newFormData
+    ) {
       // vue3中不需要赋值，mergeWith的改动是响应式的
       form.data = mergeWith(
         newFormData,
