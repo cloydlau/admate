@@ -7,7 +7,7 @@ import type { ConfigCatalogType } from './api-generator'
 const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
 
 type StatusType = '' | 'c' | 'r' | 'u'
-type MergeDataType = 'deep' | 'shallow' | false
+type MergeDataType = 'deep' | 'shallow' | false | ((newFormData: any) => any)
 type MergeStateType = 'deep' | 'shallow'
 type RFormType = 'data' | 'params' | 'config' | 'cache'
 type CUDFormType = 'data' | 'params' | 'config'
@@ -56,19 +56,28 @@ const mergeFormData = (
     //if (isProxy(Form.data)) { // vue2中报错
     if (isVue3) {
       // merge, assignIn会改变原始对象
-      Form.mergeData === 'deep' ?
-        merge(Form.data, newFormData) :
+      // merge, assignIn会改变原始对象
+      if (Form.mergeData === 'deep') {
+        merge(Form.data, newFormData)
+      } else if (Form.mergeData === 'shallow') {
         assignIn(Form.data, newFormData)
+      } else if (typeof Form.mergeData === 'function') {
+        Form.mergeData(newFormData)
+      }
     } else {
       // merge, assignIn, Object.assign对对象属性的修改在vue2中无法触发更新
       // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
       // 可选择直接赋值，或者Vue.set
-      Form.data = Form.mergeData === 'deep' ?
-        merge(cloneDeep(Form.data), newFormData) :
-        {
+      if (Form.mergeData === 'deep') {
+        Form.data = merge(cloneDeep(Form.data), newFormData)
+      } else if (Form.mergeData === 'shallow') {
+        Form.data = {
           ...Form.data,
           ...newFormData,
         }
+      } else if (typeof Form.mergeData === 'function') {
+        Form.mergeData(newFormData)
+      }
     }
   } else {
     Form.data = newFormData

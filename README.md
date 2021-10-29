@@ -781,6 +781,7 @@ useAdmate({
 
 - `deep`: 深合并（默认）
 - `shallow`: 浅合并
+- `(formData: any) => any`: 自定义合并方式
 - `false`: 不合并，直接替换
 
 ::: tip 为什么默认是深合并？
@@ -825,6 +826,34 @@ export default {
 `{ a: { b: {} } }` —— 代码正常工作。
 
 :::
+
+```ts
+// 示例：自定义合并方式
+
+import { mergeWith } from 'lodash'
+
+const defaultFormData = () => ({
+  a: {
+    b: {}
+  }
+})
+
+const { form } = useAdmate({
+  form: {
+    data: defaultFormData(),
+    // 接口返回值中嵌套的对象可能为null，会覆盖默认值中的空对象
+    mergeData (newFormData) {
+      // vue3中不需要赋值，mergeWith的改动是响应式的
+      form.data = mergeWith(
+        newFormData,
+        defaultFormData(),
+        (objValue, srcValue) =>
+          [undefined, null].includes(objValue) ? srcValue : undefined
+      )
+    },
+  },
+})
+```
 
 <br>
 
@@ -958,7 +987,7 @@ const { form } = useAdmate({
         form.data.status = 1
         resolve()
       }).catch(() => {
-        reject()  
+        reject()
       })
     })
   },
