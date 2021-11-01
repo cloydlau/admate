@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 //import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import { name } from './package.json'
 import { viteMockServe } from 'vite-plugin-mock'
-import WindiCSS from 'vite-plugin-windicss'
+import Unocss from 'unocss/vite'
 
 export function configMockPlugin (isBuild: boolean) {
   return viteMockServe({
@@ -29,7 +29,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       vue(),
       //peerDepsExternal(),
       ...command === 'build' ? [] : [
-        WindiCSS(),
+        Unocss({ /* options */ }),
         configMockPlugin(false)
       ]
     ],

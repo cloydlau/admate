@@ -5,7 +5,7 @@ import mitt from 'mitt'
 
 install()
 
-import 'virtual:windi.css'
+import 'uno.css'
 
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'

@@ -4,7 +4,7 @@ import App from './index.vue'
 
 install()
 
-import 'virtual:windi.css'
+import 'uno.css'
 
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
