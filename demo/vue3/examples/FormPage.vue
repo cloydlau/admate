@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../useMyAdmate'
+import useMyAdmate from '../../useMyAdmate'
 import { ref } from 'vue-demi'
 import { useRoute, useRouter } from 'vue-router'
 

@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import useMyAdmate from '../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
+import useMyAdmate from '../../useMyAdmate'
+import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref } from 'vue-demi'
 import { cloneDeep } from 'lodash-es'
 

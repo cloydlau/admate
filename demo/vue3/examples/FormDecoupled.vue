@@ -36,7 +36,7 @@
       </el-form-item>
     </el-form>
 
-    <div class="flex justify-between my-20px">
+    <div class="flex justify-between my-10px">
       <div>
         <el-button
           type="primary"
@@ -71,8 +71,8 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../mock/demo/crud'
+import useMyAdmate from '../../useMyAdmate'
+import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref, toRaw } from 'vue-demi'
 import { useRouter } from 'vue-router'
 

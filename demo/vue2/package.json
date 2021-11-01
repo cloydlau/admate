@@ -1,25 +1,7 @@
 {
-  "name": "admate",
-  "description": "Mate of admin interfaces",
-  "author": "cloydlau",
-  "version": "0.7.8",
-  "private": false,
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cloydlau/admate"
-  },
-  "main": "./dist/admate.umd.js",
-  "module": "./dist/admate.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/admate.es.js",
-      "require": "./dist/admate.umd.js"
-    }
-  },
   "scripts": {
-    "dev": "vue-demi-switch 3 vue && vite",
-    "dev:2": "vue-demi-switch 2 vue2 && vite --config vite.vue2.config.ts",
+    "dev": "vue-demi-switch 2 vue && vite",
+    "dev:3": "vue-demi-switch 3 vue && vite",
     "build": "vite build",
     "serve": "vite preview",
     "cov": "jest --ci --coverage",
@@ -30,20 +12,9 @@
     "test:3": "vue-demi-switch 3 vue3 && jest"
   },
   "dependencies": {
+    "admate": "latest",
     "kayran": "latest",
-    "lodash-es": "latest",
-    "qs": "latest",
-    "vue-demi": "latest"
-  },
-  "peerDependencies": {
-    "@vue/composition-api": "1",
-    "axios": "0",
-    "vue": "^2.0.0 || >=3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@vue/composition-api": {
-      "optional": true
-    }
+    "lodash-es": "latest"
   },
   "devDependencies": {
     "@mdi/font": "latest",
@@ -65,9 +36,9 @@
     "vite": "latest",
     "vite-plugin-mock": "latest",
     "vite-plugin-vue2": "latest",
-    "vue-template-compiler": "latest",
-    "vue": "latest",
+    "vue": "^2.6.14",
     "vue-router": "^3.5.3",
+    "vue-template-compiler": "latest",
     "vuetify2": "npm:vuetify@^2.5.10"
   },
   "files": [
