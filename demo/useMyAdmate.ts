@@ -8,7 +8,7 @@ import {
   watch,
   onMounted,
   getCurrentInstance
-} from '@vue/composition-api'
+} from 'vue-demi'
 // 来源替换为 'admate'
 import useAdmate from '../src/main'
 // 来源替换为 'axios'，或你的axios封装

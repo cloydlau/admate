@@ -19,13 +19,32 @@ export function configMockPlugin (isBuild: boolean) {
   })
 }
 
+const transformIndexHtml = (code, command) => {
+  console.log(1, command.server.config.command)
+  return code.replace(/__ENTRY__/, command.server.config.command.endsWith(':2') ?
+    '/demo/vue3/main.ts' : '/demo/vue2/main.ts')
+}
+
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
+  console.log('command', command)
   return {
     optimizeDeps: {
-      exclude: ['vue-demi']
+      exclude: ['vue-demi', '__ENTRY__']
     },
     plugins: [
+      {
+        name: 'set-entry',
+        enforce: 'pre',
+        transform (code, id) {
+          if (id.endsWith('index.html')) {
+            console.log('id', id)
+            return { code: transformIndexHtml(code, command), map: null }
+          }
+        },
+        // production时不会触发
+        transformIndexHtml,
+      },
       vue(),
       //peerDepsExternal(),
       ...command === 'build' ? [] : [

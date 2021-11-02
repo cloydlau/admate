@@ -4,7 +4,8 @@ import { throttle, cloneDeep, at, merge, assignIn, isPlainObject } from 'lodash-
 import createAPIGenerator from './api-generator'
 import type { ConfigCatalogType } from './api-generator'
 
-const CONSOLE_PREFIX = import.meta.env.VITE_APP_CONSOLE_PREFIX
+import { name } from '../package.json'
+const CONSOLE_PREFIX = `${name} `
 
 type StatusType = '' | 'c' | 'r' | 'u'
 type MergeDataType = 'deep' | 'shallow' | false | ((newFormData: any) => any)

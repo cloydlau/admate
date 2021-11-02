@@ -18,8 +18,8 @@
     }
   },
   "scripts": {
-    "dev": "vue-demi-switch 3 vue && vite",
-    "dev:2": "vue-demi-switch 2 vue2 && vite --config vite.vue2.config.ts",
+    "dev": "vue-demi-switch 3 vue3 && vite",
+    "dev:2": "vue-demi-switch 2 vue && vite --config vite.vue2.config.ts",
     "build": "vite build",
     "serve": "vite preview",
     "cov": "jest --ci --coverage",
@@ -72,11 +72,11 @@
     "vite": "latest",
     "vite-plugin-mock": "latest",
     "vite-plugin-vue2": "latest",
-    "vue": "npm:vue@^3.2.20",
+    "vue": "npm:vue@^2.6.14",
     "vue-router": "^4.0.12",
     "vue-template-compiler": "latest",
-    "vue2": "npm:vue@^2.6.14",
     "vue2-router": "npm:vue-router@^3.5.3",
+    "vue3": "npm:vue@^3.2.21",
     "vuetify": "^3.0.0-alpha.11",
     "vuetify2": "npm:vuetify@^2.5.10"
   },
