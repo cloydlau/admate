@@ -1,5 +1,5 @@
 import { install, Vue2 } from 'vue-demi'
-import router from './router/vue2-router'
+import router from './router'
 import App from './index.vue'
 
 install()

@@ -1,6 +1,14 @@
 // 使用Vue3时，来源替换为 'vue'
 // 使用Vue2时，来源替换为 '@vue/composition-api'
-import { ref, reactive, toRefs, computed, watch, onMounted, getCurrentInstance } from 'vue-demi'
+import {
+  ref,
+  reactive,
+  toRefs,
+  computed,
+  watch,
+  onMounted,
+  getCurrentInstance
+} from '@vue/composition-api'
 // 来源替换为 'admate'
 import useAdmate from '../src/main'
 // 来源替换为 'axios'，或你的axios封装
