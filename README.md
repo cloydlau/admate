@@ -87,25 +87,25 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配ElementPlus
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/ElementPlus.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 <br>
 
 ### 搭配ElementUI
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/ElementUI.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
 
 <br>
 
 ### 搭配AntDesignVue@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/AntDesignVue.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
 ### 搭配AntDesignVue@1
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/AntDesignVue1.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue1.vue)
 
 <br>
 
@@ -117,7 +117,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配Vuetify@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/UseUIFramework/Vuetify2.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify2.vue)
 
 <br>
 
@@ -1166,7 +1166,7 @@ useAdmate({
 
 将表单抽离为子组件
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormExternalized.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
 
 <a name="FormDecoupled"><br></a>
 
@@ -1174,7 +1174,7 @@ useAdmate({
 
 操作单条记录时，跳转到专用的表单页面，操作完毕后返回
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormDecoupled.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormDecoupled.vue)
 
 <br>
 
@@ -1182,7 +1182,7 @@ useAdmate({
 
 表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/FormOnly.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormOnly.vue)
 
 <br>
 
@@ -1190,6 +1190,6 @@ useAdmate({
 
 嵌套其它也使用Admate的页面
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/examples/Nested.vue)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
 <br>
