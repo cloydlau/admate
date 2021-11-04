@@ -22,6 +22,9 @@ export function configMockPlugin (isBuild: boolean) {
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
+    server: {
+      port: 3002
+    },
     optimizeDeps: {
       exclude: ['vue-demi']
     },
@@ -29,7 +32,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       {
         name: 'html-transform',
         transformIndexHtml (html: string) {
-          return html.replace(/{{.*}}/, '/demo/vue2/main.ts')
+          return html.replace(/{{.*}}/, '/main.ts')
         },
       },
       createVuePlugin(),

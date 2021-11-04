@@ -1,8 +1,8 @@
-import { install, Vue2 } from 'vue-demi'
+import { Vue2 } from 'vue-demi'
 import router from './router'
 import App from './index.vue'
 
-install()
+//install()
 
 import 'uno.css'
 
@@ -10,13 +10,13 @@ import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 Vue2.use(ElementUI)
 
-import 'ant-design-vue2/dist/antd.css'
-import Antd from 'ant-design-vue2'
+import 'ant-design-vue/dist/antd.css'
+import Antd from 'ant-design-vue'
 Vue2.use(Antd)
 
 import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify2/dist/vuetify.min.css'
-import Vuetify from 'vuetify2'
+import 'vuetify/dist/vuetify.min.css'
+import Vuetify from 'vuetify'
 Vue2.use(Vuetify)
 
 new Vue2({

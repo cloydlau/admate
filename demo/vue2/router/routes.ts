@@ -3,16 +3,16 @@
 // 我们后面再讨论嵌套路由。
 export default [
   {
-    path: '/ant-design-vue-1', component: () =>
-      import('../UseUIFramework/AntDesignVue1.vue')
+    path: '/ant-design-vue', component: () =>
+      import('../UseUIFramework/AntDesignVue.vue')
   },
   {
     path: '/element-ui', component: () =>
       import('../UseUIFramework/ElementUI.vue')
   },
   {
-    path: '/vuetify-2', component: () =>
-      import('../UseUIFramework/Vuetify2.vue')
+    path: '/vuetify', component: () =>
+      import('../UseUIFramework/Vuetify.vue')
   },
   /*{
     path: '/quasar-1', component: () =>

@@ -18,8 +18,7 @@
     }
   },
   "scripts": {
-    "dev": "vue-demi-switch 3 vue && vite",
-    "dev:2": "vue-demi-switch 2 vue && vite --config vite.vue2.config.ts",
+    "dev": "vue-demi-switch 2 vue && vite --config vite.vue2.config.ts",
     "build": "vite build",
     "serve": "vite preview",
     "cov": "jest --ci --coverage",
@@ -27,7 +26,7 @@
     "clean": "rd /s /q .\\node_modules",
     "ri": "rd /s /q .\\node_modules && pnpm i",
     "test:2": "vue-demi-switch 2 && jest",
-    "test:3": "vue-demi-switch 3 vue3 && jest",
+    "test:3": "vue-demi-switch 3 && jest",
     "release": "npm version patch && npm publish && git push",
     "release:minor": "npm version minor && npm publish && git push",
     "release:major": "npm version major && npm publish && git push"
@@ -49,20 +48,17 @@
   },
   "devDependencies": {
     "@mdi/font": "latest",
-    "@quasar/extras": "latest",
-    "@quasar/vite-plugin": "latest",
     "@types/jest": "latest",
     "@vitejs/plugin-vue": "latest",
     "@vue/compiler-sfc": "latest",
     "@vue/composition-api": "latest",
-    "ant-design-vue": "^2.2.8",
+    "ant-design-vue": "npm:ant-design-vue@^1.7.8",
     "axios": "latest",
     "codecov": "latest",
-    "element-plus": "latest",
+    "element-ui": "latest",
     "jest": "latest",
     "mitt": "latest",
     "mockjs": "latest",
-    "quasar": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "sass": "latest",
     "ts-jest": "latest",
@@ -71,9 +67,11 @@
     "unocss": "latest",
     "vite": "latest",
     "vite-plugin-mock": "latest",
-    "vue": "npm:vue@^3.2.21",
-    "vue-router": "^4.0.12",
-    "vuetify": "^3.0.0-alpha.11"
+    "vite-plugin-vue2": "latest",
+    "vue": "npm:vue@^2.6.14",
+    "vue-router": "npm:vue-router@^3.5.3",
+    "vue-template-compiler": "latest",
+    "vuetify": "npm:vuetify@^2.5.10"
   },
   "files": [
     "dist"

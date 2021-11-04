@@ -1,4 +1,4 @@
-import VueRouter from 'vue2-router'
+import VueRouter from 'vue-router'
 import routes from './routes'
 import { Vue2 } from 'vue-demi'
 Vue2.use(VueRouter)

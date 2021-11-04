@@ -1,9 +1,12 @@
 import type { UserConfigExport, ConfigEnv } from 'vite'
+//import { loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+//import { createVuePlugin } from 'vite-plugin-vue2'
 //import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import { name } from './package.json'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
+import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 export function configMockPlugin (isBuild: boolean) {
   return viteMockServe({
@@ -19,33 +22,32 @@ export function configMockPlugin (isBuild: boolean) {
   })
 }
 
-const transformIndexHtml = (code, command) => {
-  console.log(1, command.server.config.command)
-  return code.replace(/__ENTRY__/, command.server.config.command.endsWith(':2') ?
-    '/demo/vue3/main.ts' : '/demo/vue2/main.ts')
-}
-
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  console.log('command', command)
+  //const env = loadEnv(mode, 'env')
+
   return {
+    server: {
+      port: 3003
+    },
     optimizeDeps: {
-      exclude: ['vue-demi', '__ENTRY__']
+      exclude: ['vue-demi']
     },
     plugins: [
       {
-        name: 'set-entry',
-        enforce: 'pre',
-        transform (code, id) {
-          if (id.endsWith('index.html')) {
-            console.log('id', id)
-            return { code: transformIndexHtml(code, command), map: null }
-          }
+        name: 'html-transform',
+        transformIndexHtml (html: string) {
+          return html.replace(/{{.*}}/, '/demo/vue3/main.ts')
         },
-        // production时不会触发
-        transformIndexHtml,
       },
-      vue(),
+      //command.endsWith(':2') ?
+      //createVuePlugin() :
+      vue({
+        template: { transformAssetUrls }
+      }),
+      quasar({
+        sassVariables: 'src/quasar-variables.sass'
+      }),
       //peerDepsExternal(),
       ...command === 'build' ? [] : [
         Unocss({ /* options */ }),
