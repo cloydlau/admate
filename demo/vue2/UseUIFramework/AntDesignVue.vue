@@ -17,10 +17,7 @@
       </a-button>
       <a-button
         class="ml-10px"
-        @click="() => {
-          // todo: 无效果
-          listFilterRef.resetFields()
-        }"
+        @click="reset"
       >
         重置
       </a-button>
@@ -92,9 +89,10 @@
 </template>
 
 <script>
-import useMyAdmate from '../../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue-demi'
+import useMyAdmate from '../useMyAdmate'
+import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
+import { ref } from '@vue/composition-api'
+import { cloneDeep } from 'lodash-es'
 
 export default {
   setup: () => {
@@ -110,10 +108,17 @@ export default {
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
+    const defaultListFilter = cloneDeep(admate.list.value.filter)
+
+    const reset = function () {
+      admate.list.value.filter = cloneDeep(defaultListFilter)
+    }
+
     return {
       ...admate,
       listFilterRef,
       formRef,
+      reset,
     }
   }
 }

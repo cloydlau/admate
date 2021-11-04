@@ -42,6 +42,8 @@
 npm add admate vue@3 axios
 ```
 
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/useMyAdmate.ts)
+
 <br>
 
 ### Vue 2
@@ -50,9 +52,9 @@ npm add admate vue@3 axios
 npm add admate vue@2 axios @vue/composition-api
 ```
 
-### 初始化
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useMyAdmate.ts)
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/useMyAdmate.ts)
+<br>
 
 ### 使用代码生成器
 
@@ -84,31 +86,45 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配ElementPlus
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
+
+<br>
 
 ### 搭配ElementUI
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
+
+<br>
 
 ### 搭配AntDesignVue@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+
+<br>
 
 ### 搭配AntDesignVue@1
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
+
+<br>
 
 ### 搭配Vuetify@3
 
 [Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段，只有少量组件可用，暂无示例
 
+<br>
+
 ### 搭配Vuetify@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
+
+<br>
 
 ### 搭配Quasar@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+
+<br>
 
 ### 搭配Quasar@1
 
@@ -1155,7 +1171,7 @@ useAdmate({
 
 将表单抽离为子组件
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
 
 <a name="FormDecoupled"><br></a>
 
@@ -1163,7 +1179,7 @@ useAdmate({
 
 操作单条记录时，跳转到专用的表单页面，操作完毕后返回
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormDecoupled.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormDecoupled.vue)
 
 <br>
 
@@ -1171,7 +1187,7 @@ useAdmate({
 
 表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormOnly.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormOnly.vue)
 
 <br>
 
@@ -1179,6 +1195,6 @@ useAdmate({
 
 嵌套其它也使用Admate的页面
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
 <br>

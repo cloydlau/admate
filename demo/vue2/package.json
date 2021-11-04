@@ -1,36 +1,22 @@
 {
   "scripts": {
-    "dev": "vue-demi-switch 2 vue && vite --config vite.vue2.config.ts",
+    "dev": "vite --config vite.vue2.config.ts",
     "build": "vite build",
     "serve": "vite preview",
-    "cov": "jest --ci --coverage",
-    "jest": "jest --watchAll",
     "clean": "rd /s /q .\\node_modules",
-    "ri": "rd /s /q .\\node_modules && pnpm i",
-    "test:2": "vue-demi-switch 2 && jest",
-    "test:3": "vue-demi-switch 3 && jest",
-    "release": "npm version patch && npm publish && git push",
-    "release:minor": "npm version minor && npm publish && git push",
-    "release:major": "npm version major && npm publish && git push"
+    "ri": "rd /s /q .\\node_modules && pnpm i"
   },
   "dependencies": {
-    "@vue/composition-api": "1.2.4",
-    "kayran": "latest",
-    "lodash-es": "latest",
-    "vue-demi": "0.11.4"
-  },
-  "devDependencies": {
     "@mdi/font": "latest",
-    "@types/jest": "latest",
+    "@vue/composition-api": "latest",
+    "admate": "latest",
     "ant-design-vue": "npm:ant-design-vue@^1.7.8",
     "axios": "latest",
     "element-ui": "latest",
-    "jest": "latest",
+    "kayran": "latest",
+    "lodash-es": "latest",
     "mockjs": "latest",
-    "rollup-plugin-peer-deps-external": "latest",
     "sass": "latest",
-    "ts-jest": "latest",
-    "tslib": "latest",
     "typescript": "latest",
     "unocss": "latest",
     "vite": "latest",

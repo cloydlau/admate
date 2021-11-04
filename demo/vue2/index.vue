@@ -1,5 +1,5 @@
 <template>
-  <div>Vue {{ isVue2 ? '2' : '3' }} UI Framework demo:
+  <div>Vue 2 UI Framework demo:
     <span v-for="({path},i) of routes">
       <router-link :to="path">
         {{ path.substr(1) }}
@@ -20,13 +20,11 @@
 </template>
 
 <script>
-import { isVue2 } from 'vue-demi'
 import routes from './router/routes'
 
 export default {
   data () {
     return {
-      isVue2,
       routes: routes.filter(v => !v.hidden),
     }
   }

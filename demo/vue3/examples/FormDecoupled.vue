@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../../useMyAdmate'
+import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref, toRaw } from 'vue-demi'
 import { useRouter } from 'vue-router'

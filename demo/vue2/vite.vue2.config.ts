@@ -24,9 +24,6 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     server: {
       port: 3002
     },
-    optimizeDeps: {
-      exclude: ['vue-demi']
-    },
     plugins: [
       {
         name: 'html-transform',

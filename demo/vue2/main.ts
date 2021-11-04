@@ -1,4 +1,4 @@
-import { Vue2 } from 'vue-demi'
+import Vue2 from 'vue'
 import router from './router'
 import App from './index.vue'
 

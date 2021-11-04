@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import useMyAdmate from '../../useMyAdmate'
+import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 
 export default {

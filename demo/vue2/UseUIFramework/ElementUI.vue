@@ -98,9 +98,9 @@
 </template>
 
 <script>
-import useMyAdmate from '../../useMyAdmate'
-import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref, onMounted } from 'vue-demi'
+import useMyAdmate from '../useMyAdmate'
+import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
+import { ref, onMounted } from '@vue/composition-api'
 
 export default {
   setup: () => {
