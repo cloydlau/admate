@@ -54,8 +54,6 @@ npm add admate vue@2 axios @vue/composition-api
 
 [示例代码](https://github.com/cloydlau/admate/blob/master/demo/useMyAdmate.ts)
 
-<br>
-
 ### 使用代码生成器
 
 使用代码生成器生成页面模板
@@ -84,47 +82,37 @@ npm add admate vue@2 axios @vue/composition-api
 
 :four: 创建页面文件 `xxx.vue`，粘贴代码
 
-<br>
-
 ### 搭配ElementPlus
 
 [示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
-
-<br>
 
 ### 搭配ElementUI
 
 [示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
 
-<br>
-
 ### 搭配AntDesignVue@2
 
 [示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
-<br>
-
 ### 搭配AntDesignVue@1
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue1.vue)
-
-<br>
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 ### 搭配Vuetify@3
 
-[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段
-
-<br>
+[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段，只有少量组件可用，暂无示例
 
 ### 搭配Vuetify@2
 
-[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify2.vue)
-
-<br>
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
 
 ### 搭配Quasar@2
 
-Quasar@2尚不支持 `Vite`，[进度追踪](https://github.com/quasarframework/quasar/issues/10398)
+[示例代码](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+
+### 搭配Quasar@1
+
+Quasar@1（应该）不支持Vite，无示例
 
 <br>
 

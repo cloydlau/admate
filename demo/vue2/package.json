@@ -1,22 +1,4 @@
 {
-  "name": "admate",
-  "description": "Mate of admin interfaces",
-  "author": "cloydlau",
-  "version": "0.7.8",
-  "private": false,
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cloydlau/admate"
-  },
-  "main": "./dist/admate.umd.js",
-  "module": "./dist/admate.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/admate.es.js",
-      "require": "./dist/admate.umd.js"
-    }
-  },
   "scripts": {
     "dev": "vue-demi-switch 2 vue && vite --config vite.vue2.config.ts",
     "build": "vite build",
@@ -32,32 +14,18 @@
     "release:major": "npm version major && npm publish && git push"
   },
   "dependencies": {
+    "@vue/composition-api": "1.2.4",
     "kayran": "latest",
     "lodash-es": "latest",
-    "vue-demi": "latest"
-  },
-  "peerDependencies": {
-    "@vue/composition-api": "1",
-    "axios": "0",
-    "vue": "^2.0.0 || >=3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@vue/composition-api": {
-      "optional": true
-    }
+    "vue-demi": "0.11.4"
   },
   "devDependencies": {
     "@mdi/font": "latest",
     "@types/jest": "latest",
-    "@vitejs/plugin-vue": "latest",
-    "@vue/compiler-sfc": "latest",
-    "@vue/composition-api": "latest",
     "ant-design-vue": "npm:ant-design-vue@^1.7.8",
     "axios": "latest",
-    "codecov": "latest",
     "element-ui": "latest",
     "jest": "latest",
-    "mitt": "latest",
     "mockjs": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "sass": "latest",
@@ -72,12 +40,5 @@
     "vue-router": "npm:vue-router@^3.5.3",
     "vue-template-compiler": "latest",
     "vuetify": "npm:vuetify@^2.5.10"
-  },
-  "files": [
-    "dist"
-  ],
-  "jest": {
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true
   }
 }

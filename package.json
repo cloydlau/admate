@@ -48,7 +48,6 @@
     }
   },
   "devDependencies": {
-    "@mdi/font": "latest",
     "@quasar/extras": "latest",
     "@quasar/vite-plugin": "latest",
     "@types/jest": "latest",
@@ -57,7 +56,6 @@
     "@vue/composition-api": "latest",
     "ant-design-vue": "^2.2.8",
     "axios": "latest",
-    "codecov": "latest",
     "element-plus": "latest",
     "jest": "latest",
     "mitt": "latest",

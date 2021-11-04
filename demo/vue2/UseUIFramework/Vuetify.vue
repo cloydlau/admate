@@ -79,7 +79,7 @@
     >
       <v-card>
         <v-card-title>
-          <span class="text-h5">{{ formTitle }}</span>
+          <h5>{{ formTitle }}</h5>
         </v-card-title>
         <v-card-text>
           <v-form
