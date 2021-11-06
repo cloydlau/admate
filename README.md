@@ -1,17 +1,17 @@
 # Admate / 管理后台伴侣
 
-`Admate` 的目标是以快速简洁的方式开发管理后台页面，并在此基础上确保灵活可配，杜绝过度封装。
+Admate 的目标是以快速简洁的方式开发管理后台页面，并在此基础上确保灵活可配，杜绝过度封装。
 
-🎉 在生产实践中，Admate经受住了对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) 的考验。
+🎉 在生产实践中，Admate 经受住了对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) 的考验。
 
 ## Features
 
-- 🕶 `Vue2` 和 `Vue3` 通用：比如你在Vue2中使用了Admate，升级Vue3时，你需要做的事情只是切换依赖源
+- 🕶 `Vue2` 和 `Vue3` 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
 - 🤝 不限制UI框架，只要技术栈是 `Vue` 和 `axios` 便可使用
-- 🎪 提供四大UI框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
+- 🎪 提供四大UI框架示例代码（`Vuetify`，`Element`，`AntDesignVue`，`Quasar`）
 - 🎨 使用 `组合式API`，无侵入性
-- 🔩 全局或局部的请求配置：同一系统内，增删查改的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
-- 🍪 提供列表、表单增删查改的贴心封装，你不再操心列表的读取状态、表单的读取和提交状态
+- 🔩 全局或局部的请求配置：同一系统内， `CRUD` 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
+- 🍪 提供列表、表单 `CRUD` 的贴心封装，你不再操心列表的读取状态、表单的读取和提交状态
 - 🔍 支持监听筛选参数自动刷新列表（节流控制接口调用频率），也支持手动点击查询按钮筛选列表
 - 💬 支持表单是对话框的形式，也支持表单是独立页面的形式
 - 🧹 周全的收尾工作，没有“后顾之忧”
@@ -63,7 +63,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 #### Installation
 
-安装Chrome/Edge插件 `YApi2Code`，或使用离线版：
+安装 Chrome / Edge 插件 `YApi2Code`，或使用离线版：
 
 :one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
 
@@ -73,7 +73,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 #### Usage
 
-:one: 访问YApi，选中相应模块的 `查询列表` 接口
+:one: 访问 YApi，选中相应模块的 `查询列表` 接口
 
 :two: 点击浏览器右上角运行插件
 
@@ -107,7 +107,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配Vuetify@3
 
-[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于Alpha阶段，只有少量组件可用，暂无示例
+[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于 Alpha 阶段，只有少量组件可用，暂无示例
 
 <br>
 
