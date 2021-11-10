@@ -46,7 +46,7 @@ npm add admate vue@3 axios
 ### Vue 2
 
 ```bash
-npm add admate vue@2 axios @vue/composition-api
+npm add admate vue@2 axios @vue/composition-api@1.2.4
 ```
 
 [初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useMyAdmate.ts)
