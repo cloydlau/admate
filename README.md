@@ -15,9 +15,9 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 - 🔍 支持监听筛选参数自动刷新列表（节流控制接口调用频率），也支持手动点击查询按钮筛选列表
 - 💬 支持表单是对话框的形式，也支持表单是独立页面的形式
 - 🧹 周全的收尾工作，没有“后顾之忧”
-  - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
-  - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-  - 离开页面时，自动终止尚未完成的请求
+    - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
+    - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
+    - 离开页面时，自动终止尚未完成的请求
 
 <br>
 
@@ -850,10 +850,9 @@ const { form } = useAdmate({
     ) {
       // vue3中不需要赋值，mergeWith的改动是响应式的
       form.data = mergeWith(
-        newFormData,
         defaultFormData(),
-        (objValue, srcValue) =>
-          [undefined, null].includes(objValue) ? srcValue : undefined
+        newFormData,
+        (oldObj, newObj) => [undefined, null].includes(newObj) ? oldObj : undefined
       )
     },
   },
