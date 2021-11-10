@@ -4,7 +4,7 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-| 案例 | 技术栈 | 表单部分代码量<br><span style="color:grey;font-size:.8rem">（换行风格接近）</span> | 表单部分Bug数量 |
+| 案例 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分Bug数量 |
 | --- | --- | --- | --- |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue2 + ElementUI | 2946行 | 19个|
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue2 + ElementUI + **Admate** | 1144行 | 10个 |
