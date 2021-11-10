@@ -2,9 +2,16 @@
 
 Admate 的目标是以快速简洁的方式开发管理后台页面，并在此基础上确保灵活可配，杜绝过度封装。
 
-🎉 在生产实践中，Admate 经受住了对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) 的考验。
+🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-## Features
+| 案例 | 代码量（换行风格接近） | Bug数量 |
+| --- | --- | --- |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) （未使用 Admate） | 2946行 | 19个|
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) （使用 Admate） | 1144行 | 10个 |
+
+> 数据仅含表单部分
+
+## 特性
 
 - 🕶 `Vue2` 和 `Vue3` 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
 - 🤝 不限制UI框架，只要技术栈是 `Vue` 和 `axios` 便可使用
@@ -29,7 +36,7 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 
 <br>
 
-## Installation
+## 安装
 
 ![NPM](https://nodei.co/npm/admate.png)
 
