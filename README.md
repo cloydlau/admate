@@ -4,19 +4,19 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-| 案例 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分Bug数量 |
+| 案例对比 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分Bug数量 |
 | --- | --- | --- | --- |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue2 + ElementUI | 2946行 | 19个|
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue2 + ElementUI + **Admate** | 1144行 | 10个 |
 
 ## 特性
 
-- 🕶 `Vue2` 和 `Vue3` 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
-- 🤝 不限制UI框架，只要技术栈是 `Vue` 和 `axios` 便可使用
-- 🎪 提供四大UI框架示例代码（`Vuetify`，`Element`，`AntDesignVue`，`Quasar`）
-- 🎨 使用 `组合式API`，无侵入性
-- 🔩 全局或局部的请求配置：同一系统内， `CRUD` 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
-- 🍪 提供列表、表单 `CRUD` 的贴心封装，你不再操心列表的读取状态、表单的读取和提交状态
+- 🕶 Vue2 和 Vue3 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
+- 🤝 不限制UI框架，只要技术栈是 Vue 和 axios 便可使用，并提供四大 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
+- 🎨 使用组合式 API，无侵入性
+- 🪝 使用高阶函数实现钩子函数，生命周期的行为可高度定制化
+- 🌐 提供全局的请求配置：同一系统内，CRUD 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
+- 🍪 提供列表、表单 CRUD 的贴心封装，你不再操心列表的读取状态、表单的读取和提交状态
 - 🔍 支持监听筛选参数自动刷新列表（节流控制接口调用频率），也支持手动点击查询按钮筛选列表
 - 💬 支持表单是对话框的形式，也支持表单是独立页面的形式
 - 🧹 周全的收尾工作，没有“后顾之忧”
@@ -134,7 +134,7 @@ Quasar@1（应该）不支持Vite，无示例
 
 <br>
 
-## 接口配置
+## 请求配置
 
 ### axios
 
