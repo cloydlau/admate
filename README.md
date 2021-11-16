@@ -12,7 +12,7 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 ## 特性
 
 - 🕶 Vue2 和 Vue3 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
-- 🤝 不限制UI框架，只要技术栈是 Vue 和 axios 便可使用，并提供四大 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
+- 🤝 不限制 UI 框架，只要技术栈是 Vue 和 axios 便可使用，并提供四大 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
 - 🎨 使用组合式 API，无侵入性
 - 🪝 使用高阶函数实现钩子函数，生命周期的行为可高度定制化
 - 🌐 提供全局的请求配置：同一系统内，CRUD 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
