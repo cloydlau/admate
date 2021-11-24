@@ -170,7 +170,8 @@ export default function useAdmate ({
     //console.log(`getList被调用`)
 
     List.loading = true
-    List.data.length = 0
+    //List.data.length = 0 // List.data可能为空
+    List.data = []
     return api.getList(payload, payloadAs)
     .then(response => {
       List.data = At(response, List.dataAt)
