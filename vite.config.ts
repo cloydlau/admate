@@ -7,6 +7,7 @@ import { name } from './package.json'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 export function configMockPlugin (isBuild: boolean) {
   return viteMockServe({
@@ -45,6 +46,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       vue({
         template: { transformAssetUrls }
       }),
+      visualizer(),
       quasar({
         sassVariables: 'src/quasar-variables.sass'
       }),
@@ -52,7 +54,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       ...command === 'build' ? [] : [
         Unocss({ /* options */ }),
         configMockPlugin(false)
-      ]
+      ],
     ],
     build: {
       lib: {

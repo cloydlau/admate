@@ -23,3 +23,4 @@ pnpm-debug.log*
 *.sw?
 
 pnpm-lock.yaml
+/stats.html

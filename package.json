@@ -62,6 +62,7 @@
     "mockjs": "latest",
     "quasar": "latest",
     "rollup-plugin-peer-deps-external": "latest",
+    "rollup-plugin-visualizer": "latest",
     "sass": "latest",
     "ts-jest": "latest",
     "tslib": "latest",
@@ -71,7 +72,7 @@
     "vite-plugin-mock": "latest",
     "vue": "npm:vue@^3.2.21",
     "vue-router": "^4.0.12",
-    "vuetify": "^3.0.0-alpha.11"
+    "vuetify": "^3.0.0-alpha.12"
   },
   "files": [
     "dist"
