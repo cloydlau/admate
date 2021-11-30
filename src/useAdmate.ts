@@ -170,16 +170,15 @@ export default function useAdmate ({
     //console.log(`getList被调用`)
 
     List.loading = true
-    //List.data.length = 0 // List.data可能为空
-    List.data = []
     return api.getList(payload, payloadAs)
     .then(response => {
-      List.data = At(response, List.dataAt)
-      List.total = At(response, List.totalAt)
-      if (isEmpty(List.data)) {
-        List.total = 0
-      }
+      List.data = At(response, List.dataAt) ?? []
+      List.total = isEmpty(List.data) ? 0 : At(response, List.totalAt) ?? 0
       return response
+    }).catch(e => {
+      //List.data.length = 0 // List.data可能为空
+      List.data = []
+      console.error(e)
     }).finally(() => {
       List.loading = false
     })
@@ -360,6 +359,7 @@ export default function useAdmate ({
             show: false,
           }
         })
+        console.error(state)
       })
     } else {
       setTerminalState({
@@ -412,6 +412,7 @@ export default function useAdmate ({
             submitting: false
           }
         })
+        console.error(state)
       })
     } else {
       setTerminalState({
