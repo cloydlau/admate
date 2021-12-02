@@ -235,7 +235,7 @@ useAdmate({
 
 ```ts
 useAdmate({
-  // axiosConfig 中各个接口的 url 前缀
+  // axiosConfig 中各个接口的 URL 前缀
   urlPrefix: '',
 })
 ```
