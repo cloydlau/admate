@@ -4,7 +4,7 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-| 案例对比 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分Bug数量 |
+| 案例对比 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分 Bug 数量 |
 | --- | --- | --- | --- |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue2 + ElementUI | 2946行 | 19个|
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue2 + ElementUI + **Admate** | 1144行 | 10个 |
@@ -62,13 +62,11 @@ npm add admate vue@2 axios @vue/composition-api
 
 使用代码生成器生成页面模板
 
-::: warning  
-目前仅支持 `element-ui`
-:::
+> 目前仅支持 `element-ui`
 
 #### Installation
 
-安装 Chrome / Edge 插件 `YApi2Code`，或使用离线版：
+安装 Chrome / Edge 插件 **YApi2Code**，或使用离线版：
 
 :one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
 
@@ -130,7 +128,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配Quasar@1
 
-Quasar@1（应该）不支持Vite，无示例
+Quasar@1（应该）不支持 Vite，无示例
 
 <br>
 
@@ -140,7 +138,7 @@ Quasar@1（应该）不支持Vite，无示例
 
 ```ts
 useAdmate({
-  // axios或axios实例
+  // axios 或 axios 实例
   // 用于调用接口
   axios,
 })
@@ -157,15 +155,15 @@ useAdmate({
     getList: {
       method: 'GET',
     },
-    // 新增一条记录（submitForm在新增时调用）
+    // 新增一条记录（submitForm 在新增时调用）
     c: {
       method: 'POST',
     },
-    // 查询一条记录（openForm在查看、编辑时调用）
+    // 查询一条记录（openForm 在查看、编辑时调用）
     r: {
       method: 'GET',
     },
-    // 编辑一条记录（submitForm在编辑时调用）
+    // 编辑一条记录（submitForm 在编辑时调用）
     u: {
       method: 'PUT',
     },
@@ -190,8 +188,8 @@ useAdmate({
 ```
 
 ```ts
-// 示例：根据传参动态生成配置，常用于RESTful中
-// 动态生成配置时，payloadAs将会失效
+// 示例：根据传参动态生成配置，常用于 RESTful 中
+// 动态生成配置时，payloadAs 将会失效
 
 useAdmate({
   axiosConfig: {
@@ -199,15 +197,15 @@ useAdmate({
     getList: payload => ({
       method: 'GET',
     }),
-    // 新增一条记录（submitForm在新增时调用）
+    // 新增一条记录（submitForm 在新增时调用）
     c: payload => ({
       method: 'POST',
     }),
-    // 查询一条记录（openForm在查看、编辑时调用）
+    // 查询一条记录（openForm 在查看、编辑时调用）
     r: payload => ({
       method: 'GET',
     }),
-    // 编辑一条记录（submitForm在编辑时调用）
+    // 编辑一条记录（submitForm 在编辑时调用）
     u: payload => ({
       method: 'PUT',
     }),
@@ -237,19 +235,19 @@ useAdmate({
 
 ```ts
 useAdmate({
-  // axiosConfig中各个接口的url前缀
+  // axiosConfig 中各个接口的 url 前缀
   urlPrefix: '',
 })
 ```
 
 ```ts
-// 示例：URL前缀不统一
+// 示例：URL 前缀不统一
 
 useAdmate({
   urlPrefix: 'somepage',
   axiosConfig: {
     r: {
-      // 如果某个接口的前缀不是'somepage'，可以在URL前面加斜线，即可忽略该前缀
+      // 如果某个接口的前缀不是 'somepage'，可以在 URL 前面加斜线，即可忽略该前缀
       url: '/anotherpage/selectOne',
     },
   }
@@ -285,15 +283,15 @@ u(form, 'config')
 
 ### FormData
 
-axios的data默认以 `application/json` 作为MIME type，如果你需要使用 `multipart/form-data`：
+axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`：
 
 - 全局配置
 
-给你的axios配置 `transformRequest`、`headers['Content-Type']`
+给你的 axios 配置 `transformRequest`、`headers['Content-Type']`
 
 - 局部配置
 
-`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数1均支持FormData类型
+`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数 1 均支持 FormData 类型
 
 ```vue
 <!-- 示例：局部配置 -->
@@ -324,11 +322,11 @@ import { jsonToFormData, pickDeepBy } from 'kayran'
 
 export default {
   setup: () => {
-    // 过滤参数并转换为FormData
-    // 此处示例为将过滤方法绑定到window.FormData，方便其他地方使用
+    // 过滤参数并转换为 FormData
+    // 此处示例为将过滤方法绑定到 window.FormData，方便其他地方使用
     FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v)))
 
-    // 直接转换为FormData
+    // 直接转换为 FormData
     //FormData.from = jsonToFormData
 
     return {
@@ -425,7 +423,7 @@ useAdmate({
 - **改变筛选条件后即时触发**
     - :heavy_check_mark: 操作相对简便。
     - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-    - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate已优化）。
+    - :heavy_check_mark: ~~想要同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate 已优化）。
 
 ```ts
 useAdmate({
@@ -433,7 +431,7 @@ useAdmate({
     watchFilter: true, // 默认值
 
     // 节流间隔，单位毫秒
-    // 如果筛选参数不含input类型，可以设置为0，即不节流
+    // 如果筛选参数不含 input 类型，可以设置为 0，即不节流
     // 翻页不会触发节流
     // watchFilter开启时有效
     throttleInterval: 500, // 默认值
@@ -454,8 +452,8 @@ useAdmate({
     data: [],
 
     // 指定接口返回值中列表数据所在的位置
-    // 支持属性名如'data'，属性路径如'data.records'
-    // 还支持function，如response => response.data
+    // 支持属性名如 'data'，属性路径如 'data.records'
+    // 还支持 function，如 response => response.data
     dataAt: undefined,
 
     // 指定接口返回值中记录总数所在的位置
@@ -508,10 +506,10 @@ export default {
 ```ts
 const {
   /**
-   * PS：以下为原始getList的函数签名，如果你配置了getListProxy，则以getListProxy为准
+   * PS：以下为原始 getList 的函数签名，如果你配置了 getListProxy，则以 getListProxy 为准
    *
    * @param {any} [payload = list.filter]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
    * @returns {Promise<any>} 接口返回值
    */
   getList
@@ -520,12 +518,12 @@ const {
 getList() // 手动查询
 ```
 
-`getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在getList前后做一些操作，或改变getList的行为
+`getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
 
 ```ts
 useAdmate({
   /**
-   * @param {Function} getList 被代理的原始getList
+   * @param {Function} getList 被代理的原始 getList
    * @param {string} trigger 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
   getListProxy (getList, trigger) {},
@@ -567,7 +565,7 @@ useAdmate({
 const { list } = useAdmate({
   getListProxy (getList, trigger) {
     getList().then(response => {
-      // response为axiosConfig.getList的接口返回值
+      // response 为 axiosConfig.getList 的接口返回值
       list.data = response.data?.filter(v => !v.disabled)
     })
   },
@@ -604,21 +602,21 @@ const { form, openForm } = useAdmate()
 // 将表单形态设置为“查看”，然后打开表单
 form.status = 'r'
 /**
- * PS：以下为原始openForm的函数签名，如果你配置了openFormProxy，则以openFormProxy为准
+ * PS：以下为原始 openForm 的函数签名，如果你配置了 openFormProxy ，则以 openFormProxy 为准
  *
  * @param {any} [payload]
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @returns {Promise<any>} axiosConfig.r的返回值
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} axiosConfig.r 的返回值
  */
 openForm()
 ```
 
 **payloadAs:**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
-- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'cache'`：将 payload 直接用作表单数据（不调用查询单条记录的接口）
 
 <a name="openForm-u"><br></a>
 
@@ -632,21 +630,21 @@ const { form, openForm } = useAdmate()
 // 将表单形态设置为“编辑”，然后打开表单
 form.status = 'u'
 /**
- * PS：以下为原始openForm的函数签名，如果你配置了openFormProxy，则以openFormProxy为准
+ * PS：以下为原始 openForm 的函数签名，如果你配置了 openFormProxy，则以 openFormProxy 为准
  *
  * @param {any} [payload]
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定payload的用途
- * @returns {Promise<any>} axiosConfig.r的返回值
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} axiosConfig.r 的返回值
  */
 openForm()
 ```
 
 **payloadAs:**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
-- `'cache'`：将payload直接用作表单数据（不调用查询单条记录的接口）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'cache'`：将 payload 直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
 
@@ -663,11 +661,11 @@ const {
 } = useAdmate()
 ```
 
-**参数2的可选值：**
+**参数 2 的可选值：**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -684,11 +682,11 @@ const {
 } = useAdmate()
 ```
 
-**参数2的可选值：**
+**参数 2 的可选值：**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -705,11 +703,11 @@ const {
 } = useAdmate()
 ```
 
-**参数2的可选值：**
+**参数 2 的可选值：**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 <br>
 
@@ -719,18 +717,18 @@ const {
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.updateStatus的返回值
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
    */
   updateStatus
 } = useAdmate()
 ```
 
-**参数2的可选值：**
+**参数 2 的可选值：**
 
-- `'data'`：将payload用作请求配置的 `data` 参数（请求方式为POST/PATCH/PUT/DELETE时默认）
-- `'params'`：将payload用作请求配置的 `params` 参数（请求方式为GET/HEAD时默认）
-- `'config'`：将payload仅用于构建请求配置（详见[RESTful](#RESTful)）
+- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
 
 **状态变更的两种方式：**
 
@@ -773,12 +771,12 @@ useAdmate({
     data: {},
 
     // 在查看、编辑表单时，可能需要调用接口（axiosConfig.r）回显表单的数据
-    // dataAt用于指定接口返回值中表单数据所在的位置
-    // 支持属性名如'data'，属性路径如'data.records'
-    // 还支持function，如response => response.data
+    // dataAt 用于指定接口返回值中表单数据所在的位置
+    // 支持属性名如 'data'，属性路径如 'data.records'
+    // 还支持 function，如 response => response.data
     dataAt: undefined,
 
-    // 接口（axiosConfig.r）返回值与form.data合并的方式
+    // 接口（axiosConfig.r）返回值与 form.data 合并的方式
     mergeData: 'deep',
   },
 })
@@ -793,9 +791,9 @@ useAdmate({
 
 ::: tip 为什么默认是深合并？
 
-在vue2中，template不支持 `?.` 语法，要在template中判空，代码写起来会非常冗余，通常的做法是在data中声明空对象
+在 Vue 2 中，template 不支持 `?.` 语法，要在 template 中判空，代码写起来会非常冗余，通常的做法是在 data 中声明空对象
 
-比如给form.data提供默认值：
+比如给 form.data 提供默认值：
 
 ```vue
 
@@ -848,12 +846,12 @@ const defaultFormData = () => ({
 const { form } = useAdmate({
   form: {
     data: defaultFormData(),
-    // 接口返回值中嵌套的对象可能为null，会覆盖默认值中的空对象
+    // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象
     mergeData (
       // 接口返回值在通过 form.dataAt 计算过后的值
       newFormData
     ) {
-      // vue3中不需要赋值，mergeWith的改动是响应式的
+      // Vue 3 中不需要赋值，mergeWith 的改动是响应式的
       form.data = mergeWith(
         defaultFormData(),
         newFormData,
@@ -884,7 +882,7 @@ const { form } = useAdmate({
 - `'u'` 编辑
 - `''` 关闭
 
-form.show为false时，form.status为''
+form.show 为 false 时，form.status 为 ''
 
 表单默认是对话框的形式，但也支持[表单是独立页面](#FormDecoupled) 的情况
 
@@ -901,9 +899,7 @@ form.show为false时，form.status为''
 
 `axiosConfig.r` 被调用时值为 `true`，否则为 `false`
 
-::: warning  
-不能将该值当作表单回显结束的标志，因为复用列表数据时不会调用axiosConfig.r
-:::
+> 不能将该值当作表单回显结束的标志，因为复用列表数据时不会调用 axiosConfig.r
 
 ```vue
 <!-- 示例 -->
@@ -969,13 +965,13 @@ export default {
 - [查看时](#openForm-r)
 - [编辑时](#openForm-u)
 
-`openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在openForm前后做一些操作，或改变openForm的行为
+`openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
 
 ```ts
 useAdmate({
   /**
-   * @param {Function} openForm 被代理的原始openForm
-   * @returns {Promise<object> | object | void} object为打开表单后form的终态
+   * @param {Function} openForm 被代理的原始 openForm
+   * @returns {Promise<object> | object | void} object 为打开表单后 form 的终态
    */
   openFormProxy (openForm) {},
 })
@@ -988,10 +984,10 @@ useAdmate({
 
 const { form } = useAdmate({
   openFormProxy (openForm) {
-    // 新增时openForm没有返回值
+    // 新增时 openForm 没有返回值
     return new Promise((resolve, reject) => {
       openForm()?.then(response => {
-        // response为axiosConfig.r的接口返回值
+        // response 为 axiosConfig.r 的接口返回值
         // 修改表单数据
         form.data.status = 1
         resolve()
@@ -1026,7 +1022,7 @@ useAdmate({
 useAdmate({
   openFormProxy (openForm) {
     return new Promise((resolve, reject) => {
-      // 可以在finally中resolve
+      // 可以在 finally 中 resolve
       openForm().then(() => {
         // 回显成功后，默认停止加载
         resolve({
@@ -1062,23 +1058,23 @@ useAdmate({
 ```ts
 const {
   /**
-   * PS：以下为原始submitForm的函数签名，如果你配置了submitFormProxy，则以submitFormProxy为准
+   * PS：以下为原始 submitForm 的函数签名，如果你配置了 submitFormProxy ，则以 submitFormProxy 为准
    *
    * @param {any} [payload = form.data]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
    * @returns {Promise<any>} 接口返回值
    */
   submitForm
 } = useAdmate()
 ```
 
-`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在submitForm前后做一些操作，或改变submitForm的行为
+`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
 
 ```ts
 useAdmate({
   /**
-   * @param {Function} submitForm 被代理的原始submitForm
-   * @returns {Promise<object> | object | void} object为提交表单后form的终态
+   * @param {Function} submitForm 被代理的原始 submitForm
+   * @returns {Promise<object> | object | void} object 为提交表单后 form 的终态
    */
   submitFormProxy (submitForm) {}
 })
@@ -1094,7 +1090,7 @@ submitForm({
   status: 1,
 })
 
-// submitForm被代理时
+// submitForm 被代理时
 useAdmate({
   submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
@@ -1132,7 +1128,7 @@ useAdmate({
 ```ts
 // 示例：提交表单后，自定义表单的开闭和提交状态
 
-// 返回一个promise
+// 返回一个 promise
 useAdmate({
   submitFormProxy (submitForm) {
     return new Promise((resolve, reject) => {
@@ -1194,7 +1190,7 @@ useAdmate({
 
 ## 示例：嵌套使用
 
-嵌套其它也使用Admate的页面
+嵌套其它也使用 Admate 的页面
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
