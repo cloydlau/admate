@@ -9,6 +9,11 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue 2 + ElementUI | 89293 字符 | 19 个|
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** | 38718 字符 | 10 个 |
 
+| 案例对比 | 技术栈 | 代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（整个页面）</span> |
+| --- | --- | :---: |
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI | 13330 字符 |
+| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** | <span style="font-size:12px;">不是特别复杂的不会过万，简单点的三千字符可以搞定</span> |
+
 ## 特性
 
 - 🕶 Vue 2 和 Vue 3 通用：比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
