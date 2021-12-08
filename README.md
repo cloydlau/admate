@@ -462,6 +462,8 @@ useAdmate({
     dataAt: undefined,
 
     // 指定接口返回值中记录总数所在的位置
+    // 支持属性名如 'total'，属性路径如 'data.total'
+    // 还支持 function，如 response => response.total + 1
     totalAt: undefined,
   }
 })
@@ -777,7 +779,7 @@ useAdmate({
 
     // 在查看、编辑表单时，可能需要调用接口（axiosConfig.r）回显表单的数据
     // dataAt 用于指定接口返回值中表单数据所在的位置
-    // 支持属性名如 'data'，属性路径如 'data.records'
+    // 支持属性名如 'data'，属性路径如 'data.detail'
     // 还支持 function，如 response => response.data
     dataAt: undefined,
 
