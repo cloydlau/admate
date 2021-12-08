@@ -4,14 +4,14 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-| 案例对比 | 技术栈 | 表单部分代码量<br><span style="color:rgba(28,31,35,.6);font-size:.8rem">* 换行风格接近</span> | 表单部分 Bug 数量 |
-| --- | --- | --- | --- |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue2 + ElementUI | 2946行 | 19个|
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue2 + ElementUI + **Admate** | 1144行 | 10个 |
+| 案例对比 | 技术栈 | 代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
+| --- | --- | :---: | :---: |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue 2 + ElementUI | 89293 字符 | 19 个|
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** | 38718 字符 | 10 个 |
 
 ## 特性
 
-- 🕶 Vue2 和 Vue3 通用：比如你在 Vue2 中使用了 Admate，升级 Vue3 时，你需要做的事情只是切换依赖源
+- 🕶 Vue 2 和 Vue 3 通用：比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
 - 🤝 不限制 UI 框架，只要技术栈是 Vue 和 axios 便可使用，并提供四大 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
 - 🎨 使用组合式 API，无侵入性
 - 🪝 使用高阶函数实现钩子函数，生命周期的行为可高度定制化
@@ -62,7 +62,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 使用代码生成器生成页面模板
 
-> 目前仅支持 `element-ui`
+> 目前仅支持 element-ui
 
 #### Installation
 
@@ -70,17 +70,17 @@ npm add admate vue@2 axios @vue/composition-api
 
 :one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
 
-:two: 打开浏览器 `扩展程序`，并开启 `开发者模式`
+:two: 打开浏览器**扩展程序**，并开启**开发者模式**
 
-:three: 点击 `加载已解压的扩展程序`，选择解压后的文件夹
+:three: 点击**加载已解压的扩展程序**，选择解压后的文件夹
 
 #### Usage
 
-:one: 访问 YApi，选中相应模块的 `查询列表` 接口
+:one: 访问 YApi，选中相应模块的**查询列表**接口
 
 :two: 点击浏览器右上角运行插件
 
-:three: 点击 `生成代码`，代码将被复制至剪贴板
+:three: 点击**生成代码**，代码将被复制至剪贴板
 
 :four: 创建页面文件 `xxx.vue`，粘贴代码
 
