@@ -14,6 +14,10 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 | [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI | 13330 字符 |
 | 常规增删查改页面 | Vue 2 + ElementUI + **Admate** | <span style="font-size:12px;">不是特别复杂的不会过万，简单点的三千字符可以搞定</span> |
 
+<br>
+
+![Alt](https://repobeats.axiom.co/api/embed/96d9b8e4c191488faaa6e4545b684afd114c6cdd.svg "Repobeats analytics image")
+
 ## 特性
 
 - 🕶 **Vue 2 和 Vue 3 通用** - 比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
