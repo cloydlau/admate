@@ -1,3 +1,8 @@
+/**
+ * pnpm release
+ * - 如果是本机第一次使用，需要运行 yarn login 登录 npm 账号
+ */
+
 const args = require('minimist')(process.argv.slice(2))
 const path = require('path')
 const chalk = require('chalk')
@@ -13,6 +18,8 @@ const preId =
 const isDryRun = args.dry
 //const skipTests = args.skipTests
 const skipBuild = args.skipBuild
+const registryManager = 'yrm'
+const registry = 'tb'
 
 const versionIncrements = [
   'patch',
@@ -95,8 +102,8 @@ async function main () {
   //await run(`pnpm`, ['run', 'changelog'])
 
   // update pnpm-lock.yaml
-  step('\nUpdating lockfile...')
-  await run(`pnpm`, ['install', '--prefer-offline'])
+  //step('\nUpdating lockfile...')
+  //await run(`pnpm`, ['install', '--prefer-offline'])
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
   if (stdout) {
@@ -125,9 +132,10 @@ async function main () {
 }
 
 async function publishPackage (pkgName, version, runIfNotDry) {
-  const releaseTag = semver.prerelease(version)[0] || null
+  const releaseTag = semver.prerelease(version) && semver.prerelease(version)[0] || null
 
   step(`Publishing ${pkgName}...`)
+  await runIfNotDry(registryManager, ['use', 'npm'])
   try {
     await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
@@ -146,6 +154,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
         stdio: 'pipe'
       }
     )
+    //await runIfNotDry('npm', ['publish'])
     console.log(chalk.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
     if (e.stderr.match(/previously published/)) {
@@ -154,6 +163,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
       throw e
     }
   }
+  await runIfNotDry(registryManager, ['use', registry])
 }
 
 main().catch(err => {
