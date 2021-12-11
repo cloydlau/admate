@@ -1,5 +1,6 @@
 /**
  * 发版
+ * - pnpm add chalk@^4.1.2 enquirer@latest execa@^4.1.0 minimist@latest semver@latest -D: 需要安装的依赖
  * - pnpm release: 打包 + 发布 + Push + Tag
  * - pnpm release -- --skipBuild: 跳过打包
  */
