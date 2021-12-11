@@ -1,9 +1,11 @@
 /**
- * pnpm release
- * - 如果是本机第一次使用，需要运行 yarn login 登录 npm 账号
+ * 发版
+ * - pnpm release: 打包 + 发布 + Push + Tag
+ * - pnpm release -- --skipBuild: 跳过打包
  */
 
 const args = require('minimist')(process.argv.slice(2))
+const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const semver = require('semver')
@@ -86,6 +88,9 @@ async function main () {
     console.log(`(skipped)`)
   }*/
 
+  step('\nUpdating version...')
+  updateVersions(targetVersion)
+
   // build all packages with types
   step('\nBuilding...')
   if (!skipBuild && !isDryRun) {
@@ -131,13 +136,25 @@ async function main () {
   console.log()
 }
 
+function updateVersions(version) {
+  // update root package.json
+  updatePackage(path.resolve(__dirname, '..'), version)
+}
+
+function updatePackage(pkgRoot, version) {
+  const pkgPath = path.resolve(pkgRoot, 'package.json')
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
+  pkg.version = version
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+}
+
 async function publishPackage (pkgName, version, runIfNotDry) {
   const releaseTag = semver.prerelease(version) && semver.prerelease(version)[0] || null
 
   step(`Publishing ${pkgName}...`)
   await runIfNotDry(registryManager, ['use', 'npm'])
   try {
-    await runIfNotDry(
+    /*await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
       // behavior.
       'yarn',
@@ -153,8 +170,8 @@ async function publishPackage (pkgName, version, runIfNotDry) {
         //cwd: pkgRoot,
         stdio: 'pipe'
       }
-    )
-    //await runIfNotDry('npm', ['publish'])
+    )*/
+    await runIfNotDry('npm', ['publish'])
     console.log(chalk.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
     if (e.stderr.match(/previously published/)) {
