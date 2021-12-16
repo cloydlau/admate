@@ -92,7 +92,7 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref } from '@vue/composition-api'
 
@@ -113,7 +113,7 @@ const {
   queryList,
   onPageNumberChange,
   currentInstance,
-} = useMyAdmate({
+} = useAdmateAdapter({
   admateConfig: {
     urlPrefix,
   },

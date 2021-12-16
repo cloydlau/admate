@@ -12,12 +12,12 @@
 </template>
 
 <script>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 
 export default {
   props: ['id'],
-  setup: props => useMyAdmate({
+  setup: props => useAdmateAdapter({
     admateConfig: {
       urlPrefix,
       list: {

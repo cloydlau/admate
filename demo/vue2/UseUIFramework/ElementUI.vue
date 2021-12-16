@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
 import { ref, onMounted } from '@vue/composition-api'
 
@@ -109,7 +109,7 @@ export default {
 
     const validateListFilter = (...args) => listFilterRef.value.validate(...args)
 
-    const admate = useMyAdmate({
+    const admate = useAdmateAdapter({
       admateConfig: {
         urlPrefix,
       },

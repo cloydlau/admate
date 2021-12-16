@@ -54,7 +54,7 @@ Admate 的目标是以快速简洁的方式开发管理后台页面，并在此�
 npm add admate vue@3 axios
 ```
 
-[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/useMyAdmate.ts)
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/useAdmateAdapter.ts)
 
 <br>
 
@@ -64,7 +64,7 @@ npm add admate vue@3 axios
 npm add admate vue@2 axios @vue/composition-api
 ```
 
-[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useMyAdmate.ts)
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useAdmateAdapter.ts)
 
 <br>
 

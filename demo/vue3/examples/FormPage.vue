@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { ref } from 'vue-demi'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -40,7 +40,7 @@ const {
   formTitle,
   submitForm,
   currentInstance,
-} = useMyAdmate({
+} = useAdmateAdapter({
   admateConfig: {
     urlPrefix: route.query.urlPrefix,
     getListProxy (getList, trigger) {

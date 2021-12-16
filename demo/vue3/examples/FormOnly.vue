@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref } from 'vue-demi'
 import { cloneDeep } from 'lodash-es'
@@ -50,7 +50,7 @@ export default {
       submitForm,
       formTitle,
       currentInstance,
-    } = useMyAdmate({
+    } = useAdmateAdapter({
       admateConfig: {
         urlPrefix,
         form: {

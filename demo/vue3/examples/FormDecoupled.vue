@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref, toRaw } from 'vue-demi'
 import { useRouter } from 'vue-router'
@@ -93,7 +93,7 @@ const {
   queryList,
   onPageNumberChange,
   currentInstance,
-} = useMyAdmate({
+} = useAdmateAdapter({
   admateConfig: {
     urlPrefix,
     openFormProxy (openForm) {

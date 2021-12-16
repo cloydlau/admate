@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import useMyAdmate from '../useMyAdmate'
+import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
 import { ref } from '@vue/composition-api'
 
@@ -126,7 +126,7 @@ export default {
     const listFilterRef = ref(null)
     const formRef = ref(null)
 
-    const admate = useMyAdmate({
+    const admate = useAdmateAdapter({
       admateConfig: {
         urlPrefix,
       },
