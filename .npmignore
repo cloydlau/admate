@@ -34,3 +34,4 @@ coverage/
 tests/
 /dist/*.html
 /*.html
+/scripts

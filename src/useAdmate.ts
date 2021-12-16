@@ -260,7 +260,7 @@ export default function useAdmate ({
       }
     } else {
       if (arguments.length) {
-        console.warn(`${CONSOLE_PREFIX}openForm仅在表单状态为 'r' 或 'u' 时需要传参`)
+        console.warn(`${CONSOLE_PREFIX}openForm 仅在表单状态为 'r' 或 'u' 时需要传参`)
       }
       Form.show = true
     }
