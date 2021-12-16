@@ -119,7 +119,7 @@
 <script setup>
 import useMyAdmate from '../useMyAdmate'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue-demi'
+import { ref } from '@vue/composition-api'
 import { cloneDeep } from 'lodash-es'
 
 const listFilterRef = ref(null)
