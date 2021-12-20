@@ -1,6 +1,6 @@
-# Admate / 管理后台伴侣
+# Admate
 
-用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin (Vue 3)](https://github.com/anncwb/vue-vben-admin), [vue-element-admin (Vue 2)](https://github.com/PanJiaChen/vue-element-admin) 中。
+管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin), [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
