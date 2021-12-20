@@ -1,6 +1,7 @@
 /**
  * 发版
- * - pnpm add chalk@^4.1.2 enquirer@latest execa@^4.1.0 minimist@latest semver@latest -D: 需要安装的依赖
+ * - pnpm add chalk@^4.1.2 enquirer execa@^4.1.0 minimist semver -D: 需要安装的依赖
+ * - "release": "node scripts/release.js": package.json - scripts
  * - pnpm release: 打包 + 发布 + Push + Tag
  * - pnpm release -- --skipBuild: 跳过打包
  */
