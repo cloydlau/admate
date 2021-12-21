@@ -1,6 +1,7 @@
 # Admate
 
-管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin), [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
+管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
+, [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
@@ -25,11 +26,13 @@
 - 🎨 **组合式 API** - 无侵入性
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理量身打造生命周期的行为
 - 🌐 **提供全局的请求配置** - 同一系统内，CRUD 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
-- 🍪 贴心而不武断的 CRUD 封装
-    - 不再操心列表的读取状态、表单的读取和提交状态
+- 🍪 **贴心而不武断的 CRUD 封装**
+    - 支持 RESTful
     - 支持监听筛选参数自动刷新列表（节流控制接口调用频率），也支持手动点击查询按钮筛选列表
     - 支持表单是对话框的形式，也支持表单是独立页面的形式
-- 🧹 周全的收尾工作，没有“后顾之忧”
+    - 支持调用一个接口更新状态，也支持分别调用启用和停用接口改变状态
+    - 不再操心列表的读取状态、表单的读取和提交状态
+- 🧹 **周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
     - 离开页面时，自动终止尚未完成的请求
@@ -618,17 +621,14 @@ form.status = 'r'
  *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'cache': 将 payload 直接用作表单数据（不调用查询单条记录的接口）
  * @returns {Promise<any>} axiosConfig.r 的返回值
  */
 openForm()
 ```
-
-**payloadAs:**
-
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
-- `'cache'`：将 payload 直接用作表单数据（不调用查询单条记录的接口）
 
 <a name="openForm-u"><br></a>
 
@@ -646,17 +646,14 @@ form.status = 'u'
  *
  * @param {any} [payload]
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'cache': 将 payload 直接用作表单数据（不调用查询单条记录的接口）
  * @returns {Promise<any>} axiosConfig.r 的返回值
  */
 openForm()
 ```
-
-**payloadAs:**
-
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
-- `'cache'`：将 payload 直接用作表单数据（不调用查询单条记录的接口）
 
 <br>
 
@@ -666,108 +663,103 @@ openForm()
 const {
   /**
    * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.d的返回值
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+   * @returns {Promise<any>} axiosConfig.d 的返回值
    */
   d
 } = useAdmate()
 ```
 
-**参数 2 的可选值：**
-
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
-
-<br>
-
-### 启用
-
-```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.enable的返回值
-   */
-  enable
-} = useAdmate()
-```
-
-**参数 2 的可选值：**
-
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
-
-<br>
-
-### 停用
-
-```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定payload的用途
-   * @returns {Promise<any>} axiosConfig.disable的返回值
-   */
-  disable
-} = useAdmate()
-```
-
-**参数 2 的可选值：**
-
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
-
 <br>
 
 ### 状态变更
 
-```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
-   */
-  updateStatus
-} = useAdmate()
+状态变更有两种方式：
+
+1. 后端只提供一个接口，传参指定新的状态
+2. 后端提供启用和停用两个接口
+
+```vue
+<!-- 方式一：使用 updateStatus -->
+
+<template>
+  <el-table>
+    <el-table-column label="操作" align="center">
+      <template slot-scope="{ row: { id, status } }">
+        <el-switch @change="updateStatus({ id, status: status^1 })"/>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script>
+import useAdmate from 'admate'
+
+export default {
+  setup: () => {
+    const {
+      /**
+       * @param {any} [payload]
+       * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+       *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+       *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+       *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+       * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
+       */
+      updateStatus,
+    } = useAdmate()
+    return { updateStatus }
+  }
+}
+</script>
 ```
 
-**参数 2 的可选值：**
+```vue
+<!-- 方式二：使用 enable 和 disable -->
 
-- `'data'`：将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-- `'params'`：将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-- `'config'`：将 payload 仅用于构建请求配置（详见[RESTful](#RESTful)）
+<template>
+  <el-table>
+    <el-table-column label="操作" align="center">
+      <template slot-scope="{ row: { id, status } }">
+        <el-switch @change="[enable,disable][status]({id})"/>
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
 
-**状态变更的两种方式：**
+<script>
+import useAdmate from 'admate'
 
-- 调用同一个接口，传参指定新的状态：使用 `updateStatus`
+export default {
+  setup: () => {
+    const {
+      /**
+       * @param {any} [payload]
+       * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+       *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+       *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+       *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+       * @returns {Promise<any>} axiosConfig.enable 的返回值
+       */
+      enable,
 
-```html
-
-<el-table-column label="操作" align="center">
-  <template slot-scope="{row:{id,status}}">
-    <el-switch
-      @change="updateStatus({id,status:status^1})"
-    />
-  </template>
-</el-table-column>
-```
-
-- 启用和停用是独立的两个接口：使用 `enable` 和 `disable`
-
-```html
-
-<el-table-column label="操作" align="center">
-  <template slot-scope="{row:{id,status}}">
-    <el-switch
-      @change="[enable,disable][status]({id})"
-    />
-  </template>
-</el-table-column>
+      /**
+       * @param {any} [payload]
+       * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+       *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+       *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+       *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+       * @returns {Promise<any>} axiosConfig.disable 的返回值
+       */
+      disable
+    } = useAdmate()
+    return { enable, disable }
+  }
+}
+</script>
 ```
 
 <br>
