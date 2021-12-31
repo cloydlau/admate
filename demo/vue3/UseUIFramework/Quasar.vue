@@ -119,7 +119,7 @@
 <script setup>
 import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 
 const listFilterRef = ref(null)
@@ -140,9 +140,7 @@ const {
   onPageNumberChange,
   currentInstance,
 } = useAdmateAdapter({
-  admateConfig: {
-    urlPrefix,
-  },
+  admateConfig: { urlPrefix },
   validateListFilter: (...args) => new Promise((resolve, reject) => {
     listFilterRef.value.validate(...args).then(valid => {
       valid ? resolve() : reject()

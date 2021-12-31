@@ -17,6 +17,12 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/dist/quasar.prod.css'
 import { Quasar } from 'quasar'
 
+import 'primeicons/primeicons.css'
+import 'primevue/resources/themes/lara-light-indigo/theme.css'
+import 'primevue/resources/primevue.min.css'
+import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
+
 //import 'vuetify/styles'
 //import { createVuetify } from 'vuetify'
 
@@ -27,6 +33,9 @@ const app = createApp(App)
 .use(Quasar, {
   plugins: {},
 })
+.use(PrimeVue)
+.use(ToastService)
+
 //.use(createVuetify())
 
 app.config.globalProperties.$eventBus = mitt()

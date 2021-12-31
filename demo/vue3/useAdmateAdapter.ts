@@ -18,6 +18,7 @@ export default ({
   validateListFilter,
   validateFormData = () => {},
   clearFormDataValidation = () => {},
+  toast = () => {},
 }) => {
   // 初始化admate
   const admate = useAdmate(merge({
@@ -78,7 +79,7 @@ export default ({
       } else {
         getList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-          currentInstance.value.$message.success('操作成功')
+          toast()
         }
       }
     },

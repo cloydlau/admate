@@ -62,6 +62,8 @@
     "minimist": "latest",
     "mitt": "latest",
     "mockjs": "latest",
+    "primeicons": "latest",
+    "primevue": "^3.10.0",
     "quasar": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "rollup-plugin-visualizer": "latest",

@@ -15,6 +15,10 @@ export default [
       import('../UseUIFramework/Quasar.vue')
   },
   {
+    path: '/prime-vue', component: () =>
+      import('../UseUIFramework/PrimeVue.vue')
+  },
+  {
     path: '/form-externalized', component: () =>
       import('../examples/FormExternalized.vue')
   },
