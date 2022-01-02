@@ -22,7 +22,7 @@
 ## 特性
 
 - 🕶 **Vue 2 和 Vue 3 通用** - 比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
-- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue 和 axios 便可使用，并提供四大 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar）
+- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue 和 axios 便可使用，并提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
 - 🎨 **组合式 API** - 无侵入性
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理量身打造生命周期的行为
 - 🌐 **提供全局的请求配置** - 同一系统内，CRUD 的请求配置通常是相似的，同一模块内，接口前缀通常是一致的
@@ -96,51 +96,63 @@ npm add admate vue@2 axios @vue/composition-api
 
 :four: 创建页面文件 `xxx.vue`，粘贴代码
 
-### 搭配ElementPlus
+### 搭配 ElementPlus
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 <br>
 
-### 搭配ElementUI
+### 搭配 ElementUI
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
 
 <br>
 
-### 搭配AntDesignVue@2
+### 搭配 AntDesignVue@2
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
-### 搭配AntDesignVue@1
+### 搭配 AntDesignVue@1
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
-### 搭配Vuetify@3
+### 搭配 Vuetify@3
 
 [Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于 Alpha 阶段，只有少量组件可用，暂无示例
 
 <br>
 
-### 搭配Vuetify@2
+### 搭配 Vuetify@2
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
 
 <br>
 
-### 搭配Quasar@2
+### 搭配 Quasar@2
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
 
 <br>
 
-### 搭配Quasar@1
+### 搭配 Quasar@1
 
 Quasar@1（应该）不支持 Vite，无示例
+
+<br>
+
+### 搭配 PrimeVue@3
+
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/PrimeVue.vue)
+
+<br>
+
+### 搭配 PrimeVue@2
+
+PrimeVue@2（应该）不支持 Vite，无示例
 
 <br>
 

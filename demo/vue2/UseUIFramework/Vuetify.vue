@@ -8,11 +8,12 @@
         label="姓名"
         :rules="[v => !!v || 'Name is required',]"
         required
-        class="w-220px inline-block"
+        class="w-220px"
+        style="display:inline-block !important;"
       />
       <v-btn
         class="ml-10px"
-        v-if="list.watchFilter"
+        v-if="!list.watchFilter"
         color="#2A73C5"
         dark
         @click="queryList"
@@ -127,9 +128,7 @@ export default {
     const formRef = ref(null)
 
     const admate = useAdmateAdapter({
-      admateConfig: {
-        urlPrefix,
-      },
+      admateConfig: { urlPrefix },
       validateListFilter: (...args) => new Promise((resolve, reject) => {
         listFilterRef.value.validate(...args) ? resolve() : reject()
       }),
