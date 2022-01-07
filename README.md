@@ -74,27 +74,29 @@ npm add admate vue@2 axios @vue/composition-api
 
 使用代码生成器生成页面模板
 
-> 目前仅支持 element-ui
+代码生成器不是必须的，它只是帮助你省去**从 YApi 复制接口字段名至代码中**这一烦人步骤
 
-#### Installation
+目前仅支持 element-ui
+
+#### 安装
 
 安装 Chrome / Edge 插件 **YApi2Code**，或使用离线版：
 
-:one: <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
+1. <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
 
-:two: 打开浏览器**扩展程序**，并开启**开发者模式**
+2. 打开浏览器**扩展程序**，并开启**开发者模式**
 
-:three: 点击**加载已解压的扩展程序**，选择解压后的文件夹
+3. 点击**加载已解压的扩展程序**，选择解压后的文件夹
 
-#### Usage
+#### 使用
 
-:one: 访问 YApi，选中相应模块的**查询列表**接口
+1. 访问 YApi，选中相应模块的**查询列表**接口
 
-:two: 点击浏览器右上角运行插件
+2. 点击浏览器右上角运行插件
 
-:three: 点击**生成代码**，代码将被复制至剪贴板
+3. 点击**生成代码**，代码将被复制至剪贴板
 
-:four: 创建页面文件 `xxx.vue`，粘贴代码
+4. 创建页面文件 `xxx.vue`，粘贴代码
 
 ### 搭配 ElementPlus
 
