@@ -98,7 +98,9 @@ npm add admate vue@2 axios @vue/composition-api
 
 4. 创建页面文件 `xxx.vue`，粘贴代码
 
-### 搭配 ElementPlus
+### 搭配 ElementPlus <img src="https://img.shields.io/npm/dm/element-plus.svg"> <img src="https://img.shields.io/github/stars/element-plus/element-plus">
+
+
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
 
@@ -106,11 +108,15 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配 ElementUI
 
+<img src="https://img.shields.io/npm/dm/element-ui.svg"> <img src="https://img.shields.io/github/stars/ElemeFE/element">
+
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
 
 <br>
 
 ### 搭配 AntDesignVue@2
+
+<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
@@ -118,11 +124,15 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配 AntDesignVue@1
 
+<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
+
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
 ### 搭配 Vuetify@3
+
+<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
 
 [Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于 Alpha 阶段，只有少量组件可用，暂无示例
 
@@ -130,11 +140,15 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配 Vuetify@2
 
+<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
+
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
 
 <br>
 
 ### 搭配 Quasar@2
+
+<img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
 
@@ -142,17 +156,23 @@ npm add admate vue@2 axios @vue/composition-api
 
 ### 搭配 Quasar@1
 
+<img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
+
 Quasar@1（应该）不支持 Vite，无示例
 
 <br>
 
 ### 搭配 PrimeVue@3
 
+<img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue">
+
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/PrimeVue.vue)
 
 <br>
 
 ### 搭配 PrimeVue@2
+
+<img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue"> 
 
 PrimeVue@2（应该）不支持 Vite，无示例
 
