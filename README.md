@@ -74,7 +74,7 @@ npm add admate vue@2 axios @vue/composition-api
 
 使用代码生成器生成页面模板
 
-代码生成器不是必须的，它只是帮助你省去**从 YApi 复制接口字段名至代码中**这一烦人步骤
+代码生成器不是必须的，它只是帮你省去**从 YApi 复制字段名至代码中**这一烦人步骤
 
 目前仅支持 element-ui
 
@@ -98,11 +98,15 @@ npm add admate vue@2 axios @vue/composition-api
 
 4. 创建页面文件 `xxx.vue`，粘贴代码
 
-### 搭配 ElementPlus <img src="https://img.shields.io/npm/dm/element-plus.svg"> <img src="https://img.shields.io/github/stars/element-plus/element-plus">
+<br>
 
+### 搭配 Vuetify
 
+<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
+[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于 Alpha 阶段，只有少量组件可用，暂无示例
+
+[Vuetify@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
 
 <br>
 
@@ -114,67 +118,41 @@ npm add admate vue@2 axios @vue/composition-api
 
 <br>
 
-### 搭配 AntDesignVue@2
+### 搭配 ElementPlus
+
+<img src="https://img.shields.io/npm/dm/element-plus.svg"> <img src="https://img.shields.io/github/stars/element-plus/element-plus">
+
+[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
+
+<br>
+
+### 搭配 AntDesignVue
 
 <img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+
+[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
-### 搭配 AntDesignVue@1
-
-<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
-
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
-
-<br>
-
-### 搭配 Vuetify@3
-
-<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
-
-[Vuetify@3](https://next.vuetifyjs.com/zh-Hans/components/app-bars/) 仍处于 Alpha 阶段，只有少量组件可用，暂无示例
-
-<br>
-
-### 搭配 Vuetify@2
-
-<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
-
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
-
-<br>
-
-### 搭配 Quasar@2
+### 搭配 Quasar
 
 <img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+[Quasar@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+
+Quasar@1（应该）不支持 Vite，暂无示例
 
 <br>
 
-### 搭配 Quasar@1
-
-<img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
-
-Quasar@1（应该）不支持 Vite，无示例
-
-<br>
-
-### 搭配 PrimeVue@3
+### 搭配 PrimeVue
 
 <img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/PrimeVue.vue)
+[PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/PrimeVue.vue)
 
-<br>
-
-### 搭配 PrimeVue@2
-
-<img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue"> 
-
-PrimeVue@2（应该）不支持 Vite，无示例
+PrimeVue@2（应该）不支持 Vite，暂无示例
 
 <br>
 
