@@ -6,11 +6,9 @@ import {
   watch,
   onMounted,
   getCurrentInstance
-} from 'vue-demi'
-// 来源替换为 'admate'
-import useAdmate from '../../src/main'
-// 来源替换为 'axios'，或你的axios封装
-import request from './utils/request'
+} from 'vue'
+import useAdmate from '../../src/main' // 来源替换为 'admate'
+import request from './utils/request' // 来源替换为 'axios'，或你的 axios 封装
 import { merge } from 'lodash-es'
 
 export default ({
@@ -20,11 +18,11 @@ export default ({
   clearFormDataValidation = () => {},
   toast = () => {},
 }) => {
-  // 初始化admate
+  // 初始化 admate
   const admate = useAdmate(merge({
-    // axios或axios实例
+    // axios 或 axios 实例
     axios: request,
-    // crud接口的axios配置
+    // crud 接口的 axios 配置
     axiosConfig: {
       c: {
         url: 'create',
@@ -56,7 +54,7 @@ export default ({
       // 查询列表接口的默认参数
       filter: {
         // 页容量
-        // 注意：如果修改了默认值，需要同步修改el-pagination组件pageSize参数的值
+        // 注意：如果修改了默认值，需要同步修改 el-pagination 组件 pageSize 参数的值
         pageSize: 10,
       },
       dataAt: 'data.list',
@@ -70,7 +68,7 @@ export default ({
       },
       dataAt: 'data'
     },
-    // getList代理
+    // getList 代理
     getListProxy (getList, trigger) {
       if (trigger === 'filterChange') {
         validateListFilter().then(() => {
@@ -83,7 +81,7 @@ export default ({
         }
       }
     },
-    // openForm代理
+    // openForm 代理
     openFormProxy (openForm) {
       function callback () {
         // 回显表单后，清除校验
@@ -102,13 +100,13 @@ export default ({
           })
         })
       } else {
-        // 新增、复用列表数据时openForm没有返回值
+        // 新增、复用列表数据时 openForm 没有返回值
         setTimeout(() => {
           callback()
         }, 0)
       }
     },
-    // submitForm代理
+    // submitForm 代理
     submitFormProxy (submitForm) {
       return new Promise((resolve, reject) => {
         validateFormData().then(() => {
@@ -134,7 +132,7 @@ export default ({
     }
   })
 
-  // 获取当前Vue实例
+  // 获取当前 Vue 实例
   const currentInstance = ref(null)
   onMounted(() => {
     currentInstance.value = getCurrentInstance().proxy
@@ -173,7 +171,7 @@ export default ({
         admate.getList()
       }
     },
-    // 当前Vue实例
+    // 当前 Vue 实例
     currentInstance,
   }))
 }

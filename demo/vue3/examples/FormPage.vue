@@ -25,7 +25,7 @@
 
 <script setup>
 import useAdmateAdapter from '../useAdmateAdapter'
-import { ref } from 'vue-demi'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const formRef = ref(null)

@@ -1,4 +1,4 @@
-import { createApp } from 'vue-demi'
+import { createApp } from 'vue'
 import router from './router/vue-router'
 import App from './index.vue'
 import mitt from 'mitt'

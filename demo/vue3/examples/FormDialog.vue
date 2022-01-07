@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue-demi'
+import { ref, watch, nextTick } from 'vue'
 
 const formRef = ref(null)
 

@@ -73,7 +73,7 @@
 <script setup>
 import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref, toRaw } from 'vue-demi'
+import { ref, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
