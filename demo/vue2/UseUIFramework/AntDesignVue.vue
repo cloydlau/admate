@@ -93,6 +93,7 @@ import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
 import { ref } from '@vue/composition-api'
 import { cloneDeep } from 'lodash-es'
+import { message } from 'ant-design-vue'
 
 export default {
   setup: () => {
@@ -100,12 +101,11 @@ export default {
     const formRef = ref(null)
 
     const admate = useAdmateAdapter({
-      admateConfig: {
-        urlPrefix,
-      },
+      admateConfig: { urlPrefix },
       validateListFilter: (...args) => listFilterRef.value.validate(...args),
       validateFormData: (...args) => formRef.value.validate(...args),
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
+      toast: () => {message.success('操作成功')}
     })
 
     const defaultListFilter = cloneDeep(admate.list.value.filter)

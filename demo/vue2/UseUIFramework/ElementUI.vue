@@ -101,6 +101,7 @@
 import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
 import { ref, onMounted } from '@vue/composition-api'
+import { Message  } from 'element-ui'
 
 export default {
   setup: () => {
@@ -110,9 +111,11 @@ export default {
     const validateListFilter = (...args) => listFilterRef.value.validate(...args)
 
     const admate = useAdmateAdapter({
-      admateConfig: {
-        urlPrefix,
-      },
+      admateConfig: { urlPrefix },
+      validateListFilter,
+      validateFormData: (...args) => formRef.value.validate(...args),
+      clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
+      toast: () => {Message({ message: '操作成功', type: 'success', })},
       getListProxy (getList, trigger) {
         // onMounted中给筛选项赋初值已经触发调用
         if (trigger === 'init') {
@@ -130,9 +133,6 @@ export default {
           }
         }
       },
-      validateListFilter,
-      validateFormData: (...args) => formRef.value.validate(...args),
-      clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
     })
 
     // fix: 给筛选项赋初值，使得重置功能能够正常工作

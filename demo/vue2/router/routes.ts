@@ -18,4 +18,8 @@ export default [
     path: '/quasar-1', component: () =>
       import('./UseUIFramework/Quasar1.vue')
   },*/
+  /*{
+    path: '/prime-vue', component: () =>
+      import('../UseUIFramework/PrimeVue.vue')
+  },*/
 ]

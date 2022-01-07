@@ -101,10 +101,10 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
+import { ref } from '@vue/composition-api'
 import { cloneDeep } from 'lodash-es'
 
 import InputText from 'primevue/inputtext'
@@ -121,49 +121,79 @@ const listFilterRef = ref(null)
 const formRef = ref(null)
 const toast = useToast()
 
-const {
-  list,
-  form,
-  getList,
-  c,
-  r,
-  u,
-  d,
-  updateStatus,
-  submitForm,
-  formTitle,
-  queryList,
-  onPageNumberChange,
-  currentInstance,
-} = useAdmateAdapter({
-  admateConfig: { urlPrefix },
-  validateListFilter: (...args) => new Promise((resolve, reject) => {
-    if (list.value.filter.name) {
-      resolve()
-    } else {
-      reject()
-    }
-  }),
-  validateFormData: (...args) => new Promise((resolve, reject) => {
-    if (form.value.data.name) {
-      resolve()
-    } else {
-      reject()
-    }
-  }),
-  toast: () => {
-    // todo: 无效果
-    toast.add({
-      severity: 'success',
-      summary: '操作成功',
+export default {
+  components: {
+    InputText,
+    Dropdown,
+    Button,
+    Paginator,
+    DataTable,
+    Column,
+    Dialog,
+    ProgressSpinner,
+  },
+  setup: () => {
+    const {
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      onPageNumberChange,
+      currentInstance,
+    } = useAdmateAdapter({
+      admateConfig: { urlPrefix },
+      validateListFilter: (...args) => new Promise((resolve, reject) => {
+        if (list.value.filter.name) {
+          resolve()
+        } else {
+          reject()
+        }
+      }),
+      validateFormData: (...args) => new Promise((resolve, reject) => {
+        if (form.value.data.name) {
+          resolve()
+        } else {
+          reject()
+        }
+      }),
+      toast: () => {
+        // todo: 无效果
+        toast.add({
+          severity: 'success',
+          summary: '操作成功',
+        })
+      }
     })
+
+    const defaultListFilter = cloneDeep(list.value.filter)
+
+    const reset = function () {
+      list.value.filter = cloneDeep(defaultListFilter)
+    }
+
+    return {
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      onPageNumberChange,
+      currentInstance,
+      reset,
+    }
   }
-})
-
-const defaultListFilter = cloneDeep(list.value.filter)
-
-const reset = function () {
-  list.value.filter = cloneDeep(defaultListFilter)
 }
-
 </script>
