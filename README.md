@@ -5,12 +5,12 @@
 
 🎉 在生产实践中，Admate 经受住了对接微信进件的考验。
 
-| 案例对比 | 技术栈 | 代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| --- | --- | :---: | :---: |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue 2 + ElementUI | 89293 字符 | 19 个|
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** | 38718 字符 | 10 个 |
+| 案例对比 | 技术栈 | 业务代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
+| --- | --- |:------------------------------------------------------------------------:| :---: |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3) | Vue 2 + ElementUI |                                 89293 字符                                 | 19 个|
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** |                                 38718 字符                                 | 10 个 |
 
-| 案例对比 | 技术栈 | 代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（整个页面）</span> |
+| 案例对比 | 技术栈 | 业务代码量<span style="color:rgba(28,31,35,.6);font-size:12px;">（整个页面）</span> |
 | --- | --- | :---: |
 | [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI | 13330 字符 |
 | 常规增删查改页面 | Vue 2 + ElementUI + **Admate** | <span style="font-size:12px;">不是特别复杂的不会过万，简单点的三千字符可以搞定</span> |
