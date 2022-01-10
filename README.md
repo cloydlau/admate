@@ -178,6 +178,7 @@ useAdmate({
 
 ```ts
 useAdmate({
+  // axios 配置
   axiosConfig: {
     // 查询列表
     getList: {
@@ -211,48 +212,6 @@ useAdmate({
     updateStatus: {
       method: 'PUT',
     },
-  },
-})
-```
-
-```ts
-// 示例：根据传参动态生成配置，常用于 RESTful 中
-// 动态生成配置时，payloadAs 将会失效
-
-useAdmate({
-  axiosConfig: {
-    // 查询列表
-    getList: payload => ({
-      method: 'GET',
-    }),
-    // 新增一条记录（submitForm 在新增时调用）
-    c: payload => ({
-      method: 'POST',
-    }),
-    // 查询一条记录（openForm 在查看、编辑时调用）
-    r: payload => ({
-      method: 'GET',
-    }),
-    // 编辑一条记录（submitForm 在编辑时调用）
-    u: payload => ({
-      method: 'PUT',
-    }),
-    // 删除一条记录
-    d: payload => ({
-      method: 'DELETE',
-    }),
-    // 启用一条记录
-    enable: payload => ({
-      method: 'PUT',
-    }),
-    // 禁用一条记录
-    disable: payload => ({
-      method: 'PUT',
-    }),
-    // 变更一条记录的状态
-    updateStatus: payload => ({
-      method: 'PUT',
-    }),
   },
 })
 ```
@@ -294,17 +253,48 @@ useAdmate({
 <!-- 示例 -->
 
 // 配置
-const { r, u } = useAdmate({
+const { openForm, d, enable, disable, updateStatus } = useAdmate({
   axiosConfig: {
-    r: config => ({
-      url: 'module/' + config.id
+    // 查询一条记录（openForm 在查看、编辑时调用）
+    r: payload => ({
+      method: 'GET',
+      url: 'module/' + payload.id
+    }),
+    // 编辑一条记录（submitForm 在编辑时调用）
+    u: payload => ({
+      method: 'PUT',
+      url: 'module/' + payload.id
+    }),
+    // 删除一条记录
+    d: payload => ({
+      method: 'DELETE',
+      url: 'module/' + payload.id
+    }),
+    // 启用一条记录
+    enable: payload => ({
+      method: 'PUT',
+      url: 'module/' + payload.id
+    }),
+    // 禁用一条记录
+    disable: payload => ({
+      method: 'PUT',
+      url: 'module/' + payload.id
+    }),
+    // 变更一条记录的状态
+    updateStatus: payload => ({
+      method: 'PUT',
+      url: 'module/' + payload.id
     }),
   }
 })
 
 // 使用
-r(form, 'config')
-u(form, 'config')
+openForm(row, 'config')
+openForm(row, 'config')
+d(row, 'config')
+enable(row, 'config')
+disable(row, 'config')
+updateStatus(row, 'config')
 ```
 
 <br>
@@ -357,12 +347,22 @@ export default {
     // 直接转换为 FormData
     //FormData.from = jsonToFormData
 
+    const admate = useAdmate({
+      getListProxy (getList, trigger) {
+        getList(FormData.from(list.filter))
+      },
+    })
+    
     return {
-      ...useAdmate({
-        getListProxy (getList, trigger) {
-          getList(FormData.from(list.filter))
-        },
-      }),
+      ...admate,
+      r: (...args) => {
+        admate.form.status = 'r'
+        admate.openForm(...args)
+      },
+      u: (...args) => {
+        admate.form.status = 'u'
+        admate.openForm(...args)
+      },
       FormData
     }
   }
