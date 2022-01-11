@@ -290,7 +290,6 @@ const { openForm, d, enable, disable, updateStatus } = useAdmate({
 
 // 使用
 openForm(row, 'config')
-openForm(row, 'config')
 d(row, 'config')
 enable(row, 'config')
 disable(row, 'config')
