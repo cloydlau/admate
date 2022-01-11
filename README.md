@@ -392,9 +392,7 @@ useAdmate({
 })
 ```
 
-::: danger  
-如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 bug）
-:::
+如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 Bug）
 
 ```vue
 <!-- 示例 -->
@@ -807,7 +805,7 @@ useAdmate({
 - `(newFormData: any) => any`: 自定义合并方式
 - `false`: 不合并，直接替换
 
-::: tip 为什么默认是深合并？
+**为什么默认是深合并？**
 
 在 Vue 2 中，template 不支持 `?.` 语法，要在 template 中判空，代码写起来会非常冗余，通常的做法是在 data 中声明空对象
 
@@ -847,8 +845,6 @@ export default {
 
 如果与默认值<span style="color:red">深合并</span>后将得到：
 `{ a: { b: {} } }` —— 代码正常工作。
-
-:::
 
 ```ts
 // 示例：自定义合并方式
