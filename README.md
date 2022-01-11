@@ -896,7 +896,7 @@ const { form } = useAdmate({
 - `'u'` 编辑
 - `''` 关闭
 
-form.show 为 false 时，form.status 为 ''
+`form.show` 为 `false` 时，`form.status` 为 `''`
 
 表单默认是对话框的形式，但也支持[表单是独立页面](#FormDecoupled) 的情况
 
