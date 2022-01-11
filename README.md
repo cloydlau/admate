@@ -800,8 +800,8 @@ useAdmate({
 
 **mergeData:**
 
-- `deep`: 深合并（默认）
-- `shallow`: 浅合并
+- `'deep'`: 深合并（默认）
+- `'shallow'`: 浅合并
 - `(newFormData: any) => any`: 自定义合并方式
 - `false`: 不合并，直接替换
 
