@@ -308,7 +308,7 @@ axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要�
 
 - 局部配置
 
-`getList`、`r`、`u`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数 1 均支持 FormData 类型
+`getList`、`openForm`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数 1 均支持 FormData 类型
 
 ```vue
 <!-- 示例：局部配置 -->
