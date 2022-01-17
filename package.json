@@ -28,6 +28,7 @@
     "ri": "rd /s /q .\\node_modules && pnpm i",
     "test:2": "vue-demi-switch 2 && jest",
     "test:3": "vue-demi-switch 3 vue3 && jest",
+    "up": "node scripts/upgrade.js",
     "release": "node scripts/release.js"
   },
   "dependencies": {
