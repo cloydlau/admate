@@ -631,7 +631,7 @@ form.status = 'r'
 /**
  * PS：以下为原始 openForm 的函数签名，如果你配置了 openFormProxy ，则以 openFormProxy 为准
  *
- * @param {any} [payload]
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
  *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
  *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
@@ -656,7 +656,7 @@ form.status = 'u'
 /**
  * PS：以下为原始 openForm 的函数签名，如果你配置了 openFormProxy，则以 openFormProxy 为准
  *
- * @param {any} [payload]
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
  *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
  *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
