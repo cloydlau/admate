@@ -246,7 +246,7 @@ export default function useAdmate ({
 
   function openForm (payload?, payloadAs?: RFormType) {
     // 查看和编辑时，回显单条记录数据
-    if (['r', 'u'].includes(Form.status)) {
+    if (payload) {
       if (payloadAs === 'cache') {
         mergeFormData(Form, cloneDeep(payload))
         Form.show = true
@@ -259,8 +259,8 @@ export default function useAdmate ({
         })
       }
     } else {
-      if (arguments.length) {
-        console.warn(`${CONSOLE_PREFIX}openForm 仅在表单状态为 'r' 或 'u' 时需要传参`)
+      if (['r', 'u'].includes(Form.status) && !arguments.length) {
+        console.warn(`${CONSOLE_PREFIX}表单状态为 'r' 或 'u' 时，openForm 的参数必传`)
       }
       Form.show = true
     }

@@ -2,7 +2,7 @@
   "name": "admate",
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -64,7 +64,7 @@
     "mitt": "latest",
     "mockjs": "latest",
     "primeicons": "latest",
-    "primevue": "^3.10.0",
+    "primevue": "^3.11.0",
     "quasar": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "rollup-plugin-visualizer": "latest",
