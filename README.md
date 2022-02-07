@@ -3,7 +3,7 @@
 管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
-🎉 在生产实践中，Admate 经受住了多个大型复杂页面的考验，如电商后台的商品管理（工作量大约 30 人天）、微信进件（工作量大约 12 人天）。
+🎉 在生产实践中，Admate 扛住了多个复杂页面的考验，如电商后台的商品管理（工作量约 30 人天）、微信进件（工作量约 12 人天）。
 
 | 案例对比 | 技术栈 | 业务代码量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
 | --- | --- |:------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
@@ -58,7 +58,7 @@ npm add admate vue@3 axios
 # 2.7
 npm add admate vue@2 axios
 
-# 2.6及以下版本
+# 2.6 及以下版本
 npm add admate vue@2.6 axios @vue/composition-api
 ```
 
