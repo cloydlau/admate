@@ -178,7 +178,6 @@ export default function useAdmate ({
     }).catch(e => {
       //List.data.length = 0 // List.data可能为空
       List.data = []
-      console.error(e)
     }).finally(() => {
       List.loading = false
     })
@@ -359,7 +358,6 @@ export default function useAdmate ({
             show: false,
           }
         })
-        console.error(state)
       })
     } else {
       setTerminalState({
@@ -412,7 +410,6 @@ export default function useAdmate ({
             submitting: false
           }
         })
-        console.error(state)
       })
     } else {
       setTerminalState({
