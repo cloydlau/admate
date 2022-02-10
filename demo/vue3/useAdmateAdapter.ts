@@ -93,7 +93,8 @@ export default ({
         return new Promise((resolve, reject) => {
           promise.then(() => {
             resolve()
-          }).catch(() => {
+          }).catch(e => {
+            console.error(e)
             reject()
           }).finally(() => {
             callback()
@@ -112,7 +113,8 @@ export default ({
         validateFormData().then(() => {
           submitForm().then(() => {
             resolve()
-          }).catch(() => {
+          }).catch(e => {
+            console.error(e)
             reject()
           })
         })
