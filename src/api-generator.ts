@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es'
-import { CancelToken } from 'axios'
+//import { CancelToken } from 'axios'
 
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
 let source
@@ -70,8 +70,8 @@ export default function createAPIGenerator (
     urlSuffix: string = '',
     configCatalog: ConfigCatalogType = {}
   ): APIType => {
-    cancelAllRequest()
-    source = CancelToken.source()
+    //cancelAllRequest() // 嵌套使用 Admate 时，可能导致将父级的请求取消掉
+    //source = CancelToken.source()
 
     let result = {}
     for (let k in configCatalog_default) {
@@ -84,7 +84,7 @@ export default function createAPIGenerator (
             configCatalog_global[k]
 
         const configObj = {
-          cancelToken: source.token,
+          //cancelToken: source.token,
           ...typeof configCatalog[k] === 'function' ?
             configCatalog[k](payload) :
             configCatalog[k]
@@ -107,10 +107,10 @@ export default function createAPIGenerator (
   }
 }
 
-export const cancelAllRequest = () => {
-  // 即使不存在pending的请求 cancel()也会触发axios.interceptors.response.use.onRejected
+/*export const cancelAllRequest = () => {
+  // 即使不存在 pending 的请求 cancel() 也会触发 axios.interceptors.response.use.onRejected
   if (source) {
     source.cancel()
     source = undefined
   }
-}
+}*/

@@ -34,7 +34,6 @@
 - 🧹 **周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-    - 切换页面时，自动终止尚未完成的请求
 
 <br>
 
@@ -45,7 +44,7 @@
 ### Vue 3
 
 ```bash
-npm add admate vue@3 axios
+npm add admate
 ```
 
 [初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/useAdmateAdapter.ts)
@@ -56,10 +55,10 @@ npm add admate vue@3 axios
 
 ```bash
 # 2.7
-npm add admate vue@2 axios
+npm add admate
 
 # 2.6 及以下版本
-npm add admate vue@2.6 axios @vue/composition-api
+npm add admate @vue/composition-api
 ```
 
 [初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useAdmateAdapter.ts)

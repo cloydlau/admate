@@ -156,7 +156,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
   step(`Publishing ${pkgName}...`)
   await runIfNotDry(registryManager, ['use', 'npm'])
   try {
-    await runIfNotDry(
+    /*await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
       // behavior.
       'yarn',
@@ -172,13 +172,14 @@ async function publishPackage (pkgName, version, runIfNotDry) {
         //cwd: pkgRoot,
         stdio: 'pipe'
       }
-    )
-    //await runIfNotDry('npm', ['publish'])
+    )*/
+    await runIfNotDry('npm', ['publish'])
     console.log(chalk.green(`Successfully published ${pkgName}@${version}`))
   } catch (e) {
     if (e.stderr.match(/previously published/)) {
       console.log(chalk.red(`Skipping already published: ${pkgName}`))
     } else {
+      await runIfNotDry('git', ['reset', '--soft', 'HEAD~1'])
       throw e
     }
   }
@@ -186,5 +187,6 @@ async function publishPackage (pkgName, version, runIfNotDry) {
 }
 
 main().catch(err => {
+  updateVersions(currentVersion)
   console.error(err)
 })

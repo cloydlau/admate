@@ -481,8 +481,8 @@ export default function useAdmate ({
   /*onUnmounted(() => {
     /!**
      * 页面销毁时如果还有查询请求，中止掉
-     * 不能在onUnmounted调用cancelAllRequest，
-     * 因为下一个页面的setup会早于上一个页面的onUnmounted执行，
+     * 不能在 onUnmounted 调用 cancelAllRequest，
+     * 因为下一个页面的 setup 会早于上一个页面的 onUnmounted 执行，
      * 导致中止掉下一个页面的请求
      *!/
     //cancelAllRequest()
