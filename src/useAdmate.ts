@@ -7,7 +7,7 @@ import type { ConfigCatalogType } from './api-generator'
 import { name } from '../package.json'
 const CONSOLE_PREFIX = `${name} `
 
-type StatusType = '' | 'c' | 'r' | 'u'
+type StatusType = '' | 'c' | 'r' | 'u' | string
 type MergeDataType = 'deep' | 'shallow' | false | ((newFormData: any) => any)
 type MergeStateType = 'deep' | 'shallow'
 type RFormType = 'data' | 'params' | 'config' | 'cache'
