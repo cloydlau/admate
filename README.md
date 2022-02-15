@@ -22,10 +22,10 @@
 ## 特性
 
 - 🕶 **Vue 2 和 Vue 3 通用** - 比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
-- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue 和 axios 便可使用，并提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
+- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue 和 Axios 便可使用，并提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
 - 🎨 **组合式 API** - 无侵入性
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理量身打造生命周期的行为
-- 🌐 **提供模块级的请求配置** - 同模块内请求配置相似，接口前缀通常是一致的
+- 🌐 **提供模块级的请求配置** - Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🍪 **贴心而不武断的 CRUD 封装**
     - 列表筛选：支持监听筛选参数 + 节流控制接口调用频率的方式，也支持点击查询按钮触发的方式
     - 表单展现形式：支持对话框的形式，也支持独立页面的形式
@@ -153,11 +153,11 @@ PrimeVue@2（应该）不支持 Vite，暂无示例
 
 ## 请求配置
 
-### axios
+### Axios
 
 ```ts
 useAdmate({
-  // axios 或 axios 实例
+  // Axios 或 Axios 实例
   // 用于调用接口
   axios,
 })
@@ -169,7 +169,7 @@ useAdmate({
 
 ```ts
 useAdmate({
-  // axios 配置
+  // Axios 配置
   axiosConfig: {
     // 查询列表
     getList: {
@@ -291,11 +291,11 @@ updateStatus({ id: 1 }, 'config')
 
 ### FormData
 
-axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`：
+Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`：
 
 - 全局配置
 
-给你的 axios 配置 `transformRequest`、`headers['Content-Type']`
+给你的 Axios 配置 `transformRequest`、`headers['Content-Type']`
 
 - 局部配置
 
