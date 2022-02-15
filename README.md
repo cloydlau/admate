@@ -153,7 +153,7 @@ PrimeVue@2（应该）不支持 Vite，暂无示例
 
 ## 请求配置
 
-### Axios
+### axios
 
 ```ts
 useAdmate({
