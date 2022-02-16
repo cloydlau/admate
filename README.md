@@ -234,8 +234,6 @@ useAdmate({
 
 <br>
 
-<a name="RESTful"><br></a>
-
 ### RESTful
 
 如果接口地址需要进行动态拼接
@@ -590,11 +588,11 @@ const { list } = useAdmate({
 })
 ```
 
+<a class="anchor-fix" name="openForm-c"></a>
+
 <br>
 
 ## 表单
-
-<a name="openForm-c"><br></a>
 
 ### 新增
 
@@ -608,7 +606,9 @@ form.status = 'c'
 openForm()
 ```
 
-<a name="openForm-r"><br></a>
+<a class="anchor-fix" name="openForm-r"></a>
+
+<br>
 
 ### 查看
 
@@ -633,7 +633,9 @@ form.status = 'r'
 openForm()
 ```
 
-<a name="openForm-u"><br></a>
+<a class="anchor-fix" name="openForm-u"></a>
+
+<br>
 
 ### 编辑
 
@@ -1199,7 +1201,9 @@ useAdmate({
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
 
-<a name="FormDecoupled"><br></a>
+<a class="anchor-fix" name="FormDecoupled"></a>
+
+<br>
 
 ## 示例：表单是独立页面
 
