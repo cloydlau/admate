@@ -117,7 +117,7 @@ export default {
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
       toast: () => {Message({ message: '操作成功', type: 'success', })},
       getListProxy (getList, trigger) {
-        // onMounted中给筛选项赋初值已经触发调用
+        // onMounted 中给筛选项赋初值已经触发调用
         if (trigger === 'init') {
           return
         }
@@ -136,7 +136,7 @@ export default {
     })
 
     // fix: 给筛选项赋初值，使得重置功能能够正常工作
-    // Object.defineProperty对不存在的属性无法拦截
+    // Object.defineProperty 对不存在的属性无法拦截
     onMounted(() => {
       admate.list.value.filter = {
         ...Object.fromEntries(Array.from(listFilterRef.value.fields || [], v => [v.labelFor, undefined])),
