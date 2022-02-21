@@ -101,7 +101,11 @@
 import useAdmateAdapter from '../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
 import { ref, onMounted } from '@vue/composition-api'
-import { Message  } from 'element-ui'
+import { Message } from 'element-ui'
+
+function toast () {
+  Message({ message: '操作成功', type: 'success', })
+}
 
 export default {
   setup: () => {
@@ -115,7 +119,7 @@ export default {
       validateListFilter,
       validateFormData: (...args) => formRef.value.validate(...args),
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
-      toast: () => {Message({ message: '操作成功', type: 'success', })},
+      toast,
       getListProxy (getList, trigger) {
         // onMounted 中给筛选项赋初值已经触发调用
         if (trigger === 'init') {
@@ -129,7 +133,7 @@ export default {
         } else {
           getList()
           if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-            admate.currentInstance.value.$message.success('操作成功')
+            toast()
           }
         }
       },
