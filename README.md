@@ -568,7 +568,7 @@ useAdmate({
 useAdmate({
   getListProxy (getList, trigger) {
     getList()
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(caller)) {
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
       currentInstance.value.$message.success('操作成功')
     }
   },
