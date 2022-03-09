@@ -153,6 +153,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
 
   step(`Publishing ${pkgName}...`)
   await runIfNotDry('npm', ['config', 'delete', 'registry'])
+  await runIfNotDry('pnpm', ['config', 'delete', 'registry'])
   try {
     /*await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
