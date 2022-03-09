@@ -153,7 +153,6 @@ async function publishPackage (pkgName, version, runIfNotDry) {
 
   step(`Publishing ${pkgName}...`)
   await runIfNotDry('npm', ['config', 'delete', 'registry'])
-  await runIfNotDry('pnpm', ['config', 'delete', 'registry'])
   try {
     /*await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
@@ -178,14 +177,14 @@ async function publishPackage (pkgName, version, runIfNotDry) {
     if (e.stderr.match(/previously published/)) {
       console.log(chalk.red(`Skipping already published: ${pkgName}`))
     } else {
-      await runIfNotDry('git', ['reset', '--soft', 'HEAD~1'])
       throw e
     }
   }
   await runIfNotDry('pnpm', ['config', 'set', 'registry', 'https://registry.npmmirror.com/'])
 }
 
-main().catch(err => {
-  updateVersions(currentVersion)
+main().catch(async err => {
   console.error(err)
+  await runIfNotDry('git', ['reset', '--soft', 'HEAD~1'])
+  updateVersions(currentVersion)
 })

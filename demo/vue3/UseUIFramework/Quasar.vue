@@ -118,7 +118,7 @@
 
 <script setup>
 import useAdmateAdapter from '../useAdmateAdapter'
-import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
+import { API_PREFIX as urlPrefix } from '.././mock/demo/crud'
 import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 

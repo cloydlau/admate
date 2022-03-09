@@ -24,7 +24,7 @@
 
 <script>
 import useAdmateAdapter from '../useAdmateAdapter'
-import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
+import { API_PREFIX as urlPrefix } from '.././mock/demo/crud'
 import SubPage from './SubPage.vue'
 
 export default {
