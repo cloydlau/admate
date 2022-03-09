@@ -64,7 +64,7 @@
     "mitt": "latest",
     "mockjs": "latest",
     "primeicons": "latest",
-    "primevue": "^3.11.1",
+    "primevue": "^3.12.1",
     "quasar": "latest",
     "rollup-plugin-peer-deps-external": "latest",
     "rollup-plugin-visualizer": "latest",
@@ -73,12 +73,12 @@
     "ts-jest": "latest",
     "tslib": "latest",
     "typescript": "latest",
-    "unocss": "0.12.2",
+    "unocss": "latest",
     "vite": "latest",
     "vite-plugin-mock": "latest",
     "vue": "npm:vue@^3.2.21",
-    "vue-router": "^4.0.12",
-    "vuetify": "^3.0.0-alpha.12"
+    "vue-router": "^4.0.13",
+    "vuetify": "^3.0.0-alpha.13"
   },
   "files": [
     "dist"

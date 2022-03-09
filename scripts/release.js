@@ -22,8 +22,6 @@ const preId =
 const isDryRun = args.dry
 //const skipTests = args.skipTests
 const skipBuild = args.skipBuild
-const registryManager = 'yrm'
-const registry = 'tb'
 
 const versionIncrements = [
   'patch',
@@ -138,12 +136,12 @@ async function main () {
   console.log()
 }
 
-function updateVersions(version) {
+function updateVersions (version) {
   // update root package.json
   updatePackage(path.resolve(__dirname, '..'), version)
 }
 
-function updatePackage(pkgRoot, version) {
+function updatePackage (pkgRoot, version) {
   const pkgPath = path.resolve(pkgRoot, 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
@@ -154,7 +152,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
   const releaseTag = semver.prerelease(version) && semver.prerelease(version)[0] || null
 
   step(`Publishing ${pkgName}...`)
-  await runIfNotDry(registryManager, ['use', 'npm'])
+  await runIfNotDry('npm', ['config', 'delete', 'registry'])
   try {
     /*await runIfNotDry(
       // note: use of yarn is intentional here as we rely on its publishing
@@ -183,7 +181,7 @@ async function publishPackage (pkgName, version, runIfNotDry) {
       throw e
     }
   }
-  await runIfNotDry(registryManager, ['use', registry])
+  await runIfNotDry('pnpm', ['config', 'set', 'registry', 'https://registry.npmmirror.com/'])
 }
 
 main().catch(err => {

@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import { name } from './package.json'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
+import { presetUno, presetAttributify } from 'unocss'
 import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import { visualizer } from 'rollup-plugin-visualizer'
 
@@ -52,7 +53,12 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       }),
       //peerDepsExternal(),
       ...command === 'build' ? [] : [
-        Unocss({ /* options */ }),
+        Unocss({
+          presets: [
+            presetAttributify({}),
+            presetUno(),
+          ]
+        }),
         configMockPlugin(false)
       ],
     ],
