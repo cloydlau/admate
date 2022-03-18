@@ -13,10 +13,10 @@
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                           | Vue 2 + ElementUI |                                  89,293 字符                                   |                                     19 个                                      |
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** |                                  38,718 字符                                   |                                     10 个                                      |
 
-| 案例对比          | 技术栈 | 业务代码量 | Bug 数量 |
-|---------------| --- |:---:|:------:|
-| 电商后台的商品管理     | Vue 2 + ElementUI | 425,885 字符 |  N/A   |
-| 电商后台的商品管理（重构） | Vue 2 + ElementUI + **Admate** | 235,979 字符 |  12 个  |
+| 案例对比           | 技术栈 | 业务代码量 | Bug 数量 |
+|----------------| --- |:---:|:------:|
+| 电商后台的商品管理      | Vue 2 + ElementUI | 425,885 字符 |  N/A   |
+| 电商后台的商品管理（重构后） | Vue 2 + ElementUI + **Admate** | 235,979 字符 |  12 个  |
 
 <br>
 
