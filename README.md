@@ -3,10 +3,10 @@
 管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
-| 案例对比 | 技术栈 | 业务代码量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（整个页面）</span> |
-| --- | --- |:----------------------------------------------------------------------------:|
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI |                                  13,330 字符                                   |
-| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** |                                  约 5,000 字符                                  |
+| 案例对比 | 技术栈 |   业务代码量    |
+| --- | --- |:----------:|
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI | 13,330 字符  |
+| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** | 约 5,000 字符 |
 
 | 案例对比                                                                             | 技术栈 | 业务代码量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
 |----------------------------------------------------------------------------------| --- |:----------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
