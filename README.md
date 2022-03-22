@@ -3,20 +3,14 @@
 管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
-| 案例对比 | 技术栈 |   业务代码量    |
-| --- | --- |:----------:|
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI | 13,330 字符  |
-| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** | 约 5,000 字符 |
-
-| 案例对比                                                                             | 技术栈 | 业务代码量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> | Bug 数量<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-|----------------------------------------------------------------------------------| --- |:----------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                           | Vue 2 + ElementUI |                                  89,293 字符                                   |                                     19 个                                      |
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** |                                  38,718 字符                                   |                                     10 个                                      |
-
-| 案例对比           | 技术栈 | 业务代码量 | Bug 数量 |
-|----------------| --- |:---:|:------:|
-| 电商后台的商品管理      | Vue 2 + ElementUI | 425,885 字符 |  N/A   |
-| 电商后台的商品管理（重构后） | Vue 2 + ElementUI + **Admate** | 235,979 字符 |  12 个  |
+| 案例对比 | 技术栈 | 业务代码量（字符数）  |
+| --- | --- |:-----------:|
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI |   13,330    |
+| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** |    **约 5,000**     |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                           | Vue 2 + ElementUI |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>  |
+| 电商后台的商品管理      | Vue 2 + ElementUI |   425,885   |
+| 电商后台的商品管理（重构后） | Vue 2 + ElementUI + **Admate** | **235,979** |
 
 <br>
 
