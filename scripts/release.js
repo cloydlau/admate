@@ -185,6 +185,6 @@ async function publishPackage (pkgName, version, runIfNotDry) {
 
 main().catch(async err => {
   console.error(err)
-  await runIfNotDry('git', ['reset', '--soft', 'HEAD~1'])
+  //await runIfNotDry('git', ['reset', '--soft', 'HEAD~1'])
   updateVersions(currentVersion)
 })
