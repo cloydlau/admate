@@ -7,7 +7,7 @@ import {
   onMounted,
   getCurrentInstance
 } from 'vue'
-import useAdmate from '../../src/main' // 来源替换为 'admate'
+import useAdmate from 'admate'
 import request from './utils/request' // 来源替换为 'axios'，或你的 axios 封装
 import { merge } from 'lodash-es'
 
