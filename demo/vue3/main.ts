@@ -23,8 +23,10 @@ import 'primevue/resources/primevue.min.css'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 
-//import 'vuetify/styles'
-//import { createVuetify } from 'vuetify'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
 const app = createApp(App)
 .use(router)
@@ -35,8 +37,10 @@ const app = createApp(App)
 })
 .use(PrimeVue)
 .use(ToastService)
-
-//.use(createVuetify())
+.use(createVuetify({
+  components,
+  directives,
+}))
 
 app.config.globalProperties.$eventBus = mitt()
 app.mount('#app')

@@ -3,6 +3,10 @@
 // 我们后面再讨论嵌套路由。
 export default [
   {
+    path: '/vuetify', component: () =>
+      import('../UseUIFramework/Vuetify.vue')
+  },
+  {
     path: '/ant-design-vue', component: () =>
       import('../UseUIFramework/AntDesignVue.vue')
   },
@@ -41,8 +45,4 @@ export default [
     path: '/form-only', component: () =>
       import('../examples/FormOnly.vue')
   },
-  /*{
-    path: '/vuetify', component: () =>
-      import('./UseUIFramework/Vuetify.vue')
-  },*/
 ]

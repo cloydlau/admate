@@ -2,9 +2,11 @@
   "scripts": {
     "dev": "vite --config vite.vue2.config.ts",
     "build": "vite build",
-    "serve": "vite preview",
     "c": "rd /s /q .\\node_modules",
-    "ri": "rd /s /q .\\node_modules && pnpm i"
+    "ri": "npm run c && pnpm i",
+    "u": "node scripts/upgrade.js",
+    "r": "node scripts/release.js",
+    "rs": "node scripts/release.js --straightforward"
   },
   "dependencies": {
     "@mdi/font": "latest",
@@ -17,7 +19,7 @@
     "lodash-es": "latest",
     "mockjs": "latest",
     "primeicons": "latest",
-    "primevue": "^2.8.0",
+    "primevue": "^2.9.1",
     "sass": "latest",
     "typescript": "latest",
     "unocss": "0.12.2",
@@ -27,6 +29,13 @@
     "vue": "npm:vue@^2.6.14",
     "vue-router": "npm:vue-router@^3.5.3",
     "vue-template-compiler": "latest",
-    "vuetify": "npm:vuetify@^2.5.10"
+    "vuetify": "^2.6.4"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "enquirer": "latest",
+    "execa": "^4.1.0",
+    "minimist": "latest",
+    "semver": "latest"
   }
 }

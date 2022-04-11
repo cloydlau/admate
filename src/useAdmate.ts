@@ -16,6 +16,8 @@ type GetListType = (payload?: any, payloadAs?: string) => Promise<any>
 type SubmitFormType = (params: any) => Promise<any>
 type FormType = {
   show?: boolean,
+  closeDelay?: number | null,
+  closed?: boolean,
   data?: any,
   dataAt?: string | Function,
   mergeData?: MergeDataType,
@@ -134,6 +136,8 @@ export default function useAdmate ({
     loading: false,
     submitting: false,
     show: false,
+    closeDelay: 500,
+    closed: true,
     data: {},
     mergeData: 'deep',
     status: '',
@@ -424,17 +428,25 @@ export default function useAdmate ({
   }
 
   watch(() => Form.show, n => {
-    if (!n) {
+    if (n) {
+      Form.closed = false
+    } else {
       // 表单关闭时 重置表单
       // 可能会有关闭动画 所以加延迟
       setTimeout(() => {
-        Object.assign(Form, {
-          ...getInitialForm(),
-          // 不能重置被监听的show
-          // 因为重置是异步的，如果在此150ms期间show被外部赋为true，将导致死循环
-          show: Form.show,
-        })
+
       }, 150)
+    }
+  })
+
+  watch(() => Form.closed, n => {
+    if (n) {
+      Object.assign(Form, {
+        ...getInitialForm(),
+        // 不能重置被监听的show
+        // 因为重置是异步的，如果在此150ms期间show被外部赋为true，将导致死循环
+        show: Form.show,
+      })
     }
   })
 
