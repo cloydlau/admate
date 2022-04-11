@@ -3,7 +3,7 @@
     "dev": "vite --config vite.vue2.config.ts",
     "build": "vite build",
     "serve": "vite preview",
-    "clean": "rd /s /q .\\node_modules",
+    "c": "rd /s /q .\\node_modules",
     "ri": "rd /s /q .\\node_modules && pnpm i"
   },
   "dependencies": {
