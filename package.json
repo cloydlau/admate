@@ -22,14 +22,11 @@
     "dev:3": "cd ./demo/vue3 && npm run dev",
     "build": "vite build",
     "serve": "vite preview",
-    "cov": "jest --ci --coverage",
-    "jest": "jest --watchAll",
     "c": "rd /s /q .\\node_modules",
-    "ri": "rd /s /q .\\node_modules && pnpm i",
-    "test:2": "vue-demi-switch 2 && jest",
-    "test:3": "vue-demi-switch 3 vue3 && jest",
+    "ri": "npm run c && pnpm i",
     "u": "node scripts/upgrade.js",
-    "release": "node scripts/release.js"
+    "r": "node scripts/release.js",
+    "rs": "node scripts/release.js --straightforward"
   },
   "dependencies": {
     "kayran": "latest",
@@ -61,9 +58,5 @@
   },
   "files": [
     "dist"
-  ],
-  "jest": {
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true
-  }
+  ]
 }
