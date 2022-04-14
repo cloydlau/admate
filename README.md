@@ -243,6 +243,11 @@ useAdmate({
 // 配置
 const { openForm, d, enable, disable, updateStatus } = useAdmate({
   axiosConfig: {
+    // 查询列表
+    getList: payload => ({
+      method: 'GET',
+      url: 'module/' + payload.xxx
+    }),
     // 查询一条记录（openForm 在查看、编辑时调用）
     r: payload => ({
       method: 'GET',
