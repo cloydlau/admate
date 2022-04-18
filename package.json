@@ -18,8 +18,6 @@
     }
   },
   "scripts": {
-    "dev:2": "cd ./demo/vue2 && npm run dev",
-    "dev:3": "cd ./demo/vue3 && npm run dev",
     "build": "vite build",
     "serve": "vite preview",
     "c": "rd /s /q .\\node_modules",
