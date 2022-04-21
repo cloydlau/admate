@@ -16,8 +16,6 @@
 
 <br>
 
-![Alt](https://repobeats.axiom.co/api/embed/96d9b8e4c191488faaa6e4545b684afd114c6cdd.svg "Repobeats analytics image")
-
 ## 特性
 
 - 🕶 **Vue 2 和 Vue 3 通用** - 比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
@@ -33,6 +31,12 @@
 - 🧹 **周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
+
+<br>
+
+## 架构
+
+![架构图](./architecture-diagram.png)
 
 <br>
 
@@ -1232,3 +1236,5 @@ useAdmate({
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
 <br>
+
+![Alt](https://repobeats.axiom.co/api/embed/96d9b8e4c191488faaa6e4545b684afd114c6cdd.svg "Repobeats analytics image")
