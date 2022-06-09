@@ -2,7 +2,7 @@ import { merge } from 'lodash-es'
 //import { CancelToken } from 'axios'
 
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
-let source
+//let source
 
 export type ConfigCatalogType = {
   c?: object | ((objForConfig: object) => object),

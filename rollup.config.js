@@ -12,7 +12,7 @@ import livereload from 'rollup-plugin-livereload'
 
 export default [
   {
-    input: 'src/main.ts',
+    input: 'src/index.ts',
     output: [
       {
         name,

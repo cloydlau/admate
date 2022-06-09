@@ -18,6 +18,8 @@
     }
   },
   "scripts": {
+    "dev": "node scripts/switch-vue.js 3 && vite --config ./vite-vue3.config.ts --open",
+    "dev2": "node scripts/switch-vue.js 2 && vite --config ./vite-vue2.config.ts --open",
     "build": "vite build",
     "serve": "vite preview",
     "clean": "rd /s /q .\\node_modules",
@@ -32,8 +34,7 @@
     "vue-demi": "latest"
   },
   "peerDependencies": {
-    "@vue/composition-api": "1",
-    "vue": "^2.0.0 || >=3.0.0"
+    "@vue/composition-api": "1"
   },
   "peerDependenciesMeta": {
     "@vue/composition-api": {
@@ -41,18 +42,25 @@
     }
   },
   "devDependencies": {
-    "@vue/composition-api": "latest",
+    "@vue/test-utils": "^2.0.0",
+    "axios": "latest",
     "chalk": "^4.1.2",
     "enquirer": "latest",
     "execa": "^4.1.0",
     "minimist": "latest",
-    "rollup-plugin-peer-deps-external": "latest",
+    "mockjs": "latest",
+    "primeicons": "latest",
+    "qs": "latest",
     "rollup-plugin-visualizer": "latest",
     "semver": "latest",
     "tslib": "latest",
     "typescript": "latest",
+    "unocss": "latest",
     "vite": "latest",
-    "vitest": "latest"
+    "vite-plugin-mock": "latest",
+    "vitest": "latest",
+    "vue": "^3.2.37",
+    "vuetify": "3.0.0-beta.3"
   },
   "files": [
     "dist"

@@ -24,7 +24,7 @@
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理来量身打造生命周期的行为
 - 🌐 **提供模块级的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🍪 **贴心而不武断的 CRUD 封装**
-    - 列表筛选：支持监听筛选参数 + 节流控制接口调用频率的方式，也支持点击查询按钮触发的方式
+    - 列表筛选：支持监听筛选参数 + 防抖控制接口调用频率的方式，也支持点击查询按钮触发的方式
     - 表单展现形式：支持对话框的形式，也支持独立页面的形式
     - 单条记录状态：支持分别调用启用/停用接口改变状态，也支持调用统一的更新状态接口指定新状态
     - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
@@ -50,7 +50,7 @@
 npm add admate
 ```
 
-[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/useAdmateAdapter.ts)
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)
 
 <br>
 
@@ -61,7 +61,7 @@ npm add admate
 npm add admate
 ```
 
-[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/useAdmateAdapter.ts)
+[初始化示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)
 
 <br>
 
@@ -449,11 +449,11 @@ useAdmate({
   list: {
     watchFilter: true, // 默认值
 
-    // 节流间隔，单位毫秒
-    // 如果筛选参数不含 input 类型，可以设置为 0，即不节流
-    // 翻页不会触发节流
+    // 防抖间隔，单位毫秒
+    // 如果筛选参数不含 input 类型，可以设置为 0，即不防抖
+    // 翻页不会触发防抖
     // watchFilter 开启时有效
-    throttleInterval: 500, // 默认值
+    debounceInterval: 500, // 默认值
   }
 })
 ```
