@@ -1,4 +1,3 @@
-import { name } from './package.json'
 import type { UserConfigExport, ConfigEnv } from 'vite'
 import { createVuePlugin } from 'vite-plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
@@ -44,24 +43,5 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       }),
       configMockPlugin(false)
     ],
-    build: {
-      lib: {
-        name,
-        entry: 'src/main.ts'
-      },
-      rollupOptions: {
-        external: [
-          'vue',
-          'vue-demi',
-        ],
-        output: {
-          // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
-          globals: {
-            'vue': 'Vue',
-            'vue-demi': 'VueDemi',
-          }
-        },
-      }
-    },
   }
 }
