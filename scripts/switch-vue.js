@@ -50,16 +50,11 @@ async function removeDeps(deps) {
 }
 
 async function useVueVersion(targetVersion) {
-  if (!currentVersion) {
-    await run('pnpm', ['add', ...vue3Deps, '-D'])
-    await run('pnpm', ['add', 'vue@latest', '@vue/test-utils@latest', '-D'])
-    await run('npx', ['vue-demi-switch', '3'])
-    console.warn('未检测到 Vue，已默认安装 Vue 3')
-    return
-  }
-
   if (
-    (currentVersion.startsWith('2') || currentVersion.substring(1).startsWith('2')) &&
+    (
+      !currentVersion ||
+      (currentVersion.startsWith('2') || currentVersion.substring(1).startsWith('2'))
+    ) &&
     targetVersion === 3
   ) {
     const { yes } = await prompt({
@@ -77,7 +72,10 @@ async function useVueVersion(targetVersion) {
     await run('npx', ['vue-demi-switch', '3'])
     console.warn('Vue 版本已切换至 3')
   } else if (
-    (currentVersion === 'latest' || currentVersion.startsWith('3') || currentVersion.substring(1).startsWith('3')) &&
+    (
+      !currentVersion ||
+      (currentVersion === 'latest' || currentVersion.startsWith('3') || currentVersion.substring(1).startsWith('3'))
+    ) &&
     targetVersion === 2
   ) {
     const { yes } = await prompt({

@@ -47,7 +47,8 @@
 
     <el-dialog :title="formTitle" :visible.sync="form.show">
       <el-form ref="formRef" :model="form.data"
-        :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
+        :disabled="form.status === 'r' || form.submitting"
+        v-loading="form.loading">
         <el-form-item label="姓名" prop="name" required>
           <el-input v-model="form.data.name" />
         </el-form-item>
@@ -55,7 +56,8 @@
       <template #footer>
         <el-button @click="form.show = false">取 消</el-button>
         <el-button type="primary" @click="() => { submitForm() }"
-          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
+          :loading="form.submitting"
+          v-if="form.status !== 'r' && !form.loading">
           确 定
         </el-button>
       </template>
@@ -65,8 +67,8 @@
 
 <script>
 import useAdmateAdapter from '../../useAdmateAdapter'
-import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
-import { ref, onMounted } from '@vue/composition-api'
+import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
+import { ref } from '@vue/composition-api'
 import { Message } from 'element-ui'
 
 function toast() {
@@ -82,37 +84,16 @@ export default {
 
     const admate = useAdmateAdapter({
       urlPrefix,
+      list: {
+        filter: {
+          name: '123'
+        }
+      }
     }, {
       validateListFilter,
       validateFormData: (...args) => formRef.value.validate(...args),
       clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
       toast,
-      getListProxy(getList, trigger) {
-        // onMounted 中给筛选项赋初值已经触发调用
-        if (trigger === 'init') {
-          return
-        }
-
-        if (trigger === 'filterChange') {
-          validateListFilter().then(() => {
-            getList()
-          })
-        } else {
-          getList()
-          if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-            toast()
-          }
-        }
-      },
-    })
-
-    // fix: 给筛选项赋初值，使得重置功能能够正常工作
-    // Object.defineProperty 对不存在的属性无法拦截
-    onMounted(() => {
-      admate.list.value.filter = {
-        ...Object.fromEntries(Array.from(listFilterRef.value.fields || [], v => [v.labelFor, undefined])),
-        ...admate.list.value.filter,
-      }
     })
 
     return {

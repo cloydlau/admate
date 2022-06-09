@@ -5,8 +5,10 @@ import {
   computed,
   watch,
   onMounted,
-  getCurrentInstance
-} from 'vue'
+  getCurrentInstance,
+}
+  //from 'vue' // vue@3
+  from '@vue/composition-api' // ≤ vue@2.6
 import { isVue2 } from 'vue-demi'
 import request from './request'
 import useAdmate from '../src'
@@ -44,10 +46,10 @@ export default (admateConfig, {
   // 所以需要调方法动态获取
   initialListFilter,
 } = {}) => {
-  // 获取当前Vue实例
-  const currentInstance = ref(null)
+  // 获取当前 Vue 实例
+  const currentInstance = ref()
 
-  // 初始化admate
+  // 初始化 admate
   const admate = useAdmate(merge({
     axios: request,
     axiosConfig: {

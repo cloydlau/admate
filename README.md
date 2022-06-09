@@ -453,7 +453,7 @@ useAdmate({
     // 如果筛选参数不含 input 类型，可以设置为 0，即不防抖
     // 翻页不会触发防抖
     // watchFilter 开启时有效
-    debounceInterval: 500, // 默认值
+    debounceInterval: 300, // 默认值
   }
 })
 ```

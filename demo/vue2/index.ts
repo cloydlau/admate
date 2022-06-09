@@ -6,6 +6,9 @@ import App from './index.vue'
 
 import 'uno.css'
 
+import VCA from '@vue/composition-api'
+Vue.use(VCA)
+
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)

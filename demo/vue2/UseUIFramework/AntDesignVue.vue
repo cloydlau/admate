@@ -58,7 +58,7 @@
 
 <script>
 import useAdmateAdapter from '../../useAdmateAdapter'
-import { API_PREFIX as urlPrefix } from '../mock/demo/crud'
+import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref } from '@vue/composition-api'
 import { cloneDeep } from 'lodash-es'
 import { message } from 'ant-design-vue'

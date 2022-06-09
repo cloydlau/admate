@@ -63,7 +63,8 @@
         <Button label="取 消" class="p-button-secondary"
           @click="form.show = false" />
         <Button label="确 定" @click="() => { submitForm() }"
-          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading" />
+          :loading="form.submitting"
+          v-if="form.status !== 'r' && !form.loading" />
       </template>
     </Dialog>
   </div>
