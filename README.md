@@ -36,7 +36,7 @@
 
 ## 架构
 
-![架构图](./architecture-diagram.png)
+![架构图](https://raw.githubusercontent.com/cloydlau/admate/master/architecture-diagram.png)
 
 <br>
 
