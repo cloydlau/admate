@@ -24,7 +24,6 @@ const vue3Deps = [
   'vuetify@^3.0.0-beta.3',
 ], vue2Deps = [
   "@vitejs/plugin-vue2",
-  '@vue/composition-api',
   'vue-router@3',
   'element-ui',
   '@mdi/font',

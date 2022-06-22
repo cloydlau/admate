@@ -6,9 +6,8 @@ import {
   watch,
   onMounted,
   getCurrentInstance,
-}
-  //from 'vue' // vue@3
-  from '@vue/composition-api' // ≤ vue@2.6
+} from 'vue'
+//from '@vue/composition-api' // ≤ vue@2.6
 import { isVue2 } from 'vue-demi'
 import request from './request'
 import useAdmate from '../src'

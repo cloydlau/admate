@@ -65,7 +65,7 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { Message } from 'element-ui'
 
 function toast() {

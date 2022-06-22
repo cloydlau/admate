@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@mdi/font": "^6.7.96",
-    "@vue/composition-api": "^1.6.2",
     "@vue/test-utils": "1",
     "@vitejs/plugin-vue2": "latest",
     "ant-design-vue": "1",
