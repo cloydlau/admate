@@ -19,9 +19,8 @@
         </a-button>
       </div>
 
-      <a-pagination v-model="list.filter.pageNo"
-        :page-size.sync="list.filter.pageSize" :total="list.total"
-        @change="onPageNumberChange" />
+      <a-pagination v-model="list.filter.pageNo" :page-size.sync="list.filter.pageSize"
+        :total="list.total" @change="onPageNumberChange" />
     </div>
 
     <a-table rowKey="name" :columns="[{
@@ -56,39 +55,42 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { message } from 'ant-design-vue'
 
-export default {
-  setup: () => {
-    const listFilterRef = ref(null)
-    const formRef = ref(null)
+const listFilterRef = ref(null)
+const formRef = ref(null)
 
-    const admate = useAdmateAdapter({
-      urlPrefix,
-    }, {
-      validateListFilter: (...args) => listFilterRef.value.validate(...args),
-      validateFormData: (...args) => formRef.value.validate(...args),
-      clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
-      toast: () => { message.success('操作成功') }
-    })
+const {
+  list,
+  form,
+  getList,
+  c,
+  r,
+  u,
+  d,
+  updateStatus,
+  submitForm,
+  formTitle,
+  queryList,
+  onPageNumberChange,
+  currentInstance,
+} = useAdmateAdapter({
+  urlPrefix,
+}, {
+  validateListFilter: (...args) => listFilterRef.value.validate(...args),
+  validateFormData: (...args) => formRef.value.validate(...args),
+  clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
+  toast: () => { message.success('操作成功') }
+})
 
-    const defaultListFilter = cloneDeep(admate.list.value.filter)
+const defaultListFilter = cloneDeep(list.value.filter)
 
-    const reset = function () {
-      admate.list.value.filter = cloneDeep(defaultListFilter)
-    }
-
-    return {
-      ...admate,
-      listFilterRef,
-      formRef,
-      reset,
-    }
-  }
+const reset = function () {
+  list.value.filter = cloneDeep(defaultListFilter)
 }
 </script>

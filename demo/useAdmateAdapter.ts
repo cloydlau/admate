@@ -22,29 +22,47 @@ export default (admateConfig, {
     r: '查看',
     u: '编辑'
   },
+
   // 在 mounted 时获取列表
   // fix: 由于 Object.defineProperty 对不存在的属性无法拦截，需要给筛选项赋初值，使得重置功能能够正常工作（仅 Vue 2需要）
   getListOnMounted = isVue2,
-  // 自定义钩子函数 - 获取列表之后
-  afterGetList,
-  // 自定义钩子函数 - 查询表单详情之后（新增时不触发）
-  afterRetrieve,
-  // 自定义钩子函数 - 打开表单时
-  openFormCallback,
-  // 自定义钩子函数 - 提交表单之前
-  beforeSubmit,
+
   // 筛选参数校验
   validateListFilter,
+
   // 表单校验
   validateFormData,
+
   // 表单校验重置
   clearFormDataValidation,
+
   // 操作成功提示
   toast,
+
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
   // 所以需要调方法动态获取
   initialListFilter,
+
+  // 自定义钩子函数 - 获取列表之后
+  // 参数1为接口返回值，参数2为触发动机
+  // 可访问 this
+  afterGetList,
+
+  // 自定义钩子函数 - 查询表单详情之后（新增时不触发）
+  // 参数为接口返回值
+  // 可访问 this
+  afterRetrieve,
+
+  // 自定义钩子函数 - 打开表单之后
+  // 参数为接口返回值（新增时为空）
+  // 可访问 this
+  afterOpenForm,
+
+  // 自定义钩子函数 - 提交表单之前
+  // 参数为 form
+  // 可访问 this
+  beforeSubmit,
 } = {}) => {
   // 获取当前 Vue 实例
   const currentInstance = ref()
@@ -131,7 +149,7 @@ export default (admateConfig, {
     openFormProxy(openForm) {
       // 打开表单后的回调
       function callback(res) {
-        openFormCallback?.(res)
+        afterOpenForm?.(res)
         if (
           admate.form.status !== 'c' ||
           currentInstance.value?.createFromCopy__
@@ -174,7 +192,7 @@ export default (admateConfig, {
         }
 
         validateFormData().then(() => {
-          const result = beforeSubmit?.()
+          const result = beforeSubmit?.(admate.form)
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
@@ -207,6 +225,11 @@ export default (admateConfig, {
 
   onMounted(() => {
     currentInstance.value = getCurrentInstance().proxy
+
+    afterGetList = afterGetList?.bind(currentInstance.value)
+    afterRetrieve = afterRetrieve?.bind(currentInstance.value)
+    afterOpenForm = afterOpenForm?.bind(currentInstance.value)
+    beforeSubmit = beforeSubmit?.bind(currentInstance.value)
 
     if (getListOnMounted) {
       if (currentInstance.value.$refs.listFilterRef) {

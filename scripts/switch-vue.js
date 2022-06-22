@@ -23,11 +23,10 @@ const vue3Deps = [
   'quasar',
   'vuetify@^3.0.0-beta.3',
 ], vue2Deps = [
+  "@vitejs/plugin-vue2",
   '@vue/composition-api',
   'vue-router@3',
   'element-ui',
-  'vite-plugin-vue2',
-  'vue-template-compiler',
   '@mdi/font',
   'ant-design-vue@1',
   'primevue@2',
@@ -89,7 +88,7 @@ async function useVueVersion(targetVersion) {
 
     await removeDeps(vue3Deps)
     await run('pnpm', ['add', ...vue2Deps, '-D'])
-    await run('pnpm', ['add', 'vue@2', '@vue/test-utils@1', '-D'])
+    await run('pnpm', ['add', 'vue@v2-beta', '@vue/test-utils@1', '-D'])
     await run('npx', ['vue-demi-switch', '2'])
     console.warn('Vue 版本已切换至 2')
   } else {

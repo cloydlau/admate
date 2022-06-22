@@ -1,5 +1,5 @@
 import type { UserConfigExport, ConfigEnv } from 'vite'
-import { createVuePlugin } from 'vite-plugin-vue2'
+import vue from '@vitejs/plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
 import { presetUno, presetAttributify } from 'unocss'
@@ -34,7 +34,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           return html.replace(/{{.*}}/, '/demo/vue2/index.ts')
         },
       },
-      createVuePlugin(),
+      vue(),
       Unocss({
         presets: [
           presetAttributify({}),

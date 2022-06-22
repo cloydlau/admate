@@ -46,6 +46,7 @@
     "@mdi/font": "^6.7.96",
     "@vue/composition-api": "^1.6.2",
     "@vue/test-utils": "1",
+    "@vitejs/plugin-vue2": "latest",
     "ant-design-vue": "1",
     "axios": "latest",
     "chalk": "^4.1.2",
@@ -63,11 +64,9 @@
     "unocss": "latest",
     "vite": "latest",
     "vite-plugin-mock": "latest",
-    "vite-plugin-vue2": "^2.0.1",
     "vitest": "latest",
-    "vue": "2",
+    "vue": "v2-beta",
     "vue-router": "3",
-    "vue-template-compiler": "2",
     "vuetify": "2"
   },
   "files": [

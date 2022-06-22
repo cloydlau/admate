@@ -58,8 +58,7 @@
           <h5>{{ formTitle }}</h5>
         </v-card-title>
         <v-card-text>
-          <v-form ref="formRef"
-            :disabled="form.status === 'r' || form.submitting">
+          <v-form ref="formRef" :disabled="form.status === 'r' || form.submitting">
             <v-text-field v-model="form.data.name" label="姓名*"
               :rules="[v => !!v || 'Name is required',]" required />
           </v-form>
@@ -70,8 +69,7 @@
             取 消
           </v-btn>
           <v-btn dark color="#2A73C5" @click="() => { submitForm() }"
-            :loading="form.submitting"
-            v-if="form.status !== 'r' && !form.loading">
+            :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
             确 定
           </v-btn>
         </v-card-actions>
@@ -80,33 +78,37 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from '@vue/composition-api'
+import { ref } from 'vue'
 
-export default {
-  setup: () => {
-    const listFilterRef = ref(null)
-    const formRef = ref(null)
+const listFilterRef = ref(null)
+const formRef = ref(null)
 
-    const admate = useAdmateAdapter({
-      urlPrefix,
-    }, {
-      validateListFilter: (...args) => new Promise((resolve, reject) => {
-        listFilterRef.value.validate(...args) ? resolve() : reject()
-      }),
-      validateFormData: (...args) => new Promise((resolve, reject) => {
-        formRef.value.validate(...args) ? resolve() : reject()
-      }),
-      clearFormDataValidation: (...args) => formRef.value.resetValidation(...args),
-    })
-
-    return {
-      ...admate,
-      listFilterRef,
-      formRef,
-    }
-  }
-}
+const {
+  list,
+  form,
+  getList,
+  c,
+  r,
+  u,
+  d,
+  updateStatus,
+  submitForm,
+  formTitle,
+  queryList,
+  onPageNumberChange,
+  currentInstance,
+} = useAdmateAdapter({
+  urlPrefix,
+}, {
+  validateListFilter: (...args) => new Promise((resolve, reject) => {
+    listFilterRef.value.validate(...args) ? resolve() : reject()
+  }),
+  validateFormData: (...args) => new Promise((resolve, reject) => {
+    formRef.value.validate(...args) ? resolve() : reject()
+  }),
+  clearFormDataValidation: (...args) => formRef.value.resetValidation(...args),
+})
 </script>
