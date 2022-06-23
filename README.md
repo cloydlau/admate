@@ -7,14 +7,14 @@
 
 ![我全都要](https://raw.githubusercontent.com/cloydlau/admate/master/我全都要.gif)
 
-| 案例对比 | 技术栈 | 业务代码量（字符数）  |
-| --- | --- |:-----------:|
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI |   13,330    |
-| 常规增删查改页面 | Vue 2 + ElementUI + **Admate** |    **约 5,000**     |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                           | Vue 2 + ElementUI |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml) | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>  |
-| 电商后台的商品管理      | Vue 2 + ElementUI |   425,885   |
-| 电商后台的商品管理（重构后） | Vue 2 + ElementUI + **Admate** | **235,979** |
+| 案例对比                                                                                                          | 技术栈                         |                                  业务代码量（字符数）                                   |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------ | :-------------------------------------------------------------------------------------: |
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI              |                                         13,330                                          |
+| 常规增删查改页面                                                                                                  | Vue 2 + ElementUI + **Admate** |                                      **约 5,000**                                       |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                     | Vue 2 + ElementUI              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                          | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
+| 电商后台的商品管理                                                                                                | Vue 2 + ElementUI              |                                         425,885                                         |
+| 电商后台的商品管理（重构后）                                                                                      | Vue 2 + ElementUI + **Admate** |                                       **235,979**                                       |
 
 <br>
 
@@ -66,13 +66,110 @@ npm add admate
 
 <br>
 
-### 使用代码生成器
+### 页面模板
 
-使用代码生成器生成页面模板
+以下为 VSCode Snippets：
 
-代码生成器不是必须的，它只是帮你省去**从 YApi 复制字段名至代码中**这一烦人步骤
+> 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
-目前仅支持 element-ui
+```json
+{
+	"admate": {
+		"prefix": "admate",
+		"body": [
+			"<template>",
+			"  <div class=\"app-container\">",
+			"    <el-form ref=\"listFilterRef\" :model=\"list.filter\" inline>",
+			"      <el-form-item prop=\"TODO\">",
+			"        <el-input placeholder=\"TODO\" v-model=\"list.filter.TODO\" clearable />",
+			"      </el-form-item>",
+			"      <el-form-item prop=\"TODO\">",
+			"        <KiSelect placeholder=\"TODO\" v-model=\"list.filter.TODO\" :options=\"[",
+			"          { label: '', value: '' },",
+			"          { label: '', value: '' },",
+			"        ]\" :props=\"{ label: 'label', value: 'value' }\" />",
+			"      </el-form-item>",
+			"      <el-form-item prop=\"status\">",
+			"        <KiSelect placeholder=\"状态\" v-model=\"list.filter.status\" :options=\"['停用', '启用']\" />",
+			"      </el-form-item>",
+			"      <el-form-item>",
+			"        <el-button @click=\"reset\">重置</el-button>",
+			"      </el-form-item>",
+			"    </el-form>",
+			"",
+			"    <div class=\"table-operation\">",
+			"      <el-button v-if=\"pageBtnList.includes('新增')\" type=\"primary\" @click=\"c\">",
+			"        新增",
+			"      </el-button>",
+			"      <el-pagination :total=\"list.total\" :currentPage.sync=\"list.filter.pageNo\"",
+			"        :pageSize.sync=\"list.filter.pageSize\" v-bind=\"elPaginationProps\" />",
+			"    </div>",
+			"",
+			"    <el-table v-loading=\"list.loading\" :data=\"list.data\" v-bind=\"tableProp\">",
+			"      <el-table-column label=\"TODO\" prop=\"TODO\" />",
+			"      <el-table-column label=\"状态\" align=\"center\">",
+			"        <template slot-scope=\"{ row: { id, status } }\">",
+			"          <KiPopSwitch v-bind=\"popSwitchProps(status)\"",
+			"            @change=\"updateStatus({ id, status: status ^ 1 })\" />",
+			"        </template>",
+			"      </el-table-column>",
+			"      <el-table-column align=\"center\" label=\"操作\">",
+			"        <template slot-scope=\"{ row }\">",
+			"          <KiPopButton v-if=\"pageBtnList.includes('查看')\" @click=\"r({ id: row.id })\">",
+			"            查看",
+			"          </KiPopButton>",
+			"          <KiPopButton v-if=\"pageBtnList.includes('编辑')\" @click=\"u({ id: row.id })\">",
+			"            编辑",
+			"          </KiPopButton>",
+			"          <KiPopButton v-if=\"pageBtnList.includes('删除')\"",
+			"            :elPopconfirmProps=\"{ title: '确认删除吗？' }\" @click=\"d({ id: row.id })\">",
+			"            删除",
+			"          </KiPopButton>",
+			"        </template>",
+			"      </el-table-column>",
+			"    </el-table>",
+			"",
+			"    <KiFormDialog :title=\"formTitle\" :readonly=\"form.status === 'r'\" ref=\"formRef\"",
+			"      v-model=\"form.data\" :show.sync=\"form.show\" :submit=\"submitForm\"",
+			"      :loading=\"form.loading\">",
+			"      <template #el-form>",
+			"        <el-form-item label=\"TODO\" prop=\"TODO\" verify>",
+			"          <el-input v-model=\"form.data.TODO\" maxlength=\"30\" show-word-limit clearable />",
+			"        </el-form-item>",
+			"        <el-form-item label=\"TODO\" prop=\"TODO\" verify>",
+			"          <KiSelect v-model=\"form.data.TODO\" :options=\"[",
+			"            { label: '', value: '' },",
+			"            { label: '', value: '' },",
+			"          ]\" :props=\"{ label: 'label', value: 'value' }\" />",
+			"        </el-form-item>",
+			"      </template>",
+			"    </KiFormDialog>",
+			"  </div>",
+			"</template>",
+			"",
+			"<script>",
+			"import pageMixin from '@/utils/pageMixin'",
+			"import useAdmateAdapter from '@/utils/useAdmateAdapter'",
+			"",
+			"export default {",
+			"  mixins: [pageMixin],",
+			"  setup: () => useAdmateAdapter({",
+			"    urlPrefix: '',",
+			"  })",
+			"}",
+			"</script>"
+		],
+	},
+}
+```
+
+<br>
+
+### 代码生成器
+
+接口文档一键生成页面模板代码，省去**从接口文档复制字段名至代码中**这一繁琐步骤
+
+目前仅支持 YApi + element-ui
 
 #### 安装
 
