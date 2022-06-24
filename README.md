@@ -20,9 +20,8 @@
 
 ## 特性
 
-- 🕶 **Vue 2 和 Vue 3 通用** - 比如你在 Vue 2 中使用了 Admate，升级 Vue 3 时，你需要做的事情只是切换依赖源
-- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue 和 Axios 便可使用，并提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
-- 🎨 **组合式 API** - 无侵入性
+- 🕶 **Vue 2 & 3 通用** - 零成本升级
+- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理来量身打造生命周期的行为
 - 🌐 **提供模块级的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🍪 **贴心而不武断的 CRUD 封装**
