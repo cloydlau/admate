@@ -21,7 +21,7 @@ const vue3Deps = [
   'ant-design-vue',
   'primevue',
   'quasar',
-  'vuetify@^3.0.0-beta.3',
+  'vuetify@next',
 ], vue2Deps = [
   "@vitejs/plugin-vue2",
   'vue-router@3',

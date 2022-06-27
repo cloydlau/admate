@@ -65,15 +65,15 @@ export default {
               submitForm().then(() => {
                 currentInstance.value.$message.success('操作成功')
                 resolve({
-                  // 避免触发admate内部的表单重置
-                  // admate内部在表单关闭后会重置表单（异步，有150毫秒的延迟）
+                  // 避免触发 admate 内部的表单重置
+                  // admate 内部在表单关闭后会重置表单（异步，有150毫秒的延迟）
                   // 延迟的原因：关闭表单可能有动画渐变效果
                   // 如果不延迟：表单还没有完全消失，表单内容就被瞬间清空，体验不好
                   show: true,
                 })
 
                 // 手动重置表单（无延迟）
-                // 这样才能确保openForm在重置之后执行
+                // 这样才能确保 openForm 在重置之后执行
                 Object.assign(form.value, initialForm)
 
                 // 刷新表单
