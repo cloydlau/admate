@@ -1,6 +1,6 @@
 <template>
   <div class="p-20px w-full page">
-    <el-dialog modelValue title="编辑" :show-close="false" :modal="false"
+    <el-dialog visible title="编辑" :show-close="false" :modal="false"
       :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="formRef" :model="form.data"
         :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">

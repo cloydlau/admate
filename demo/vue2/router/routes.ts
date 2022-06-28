@@ -22,4 +22,8 @@ export default [
     path: '/prime-vue', component: () =>
       import('../UseUIFramework/PrimeVue.vue')
   },*/
+  {
+    path: '/form-only', component: () =>
+      import('../examples/FormOnly.vue')
+  },
 ]
