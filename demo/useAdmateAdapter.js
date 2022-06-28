@@ -29,6 +29,7 @@ export default (admateConfig, {
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
   // 所以需要调方法动态获取
+  // 可访问 this
   initialListFilter = () => { },
 
   // 获取列表筛选项的表单 ref
@@ -38,11 +39,13 @@ export default (admateConfig, {
   },
 
   // 校验列表筛选项
+  // 可访问 this
   validateListFilter = function () {
     return getElFormRefOfListFilter().validate()
   },
 
   // 重置列表筛选项
+  // 可访问 this
   resetListFilter = function () {
     return getElFormRefOfListFilter().resetFields()
   },
@@ -55,11 +58,13 @@ export default (admateConfig, {
   },
 
   // 清除详情表单校验
+  // 可访问 this
   clearValidateOfFormData = function () {
     return getElFormRefOfFormData()?.clearValidate()
   },
 
   // 校验详情表单
+  // 可访问 this
   validateFormData = function () {
     return getElFormRefOfFormData().validate()
   },
@@ -142,15 +147,6 @@ export default (admateConfig, {
     },
     form: {
       dataAt: 'data',
-      // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象
-      mergeData(newFormData) {
-        admate.form.data = mergeWith(
-          admate.form.data,
-          newFormData,
-          (oldObj, newObj) =>
-            [undefined, null].includes(newObj) ? oldObj : undefined
-        )
-      }
     },
     getListProxy(getList, trigger) {
       // onMounted 中给筛选项赋初值已经触发调用

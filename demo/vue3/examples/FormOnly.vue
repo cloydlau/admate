@@ -1,6 +1,6 @@
 <template>
   <div class="p-20px w-full page">
-    <el-dialog v-model="form.show" :title="formTitle" :show-close="false" :modal="false"
+    <el-dialog v-model="form.show" title="编辑" :show-close="false" :modal="false"
       :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="formRef" :model="form.data"
         :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
@@ -21,26 +21,19 @@
 <script>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 
 export default {
   setup: () => {
-    const formRef = ref(null)
-
     const validateFormData = (...args) => formRef.value.validate(...args)
 
     const {
+      u,
       form,
-      openForm,
+      formRef,
       submitForm,
-      formTitle,
-      currentInstance,
     } = useAdmateAdapter({
       urlPrefix,
-      form: {
-        status: 'u'
-      },
       getListProxy(getList, trigger) {
         // 不需要获取列表
       },
@@ -48,7 +41,7 @@ export default {
         return new Promise((resolve, reject) => {
           validateFormData().then(() => {
             submitForm().then(() => {
-              alert('操作成功')
+              console.log('操作成功')
 
               resolve({
                 // 避免触发 admate 内部的表单重置
@@ -58,14 +51,13 @@ export default {
                 show: true,
               })
 
-              // 手动重置表单（无延迟）
-              // 这样才能确保 openForm 在重置之后执行
-              console.log(form.value.show)
-              Object.assign(form.value, initialForm)
-              console.log(form.value.show)
-
-              // 刷新表单
-              //openForm.value()
+              setTimeout(() => {
+                // 手动重置表单
+                // 这样才能确保 openForm 在重置之后执行
+                Object.assign(form.value, initialForm)
+                // 刷新表单
+                u.value({})
+              }, 0)
             }).catch(() => {
               reject()
             })
@@ -73,30 +65,43 @@ export default {
         })
       },
     }, {
+      validateFormData,
       clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
     })
 
     const initialForm = cloneDeep(form.value)
-    openForm.value()
+    u.value({})
 
     return {
       form,
-      openForm,
-      submitForm,
-      formTitle,
-      currentInstance,
       formRef,
+      submitForm,
     }
   }
 }
 </script>
 
 <style lang="scss">
-.page>div {
+::v-deep .el-dialog__wrapper {
   position: relative !important;
 
-  &>.el-overlay-dialog {
-    position: relative;
+  &>.el-dialog {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+
+    &>.el-dialog__header {
+      display: none;
+    }
+
+    &>.el-dialog__body>div {
+      &>div:first-child {
+        max-height: calc(100vh - 135px) !important;
+      }
+
+      &>[slot='footer']>button:first-child {
+        display: none;
+      }
+    }
   }
 }
 </style>
