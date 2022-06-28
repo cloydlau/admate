@@ -112,7 +112,7 @@ const {
       valid ? resolve() : reject()
     })
   }),
-  clearFormDataValidation: (...args) => formRef.value.resetValidation(...args),
+  clearValidateOfFormData: (...args) => formRef.value.resetValidation(...args),
 })
 
 const defaultListFilter = cloneDeep(list.value.filter)

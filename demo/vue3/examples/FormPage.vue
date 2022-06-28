@@ -1,23 +1,15 @@
 <template>
   <div class="p-20px">
     <h2>{{ formTitle }}</h2>
-    <el-form
-      ref="formRef"
-      :model="form.data"
-      :disabled="form.status==='r'||form.submitting"
-      v-loading="form.loading"
-    >
+    <el-form ref="formRef" :model="form.data"
+      :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
       <el-form-item label="姓名" prop="name" required>
-        <el-input v-model="form.data.name"/>
+        <el-input v-model="form.data.name" />
       </el-form-item>
     </el-form>
     <el-button @click="back">取 消</el-button>
-    <el-button
-      type="primary"
-      @click="() => { submitForm() }"
-      :loading="form.submitting"
-      v-if="form.status!=='r'&&!form.loading"
-    >
+    <el-button type="primary" @click="() => { submitForm() }" :loading="form.submitting"
+      v-if="form.status !== 'r' && !form.loading">
       确 定
     </el-button>
   </div>
@@ -41,26 +33,25 @@ const {
   submitForm,
   currentInstance,
 } = useAdmateAdapter({
-  admateConfig: {
-    urlPrefix: route.query.urlPrefix,
-    getListProxy (getList, trigger) {
-      // 不需要获取列表
-    },
-    submitFormProxy (submitForm) {
-      return new Promise((resolve, reject) => {
-        validateFormData().then(() => {
-          submitForm().then(() => {
-            currentInstance.value.$message.success('操作成功')
-            back()
-          }).catch(() => {
-            reject()
-          })
+  urlPrefix: route.query.urlPrefix,
+  getListProxy(getList, trigger) {
+    // 不需要获取列表
+  },
+  submitFormProxy(submitForm) {
+    return new Promise((resolve, reject) => {
+      validateFormData().then(() => {
+        submitForm().then(() => {
+          currentInstance.value.$message.success('操作成功')
+          back()
+        }).catch(() => {
+          reject()
         })
       })
-    },
-    form: JSON.parse(route.query.form),
+    })
   },
-  clearFormDataValidation: (...args) => formRef.value?.clearValidate(...args),
+  form: JSON.parse(route.query.form),
+}, {
+  clearValidateOfFormData: (...args) => formRef.value?.clearValidate(...args),
 })
 
 openForm.value()
@@ -71,5 +62,4 @@ const back = function () {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

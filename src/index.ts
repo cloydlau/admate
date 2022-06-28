@@ -272,9 +272,10 @@ export default function useAdmate({
         })
       }
     } else {
-      if (['r', 'u'].includes(Form.status) && !arguments.length) {
+      // 可能只有表单没有列表，不需要传参
+      /* if (['r', 'u'].includes(Form.status) && !arguments.length) {
         console.warn(`${CONSOLE_PREFIX}表单状态为 'r' 或 'u' 时，openForm 的参数必传`)
-      }
+      } */
       Form.show = true
     }
   }

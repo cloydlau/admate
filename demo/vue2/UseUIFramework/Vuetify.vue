@@ -109,6 +109,6 @@ const {
   validateFormData: (...args) => new Promise((resolve, reject) => {
     formRef.value.validate(...args) ? resolve() : reject()
   }),
-  clearFormDataValidation: (...args) => formRef.value.resetValidation(...args),
+  clearValidateOfFormData: (...args) => formRef.value.resetValidation(...args),
 })
 </script>

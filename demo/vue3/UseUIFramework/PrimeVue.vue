@@ -72,7 +72,6 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 
 import InputText from 'primevue/inputtext'
@@ -83,11 +82,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Dialog from 'primevue/dialog'
 import ProgressSpinner from 'primevue/progressspinner'
-import { useToast } from 'primevue/usetoast'
-
-const listFilterRef = ref(null)
-const formRef = ref(null)
-const toast = useToast()
 
 const {
   list,
@@ -120,13 +114,6 @@ const {
       reject()
     }
   }),
-  toast: () => {
-    // todo: 无效果
-    toast.add({
-      severity: 'success',
-      summary: '操作成功',
-    })
-  }
 })
 
 const defaultListFilter = cloneDeep(list.value.filter)

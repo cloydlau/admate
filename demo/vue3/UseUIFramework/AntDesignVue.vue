@@ -62,7 +62,6 @@
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { ref } from 'vue'
-import { message } from 'ant-design-vue'
 
 const listFilterRef = ref(null)
 const formRef = ref(null)
@@ -86,7 +85,6 @@ const {
 }, {
   validateListFilter: (...args) => listFilterRef.value.validate(...args),
   validateFormData: (...args) => formRef.value.validate(...args),
-  clearFormDataValidation: (...args) => formRef.value.clearValidate(...args),
-  toast: () => { message.success('操作成功') }
+  clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
 })
 </script>

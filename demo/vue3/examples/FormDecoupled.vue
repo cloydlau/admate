@@ -1,36 +1,21 @@
 <template>
   <div class="p-20px">
-    <el-form
-      ref="listFilterRef"
-      :model="list.filter"
-      inline
-    >
+    <el-form ref="listFilterRef" :model="list.filter" inline>
       <el-form-item prop="name" required>
-        <el-input v-model="list.filter.name" placeholder="姓名"/>
+        <el-input v-model="list.filter.name" placeholder="姓名" />
       </el-form-item>
       <el-form-item prop="status">
         <el-select v-model="list.filter.status" placeholder="状态">
-          <el-option
-            v-for="(v,i) of ['停用','启用']"
-            :key="i"
-            :label="v"
-            :value="v"
-          />
+          <el-option v-for="(v, i) of ['停用', '启用']" :key="i" :label="v" :value="v" />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button
-          v-if="!list.watchFilter"
-          type="primary"
-          @click="queryList"
-        >
+        <el-button v-if="!list.watchFilter" type="primary" @click="queryList">
           查询
         </el-button>
-        <el-button
-          @click="() => {
-            listFilterRef.resetFields()
-          }"
-        >
+        <el-button @click="() => {
+          listFilterRef.resetFields()
+        }">
           重置
         </el-button>
       </el-form-item>
@@ -38,27 +23,18 @@
 
     <div class="flex justify-between my-10px">
       <div>
-        <el-button
-          type="primary"
-          @click="c"
-        >
+        <el-button type="primary" @click="c">
           新增
         </el-button>
       </div>
 
-      <el-pagination
-        v-model:current-page="list.filter.pageNo"
-        v-model:page-size="list.filter.pageSize"
-        :total="list.total"
-        @current-change="onPageNumberChange"
-      />
+      <el-pagination v-model:current-page="list.filter.pageNo"
+        v-model:page-size="list.filter.pageSize" :total="list.total"
+        @current-change="onPageNumberChange" />
     </div>
 
-    <el-table
-      :data="list.data"
-      v-loading="list.loading"
-    >
-      <el-table-column prop="name" label="姓名"/>
+    <el-table :data="list.data" v-loading="list.loading">
+      <el-table-column prop="name" label="姓名" />
       <el-table-column label="操作">
         <template #default="{ row }">
           <el-button type="text" @click="r(row)">查看</el-button>
@@ -94,18 +70,17 @@ const {
   onPageNumberChange,
   currentInstance,
 } = useAdmateAdapter({
-  admateConfig: {
-    urlPrefix,
-    openFormProxy (openForm) {
-      router.push({
-        path: '/form-page',
-        query: {
-          urlPrefix,
-          form: JSON.stringify(toRaw(form.value)),
-        }
-      })
-    },
+  urlPrefix,
+  openFormProxy(openForm) {
+    router.push({
+      path: '/form-page',
+      query: {
+        urlPrefix,
+        form: JSON.stringify(toRaw(form.value)),
+      }
+    })
   },
+}, {
   validateListFilter: (...args) => listFilterRef.value.validate(...args),
 })
 </script>

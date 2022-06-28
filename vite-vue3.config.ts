@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
 import { presetUno, presetAttributify } from 'unocss'
-import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
+import { transformAssetUrls } from '@quasar/vite-plugin'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -49,9 +49,6 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       //createVuePlugin() :
       vue({
         template: { transformAssetUrls }
-      }),
-      quasar({
-        sassVariables: 'src/quasar-variables.sass'
       }),
     ],
   }

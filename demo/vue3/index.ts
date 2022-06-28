@@ -12,8 +12,7 @@ import ElementPlus from 'element-plus'
 import 'ant-design-vue/dist/antd.css'
 import Antd from 'ant-design-vue'
 
-import '@quasar/extras/material-icons/material-icons.css'
-import 'quasar/dist/quasar.prod.css'
+import 'quasar/src/css/index.sass'
 import { Quasar } from 'quasar'
 
 import 'primeicons/primeicons.css'

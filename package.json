@@ -43,7 +43,6 @@
     }
   },
   "devDependencies": {
-    "@quasar/extras": "^1.14.1",
     "@quasar/vite-plugin": "^1.0.10",
     "@vitejs/plugin-vue": "^2.3.3",
     "@vue/compiler-sfc": "^3.2.37",
@@ -60,6 +59,7 @@
     "primevue": "latest",
     "qs": "latest",
     "quasar": "^2.7.3",
+    "sass": "1.32.12",
     "semver": "latest",
     "tslib": "latest",
     "typescript": "latest",

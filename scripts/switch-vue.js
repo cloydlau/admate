@@ -16,7 +16,6 @@ const vue3Deps = [
   '@vue/compiler-sfc',
   'vue-router',
   'element-plus',
-  '@quasar/extras',
   '@quasar/vite-plugin',
   'ant-design-vue',
   'primevue',

@@ -1,70 +1,95 @@
 import {
   ref,
-  reactive,
   toRefs,
-  computed,
   watch,
+  reactive,
+  computed,
   onMounted,
   getCurrentInstance,
-} from 'vue'
+} from 'vue' // TODO
 //from '@vue/composition-api' // ≤ vue@2.6
-import { isVue2 } from 'vue-demi'
-import request from './request'
-import useAdmate from '../src'
-import { merge } from 'lodash-es'
+import { isVue2 } from 'vue-demi' // TODO
+import useAdmate from '../src' // TODO
+import request from './request' // TODO
+import { merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
 
 export default (admateConfig, {
-  // 自定义表单名称
+  // 表单标题
   formTitleHash = {
     c: '新增',
     r: '查看',
     u: '编辑'
   },
 
-  // 在 mounted 时获取列表
-  // fix: 由于 Object.defineProperty 对不存在的属性无法拦截，需要给筛选项赋初值，使得重置功能能够正常工作（仅 Vue 2需要）
+  // 是否在 mounted 时再查询列表
+  // 作用：给筛选项赋初值，使得重置功能能够正常工作
   getListOnMounted = isVue2,
-
-  // 筛选参数校验
-  validateListFilter,
-
-  // 表单校验
-  validateFormData,
-
-  // 表单校验重置
-  clearFormDataValidation,
-
-  // 操作成功提示
-  toast,
 
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
   // 所以需要调方法动态获取
-  initialListFilter,
+  initialListFilter = () => { },
+
+  // 获取列表筛选项的表单 ref
+  // 可访问 this
+  getElFormRefOfListFilter = function () {
+    return this.$refs.listFilterRef // TODO
+  },
+
+  // 校验列表筛选项
+  validateListFilter = function () {
+    return getElFormRefOfListFilter().validate()
+  },
+
+  // 重置列表筛选项
+  resetListFilter = function () {
+    return getElFormRefOfListFilter().resetFields()
+  },
+
+  // 获取详情的表单 ref
+  // 可访问 this
+  // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
+  getElFormRefOfFormData = function () {
+    return this?.$refs.formRef // TODO
+  },
+
+  // 清除详情表单校验
+  clearValidateOfFormData = function () {
+    return getElFormRefOfFormData()?.clearValidate()
+  },
+
+  // 校验详情表单
+  validateFormData = function () {
+    return getElFormRefOfFormData().validate()
+  },
 
   // 自定义钩子函数 - 获取列表之后
   // 参数1为接口返回值，参数2为触发动机
   // 可访问 this
-  afterGetList,
+  afterGetList = () => { },
 
   // 自定义钩子函数 - 查询表单详情之后（新增时不触发）
   // 参数为接口返回值
   // 可访问 this
-  afterRetrieve,
+  afterRetrieve = () => { },
 
   // 自定义钩子函数 - 打开表单之后
   // 参数为接口返回值（新增时为空）
   // 可访问 this
-  afterOpenForm,
+  afterOpenForm = () => { },
 
   // 自定义钩子函数 - 提交表单之前
   // 参数为 form
   // 可访问 this
-  beforeSubmit,
+  beforeSubmit = () => { },
 } = {}) => {
   // 获取当前 Vue 实例
-  const currentInstance = ref()
+  const currentInstance = ref(null)
+  // 列表筛选项的 ref
+  const listFilterRef = ref(null)
+  // 详情的 ref
+  const formRef = ref(null)
 
   // 初始化 admate
   const admate = useAdmate(merge({
@@ -99,11 +124,11 @@ export default (admateConfig, {
       // 查询列表接口的默认参数
       filter: {
         // 页容量
-        // 注意：如果修改了默认值，需要同步修改 el-pagination 组件 pageSize 参数的值
+        // 注意：如果修改了默认值，需要同步修改el-pagination组件pageSize参数的值
         pageSize: 10,
 
         // 动态的默认参数
-        ...initialListFilter?.(),
+        ...initialListFilter(),
 
         // 支持路由传参
         // 因为 qs 支持数组，所以没有使用 vue-router
@@ -116,7 +141,16 @@ export default (admateConfig, {
       pageNumberKey: 'pageNo'
     },
     form: {
-      dataAt: 'data'
+      dataAt: 'data',
+      // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象
+      mergeData(newFormData) {
+        admate.form.data = mergeWith(
+          admate.form.data,
+          newFormData,
+          (oldObj, newObj) =>
+            [undefined, null].includes(newObj) ? oldObj : undefined
+        )
+      }
     },
     getListProxy(getList, trigger) {
       // onMounted 中给筛选项赋初值已经触发调用
@@ -126,13 +160,14 @@ export default (admateConfig, {
 
       function GetList() {
         getList().then(response => {
-          afterGetList?.(response, trigger)
+          afterGetList(response, trigger)
         })
       }
 
       if (trigger === 'filterChange') {
-        if (validateListFilter) {
-          validateListFilter().then(() => {
+        const promise = validateListFilter()
+        if (promise) {
+          promise.then(() => {
             GetList()
           })
         } else {
@@ -141,24 +176,24 @@ export default (admateConfig, {
       } else {
         GetList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-          toast()
+          alert('操作成功')
         }
       }
     },
     openFormProxy(openForm) {
       // 打开表单后的回调
       function callback(res) {
-        afterOpenForm?.(res)
+        afterOpenForm(res)
         if (
           admate.form.status !== 'c' ||
           currentInstance.value?.createFromCopy__
         ) {
-          afterRetrieve?.(res)
+          afterRetrieve(res)
         }
 
         // 回显表单后，清除校验
         setTimeout(() => {
-          clearFormDataValidation()
+          clearValidateOfFormData()
         }, 0)
       }
 
@@ -189,9 +224,8 @@ export default (admateConfig, {
             reject()
           })
         }
-
         validateFormData().then(() => {
-          const result = beforeSubmit?.(admate.form)
+          const result = beforeSubmit(admate.form)
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
@@ -202,41 +236,43 @@ export default (admateConfig, {
         })
       })
     },
-  },
-    admateConfig
-  ))
-
-  const listFilterRef = ref(null)
-  const formRef = ref(null)
+  }, admateConfig))
 
   // 关闭表单时，清除校验
   watch(() => admate.form.show, n => {
     if (!n) {
       setTimeout(() => {
-        clearFormDataValidation()
-      }, 500)
+        clearValidateOfFormData()
+      }, 150)
     }
   })
-
-  if (!getListOnMounted) {
-    admate.getList()
-  }
 
   onMounted(() => {
     currentInstance.value = getCurrentInstance().proxy
 
-    afterGetList = afterGetList?.bind(currentInstance.value)
-    afterRetrieve = afterRetrieve?.bind(currentInstance.value)
-    afterOpenForm = afterOpenForm?.bind(currentInstance.value)
-    beforeSubmit = beforeSubmit?.bind(currentInstance.value)
+    initialListFilter = initialListFilter.bind(currentInstance.value)
+    getElFormRefOfListFilter = getElFormRefOfListFilter.bind(currentInstance.value)
+    validateListFilter = validateListFilter.bind(currentInstance.value)
+    resetListFilter = resetListFilter.bind(currentInstance.value)
+
+    getElFormRefOfFormData = getElFormRefOfFormData.bind(currentInstance.value)
+    clearValidateOfFormData = clearValidateOfFormData.bind(currentInstance.value)
+    validateFormData = validateFormData.bind(currentInstance.value)
+
+    afterGetList = afterGetList.bind(currentInstance.value)
+    afterRetrieve = afterRetrieve.bind(currentInstance.value)
+    afterOpenForm = afterOpenForm.bind(currentInstance.value)
+    beforeSubmit = beforeSubmit.bind(currentInstance.value)
 
     if (getListOnMounted) {
-      if (currentInstance.value.$refs.listFilterRef) {
-        // fix: 由于 Object.defineProperty 对不存在的属性无法拦截，需要给筛选项赋初值，使得重置功能能够正常工作（仅 Vue 2需要）
+      const elFormRefOfListFilter = getElFormRefOfListFilter()
+      if (elFormRefOfListFilter) {
+        // fix: 给筛选项赋初值，使得重置功能能够正常工作
+        // Object.defineProperty 对不存在的属性无法拦截
         admate.list.filter = {
           ...Object.fromEntries(
             Array.from(
-              currentInstance.value.$refs.listFilterRef.fields || [],
+              elFormRefOfListFilter.fields || [],
               v => [v.labelFor, undefined]
             )
           ),
@@ -273,7 +309,7 @@ export default (admateConfig, {
     ),
     // 重置筛选条件
     reset: () => {
-      currentInstance.value.$refs.listFilterRef.resetFields()
+      resetListFilter()
       if (initialListFilter) {
         admate.list.filter = {
           ...admate.list.filter,
@@ -283,7 +319,7 @@ export default (admateConfig, {
     },
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
-      currentInstance.value.$refs.listFilterRef.validate().then(() => {
+      validateListFilter().then(() => {
         admate.list.filter.pageNo = 1
         admate.getList()
       })
@@ -296,9 +332,17 @@ export default (admateConfig, {
     },
     // 当前 Vue 实例
     currentInstance,
-    // 列表筛选条件表单的 ref
+    // 列表筛选项表单的 ref
     listFilterRef,
-    // 单条记录表单的 ref
-    formRef
+    // 详情表单的 ref
+    formRef,
+    // 校验列表筛选项
+    validateListFilter,
+    // 重置列表筛选项
+    resetListFilter,
+    // 清除详情表单校验
+    clearValidateOfFormData,
+    // 校验详情表单
+    validateFormData,
   }))
 }
