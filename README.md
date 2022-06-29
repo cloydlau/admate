@@ -68,12 +68,12 @@ npm add admate
 
 <br>
 
-### 代码片段
+### VSCode 代码片段
 
 > 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
 1. 将 [vscode-code-snippets](https://github.com/cloydlau/vscode-code-snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
-2. 使用方法：输入以下关键词，然后按 Tab：
+2. 使用方法：输入以下任意关键词，然后按 Tab：
    - `admate`: admate 页面模板
    - `admate:form-only`: admate 页面模板（只有表单没有列表的场景）
    - `KiFormDialog`: KiFormDialog 组件
@@ -90,9 +90,9 @@ npm add admate
 
 <br>
 
-### 代码生成器
+### 接口文档一键生成页面代码
 
-接口文档一键生成页面模板代码，省去**从接口文档复制字段名至代码中**这一繁琐步骤
+省去**从接口文档复制字段名至代码中**这一繁琐步骤
 
 目前仅支持 YApi + element-ui
 
