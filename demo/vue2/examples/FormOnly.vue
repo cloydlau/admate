@@ -24,13 +24,11 @@ import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 
 export default {
   setup: () => {
-    const defaultFormData = () => ({})
-    const validateFormData = (...args) => formRef.value.validate(...args)
-
     const {
       u,
       form,
       formRef,
+      validateFormData,
       submitForm,
     } = useAdmateAdapter({
       urlPrefix,
@@ -44,7 +42,6 @@ export default {
               resolve({
                 show: true,
                 submitting: false,
-                data: defaultFormData(),
               })
 
               setTimeout(() => {
@@ -57,8 +54,9 @@ export default {
         })
       },
     }, {
-      validateFormData,
-      clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
+      getElFormRefOfFormData() {
+        return formRef.value
+      },
     })
 
     u.value({})

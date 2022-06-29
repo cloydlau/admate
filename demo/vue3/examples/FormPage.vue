@@ -24,13 +24,12 @@ const formRef = ref(null)
 const route = useRoute()
 const router = useRouter()
 
-const validateFormData = (...args) => formRef.value.validate(...args)
-
 const {
   form,
   openForm,
   formTitle,
   submitForm,
+  validateFormData,
   currentInstance,
 } = useAdmateAdapter({
   urlPrefix: route.query.urlPrefix,
@@ -51,7 +50,9 @@ const {
   },
   form: JSON.parse(route.query.form),
 }, {
-  clearValidateOfFormData: (...args) => formRef.value?.clearValidate(...args),
+  getElFormRefOfFormData() {
+    return formRef.value
+  },
 })
 
 openForm.value()

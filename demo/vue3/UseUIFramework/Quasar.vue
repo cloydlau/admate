@@ -79,11 +79,7 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
 import { cloneDeep } from 'lodash-es'
-
-const listFilterRef = ref(null)
-const formRef = ref(null)
 
 const {
   list,
@@ -97,8 +93,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
-  currentInstance,
 } = useAdmateAdapter({
   urlPrefix,
 }, {

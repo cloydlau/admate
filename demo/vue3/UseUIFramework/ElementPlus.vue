@@ -6,8 +6,7 @@
       </el-form-item>
       <el-form-item prop="status">
         <el-select v-model="list.filter.status" placeholder="状态">
-          <el-option v-for="(v, i) of ['停用', '启用']" :key="i" :label="v"
-            :value="v" />
+          <el-option v-for="(v, i) of ['停用', '启用']" :key="i" :label="v" :value="v" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -47,8 +46,7 @@
 
     <el-dialog :title="formTitle" v-model="form.show">
       <el-form ref="formRef" :model="form.data"
-        :disabled="form.status === 'r' || form.submitting"
-        v-loading="form.loading">
+        :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
         <el-form-item label="姓名" prop="name" required>
           <el-input v-model="form.data.name" />
         </el-form-item>
@@ -56,8 +54,7 @@
       <template #footer>
         <el-button @click="form.show = false">取 消</el-button>
         <el-button type="primary" @click="() => { submitForm() }"
-          :loading="form.submitting"
-          v-if="form.status !== 'r' && !form.loading">
+          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
           确 定
         </el-button>
       </template>
@@ -68,10 +65,6 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
-
-const listFilterRef = ref(null)
-const formRef = ref(null)
 
 const {
   list,
@@ -86,12 +79,13 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
-  currentInstance,
+  listFilterRef,
+  formRef,
 } = useAdmateAdapter({
   urlPrefix,
 }, {
-  validateListFilter: (...args) => listFilterRef.value.validate(...args),
-  validateFormData: (...args) => formRef.value.validate(...args),
-  clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
+  getElFormRefOfFormData() {
+    return formRef.value
+  },
 })
 </script>

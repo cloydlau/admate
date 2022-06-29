@@ -96,7 +96,6 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
-  currentInstance,
 } = useAdmateAdapter({
   urlPrefix,
 }, {

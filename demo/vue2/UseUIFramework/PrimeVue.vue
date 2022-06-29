@@ -13,12 +13,10 @@
         label: '启用',
         value: 1
       }]" optionLabel="label" optionValue="value" placeholder="状态" />
-      <Button v-if="!list.watchFilter" @click="queryList"
-        style="margin-left: 1rem;">
+      <Button v-if="!list.watchFilter" @click="queryList" style="margin-left: 1rem;">
         查询
       </Button>
-      <Button style="margin-left: 1rem;" class="p-button-secondary"
-        @click="reset">
+      <Button style="margin-left: 1rem;" class="p-button-secondary" @click="reset">
         重置
       </Button>
     </div>
@@ -52,18 +50,16 @@
       <div class="p-field" v-else>
         <label for="name">姓名 </label>
         <InputText id="name" v-model.trim="form.data.name"
-          :disabled="form.status === 'r' || form.submitting" required="true"
-          autofocus :class="{ 'p-invalid': !form.data.name }" />
+          :disabled="form.status === 'r' || form.submitting" required="true" autofocus
+          :class="{ 'p-invalid': !form.data.name }" />
         <small class="p-error" v-if="!form.data.name">
           必填项
         </small>
       </div>
 
       <template #footer>
-        <Button label="取 消" class="p-button-secondary"
-          @click="form.show = false" />
-        <Button label="确 定" @click="() => { submitForm() }"
-          :loading="form.submitting"
+        <Button label="取 消" class="p-button-secondary" @click="form.show = false" />
+        <Button label="确 定" @click="() => { submitForm() }" :loading="form.submitting"
           v-if="form.status !== 'r' && !form.loading" />
       </template>
     </Dialog>

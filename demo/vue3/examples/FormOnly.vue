@@ -1,5 +1,5 @@
 <template>
-  <div class="p-20px w-full page">
+  <div class="wrapper">
     <el-dialog modelValue title="编辑" :show-close="false" :modal="false"
       :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="formRef" :model="form.data"
@@ -24,13 +24,11 @@ import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 
 export default {
   setup: () => {
-    const defaultFormData = () => ({})
-    const validateFormData = (...args) => formRef.value.validate(...args)
-
     const {
       u,
       form,
       formRef,
+      validateFormData,
       submitForm,
     } = useAdmateAdapter({
       urlPrefix,
@@ -44,7 +42,6 @@ export default {
               resolve({
                 show: true,
                 submitting: false,
-                data: defaultFormData(),
               })
 
               setTimeout(() => {
@@ -57,8 +54,9 @@ export default {
         })
       },
     }, {
-      validateFormData,
-      clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
+      getElFormRefOfFormData() {
+        return formRef.value
+      },
     })
 
     u.value({})
@@ -73,24 +71,28 @@ export default {
 </script>
 
 <style lang="scss">
-::v-deep .el-dialog__wrapper {
+.wrapper>div {
   position: relative !important;
 
-  &>.el-dialog {
-    margin-top: 2px !important;
-    margin-bottom: 2px !important;
+  &>.el-overlay-dialog {
+    position: relative !important;
 
-    &>.el-dialog__header {
-      display: none;
-    }
+    &>.el-dialog {
+      margin-top: 2px !important;
+      margin-bottom: 2px !important;
 
-    &>.el-dialog__body>div {
-      &>div:first-child {
-        max-height: calc(100vh - 135px) !important;
+      &>.el-dialog__header {
+        display: none;
       }
 
-      &>[slot='footer']>button:first-child {
-        display: none;
+      &>.el-dialog__body>div {
+        &>div:first-child {
+          max-height: calc(100vh - 135px) !important;
+        }
+
+        &>[slot='footer']>button:first-child {
+          display: none;
+        }
       }
     }
   }

@@ -81,14 +81,25 @@
 <script>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
 
 export default {
   setup: () => {
-    const listFilterRef = ref(null)
-    const formRef = ref(null)
-
-    const admate = useAdmateAdapter({
+    const {
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      onPageNumberChange,
+      listFilterRef,
+      formRef,
+    } = useAdmateAdapter({
       urlPrefix,
     }, {
       validateListFilter: (...args) => new Promise((resolve, reject) => {
@@ -101,7 +112,18 @@ export default {
     })
 
     return {
-      ...admate,
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      onPageNumberChange,
       listFilterRef,
       formRef,
     }

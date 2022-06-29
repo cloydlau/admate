@@ -61,10 +61,6 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
-
-const listFilterRef = ref(null)
-const formRef = ref(null)
 
 const {
   list,
@@ -79,12 +75,13 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
-  currentInstance,
+  listFilterRef,
+  formRef,
 } = useAdmateAdapter({
   urlPrefix,
 }, {
-  validateListFilter: (...args) => listFilterRef.value.validate(...args),
-  validateFormData: (...args) => formRef.value.validate(...args),
-  clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
+  getElFormRefOfFormData() {
+    return formRef.value
+  },
 })
 </script>

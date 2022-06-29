@@ -71,12 +71,11 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
-  currentInstance,
 } = useAdmateAdapter({
   urlPrefix,
 }, {
-  validateListFilter: (...args) => listFilterRef.value.validate(...args),
-  validateFormData: (...args) => formRef.value.validate(...args),
-  clearValidateOfFormData: (...args) => formRef.value.clearValidate(...args),
+  getElFormRefOfFormData() {
+    return formRef.value
+  },
 })
 </script>
