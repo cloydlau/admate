@@ -43,20 +43,20 @@
     }
   },
   "devDependencies": {
-    "@quasar/vite-plugin": "^1.0.10",
-    "@vitejs/plugin-vue": "^2.3.3",
-    "@vue/compiler-sfc": "^3.2.37",
-    "@vue/test-utils": "^2.0.0",
-    "ant-design-vue": "^3.2.9",
+    "@mdi/font": "^6.8.96",
+    "@vitejs/plugin-vue2": "^1.1.1",
+    "@vue/test-utils": "1",
+    "ant-design-vue": "1",
     "axios": "latest",
     "chalk": "^4.1.2",
-    "element-plus": "^2.2.6",
+    "element-ui": "^2.15.9",
     "enquirer": "latest",
     "execa": "^4.1.0",
+    "kikimore": "^0.6.0",
     "minimist": "latest",
     "mockjs": "latest",
     "primeicons": "latest",
-    "primevue": "latest",
+    "primevue": "2",
     "qs": "latest",
     "quasar": "^2.7.3",
     "sass": "1.32.12",
@@ -67,9 +67,9 @@
     "vite": "beta",
     "vite-plugin-mock": "latest",
     "vitest": "latest",
-    "vue": "^3.2.37",
-    "vue-router": "latest",
-    "vuetify": "^3.0.0-beta.3"
+    "vue": "2.7.0-beta.8",
+    "vue-router": "3",
+    "vuetify": "2"
   },
   "files": [
     "dist"

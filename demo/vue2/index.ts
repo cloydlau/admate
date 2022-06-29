@@ -14,6 +14,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
 
+import 'kikimore/dist/style.css'
+import Kikimore from 'kikimore'
+Vue.use(Kikimore)
+
 import 'ant-design-vue/dist/antd.css'
 import Antd from 'ant-design-vue'
 Vue.use(Antd)

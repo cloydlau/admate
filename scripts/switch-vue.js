@@ -14,21 +14,22 @@ const { prompt } = require('enquirer')
 const vue3Deps = [
   '@vitejs/plugin-vue',
   '@vue/compiler-sfc',
-  'vue-router',
+  'vue-router@latest',
   'element-plus',
   '@quasar/vite-plugin',
-  'ant-design-vue',
-  'primevue',
-  'quasar',
+  'ant-design-vue@latest',
+  'primevue@latest',
+  'quasar@latest',
   'vuetify@next',
 ], vue2Deps = [
-  "@vitejs/plugin-vue2",
-  'vue-router@3',
-  'element-ui',
   '@mdi/font',
+  "@vitejs/plugin-vue2",
   'ant-design-vue@1',
+  'element-ui',
+  'kikimore',
   'primevue@2',
   'vuetify@2',
+  'vue-router@3',
 ]
 
 const targetVersion = Number(process.argv[2]) || 3
@@ -65,6 +66,7 @@ async function useVueVersion(targetVersion) {
 
     await removeDeps(vue2Deps)
     await run('pnpm', ['add', ...vue3Deps, '-D'])
+    await run('pnpm', ['clean'])
     await run('pnpm', ['add', 'vue@latest', '@vue/test-utils@latest', '-D'])
     await run('npx', ['vue-demi-switch', '3'])
     console.warn('Vue 版本已切换至 3')
@@ -86,6 +88,7 @@ async function useVueVersion(targetVersion) {
 
     await removeDeps(vue3Deps)
     await run('pnpm', ['add', ...vue2Deps, '-D'])
+    await run('pnpm', ['clean'])
     await run('pnpm', ['add', 'vue@v2-beta', '@vue/test-utils@1', '-D'])
     await run('npx', ['vue-demi-switch', '2'])
     console.warn('Vue 版本已切换至 2')

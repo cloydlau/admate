@@ -68,7 +68,7 @@ npm add admate
 
 <br>
 
-### 页面模板
+### 代码片段
 
 > 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
@@ -80,6 +80,7 @@ npm add admate
    - `KiFormDialog.data`: KiFormDialog 组件的 data
    - `KiFormDialog:readonly`: KiFormDialog 组件（只读模式）
    - `KiFormDialog.data:readonly`: KiFormDialog 组件的 data（只读模式）
+   - `KiFormDialog:subcomponent`: KiFormDialog 作为子组件使用
    - `KiSelect:options`: KiSelect 组件，本地数据源
    - `KiSelect:search`: KiSelect 组件，远程数据源
    - `KiSelect:index`: KiSelect 组件，绑定值为数组下标

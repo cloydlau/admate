@@ -23,6 +23,21 @@ export default [
       import('../UseUIFramework/PrimeVue.vue')
   },*/
   {
+    path: '/form-externalized', component: () =>
+      import('../examples/FormExternalized.vue')
+  },
+  /* {
+    path: '/form-decoupled', component: () =>
+      import('../examples/FormDecoupled.vue')
+  },
+  {
+    path: '/form-page',
+    hidden: true,
+    props: true,
+    component: () =>
+      import('../examples/FormPage.vue')
+  }, */
+  {
     path: '/form-only', component: () =>
       import('../examples/FormOnly.vue')
   },

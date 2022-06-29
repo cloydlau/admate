@@ -11,7 +11,7 @@ import {
 import { isVue2 } from 'vue-demi' // TODO
 import useAdmate from '../src' // TODO
 import request from './request' // TODO
-import { merge, mergeWith } from 'lodash-es'
+import { merge } from 'lodash-es'
 import qs from 'qs'
 
 export default (admateConfig, {
@@ -150,7 +150,7 @@ export default (admateConfig, {
     },
     getListProxy(getList, trigger) {
       // onMounted 中给筛选项赋初值已经触发调用
-      if (trigger === 'init') {
+      if (getListOnMounted && trigger === 'init') {
         return
       }
 
