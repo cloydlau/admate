@@ -70,100 +70,22 @@ npm add admate
 
 ### 页面模板
 
-以下为 VSCode Snippets：
+1. 将 [vscode-code-snippets](https://github.com/cloydlau/vscode-code-snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
+2. 使用方法：输入以下关键词，然后按 Tab：
+   - `admate`: admate 页面模板
+   - `admate:form-only`: admate 页面模板（只有表单没有列表的场景）
+   - `KiFormDialog`: KiFormDialog 组件
+   - `KiFormDialog.data`: KiFormDialog 组件的 data
+   - `KiFormDialog:readonly`: KiFormDialog 组件（只读模式）
+   - `KiFormDialog.data:readonly`: KiFormDialog 组件的 data（只读模式）
+   - `KiSelect:options`: KiSelect 组件，本地数据源
+   - `KiSelect:search`: KiSelect 组件，远程数据源
+   - `KiSelect:index`: KiSelect 组件，绑定值为数组下标
+   - `:props`: KiSelect 组件的 props 参数
+   - `:options`: KiSelect 组件的 options 参数
+   - `:search`: KiSelect 组件的 search 参数
 
-> 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
-
-```json
-{
-	"admate": {
-		"prefix": "admate",
-		"body": [
-			"<template>",
-			"  <div class=\"app-container\">",
-			"    <el-form ref=\"listFilterRef\" :model=\"list.filter\" inline>",
-			"      <el-form-item prop=\"TODO\">",
-			"        <el-input placeholder=\"TODO\" v-model=\"list.filter.TODO\" clearable />",
-			"      </el-form-item>",
-			"      <el-form-item prop=\"TODO\">",
-			"        <KiSelect placeholder=\"TODO\" v-model=\"list.filter.TODO\" :options=\"[",
-			"          { label: '', value: '' },",
-			"          { label: '', value: '' },",
-			"        ]\" :props=\"{ label: 'label', value: 'value' }\" />",
-			"      </el-form-item>",
-			"      <el-form-item prop=\"status\">",
-			"        <KiSelect placeholder=\"状态\" v-model=\"list.filter.status\" :options=\"['停用', '启用']\" />",
-			"      </el-form-item>",
-			"      <el-form-item>",
-			"        <el-button @click=\"reset\">重置</el-button>",
-			"      </el-form-item>",
-			"    </el-form>",
-			"",
-			"    <div class=\"table-operation\">",
-			"      <el-button v-if=\"pageBtnList.includes('新增')\" type=\"primary\" @click=\"c\">",
-			"        新增",
-			"      </el-button>",
-			"      <el-pagination :total=\"list.total\" :currentPage.sync=\"list.filter.pageNo\"",
-			"        :pageSize.sync=\"list.filter.pageSize\" v-bind=\"elPaginationProps\" />",
-			"    </div>",
-			"",
-			"    <el-table v-loading=\"list.loading\" :data=\"list.data\" v-bind=\"tableProp\">",
-			"      <el-table-column label=\"TODO\" prop=\"TODO\" />",
-			"      <el-table-column label=\"状态\" align=\"center\">",
-			"        <template slot-scope=\"{ row: { id, status } }\">",
-			"          <KiPopSwitch v-bind=\"popSwitchProps(status)\"",
-			"            @change=\"updateStatus({ id, status: status ^ 1 })\" />",
-			"        </template>",
-			"      </el-table-column>",
-			"      <el-table-column align=\"center\" label=\"操作\">",
-			"        <template slot-scope=\"{ row }\">",
-			"          <KiPopButton v-if=\"pageBtnList.includes('查看')\" @click=\"r({ id: row.id })\">",
-			"            查看",
-			"          </KiPopButton>",
-			"          <KiPopButton v-if=\"pageBtnList.includes('编辑')\" @click=\"u({ id: row.id })\">",
-			"            编辑",
-			"          </KiPopButton>",
-			"          <KiPopButton v-if=\"pageBtnList.includes('删除')\"",
-			"            :elPopconfirmProps=\"{ title: '确认删除吗？' }\" @click=\"d({ id: row.id })\">",
-			"            删除",
-			"          </KiPopButton>",
-			"        </template>",
-			"      </el-table-column>",
-			"    </el-table>",
-			"",
-			"    <KiFormDialog :title=\"formTitle\" :readonly=\"form.status === 'r'\" ref=\"formRef\"",
-			"      v-model=\"form.data\" :show.sync=\"form.show\" :submit=\"submitForm\"",
-			"      :loading=\"form.loading\">",
-			"      <template #el-form>",
-			"        <el-form-item label=\"TODO\" prop=\"TODO\" verify>",
-			"          <el-input v-model=\"form.data.TODO\" maxlength=\"30\" show-word-limit clearable />",
-			"        </el-form-item>",
-			"        <el-form-item label=\"TODO\" prop=\"TODO\" verify>",
-			"          <KiSelect v-model=\"form.data.TODO\" :options=\"[",
-			"            { label: '', value: '' },",
-			"            { label: '', value: '' },",
-			"          ]\" :props=\"{ label: 'label', value: 'value' }\" />",
-			"        </el-form-item>",
-			"      </template>",
-			"    </KiFormDialog>",
-			"  </div>",
-			"</template>",
-			"",
-			"<script>",
-			"import pageMixin from '@/utils/pageMixin'",
-			"import useAdmateAdapter from '@/utils/useAdmateAdapter'",
-			"",
-			"export default {",
-			"  mixins: [pageMixin],",
-			"  setup: () => useAdmateAdapter({",
-			"    urlPrefix: '',",
-			"  })",
-			"}",
-			"</script>"
-		],
-	},
-}
-```
+> 代码片段搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
 <br>
 
