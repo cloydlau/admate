@@ -49,11 +49,10 @@
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref, toRaw } from 'vue'
+import { toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const listFilterRef = ref(null)
 
 const {
   list,
@@ -68,7 +67,7 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
-  currentInstance,
+  listFilterRef,
 } = useAdmateAdapter({
   urlPrefix,
   openFormProxy(openForm) {
@@ -80,7 +79,5 @@ const {
       }
     })
   },
-}, {
-  validateListFilter: (...args) => listFilterRef.value.validate(...args),
 })
 </script>

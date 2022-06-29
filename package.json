@@ -64,7 +64,7 @@
     "tslib": "latest",
     "typescript": "latest",
     "unocss": "latest",
-    "vite": "latest",
+    "vite": "beta",
     "vite-plugin-mock": "latest",
     "vitest": "latest",
     "vue": "^3.2.37",

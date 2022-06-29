@@ -45,18 +45,14 @@
     </el-table>
 
     <FormDialog v-model:form="form" :formTitle="formTitle" :submitForm="submitForm"
-      @update:formRef="e => { formRef = e }" />
+      ref="formRef" />
   </div>
 </template>
 
 <script setup>
 import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
-import { ref } from 'vue'
 import FormDialog from './FormDialog.vue'
-
-const listFilterRef = ref(null)
-const formRef = ref(null)
 
 const {
   list,
@@ -71,11 +67,13 @@ const {
   formTitle,
   queryList,
   onPageNumberChange,
+  listFilterRef,
+  formRef,
 } = useAdmateAdapter({
   urlPrefix,
 }, {
   getElFormRefOfFormData() {
-    return formRef.value
+    return formRef.value.$refs.elFormRef
   },
 })
 </script>
