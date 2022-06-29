@@ -70,6 +70,8 @@ npm add admate
 
 ### 页面模板
 
+> 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
+
 1. 将 [vscode-code-snippets](https://github.com/cloydlau/vscode-code-snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
 2. 使用方法：输入以下关键词，然后按 Tab：
    - `admate`: admate 页面模板
@@ -84,8 +86,6 @@ npm add admate
    - `:props`: KiSelect 组件的 props 参数
    - `:options`: KiSelect 组件的 options 参数
    - `:search`: KiSelect 组件的 search 参数
-
-> 代码片段搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
 <br>
 
