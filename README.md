@@ -72,7 +72,7 @@ npm add admate
 
 > 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 
-1. 将 [vscode-code-snippets](https://github.com/cloydlau/vscode-code-snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
+1. 将 [snippets](https://github.com/cloydlau/snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
 2. 使用方法：输入以下任意关键词，然后按 Tab：
    - `admate`: admate 页面模板
    - `admate:form-only`: admate 页面模板（只有表单没有列表的场景）
