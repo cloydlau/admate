@@ -24,7 +24,7 @@ export default (admateConfig, {
 
   // 是否在 mounted 时再查询列表
   // 作用：给筛选项赋初值，使得重置功能能够正常工作
-  getListOnMounted = isVue2,
+  getListOnMounted = isVue2, // TODO
 
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
@@ -35,7 +35,7 @@ export default (admateConfig, {
   // 获取列表筛选项的表单 ref
   // 可访问 this
   getElFormRefOfListFilter = function () {
-    return this.$refs.listFilterRef // TODO
+    return this.$refs.listFilterRef
   },
 
   // 校验列表筛选项
@@ -90,14 +90,24 @@ export default (admateConfig, {
   beforeSubmit = () => { },
 } = {}) => {
   // 获取当前 Vue 实例
-  const currentInstance = ref(null)
+  const currentInstance = ref()
   // 列表筛选项的 ref
-  const listFilterRef = ref(null)
+  const listFilterRef = ref()
   // 详情的 ref
-  const formRef = ref(null)
+  const formRef = ref()
 
   // 初始化 admate
-  const admate = useAdmate(merge({
+  const {
+    list,
+    getList,
+    form,
+    openForm,
+    submitForm,
+    d,
+    enable,
+    disable,
+    updateStatus,
+  } = useAdmate(merge({
     axios: request,
     axiosConfig: {
       c: {
@@ -172,7 +182,7 @@ export default (admateConfig, {
       } else {
         GetList()
         if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-          alert('操作成功')
+          alert('操作成功') // TODO
         }
       }
     },
@@ -181,7 +191,7 @@ export default (admateConfig, {
       function callback(res) {
         afterOpenForm(res)
         if (
-          admate.form.status !== 'c' ||
+          form.status !== 'c' ||
           currentInstance.value?.createFromCopy__
         ) {
           afterRetrieve(res)
@@ -221,7 +231,7 @@ export default (admateConfig, {
           })
         }
         validateFormData().then(() => {
-          const result = beforeSubmit(admate.form)
+          const result = beforeSubmit(form)
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
@@ -235,7 +245,7 @@ export default (admateConfig, {
   }, admateConfig))
 
   // 关闭表单时，清除校验
-  watch(() => admate.form.show, n => {
+  watch(() => form.show, n => {
     if (!n) {
       setTimeout(() => {
         clearValidateOfFormData()
@@ -265,50 +275,58 @@ export default (admateConfig, {
       if (elFormRefOfListFilter) {
         // fix: 给筛选项赋初值，使得重置功能能够正常工作
         // Object.defineProperty 对不存在的属性无法拦截
-        admate.list.filter = {
+        list.filter = {
           ...Object.fromEntries(
             Array.from(
               elFormRefOfListFilter.fields || [],
               v => [v.labelFor, undefined]
             )
           ),
-          ...admate.list.filter
+          ...list.filter
         }
       } else {
-        admate.getList()
+        getList()
       }
     }
   })
 
   return toRefs(reactive({
-    ...admate,
+    list,
+    getList,
+    form,
+    openForm,
+    submitForm,
+    d,
+    enable,
+    disable,
+    updateStatus,
     c: (...args) => {
-      admate.form.status = 'c'
+      form.status = 'c'
       // 复制新增需要传参，常规新增不需要
-      return admate.openForm(
+      return openForm(
         ...(currentInstance.value.createFromCopy__ ? args : [])
       )
     },
     r: (...args) => {
-      admate.form.status = 'r'
-      return admate.openForm(...args)
+      form.status = 'r'
+      return openForm(...args)
     },
     u: (...args) => {
-      admate.form.status = 'u'
-      return admate.openForm(...args)
+      form.status = 'u'
+      return openForm(...args)
     },
     // 单条记录表单的标题
     formTitle: computed(() =>
       currentInstance.value?.createFromCopy__
         ? '复制新增'
-        : formTitleHash[admate.form.status]
+        : formTitleHash[form.status]
     ),
     // 重置筛选条件
     reset: () => {
       resetListFilter()
       if (initialListFilter) {
-        admate.list.filter = {
-          ...admate.list.filter,
+        list.filter = {
+          ...list.filter,
           ...initialListFilter(),
         }
       }
@@ -316,14 +334,14 @@ export default (admateConfig, {
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
       validateListFilter().then(() => {
-        admate.list.filter.pageNo = 1
-        admate.getList()
+        list.filter.pageNo = 1
+        getList()
       })
     },
     // 监听页码切换（监听筛选条件时不需要）
     onPageNumberChange: () => {
-      if (!admate.list.watchFilter) {
-        admate.getList()
+      if (!list.watchFilter) {
+        getList()
       }
     },
     // 当前 Vue 实例
