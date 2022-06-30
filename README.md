@@ -32,7 +32,7 @@
 - 🧹 **周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-- 🔌 **提供[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)**
+- 🔌 **提供[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
   - 自定义钩子函数：获取列表后 / 打开表单后 / 查询表单后 / 提交表单前
