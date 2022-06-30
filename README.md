@@ -343,7 +343,7 @@ Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要�
 
   <el-dialog>
     <template #footer>
-      <el-button @click="submitForm(FormData.from( form.data ))">
+      <el-button @click="() => submitForm(FormData.from(form.data))">
         确 定
       </el-button>
     </template>
@@ -351,37 +351,26 @@ Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要�
 </template>
 
 <script>
-import useAdmate from 'admate'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { jsonToFormData, pickDeepBy } from 'kayran'
 
+// 过滤参数并转换为 FormData
+// 此处示例为将过滤方法绑定到 window.FormData，方便其他地方使用
+FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null,undefined].includes(v)))
+// 直接转换为 FormData
+//FormData.from = jsonToFormData
+
 export default {
-  setup: () => {
-    // 过滤参数并转换为 FormData
-    // 此处示例为将过滤方法绑定到 window.FormData，方便其他地方使用
-    FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v)))
-
-    // 直接转换为 FormData
-    //FormData.from = jsonToFormData
-
-    const admate = useAdmate({
-      getListProxy (getList, trigger) {
-        getList(FormData.from(list.filter))
-      },
-    })
-    
+  setup: () => useAdmateAdapter({
+    getListProxy (getList, trigger) {
+      getList(FormData.from(list.value.filter))
+    },
+  }),
+  data() {
     return {
-      ...admate,
-      r: (...args) => {
-        admate.form.status = 'r'
-        admate.openForm(...args)
-      },
-      u: (...args) => {
-        admate.form.status = 'u'
-        admate.openForm(...args)
-      },
       FormData
     }
-  }
+  },
 }
 </script>
 ```
