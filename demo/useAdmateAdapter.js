@@ -41,7 +41,7 @@ export default (admateConfig, {
   // 校验列表筛选项
   // 可访问 this
   validateListFilter = function () {
-    return getElFormRefOfListFilter().validate()
+    return getElFormRefOfListFilter()?.validate()
   },
 
   // 重置列表筛选项
