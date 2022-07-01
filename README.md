@@ -605,6 +605,18 @@ const { list } = useAdmate({
 })
 ```
 
+```ts
+// 示例适配层：获取列表后
+
+useAdmateAdapter({
+  urlPrefix: '',
+}, {
+  afterGetList (response, trigger) {
+    // 可访问 this（组件实例）
+  }
+}
+```
+
 <a class="anchor-fix" name="openForm-c"></a>
 
 <br>
@@ -1097,6 +1109,32 @@ useAdmate({
 })
 ```
 
+```ts
+// 示例适配层：打开表单后
+
+useAdmateAdapter({
+  urlPrefix: '',
+}, {
+  afterOpenForm (res) {
+    // res 为接口返回值（新增时为空）
+    // 可访问 this（组件实例）
+  }
+}
+```
+
+```ts
+// 示例适配层：回显表单后（新增时不触发）
+
+useAdmateAdapter({
+  urlPrefix: '',
+}, {
+  afterRetrieve (res) {
+    // res 为接口返回值
+    // 可访问 this（组件实例）
+  }
+}
+```
+
 <br>
 
 ### Hook: 提交表单时
@@ -1208,6 +1246,18 @@ useAdmate({
     }
   }
 })
+```
+
+```ts
+// 示例适配层：提交表单之前
+
+useAdmateAdapter({
+  urlPrefix: '',
+}, {
+  beforeSubmit (form) {
+    // 可访问 this（组件实例）
+  }
+}
 ```
 
 <br>
