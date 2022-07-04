@@ -35,7 +35,7 @@
 - 🔌 **提供[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
-  - 自定义钩子函数：获取列表后 / 打开表单后 / 查询表单后 / 提交表单前
+  - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
   - 列表筛选参数校验
   - 列表筛选参数重置
 
@@ -398,40 +398,6 @@ useAdmate({
 })
 ```
 
-如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 Bug）
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <el-form ref="listFilterRef" :model="list.filter" inline>
-    <el-form-item prop="effect">
-      <el-checkbox
-        v-model="list.filter.effect"
-        label="生效"
-        border
-      />
-    </el-form-item>
-    <el-button @click="reset">重置</el-button>
-  </el-form>
-</template>
-
-<script>
-import useAdmate from 'admate'
-
-export default {
-  setup: () => useAdmate({
-    urlPrefix: '',
-    list: {
-      filter: {
-        effect: null
-      }
-    }
-  }),
-}
-</script>
-```
-
 <br>
 
 ### 触发查询
@@ -604,6 +570,8 @@ const { list } = useAdmate({
   },
 })
 ```
+
+<a class="anchor-fix" name="afterGetList"></a>
 
 ```ts
 // 适配层示例：获取列表后
@@ -1109,6 +1077,8 @@ useAdmate({
 })
 ```
 
+<a class="anchor-fix" name="afterOpenForm"></a>
+
 ```ts
 // 适配层示例：打开表单后
 
@@ -1121,6 +1091,8 @@ useAdmateAdapter({
   }
 }
 ```
+
+<a class="anchor-fix" name="afterRetrieve"></a>
 
 ```ts
 // 适配层示例：回显表单后（新增时不触发）
@@ -1247,6 +1219,8 @@ useAdmate({
   }
 })
 ```
+
+<a class="anchor-fix" name="beforeSubmit"></a>
 
 ```ts
 // 适配层示例：提交表单之前
