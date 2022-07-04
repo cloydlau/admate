@@ -6,8 +6,8 @@ import {
   computed,
   onMounted,
   getCurrentInstance,
-} from 'vue' // TODO
-//from '@vue/composition-api' // ≤ vue@2.6
+} from 'vue'
+//from '@vue/composition-api' // ≤ vue@2.6 // TODO
 import { isVue2 } from 'vue-demi' // TODO
 import useAdmate from '../src' // TODO
 import request from './request' // TODO
@@ -19,7 +19,7 @@ export default (admateConfig, {
   formTitleHash = {
     c: '新增',
     r: '查看',
-    u: '编辑'
+    u: '编辑',
   },
 
   // 是否在 mounted 时再查询列表
@@ -275,15 +275,17 @@ export default (admateConfig, {
       if (elFormRefOfListFilter) {
         // fix: 给筛选项赋初值，使得重置功能能够正常工作
         // Object.defineProperty 对不存在的属性无法拦截
-        list.filter = {
-          ...Object.fromEntries(
-            Array.from(
-              elFormRefOfListFilter.fields || [],
-              v => [v.labelFor, undefined]
-            )
-          ),
-          ...list.filter
-        }
+        setTimeout(() => { // fix: vue@2.7 不触发 watch
+          list.filter = reactive({
+            ...Object.fromEntries(
+              Array.from(
+                elFormRefOfListFilter.fields || [],
+                v => [v.labelFor, undefined]
+              )
+            ),
+            ...list.filter
+          })
+        }, 0)
       } else {
         getList()
       }
