@@ -500,7 +500,9 @@ export default {
 
 ### Hook: 查询列表时
 
-`getList` ：获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
+#### getList
+
+获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
 ```ts
 const {
@@ -517,7 +519,9 @@ const {
 getList() // 手动查询
 ```
 
-`getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
+#### getListProxy
+
+你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
 
 ```ts
 useAdmate({
@@ -572,6 +576,8 @@ const { list } = useAdmate({
 ```
 
 <a class="anchor-fix" name="afterGetList"></a>
+
+#### afterGetList
 
 ```ts
 // 适配层示例：获取列表后
@@ -987,13 +993,17 @@ export default {
 
 ### Hook: 打开表单时
 
-`openForm` ：打开表单，函数签名要分情况：
+#### openForm
+
+打开表单，函数签名要分情况：
 
 - [新增时](#openForm-c)
 - [查看时](#openForm-r)
 - [编辑时](#openForm-u)
 
-`openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
+#### openFormProxy
+
+你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
 
 ```ts
 useAdmate({
@@ -1079,6 +1089,8 @@ useAdmate({
 
 <a class="anchor-fix" name="afterOpenForm"></a>
 
+#### afterOpenForm
+
 ```ts
 // 适配层示例：打开表单后
 
@@ -1091,6 +1103,8 @@ useAdmateAdapter({
   }
 }
 ```
+
+#### afterRetrieve
 
 <a class="anchor-fix" name="afterRetrieve"></a>
 
@@ -1107,11 +1121,17 @@ useAdmateAdapter({
 }
 ```
 
+#### 为什么不直接监听 `form.show` ?
+
+当然可以，只是这样无法拿到接口返回值。
+
 <br>
 
 ### Hook: 提交表单时
 
-`submitForm` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
+#### submitForm
+
+提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
 
 ```ts
 const {
@@ -1126,7 +1146,9 @@ const {
 } = useAdmate()
 ```
 
-`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
+#### submitFormProxy
+
+你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
 
 ```ts
 useAdmate({
@@ -1221,6 +1243,8 @@ useAdmate({
 ```
 
 <a class="anchor-fix" name="beforeSubmit"></a>
+
+#### beforeSubmit
 
 ```ts
 // 适配层示例：提交表单之前
