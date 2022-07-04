@@ -30,7 +30,7 @@ export default (admateConfig, {
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
   // 所以需要调方法动态获取
   // 可访问 this
-  initialListFilter = () => { },
+  initialListFilter = function () { },
 
   // 获取列表筛选项的表单 ref
   // 可访问 this
@@ -72,22 +72,22 @@ export default (admateConfig, {
   // 自定义钩子函数 - 获取列表之后
   // 参数1为接口返回值，参数2为触发动机
   // 可访问 this
-  afterGetList = () => { },
+  afterGetList = function () { },
 
   // 自定义钩子函数 - 查询表单详情之后（新增时不触发）
   // 参数为接口返回值
   // 可访问 this
-  afterRetrieve = () => { },
+  afterRetrieve = function () { },
 
   // 自定义钩子函数 - 打开表单之后
   // 参数为接口返回值（新增时为空）
   // 可访问 this
-  afterOpenForm = () => { },
+  afterOpenForm = function () { },
 
   // 自定义钩子函数 - 提交表单之前
   // 参数为 form
   // 可访问 this
-  beforeSubmit = () => { },
+  beforeSubmit = function () { },
 } = {}) => {
   // 获取当前 Vue 实例
   const currentInstance = ref()
