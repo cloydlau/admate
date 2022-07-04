@@ -606,7 +606,7 @@ const { list } = useAdmate({
 ```
 
 ```ts
-// 示例适配层：获取列表后
+// 适配层示例：获取列表后
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1110,7 +1110,7 @@ useAdmate({
 ```
 
 ```ts
-// 示例适配层：打开表单后
+// 适配层示例：打开表单后
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1123,7 +1123,7 @@ useAdmateAdapter({
 ```
 
 ```ts
-// 示例适配层：回显表单后（新增时不触发）
+// 适配层示例：回显表单后（新增时不触发）
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1249,7 +1249,7 @@ useAdmate({
 ```
 
 ```ts
-// 示例适配层：提交表单之前
+// 适配层示例：提交表单之前
 
 useAdmateAdapter({
   urlPrefix: '',
