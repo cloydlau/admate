@@ -154,7 +154,7 @@ export default function useAdmate({
     ...form,
   })
 
-  let Form = reactive(getInitialForm())
+  const Form = reactive(getInitialForm())
 
   // 设置表单的终态
   const setTerminalState = ({

@@ -67,7 +67,7 @@
     "vite": "beta",
     "vite-plugin-mock": "latest",
     "vitest": "latest",
-    "vue": "2.7.0-beta.8",
+    "vue": "v2-latest",
     "vue-router": "3",
     "vuetify": "2"
   },
