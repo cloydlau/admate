@@ -35,7 +35,7 @@
 - 🔌 **提供[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
-  - 自定义钩子函数：获取列表后 / 打开表单后 / 查询表单后 / 提交表单前
+  - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
   - 列表筛选参数校验
   - 列表筛选参数重置
 
@@ -398,40 +398,6 @@ useAdmate({
 })
 ```
 
-如果你的参数筛选项中包含 `el-checkbox` 组件，则必须在 data 中声明其初始值，否则将导致无法正确重置（element-ui 的 Bug）
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <el-form ref="listFilterRef" :model="list.filter" inline>
-    <el-form-item prop="effect">
-      <el-checkbox
-        v-model="list.filter.effect"
-        label="生效"
-        border
-      />
-    </el-form-item>
-    <el-button @click="reset">重置</el-button>
-  </el-form>
-</template>
-
-<script>
-import useAdmate from 'admate'
-
-export default {
-  setup: () => useAdmate({
-    urlPrefix: '',
-    list: {
-      filter: {
-        effect: null
-      }
-    }
-  }),
-}
-</script>
-```
-
 <br>
 
 ### 触发查询
@@ -534,7 +500,9 @@ export default {
 
 ### Hook: 查询列表时
 
-`getList` ：获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
+#### getList
+
+获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
 ```ts
 const {
@@ -551,7 +519,9 @@ const {
 getList() // 手动查询
 ```
 
-`getListProxy`：你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
+#### getListProxy
+
+你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
 
 ```ts
 useAdmate({
@@ -605,8 +575,12 @@ const { list } = useAdmate({
 })
 ```
 
+<a class="anchor-fix" name="afterGetList"></a>
+
+#### afterGetList
+
 ```ts
-// 示例适配层：获取列表后
+// 适配层示例：获取列表后
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1019,13 +993,17 @@ export default {
 
 ### Hook: 打开表单时
 
-`openForm` ：打开表单，函数签名要分情况：
+#### openForm
+
+打开表单，函数签名要分情况：
 
 - [新增时](#openForm-c)
 - [查看时](#openForm-r)
 - [编辑时](#openForm-u)
 
-`openFormProxy`：你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
+#### openFormProxy
+
+你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
 
 ```ts
 useAdmate({
@@ -1109,8 +1087,12 @@ useAdmate({
 })
 ```
 
+<a class="anchor-fix" name="afterOpenForm"></a>
+
+#### afterOpenForm
+
 ```ts
-// 示例适配层：打开表单后
+// 适配层示例：打开表单后
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1122,8 +1104,12 @@ useAdmateAdapter({
 }
 ```
 
+#### afterRetrieve
+
+<a class="anchor-fix" name="afterRetrieve"></a>
+
 ```ts
-// 示例适配层：回显表单后（新增时不触发）
+// 适配层示例：回显表单后（新增时不触发）
 
 useAdmateAdapter({
   urlPrefix: '',
@@ -1135,11 +1121,17 @@ useAdmateAdapter({
 }
 ```
 
+#### 为什么不直接监听 `form.show` ?
+
+当然可以，只是这样无法拿到接口返回值。
+
 <br>
 
 ### Hook: 提交表单时
 
-`submitForm` ：提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
+#### submitForm
+
+提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
 
 ```ts
 const {
@@ -1154,7 +1146,9 @@ const {
 } = useAdmate()
 ```
 
-`submitFormProxy`：你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
+#### submitFormProxy
+
+你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
 
 ```ts
 useAdmate({
@@ -1248,8 +1242,12 @@ useAdmate({
 })
 ```
 
+<a class="anchor-fix" name="beforeSubmit"></a>
+
+#### beforeSubmit
+
 ```ts
-// 示例适配层：提交表单之前
+// 适配层示例：提交表单之前
 
 useAdmateAdapter({
   urlPrefix: '',
