@@ -74,19 +74,22 @@ npm add admate
 
 1. 将 [snippets](https://github.com/cloydlau/snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
 2. 使用方法：输入以下任意关键词，然后按 Tab：
-   - `admate`: admate 页面模板
-   - `admate:form-only`: admate 页面模板（只有表单没有列表的场景）
-   - `KiFormDialog`: KiFormDialog 组件
-   - `KiFormDialog.data`: KiFormDialog 组件的 data
-   - `KiFormDialog:readonly`: KiFormDialog 组件（只读模式）
-   - `KiFormDialog.data:readonly`: KiFormDialog 组件的 data（只读模式）
-   - `KiFormDialog:subcomponent`: KiFormDialog 作为子组件使用
-   - `KiSelect:options`: KiSelect 组件，本地数据源
-   - `KiSelect:search`: KiSelect 组件，远程数据源
-   - `KiSelect:index`: KiSelect 组件，绑定值为数组下标
-   - `:props`: KiSelect 组件的 props 参数
-   - `:options`: KiSelect 组件的 options 参数
-   - `:search`: KiSelect 组件的 search 参数
+   - admate 页面模板
+     - `admate`
+     - `admate:form-only`: 只有表单没有列表的场景
+   - KiFormDialog 组件
+     - `KiFormDialog`: HTML 部分
+     - `KiFormDialog.data`: data 部分
+     - `KiFormDialog:readonly`: HTML 部分（只读模式）
+     - `KiFormDialog.data:readonly`: data 部分（只读模式）
+     - `KiFormDialog:subcomponent`: 作为子组件使用
+   - KiSelect 组件
+     - `KiSelect:options`: 本地数据源
+     - `KiSelect:search`: 远程数据源
+     - `KiSelect:index`: 绑定值为数组下标
+     - `:props`: props 参数
+     - `:options`: options 参数
+     - `:search`: search 参数
 
 <br>
 
