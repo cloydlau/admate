@@ -78,21 +78,21 @@ npm add admate
      - `admate`
      - `admate:form-only`: 只有表单没有列表的场景
    - KiFormDialog 组件
-     - `KiFormDialog`: HTML 部分
-     - `KiFormDialog.data`: data 部分
-     - `KiFormDialog:readonly`: HTML 部分（只读模式）
-     - `KiFormDialog.data:readonly`: data 部分（只读模式）
-     - `KiFormDialog:subcomponent`: 作为子组件使用
+     - `KiFormDialog` HTML 部分
+     - `KiFormDialog.data` data 部分
+     - `KiFormDialog:readonly` HTML 部分（只读模式）
+     - `KiFormDialog.data:readonly` data 部分（只读模式）
+     - `KiFormDialog:subcomponent` 作为子组件使用
    - KiSelect 组件
-     - `KiSelect:options`: 本地数据源
-     - `KiSelect:search`: 远程数据源
-     - `KiSelect:index`: 绑定值为数组下标
-     - `:props`: props 参数
-     - `:options`: options 参数
-     - `:search`: search 参数
+     - `KiSelect:options` 本地数据源
+     - `KiSelect:search` 远程数据源
+     - `KiSelect:index` 绑定值为数组下标
+     - `:props` props 参数
+     - `:options` options 参数
+     - `:search` search 参数
    - KiPopButton 组件
      - `KiPopButton`
-     - `KiPopButton:danger`: 涉及危险操作
+     - `KiPopButton:danger` 涉及危险操作
    - KiPopSwitch 组件
      - `KiPopButton`
 
