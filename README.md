@@ -90,6 +90,11 @@ npm add admate
      - `:props`: props 参数
      - `:options`: options 参数
      - `:search`: search 参数
+   - KiPopButton 组件
+     - `KiPopButton`
+     - `KiPopButton:danger`: 涉及危险操作
+   - KiPopSwitch 组件
+     - `KiPopButton`
 
 <br>
 
