@@ -275,17 +275,15 @@ export default (admateConfig, {
       if (elFormRefOfListFilter) {
         // fix: 给筛选项赋初值，使得重置功能能够正常工作
         // Object.defineProperty 对不存在的属性无法拦截
-        setTimeout(() => { // fix: vue@2.7 不触发 watch
-          list.filter = reactive({
-            ...Object.fromEntries(
-              Array.from(
-                elFormRefOfListFilter.fields || [],
-                v => [v.labelFor, undefined]
-              )
-            ),
-            ...list.filter
-          })
-        }, 0)
+        list.filter = reactive({
+          ...Object.fromEntries(
+            Array.from(
+              elFormRefOfListFilter.fields || [],
+              v => [v.labelFor, undefined]
+            )
+          ),
+          ...list.filter
+        })
       } else {
         getList()
       }
