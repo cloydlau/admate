@@ -28,6 +28,9 @@
     "r": "node scripts/release.js",
     "rs": "node scripts/release.js --straightforward"
   },
+  "gitHooks": {
+    "commit-msg": "node scripts/verifyCommit.js"
+  },
   "dependencies": {
     "kayran": "latest",
     "lodash-es": "latest",
