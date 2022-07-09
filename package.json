@@ -26,10 +26,8 @@
     "ri": "npm run clean && pnpm i",
     "u": "node scripts/upgrade.js",
     "r": "node scripts/release.js",
-    "rs": "node scripts/release.js --straightforward"
-  },
-  "gitHooks": {
-    "commit-msg": "node scripts/verifyCommit.js"
+    "rs": "node scripts/release.js --straightforward",
+    "prepare": "husky install"
   },
   "dependencies": {
     "kayran": "latest",
@@ -55,6 +53,7 @@
     "element-ui": "^2.15.9",
     "enquirer": "latest",
     "execa": "^4.1.0",
+    "husky": "latest",
     "kikimore": "^0.6.0",
     "minimist": "latest",
     "mockjs": "latest",
