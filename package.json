@@ -29,6 +29,15 @@
     "rs": "node scripts/release.js --straightforward",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
+    ]
+  },
   "dependencies": {
     "kayran": "latest",
     "lodash-es": "latest",
@@ -45,6 +54,8 @@
   },
   "devDependencies": {
     "@mdi/font": "^6.8.96",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "@vitejs/plugin-vue2": "^1.1.1",
     "@vue/test-utils": "1",
     "ant-design-vue": "1",
@@ -52,11 +63,17 @@
     "chalk": "^4.1.2",
     "element-ui": "^2.15.9",
     "enquirer": "latest",
+    "eslint": "latest",
+    "eslint-config-prettier": "latest",
+    "eslint-plugin-prettier": "latest",
+    "eslint-plugin-vue": "latest",
     "execa": "^4.1.0",
     "husky": "latest",
     "kikimore": "^0.6.0",
+    "lint-staged": "latest",
     "minimist": "latest",
     "mockjs": "latest",
+    "prettier": "latest",
     "primeicons": "latest",
     "primevue": "2",
     "qs": "latest",
