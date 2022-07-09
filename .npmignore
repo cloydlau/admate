@@ -35,3 +35,4 @@ tests/
 /dist/*.html
 /*.html
 /scripts
+.husky
