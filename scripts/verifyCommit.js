@@ -1,5 +1,3 @@
-// Invoked on the commit-msg git hook by yorkie.
-
 const chalk = require('chalk')
 const msgPath = '.git/COMMIT_EDITMSG'
 const msg = require('fs')
