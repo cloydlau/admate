@@ -165,8 +165,8 @@ export default (admateConfig, {
       }
 
       function GetList() {
-        getList().then(response => {
-          afterGetList(response, trigger)
+        getList().then(res => {
+          afterGetList(res, trigger)
         })
       }
 
