@@ -94,7 +94,7 @@ npm add admate
      - `KiPopButton`
      - `KiPopButton:danger` 涉及危险操作
    - KiPopSwitch 组件
-     - `KiPopButton`
+     - `KiPopSwitch`
 
 <br>
 
