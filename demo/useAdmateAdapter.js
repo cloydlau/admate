@@ -11,7 +11,7 @@ import {
 import { isVue2 } from 'vue-demi' // TODO
 import useAdmate from '../src' // TODO
 import request from './request' // TODO
-import { merge } from 'lodash-es'
+import { merge, mergeWith, cloneDeep } from 'lodash-es'
 import qs from 'qs'
 
 export default (admateConfig, {
@@ -153,10 +153,19 @@ export default (admateConfig, {
       },
       dataAt: 'data.records',
       totalAt: 'data.total',
-      pageNumberKey: 'pageNo'
+      pageNumberKey: 'pageNo',
     },
     form: {
       dataAt: 'data',
+      // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象/空数组
+      mergeData(newFormData) {
+        form.data = mergeWith(
+          cloneDeep(form.data),
+          newFormData,
+          (oldObj, newObj) =>
+            [undefined, null].includes(newObj) ? oldObj : undefined
+        )
+      },
     },
     getListProxy(getList, trigger) {
       // onMounted 中给筛选项赋初值已经触发调用
