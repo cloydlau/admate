@@ -10,10 +10,10 @@
     "url": "https://github.com/cloydlau/admate"
   },
   "main": "./dist/admate.umd.js",
-  "module": "./dist/admate.es.js",
+  "module": "./dist/admate.mjs",
   "exports": {
     ".": {
-      "import": "./dist/admate.es.js",
+      "import": "./dist/admate.mjs",
       "require": "./dist/admate.umd.js"
     }
   },
