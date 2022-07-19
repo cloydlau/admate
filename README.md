@@ -76,7 +76,7 @@ npm add admate
 2. 使用方法：输入以下任意关键词，然后按 Tab：
    - admate 页面模板
      - `admate`
-     - `admate:form-only`: 只有表单没有列表的场景
+     - `admate:form-page`: 独立的表单页
    - KiFormDialog 组件
      - `KiFormDialog` HTML 部分
      - `KiFormDialog.data` data 部分
