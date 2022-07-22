@@ -1,22 +1,25 @@
 {
   "name": "admate",
-  "description": "Mate of admin interfaces",
-  "author": "cloydlau",
   "version": "0.8.1",
   "private": false,
+  "description": "Mate of admin interfaces",
+  "author": "cloydlau",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/cloydlau/admate"
   },
-  "main": "./dist/admate.umd.js",
-  "module": "./dist/admate.mjs",
   "exports": {
     ".": {
-      "import": "./dist/admate.mjs",
-      "require": "./dist/admate.umd.js"
+      "require": "./dist/admate.umd.js",
+      "import": "./dist/admate.mjs"
     }
   },
+  "main": "./dist/admate.umd.js",
+  "module": "./dist/admate.mjs",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "node scripts/switch-vue.js 3 && vite --config ./vite-vue3.config.ts --open",
     "dev2": "node scripts/switch-vue.js 2 && vite --config ./vite-vue2.config.ts --open",
@@ -26,23 +29,7 @@
     "ri": "npm run clean && pnpm i",
     "u": "node scripts/upgrade.js",
     "r": "node scripts/release.js",
-    "rs": "node scripts/release.js --straightforward",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --write"
-    ],
-    "*.ts?(x)": [
-      "eslint",
-      "prettier --parser=typescript --write"
-    ]
-  },
-  "dependencies": {
-    "kayran": "latest",
-    "lodash-es": "latest",
-    "vue-demi": "latest",
-    "vue-global-config": "latest"
+    "rs": "node scripts/release.js --straightforward"
   },
   "peerDependencies": {
     "@vue/composition-api": "1"
@@ -52,10 +39,15 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "kayran": "latest",
+    "lodash-es": "latest",
+    "vue-demi": "latest",
+    "vue-global-config": "latest"
+  },
   "devDependencies": {
+    "@antfu/eslint-config": "latest",
     "@mdi/font": "^6.8.96",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
     "@vitejs/plugin-vue2": "^1.1.1",
     "@vue/test-utils": "1",
     "ant-design-vue": "1",
@@ -64,16 +56,12 @@
     "element-ui": "^2.15.9",
     "enquirer": "latest",
     "eslint": "latest",
-    "eslint-config-prettier": "latest",
-    "eslint-plugin-prettier": "latest",
-    "eslint-plugin-vue": "latest",
     "execa": "^4.1.0",
     "husky": "latest",
     "kikimore": "^0.6.0",
     "lint-staged": "latest",
     "minimist": "latest",
     "mockjs": "latest",
-    "prettier": "latest",
     "primeicons": "latest",
     "primevue": "2",
     "qs": "latest",
@@ -90,7 +78,9 @@
     "vue-router": "3",
     "vuetify": "2"
   },
-  "files": [
-    "dist"
-  ]
+  "lint-staged": {
+    "*.{js,ts,tsx,vue,md}": [
+      "eslint --fix"
+    ]
+  }
 }
