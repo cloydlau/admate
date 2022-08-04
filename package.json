@@ -9,6 +9,24 @@
     "type": "git",
     "url": "https://github.com/cloydlau/admate"
   },
+  "keywords": [
+    "crud",
+    "element-ui",
+    "element-plus",
+    "vuetify",
+    "antdvue",
+    "antd",
+    "ant-design-vue",
+    "ant-design",
+    "quasar",
+    "prime-vue",
+    "axios",
+    "vue",
+    "vue2",
+    "vue3",
+    "vue-vben-admin",
+    "vue-element-admin"
+  ],
   "exports": {
     ".": {
       "require": "./dist/admate.umd.js",
