@@ -10,6 +10,7 @@
     "url": "https://github.com/cloydlau/admate"
   },
   "keywords": [
+    "admin",
     "crud",
     "element-ui",
     "element-plus",
@@ -24,6 +25,7 @@
     "vue",
     "vue2",
     "vue3",
+    "vben",
     "vue-vben-admin",
     "vue-element-admin"
   ],
