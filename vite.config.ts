@@ -4,14 +4,6 @@ import { name } from './package.json'
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
-    plugins: [
-      {
-        name: 'html-transform',
-        transformIndexHtml(html: string) {
-          return html.replace(/{{.*}}/, `/demo/vue3/index.ts`)
-        },
-      },
-    ],
     build: {
       lib: {
         name,

@@ -1,8 +1,8 @@
-import type { UserConfigExport, ConfigEnv } from 'vite'
-import vue from '@vitejs/plugin-vue2'
+import type { ConfigEnv, UserConfigExport } from 'vite'
+import { createVuePlugin } from 'vite-plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
-import { presetUno, presetAttributify } from 'unocss'
+import { presetAttributify, presetUno } from 'unocss'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -11,10 +11,10 @@ export function configMockPlugin(isBuild: boolean) {
     localEnabled: !isBuild,
     prodEnabled: isBuild,
     injectCode: `
-      import { setupProdMockServer } from './mock/_createProductionServer';
+      import { setupProdMockServer } from '../../../mock/_createProductionServer';
 
       setupProdMockServer();
-      `,
+    `,
   })
 }
 
@@ -22,26 +22,23 @@ export function configMockPlugin(isBuild: boolean) {
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
     optimizeDeps: {
-      exclude: ['vue-demi']
-    },
-    server: {
-      port: 3002
+      exclude: ['vue-demi'],
     },
     plugins: [
+      createVuePlugin(),
       {
         name: 'html-transform',
         transformIndexHtml(html: string) {
-          return html.replace(/{{.*}}/, '/demo/vue2/index.ts')
+          return html.replace(/\{\{VUE_VERSION\}\}/g, '2')
         },
       },
-      vue(),
       Unocss({
         presets: [
           presetAttributify({}),
           presetUno(),
-        ]
+        ],
       }),
-      configMockPlugin(false)
+      configMockPlugin(false),
     ],
   }
 }
