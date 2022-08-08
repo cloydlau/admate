@@ -1,9 +1,9 @@
-import type { UserConfigExport, ConfigEnv } from 'vite'
-//import { loadEnv } from 'vite'
+import type { ConfigEnv, UserConfigExport } from 'vite'
+// import { loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteMockServe } from 'vite-plugin-mock'
 import Unocss from 'unocss/vite'
-import { presetUno, presetAttributify } from 'unocss'
+import { presetAttributify, presetUno } from 'unocss'
 import { transformAssetUrls } from '@quasar/vite-plugin'
 
 export function configMockPlugin(isBuild: boolean) {
@@ -13,43 +13,38 @@ export function configMockPlugin(isBuild: boolean) {
     localEnabled: !isBuild,
     prodEnabled: isBuild,
     injectCode: `
-      import { setupProdMockServer } from './mock/_createProductionServer';
+      import { setupProdMockServer } from '../../../mock/_createProductionServer';
 
       setupProdMockServer();
-      `,
+    `,
   })
 }
 
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  //const env = loadEnv(mode, 'env')
+  // const env = loadEnv(mode, 'env')
 
   return {
     optimizeDeps: {
-      exclude: ['vue-demi']
-    },
-    server: {
-      port: 3003
+      exclude: ['vue-demi'],
     },
     plugins: [
+      vue({
+        template: { transformAssetUrls },
+      }),
       Unocss({
         presets: [
           presetAttributify({}),
           presetUno(),
-        ]
+        ],
       }),
       configMockPlugin(false),
       {
         name: 'html-transform',
         transformIndexHtml(html: string) {
-          return html.replace(/{{.*}}/, '/demo/vue3/index.ts')
+          return html.replace(/\{\{VUE_VERSION\}\}/g, '3')
         },
       },
-      //command.endsWith(':2') ?
-      //createVuePlugin() :
-      vue({
-        template: { transformAssetUrls }
-      }),
     ],
   }
 }

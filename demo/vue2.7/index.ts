@@ -3,8 +3,6 @@ import router from './router'
 
 import 'uno.css'
 
-import VCA from '@vue/composition-api'
-
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
@@ -18,7 +16,6 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify2/dist/vuetify.min.css'
 import Vuetify from 'vuetify2'
 import App from './index.vue'
-Vue.use(VCA)
 Vue.use(ElementUI)
 Vue.use(Kikimore)
 Vue.use(Antd)
