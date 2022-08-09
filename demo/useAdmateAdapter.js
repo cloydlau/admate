@@ -1,18 +1,18 @@
 import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  reactive,
   ref,
   toRefs,
   watch,
-  reactive,
-  computed,
-  onMounted,
-  getCurrentInstance,
 } from 'vue'
-//from '@vue/composition-api' // ≤ vue@2.6 // TODO
+// from '@vue/composition-api' // ≤ vue@2.6 // TODO
 import { isVue2 } from 'vue-demi' // TODO
-import useAdmate from '../src' // TODO
-import request from './request' // TODO
-import { merge, mergeWith, cloneDeep } from 'lodash-es'
+import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
+import useAdmate from '../src' // TODO
+import request from './request'
 
 export default (admateConfig, {
   // 表单标题
@@ -112,28 +112,28 @@ export default (admateConfig, {
     axiosConfig: {
       c: {
         url: 'create',
-        method: 'POST'
+        method: 'POST',
       },
       r: {
         url: 'queryForDetail',
-        method: 'POST'
+        method: 'POST',
       },
       u: {
         url: 'update',
-        method: 'POST'
+        method: 'POST',
       },
       d: {
         url: 'delete',
-        method: 'POST'
+        method: 'POST',
       },
       getList: {
         url: 'queryForPage',
-        method: 'POST'
+        method: 'POST',
       },
       updateStatus: {
         url: 'updateStatus',
-        method: 'POST'
-      }
+        method: 'POST',
+      },
     },
     list: {
       // 查询列表接口的默认参数
@@ -163,18 +163,17 @@ export default (admateConfig, {
           cloneDeep(form.data),
           newFormData,
           (oldObj, newObj) =>
-            [undefined, null].includes(newObj) ? oldObj : undefined
+            [undefined, null].includes(newObj) ? oldObj : undefined,
         )
       },
     },
     getListProxy(getList, trigger) {
       // onMounted 中给筛选项赋初值已经触发调用
-      if (getListOnMounted && trigger === 'init') {
+      if (getListOnMounted && trigger === 'init')
         return
-      }
 
       function GetList() {
-        getList().then(res => {
+        getList().then((res) => {
           afterGetList(res, trigger)
         })
       }
@@ -185,14 +184,15 @@ export default (admateConfig, {
           promise.then(() => {
             GetList()
           })
-        } else {
+        }
+        else {
           GetList()
         }
-      } else {
+      }
+      else {
         GetList()
-        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
+        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger))
           alert('操作成功') // TODO
-        }
       }
     },
     openFormProxy(openForm) {
@@ -200,11 +200,10 @@ export default (admateConfig, {
       function callback(res) {
         afterOpenForm(res)
         if (
-          form.status !== 'c' ||
-          currentInstance.value?.createFromCopy__
-        ) {
+          form.status !== 'c'
+          || currentInstance.value?.createFromCopy__
+        )
           afterRetrieve(res)
-        }
 
         // 回显表单后，清除校验
         setTimeout(() => {
@@ -215,16 +214,17 @@ export default (admateConfig, {
       const promise = openForm()
       if (promise) {
         return new Promise((resolve, reject) => {
-          promise.then(res => {
+          promise.then((res) => {
             callback(res)
             resolve()
-          }).catch(e => {
+          }).catch((e) => {
             callback(e)
             console.error(e)
             reject()
           })
         })
-      } else {
+      }
+      else {
         // 新增、复用列表数据时 openForm 没有返回值
         callback()
       }
@@ -232,9 +232,9 @@ export default (admateConfig, {
     submitFormProxy(submitForm) {
       return new Promise((resolve, reject) => {
         const proceed = () => {
-          submitForm().then(res => {
+          submitForm().then((res) => {
             resolve()
-          }).catch(e => {
+          }).catch((e) => {
             console.error(e)
             reject()
           })
@@ -245,7 +245,8 @@ export default (admateConfig, {
             result.then(() => {
               proceed()
             })
-          } else if (result !== false) {
+          }
+          else if (result !== false) {
             proceed()
           }
         })
@@ -254,7 +255,7 @@ export default (admateConfig, {
   }, admateConfig))
 
   // 关闭表单时，清除校验
-  watch(() => form.show, n => {
+  watch(() => form.show, (n) => {
     if (!n) {
       setTimeout(() => {
         clearValidateOfFormData()
@@ -288,12 +289,13 @@ export default (admateConfig, {
           ...Object.fromEntries(
             Array.from(
               elFormRefOfListFilter.fields || [],
-              v => [v.labelFor, undefined]
-            )
+              v => [v.labelFor, undefined],
+            ),
           ),
-          ...list.filter
+          ...list.filter,
         })
-      } else {
+      }
+      else {
         getList()
       }
     }
@@ -313,7 +315,7 @@ export default (admateConfig, {
       form.status = 'c'
       // 复制新增需要传参，常规新增不需要
       return openForm(
-        ...(currentInstance.value.createFromCopy__ ? args : [])
+        ...(currentInstance.value.createFromCopy__ ? args : []),
       )
     },
     r: (...args) => {
@@ -328,7 +330,7 @@ export default (admateConfig, {
     formTitle: computed(() =>
       currentInstance.value?.createFromCopy__
         ? '复制新增'
-        : formTitleHash[form.status]
+        : formTitleHash[form.status],
     ),
     // 重置筛选条件
     reset: () => {
@@ -349,9 +351,8 @@ export default (admateConfig, {
     },
     // 监听页码切换（监听筛选条件时不需要）
     onPageNumberChange: () => {
-      if (!list.watchFilter) {
+      if (!list.watchFilter)
         getList()
-      }
     },
     // 当前 Vue 实例
     currentInstance,

@@ -9,12 +9,12 @@ import ElementUI from 'element-ui'
 import 'kikimore/dist/style.css'
 import Kikimore from 'kikimore'
 
-import 'ant-design-vue1/dist/antd.css'
-import Antd from 'ant-design-vue1'
+import 'ant-design-vue/dist/antd.css'
+import Antd from 'ant-design-vue'
 
 import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify2/dist/vuetify.min.css'
-import Vuetify from 'vuetify2'
+import 'vuetify/dist/vuetify.min.css'
+import Vuetify from 'vuetify'
 import App from './index.vue'
 Vue.use(ElementUI)
 Vue.use(Kikimore)
