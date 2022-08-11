@@ -45,7 +45,7 @@
     "switch3": "cl switchVue 3 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
     "switch2.7": "cl switchVue 2.7 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
     "switch2": "cl switchVue 2 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
-    "build": "vite build",
+    "build": "pnpm switch3 && vite build",
     "serve": "vite preview"
   },
   "peerDependencies": {
