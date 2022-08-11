@@ -5,10 +5,7 @@
   "description": "Mate of admin interfaces",
   "author": "cloydlau",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cloydlau/admate"
-  },
+  "repository": "https://github.com/cloydlau/admate",
   "keywords": [
     "admin",
     "crud",
@@ -52,7 +49,8 @@
     "serve": "vite preview"
   },
   "peerDependencies": {
-    "@vue/composition-api": "1"
+    "@vue/composition-api": "1",
+    "vue": "2 || 3"
   },
   "peerDependenciesMeta": {
     "@vue/composition-api": {
