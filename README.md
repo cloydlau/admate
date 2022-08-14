@@ -23,16 +23,17 @@
 - 🕶 **Vue 2 & 3 通用** - 零成本升级
 - 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理来量身打造生命周期的行为
-- 🌐 **模块级的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
+- 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
+- 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🍪 **贴心而不武断的 CRUD 封装**
     - 列表筛选：支持监听筛选参数 + 防抖控制接口调用频率的方式，也支持点击查询按钮触发的方式
     - 表单展现形式：支持对话框的形式，也支持独立页面的形式
     - 单条记录状态：支持分别调用启用/停用接口改变状态，也支持调用统一的更新状态接口指定新状态
     - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
-- 🧹 **周全的收尾工作，没有“后顾之忧”**
+- 🧹 **缜密周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-- 🔌 **提供[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
+- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
   - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
@@ -342,9 +343,15 @@ Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要�
   <el-table>
     <el-table-column label="操作">
       <template #default="{ row: { id } }">
-        <el-button @click="r(FormData.from({ id }))">查看</el-button>
-        <el-button @click="u(FormData.from({ id }))">编辑</el-button>
-        <el-button @click="d(FormData.from({ id }))">删除</el-button>
+        <el-button @click="r(FormData.from({ id }))">
+          查看
+        </el-button>
+        <el-button @click="u(FormData.from({ id }))">
+          编辑
+        </el-button>
+        <el-button @click="d(FormData.from({ id }))">
+          删除
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -359,18 +366,18 @@ Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要�
 </template>
 
 <script>
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { jsonToFormData, pickDeepBy } from 'kayran'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 // 过滤参数并转换为 FormData
 // 此处示例为将过滤方法绑定到 window.FormData，方便其他地方使用
-FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null,undefined].includes(v)))
+FormData.from = data => jsonToFormData(pickDeepBy(data, (v, k) => ![NaN, null, undefined].includes(v)))
 // 直接转换为 FormData
-//FormData.from = jsonToFormData
+// FormData.from = jsonToFormData
 
 export default {
   setup: () => useAdmateAdapter({
-    getListProxy (getList, trigger) {
+    getListProxy(getList, trigger) {
       getList(FormData.from(list.value.filter))
     },
   }),
@@ -481,7 +488,7 @@ useAdmate({
 <!-- 示例 -->
 
 <template>
-  <el-table v-loading="list.loading"/>
+  <el-table v-loading="list.loading" />
 </template>
 
 <script>
@@ -493,7 +500,7 @@ export default {
     return { list }
   },
   methods: {
-    handleTable () {
+    handleTable() {
       this.list.loading = true
       this.$POST('').finally(() => {
         this.list.loading = false
@@ -537,7 +544,7 @@ useAdmate({
    * @param {Function} getList 被代理的原始 getList
    * @param {string} trigger 调用动机 可能的值：'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
    */
-  getListProxy (getList, trigger) {},
+  getListProxy(getList, trigger) {},
 })
 ```
 
@@ -545,12 +552,13 @@ useAdmate({
 // 示例：获取列表之前，校验参数
 
 useAdmate({
-  getListProxy (getList, trigger) {
+  getListProxy(getList, trigger) {
     if (trigger === 'filterChange') {
       listFilterRef.value.validate().then(() => {
         getList()
       })
-    } else {
+    }
+    else {
       getList()
     }
   },
@@ -561,11 +569,11 @@ useAdmate({
 // 示例：单条记录操作成功后，弹出提示
 
 useAdmate({
-  getListProxy (getList, trigger) {
+  getListProxy(getList, trigger) {
     getList()
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
+    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger))
       currentInstance.value.$message.success('操作成功')
-    }
+
   },
 })
 ```
@@ -574,8 +582,8 @@ useAdmate({
 // 示例：获取列表后，修改列表数据
 
 const { list } = useAdmate({
-  getListProxy (getList, trigger) {
-    getList().then(response => {
+  getListProxy(getList, trigger) {
+    getList().then((response) => {
       // response 为 axiosConfig.getList 的接口返回值
       list.data = response.data?.filter(v => !v.disabled)
     })
@@ -704,8 +712,8 @@ const {
 <template>
   <el-table>
     <el-table-column label="操作" align="center">
-      <template slot-scope="{ row: { id, status } }">
-        <el-switch @change="updateStatus({ id, status: status^1 })"/>
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
       </template>
     </el-table-column>
   </el-table>
@@ -739,8 +747,8 @@ export default {
 <template>
   <el-table>
     <el-table-column label="操作" align="center">
-      <template slot-scope="{ row: { id, status } }">
-        <el-switch @change="[enable,disable][status]({id})"/>
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="[enable, disable][status]({ id })" />
       </template>
     </el-table-column>
   </el-table>
@@ -816,7 +824,6 @@ useAdmate({
 比如给 form.data 提供默认值：
 
 ```vue
-
 <template>
   {{ form.data.a.b.c }}
 </template>
@@ -865,7 +872,7 @@ const { form } = useAdmate({
   form: {
     data: defaultFormData(),
     // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象
-    mergeData (
+    mergeData(
       // 接口返回值在通过 form.dataAt 计算过后的值
       newFormData
     ) {
@@ -948,7 +955,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 <template>
   <el-dialog>
-    <el-form v-loading="form.loading"/>
+    <el-form v-loading="form.loading" />
   </el-dialog>
 </template>
 
@@ -1019,7 +1026,7 @@ useAdmate({
    * @param {Function} openForm 被代理的原始 openForm
    * @returns {Promise<object> | object | void} object 为打开表单后 form 的终态
    */
-  openFormProxy (openForm) {},
+  openFormProxy(openForm) {},
 })
 ```
 
@@ -1029,10 +1036,10 @@ useAdmate({
 // 示例：回显表单后，修改表单数据
 
 const { form } = useAdmate({
-  openFormProxy (openForm) {
+  openFormProxy(openForm) {
     // 新增时 openForm 没有返回值
     return new Promise((resolve, reject) => {
-      openForm()?.then(response => {
+      openForm()?.then((response) => {
         // response 为 axiosConfig.r 的接口返回值
         // 修改表单数据
         form.data.status = 1
@@ -1049,7 +1056,7 @@ const { form } = useAdmate({
 // 示例：回显表单后，清除校验
 
 useAdmate({
-  openFormProxy (openForm) {
+  openFormProxy(openForm) {
     return new Promise((resolve, reject) => {
       openForm()?.finally(() => {
         formRef.value.clearValidate()
@@ -1066,7 +1073,7 @@ useAdmate({
 ```ts
 // 示例：回显表单后，自定义表单的开闭和读取状态
 useAdmate({
-  openFormProxy (openForm) {
+  openFormProxy(openForm) {
     return new Promise((resolve, reject) => {
       // 可以在 finally 中 resolve
       openForm().then(() => {
@@ -1087,7 +1094,7 @@ useAdmate({
 
 // 也可以返回一个对象（如果没有异步操作）
 useAdmate({
-  openFormProxy (openForm) {
+  openFormProxy(openForm) {
     return {
       loading: false
     }
@@ -1164,7 +1171,7 @@ useAdmate({
    * @param {Function} submitForm 被代理的原始 submitForm
    * @returns {Promise<object> | object | void} object 为提交表单后 form 的终态
    */
-  submitFormProxy (submitForm) {}
+  submitFormProxy(submitForm) {}
 })
 ```
 
@@ -1180,7 +1187,7 @@ submitForm({
 
 // submitForm 被代理时
 useAdmate({
-  submitFormProxy (submitForm) {
+  submitFormProxy(submitForm) {
     return new Promise((resolve, reject) => {
       submitForm({
         ...form.data,
@@ -1199,7 +1206,7 @@ useAdmate({
 // 示例：提交前校验表单
 
 useAdmate({
-  submitFormProxy (submitForm) {
+  submitFormProxy(submitForm) {
     return new Promise((resolve, reject) => {
       formRef.value.validate().then(() => {
         submitForm().then(() => {
@@ -1218,7 +1225,7 @@ useAdmate({
 
 // 返回一个 promise
 useAdmate({
-  submitFormProxy (submitForm) {
+  submitFormProxy(submitForm) {
     return new Promise((resolve, reject) => {
       formRef.value.validate().then(() => {
         submitForm().then(() => {
@@ -1241,7 +1248,7 @@ useAdmate({
 
 // 也可以返回一个对象（如果没有异步操作）
 useAdmate({
-  submitFormProxy (submitForm) {
+  submitFormProxy(submitForm) {
     return {
       show: false,
       submitting: false,
