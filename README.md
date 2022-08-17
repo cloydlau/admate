@@ -69,7 +69,7 @@ npm add admate
 
 <br>
 
-### VSCode 代码片段
+### VS Code 代码片段
 
 > 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
 

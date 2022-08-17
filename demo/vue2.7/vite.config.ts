@@ -1,7 +1,7 @@
 import type { ConfigEnv, UserConfigExport } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
-import Unocss from 'unocss/vite'
+import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
 
 export function configMockPlugin(isBuild: boolean) {
@@ -32,7 +32,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           return html.replace(/\{\{VUE_VERSION\}\}/g, '2.7')
         },
       },
-      Unocss({
+      UnoCSS({
         presets: [
           presetAttributify({}),
           presetUno(),

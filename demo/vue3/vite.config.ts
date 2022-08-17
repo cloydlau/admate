@@ -2,7 +2,7 @@ import type { ConfigEnv, UserConfigExport } from 'vite'
 // import { loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteMockServe } from 'vite-plugin-mock'
-import Unocss from 'unocss/vite'
+import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
 import { transformAssetUrls } from '@quasar/vite-plugin'
 
@@ -32,7 +32,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       vue({
         template: { transformAssetUrls },
       }),
-      Unocss({
+      UnoCSS({
         presets: [
           presetAttributify({}),
           presetUno(),

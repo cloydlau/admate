@@ -10,7 +10,7 @@ import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 
 import 'ant-design-vue/dist/antd.css'
-import Antd from 'ant-design-vue'
+import AntD from 'ant-design-vue'
 
 import 'quasar/src/css/index.sass'
 import { Quasar } from 'quasar'
@@ -29,7 +29,7 @@ import * as directives from 'vuetify/directives'
 const app = createApp(App)
 .use(router)
 .use(ElementPlus)
-.use(Antd)
+.use(AntD)
 .use(Quasar, {
   plugins: {},
 })
