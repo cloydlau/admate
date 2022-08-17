@@ -51,6 +51,10 @@
 
 ![NPM](https://nodei.co/npm/admate.png)
 
+- 外置依赖 `vue` `axios`
+
+<br>
+
 ### Vue 3
 
 ```sh
