@@ -51,7 +51,7 @@
 
 ![NPM](https://nodei.co/npm/admate.png)
 
-- 外置依赖 `vue` `axios`
+- 确保已安装外置依赖 `vue` `axios`
 
 <br>
 
