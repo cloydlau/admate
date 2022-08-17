@@ -72,7 +72,7 @@
     "@vue/test-utils": "latest",
     "ant-design-vue": "latest",
     "axios": "latest",
-    "case-police": "^0.5.8",
+    "case-police": "latest",
     "element-plus": "latest",
     "eslint": "latest",
     "husky": "latest",
