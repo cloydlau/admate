@@ -2,7 +2,7 @@
   "name": "admate",
   "version": "0.8.1",
   "private": false,
-  "description": "Mate / Assistant of admin interfaces. 管理后台伴侣 / 助手 / 辅助。",
+  "description": "Mate / Assistant of admin interfaces. 管理后台（前端）伴侣 / 助手 / 辅助。",
   "author": "cloydlau",
   "license": "MIT",
   "repository": "https://github.com/cloydlau/admate",
