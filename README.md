@@ -72,64 +72,6 @@ npm add admate
 
 <br>
 
-### VS Code 代码片段
-
-> 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
-
-1. 将 [snippets](https://github.com/cloydlau/snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
-2. 使用方法：输入以下任意关键词，然后按 Tab：
-   - admate 页面模板
-     - `admate`
-     - `admate:form-page` 独立的表单页
-   - KiFormDialog 组件
-     - `KiFormDialog` HTML 部分
-     - `KiFormDialog.data` data 部分
-     - `KiFormDialog:readonly` HTML 部分（只读模式）
-     - `KiFormDialog.data:readonly` data 部分（只读模式）
-     - `KiFormDialog:subcomponent` 作为子组件使用
-   - KiSelect 组件
-     - `KiSelect:options` 本地数据源
-     - `KiSelect:search` 远程数据源
-     - `KiSelect:index` 绑定值为数组下标
-     - `:props` props 参数
-     - `:options` options 参数
-     - `:search` search 参数
-   - KiPopButton 组件
-     - `KiPopButton`
-     - `KiPopButton:danger` 涉及危险操作
-   - KiPopSwitch 组件
-     - `KiPopSwitch`
-
-<br>
-
-### 接口文档一键出码
-
-省去**从接口文档复制字段名至代码中**这一繁琐步骤
-
-目前仅支持 YApi + element-ui
-
-#### 安装
-
-安装 Chrome / Edge 插件 **YApi2Code**，或使用离线版：
-
-1. <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
-
-2. 打开浏览器**扩展程序**，并开启**开发者模式**
-
-3. 点击**加载已解压的扩展程序**，选择解压后的文件夹
-
-#### 使用
-
-1. 访问 YApi，选中相应模块的**查询列表**接口
-
-2. 点击浏览器右上角运行插件
-
-3. 点击**生成代码**，代码将被复制至剪贴板
-
-4. 创建页面文件 `xxx.vue`，粘贴代码
-
-<br>
-
 ### 搭配 Vuetify
 
 <img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
