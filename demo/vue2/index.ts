@@ -12,7 +12,7 @@ import 'kikimore/dist/style.css'
 import Kikimore from 'kikimore'
 
 import 'ant-design-vue/dist/antd.css'
-import Antd from 'ant-design-vue'
+import AntD from 'ant-design-vue'
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css'
@@ -21,7 +21,7 @@ import App from './index.vue'
 Vue.use(VCA)
 Vue.use(ElementUI)
 Vue.use(Kikimore)
-Vue.use(Antd)
+Vue.use(AntD)
 Vue.use(Vuetify)
 
 /* import 'primeicons/primeicons.css'

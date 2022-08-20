@@ -34,11 +34,10 @@
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
 - 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
+  - 列表筛选参数重置 & 参数校验
+  - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
-  - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
-  - 列表筛选参数校验
-  - 列表筛选参数重置
 
 <br>
 
@@ -51,6 +50,10 @@
 ## 安装
 
 ![NPM](https://nodei.co/npm/admate.png)
+
+- 确保已安装外置依赖 `vue` `axios`
+
+<br>
 
 ### Vue 3
 
@@ -66,64 +69,6 @@ npm add admate
 # vue@2.6 或更早版本需要额外安装 @vue/composition-api
 npm add admate
 ```
-
-<br>
-
-### VSCode 代码片段
-
-> 搭配了 [kikimore](https://www.npmjs.com/package/kikimore)
-
-1. 将 [snippets](https://github.com/cloydlau/snippets) 中的 `*.code-snippets` 文件拷贝至 `C:\Users\admin\AppData\Roaming\Code\User\snippets`
-2. 使用方法：输入以下任意关键词，然后按 Tab：
-   - admate 页面模板
-     - `admate`
-     - `admate:form-page` 独立的表单页
-   - KiFormDialog 组件
-     - `KiFormDialog` HTML 部分
-     - `KiFormDialog.data` data 部分
-     - `KiFormDialog:readonly` HTML 部分（只读模式）
-     - `KiFormDialog.data:readonly` data 部分（只读模式）
-     - `KiFormDialog:subcomponent` 作为子组件使用
-   - KiSelect 组件
-     - `KiSelect:options` 本地数据源
-     - `KiSelect:search` 远程数据源
-     - `KiSelect:index` 绑定值为数组下标
-     - `:props` props 参数
-     - `:options` options 参数
-     - `:search` search 参数
-   - KiPopButton 组件
-     - `KiPopButton`
-     - `KiPopButton:danger` 涉及危险操作
-   - KiPopSwitch 组件
-     - `KiPopSwitch`
-
-<br>
-
-### 接口文档一键出码
-
-省去**从接口文档复制字段名至代码中**这一繁琐步骤
-
-目前仅支持 YApi + element-ui
-
-#### 安装
-
-安装 Chrome / Edge 插件 **YApi2Code**，或使用离线版：
-
-1. <a href="https://github.com/cloydlau/yapi2code-crx/blob/master/yapi2code-crx.zip?raw=true" download>下载离线包</a>后解压
-
-2. 打开浏览器**扩展程序**，并开启**开发者模式**
-
-3. 点击**加载已解压的扩展程序**，选择解压后的文件夹
-
-#### 使用
-
-1. 访问 YApi，选中相应模块的**查询列表**接口
-
-2. 点击浏览器右上角运行插件
-
-3. 点击**生成代码**，代码将被复制至剪贴板
-
-4. 创建页面文件 `xxx.vue`，粘贴代码
 
 <br>
 
