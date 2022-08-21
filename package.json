@@ -2,7 +2,7 @@
   "name": "admate",
   "version": "0.8.1",
   "private": false,
-  "description": "Mate / Assistant of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility. 管理后台伴侣 / 助手，简洁灵活两手抓，Vue 2.6/2.7/3 均可用。",
+  "description": "Mate / Assistant of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": "cloydlau",
   "license": "MIT",
   "repository": "https://github.com/cloydlau/admate",
