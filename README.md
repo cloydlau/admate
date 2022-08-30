@@ -1,6 +1,6 @@
 # Admate
 
-管理后台伴侣，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
+管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 
 后台页面的特点是重复度高，如果提取公共代码又难以满足定制化需求，Admate 致力于解决这一痛点。
@@ -20,7 +20,7 @@
 
 ## 特性
 
-- 🕶 **Vue 2 & 3 通用** - 零成本升级
+- 🕶 **Vue 2.6 / 2.7 / 3 通用** - 零成本升级
 - 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
 - 🪝 **代理模式 + 控制反转** - 使用钩子函数的代理来量身打造生命周期的行为
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护

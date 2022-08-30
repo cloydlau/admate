@@ -37,10 +37,13 @@
       "require": "./dist/admate.umd.js",
       "import": "./dist/admate.mjs",
       "browser": "./dist/admate.mjs"
-    }
+    },
+    "./*": "./*"
   },
   "main": "./dist/admate.umd.js",
   "module": "./dist/admate.mjs",
+  "unpkg": "./dist/admate.umd.js",
+  "jsdelivr": "./dist/admate.umd.js",
   "files": [
     "dist"
   ],
@@ -71,6 +74,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "latest",
+    "@cloydlau/scripts": "latest",
     "@mdi/font": "latest",
     "@quasar/vite-plugin": "latest",
     "@vitejs/plugin-vue": "latest",
