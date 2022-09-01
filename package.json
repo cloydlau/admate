@@ -1,6 +1,6 @@
 {
   "name": "admate",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "private": false,
   "description": "Mate / Helper / Assistant of admin interfaces for Vue 2.6 / 2.7 / 3, extremely concise without losing flexibility.",
   "author": "cloydlau",
