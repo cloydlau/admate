@@ -486,18 +486,21 @@ export default function useAdmate({
         GetListProxy()
       }, List.debounceInterval))
 
-      watch(() => List.filter, () => {
-        if (List.filter[List.pageNumberKey] === oldPageNumber) {
-          List.loading = true
-          getListDebounced.value()
-        } else {
-          // 翻页不需要防抖
-          getListTrigger.value = 'pageNumberChange'
-          GetListProxy()
-        }
-      }, {
-        deep: true,
-      })
+      // 异步的目的：避免 onMounted 时给 list.filter 赋初值触发 watch，该 watch 应仅由用户操作触发
+      setTimeout(() => {
+        watch(() => List.filter, () => {
+          if (List.filter[List.pageNumberKey] === oldPageNumber) {
+            List.loading = true
+            getListDebounced.value()
+          } else {
+            // 翻页不需要防抖
+            getListTrigger.value = 'pageNumberChange'
+            GetListProxy()
+          }
+        }, {
+          deep: true,
+        })
+      }, 0)
     }
   })
 
