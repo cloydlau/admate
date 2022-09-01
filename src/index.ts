@@ -130,7 +130,6 @@ export default function useAdmate({
   const api = apiGenerator(urlPrefix, axiosConfig)
 
   const getListTrigger = ref()
-  const getListDebounced = ref()
 
   const getInitialList = (): ListType => conclude([list], {
     default: userProp => ({
@@ -226,7 +225,7 @@ export default function useAdmate({
     const result = getListProxy
       ? getListProxy((...args_proxy) =>
         getList(...args_proxy.length ? args_proxy : args)
-      , getListTrigger.value)
+        , getListTrigger.value)
       : getList(...args)
 
     getListTrigger.value = undefined
@@ -481,20 +480,17 @@ export default function useAdmate({
   onMounted(() => {
     // 筛选项改变时，刷新列表
     if (List.watchFilter) {
+      const getListDebounced = ref(debounce(() => {
+        getListTrigger.value = 'filterChange'
+        List.loading = false
+        GetListProxy()
+      }, List.debounceInterval))
+
       watch(() => List.filter, () => {
         if (List.filter[List.pageNumberKey] === oldPageNumber) {
           List.loading = true
-          if (!getListDebounced.value) {
-            getListDebounced.value = debounce(() => {
-              getListTrigger.value = 'filterChange'
-              List.loading = false
-              GetListProxy()
-            }, List.debounceInterval)
-          }
-
           getListDebounced.value()
-        }
-        else {
+        } else {
           // 翻页不需要防抖
           getListTrigger.value = 'pageNumberChange'
           GetListProxy()
