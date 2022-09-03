@@ -63,11 +63,18 @@ npm add admate
 
 <br>
 
-### Vue 2
+### Vue 2.7
 
 ```sh
-# vue@2.6 或更早版本需要额外安装 @vue/composition-api
 npm add admate
+```
+
+<br>
+
+### Vue 2.6 or earlier
+
+```sh
+npm add admate @vue/composition-api
 ```
 
 <br>
