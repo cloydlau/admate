@@ -4,11 +4,7 @@ import {
   reactive,
   ref,
   watch,
-}
-  from 'vue-demi'
-// from '@vue/composition-api'
-// const isVue3 = false
-import { isEmpty } from 'kayran'
+} from 'vue-demi'
 import { conclude } from 'vue-global-config'
 import { assignIn, at, cloneDeep, debounce, isPlainObject, merge } from 'lodash-es'
 import { name } from '../package.json'
@@ -48,12 +44,12 @@ interface ListType {
 }
 
 const At = (response?: object, paths?: string | Function): any => {
-  return isEmpty(paths)
-    ? response
-    : typeof paths === 'function'
+  return paths
+    ? (typeof paths === 'function'
       ? paths(response)
       // paths 为 undefined 或 '' 时结果为 undefined
-      : at(response, paths)[0]
+      : at(response, paths)[0])
+    : response
 }
 
 // 将接口返回值混入form.data
@@ -193,7 +189,7 @@ export default function useAdmate({
     return api.getList(payload, payloadAs)
       .then((response) => {
         List.data = At(response, List.dataAt) ?? []
-        List.total = isEmpty(List.data) ? 0 : At(response, List.totalAt) ?? 0
+        List.total = List.data?.length ? At(response, List.totalAt) ?? 0 : 0
         return response
       }).catch(() => {
         // List.data.length = 0 // List.data 可能为空
