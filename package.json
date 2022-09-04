@@ -1,6 +1,6 @@
 {
   "name": "admate",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": false,
   "description": "Mate / Helper / Assistant of admin interfaces for Vue 2.6 / 2.7 / 3, extremely concise without losing flexibility.",
   "author": "cloydlau",
@@ -45,7 +45,8 @@
   "unpkg": "./dist/admate.umd.js",
   "jsdelivr": "./dist/admate.umd.js",
   "files": [
-    "dist", "docs"
+    "dist",
+    "docs"
   ],
   "scripts": {
     "dev": "pnpm switch3 && vite --config ./demo/vue3/vite.config.ts --open",
@@ -97,7 +98,6 @@
     "vite": "latest",
     "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
-    "vitest": "latest",
     "vue": "latest",
     "vue-router": "latest",
     "vuetify": "next"
