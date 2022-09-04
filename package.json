@@ -96,6 +96,7 @@
     "typescript": "latest",
     "unocss": "latest",
     "vite": "latest",
+    "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
     "vitest": "latest",
     "vue": "latest",
