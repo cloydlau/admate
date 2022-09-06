@@ -3,6 +3,7 @@ import { createVuePlugin } from 'vite-plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
 import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
+import AutoImport from 'unplugin-auto-import/vite'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -25,6 +26,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       exclude: ['vue-demi'],
     },
     plugins: [
+      AutoImport(),
       createVuePlugin(),
       {
         name: 'html-transform',

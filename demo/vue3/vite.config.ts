@@ -5,6 +5,7 @@ import { viteMockServe } from 'vite-plugin-mock'
 import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
 import { transformAssetUrls } from '@quasar/vite-plugin'
+import AutoImport from 'unplugin-auto-import/vite'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -29,6 +30,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       exclude: ['vue-demi'],
     },
     plugins: [
+      AutoImport(),
       vue({
         template: { transformAssetUrls },
       }),

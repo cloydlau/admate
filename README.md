@@ -1262,3 +1262,19 @@ useAdmateAdapter({
 <br>
 
 ![Alt](https://repobeats.axiom.co/api/embed/96d9b8e4c191488faaa6e4545b684afd114c6cdd.svg "Repobeats analytics image")
+
+<br>
+
+## Contributing
+
+1. [安装 Deno](https://deno.land/#installation)
+
+2. `npm add @cloydlau/scripts -g`
+
+3. 启动
+
+    - `npm run dev3`
+    - `npm run dev2.7`
+    - `npm run dev2.6`
+
+<br>
