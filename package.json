@@ -59,7 +59,7 @@
     "switch2.6": "cl switchVue 2.6 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
     "serve": "vite preview",
     "build": "vite build",
-    "release": "pnpm switch3 && pnpm build && cl release"
+    "release": "npx case-police --fix && npx lint-staged && pnpm switch3 && pnpm build && cl release"
   },
   "peerDependencies": {
     "@vue/composition-api": "1",
@@ -106,7 +106,7 @@
     "vuetify": "next"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,vue,md}": [
+    "!(demo/**/*)*.{js,ts,tsx,vue,md}": [
       "eslint --fix"
     ]
   },
