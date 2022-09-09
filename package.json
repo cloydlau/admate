@@ -59,7 +59,7 @@
     "release": "npx case-police --fix && npx lint-staged && cl switchVue 3 && pnpm build && cl release"
   },
   "peerDependencies": {
-    "@vue/composition-api": "1",
+    "@vue/composition-api": ">=1",
     "vue": "2 || 3"
   },
   "peerDependenciesMeta": {
