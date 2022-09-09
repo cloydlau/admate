@@ -51,15 +51,12 @@
     "docs"
   ],
   "scripts": {
-    "dev3": "pnpm switch3 && vite --config ./demo/vue3/vite.config.ts --open",
-    "dev2.7": "pnpm switch2.7 && vite --config ./demo/vue2.7/vite.config.ts --open",
-    "dev2.6": "pnpm switch2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
-    "switch3": "cl switchVue 3 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
-    "switch2.7": "cl switchVue 2.7 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
-    "switch2.6": "cl switchVue 2.6 --vue2deps \"vue-router@3,primevue@2,ant-design-vue@1,kikimore,vuetify@2,element-ui\" --vue3deps \"vue-router,primevue,quasar,@quasar/vite-plugin,element-plus,ant-design-vue,vuetify@next\"",
+    "dev3": "cl switchVue 3 && vite --config ./demo/vue3/vite.config.ts --open",
+    "dev2.7": "cl switchVue 2.7 && vite --config ./demo/vue2.7/vite.config.ts --open",
+    "dev2.6": "cl switchVue 2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
     "serve": "vite preview",
     "build": "vite build",
-    "release": "npx case-police --fix && npx lint-staged && pnpm switch3 && pnpm build && cl release"
+    "release": "npx case-police --fix && npx lint-staged && cl switchVue 3 && pnpm build && cl release"
   },
   "peerDependencies": {
     "@vue/composition-api": "1",
