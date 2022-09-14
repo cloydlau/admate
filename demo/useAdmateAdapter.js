@@ -278,10 +278,7 @@ export default (admateConfig, {
       // Object.defineProperty 对不存在的属性无法拦截
       list.filter = reactive({
         ...Object.fromEntries(
-          Array.from(elFormRefOfListFilter.fields || [], v => [
-            v.labelFor,
-            undefined,
-          ]),
+          Array.from(elFormRefOfListFilter.fields || [], v => [v.labelFor, undefined]),
         ),
         ...list.filter,
       })
