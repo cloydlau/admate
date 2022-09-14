@@ -1,3 +1,4 @@
+import path from 'path'
 import type { ConfigEnv, UserConfigExport } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
@@ -22,6 +23,11 @@ export function configMockPlugin(isBuild: boolean) {
 // https://vitejs.dev/config/
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
     optimizeDeps: {
       exclude: ['vue-demi'],
     },

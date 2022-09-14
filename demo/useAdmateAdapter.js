@@ -7,12 +7,10 @@ import {
   toRefs,
   watch,
 } from 'vue'
-// from '@vue/composition-api' // ≤ vue@2.6 // TODO
-import { isVue2 } from 'vue-demi' // TODO
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
 import useAdmate from '../src' // TODO
-import request from './request'
+import request from './request' // TODO
 
 export default (admateConfig, {
   // 表单标题
@@ -22,9 +20,8 @@ export default (admateConfig, {
     u: '编辑',
   },
 
-  // 是否在 mounted 时再查询列表
-  // 作用：给筛选项赋初值，使得重置功能能够正常工作
-  getListOnMounted = isVue2, // TODO
+  // 是否在初始化时查询列表
+  getListInitially = true,
 
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
@@ -168,9 +165,9 @@ export default (admateConfig, {
       },
     },
     getListProxy(getList, trigger) {
-      // onMounted 中给筛选项赋初值已经触发调用
-      if (getListOnMounted && trigger === 'init')
+      if (!getListInitially && trigger === 'init') {
         return
+      }
 
       function GetList() {
         getList().then((res) => {
@@ -184,26 +181,23 @@ export default (admateConfig, {
           promise.then(() => {
             GetList()
           })
-        }
-        else {
+        } else {
           GetList()
         }
-      }
-      else {
+      } else {
         GetList()
-        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger))
-          alert('操作成功') // TODO
+        if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
+          alert('操作成功')
+        }
       }
     },
     openFormProxy(openForm) {
       // 打开表单后的回调
       function callback(res) {
         afterOpenForm(res)
-        if (
-          form.status !== 'c'
-          || currentInstance.value?.createFromCopy__
-        )
+        if (form.status !== 'c' || currentInstance.value?.createFromCopy__) {
           afterRetrieve(res)
+        }
 
         // 回显表单后，清除校验
         setTimeout(() => {
@@ -220,11 +214,10 @@ export default (admateConfig, {
           }).catch((e) => {
             callback(e)
             console.error(e)
-            reject()
+            reject(e)
           })
         })
-      }
-      else {
+      } else {
         // 新增、复用列表数据时 openForm 没有返回值
         callback()
       }
@@ -232,11 +225,11 @@ export default (admateConfig, {
     submitFormProxy(submitForm) {
       return new Promise((resolve, reject) => {
         const proceed = () => {
-          submitForm().then((res) => {
+          submitForm().then(() => {
             resolve()
           }).catch((e) => {
             console.error(e)
-            reject()
+            reject(e)
           })
         }
         validateFormData().then(() => {
@@ -245,8 +238,7 @@ export default (admateConfig, {
             result.then(() => {
               proceed()
             })
-          }
-          else if (result !== false) {
+          } else if (result !== false) {
             proceed()
           }
         })
@@ -280,24 +272,19 @@ export default (admateConfig, {
     afterOpenForm = afterOpenForm.bind(currentInstance.value)
     beforeSubmit = beforeSubmit.bind(currentInstance.value)
 
-    if (getListOnMounted) {
-      const elFormRefOfListFilter = getElFormRefOfListFilter()
-      if (elFormRefOfListFilter) {
-        // fix: 给筛选项赋初值，使得重置功能能够正常工作
-        // Object.defineProperty 对不存在的属性无法拦截
-        list.filter = reactive({
-          ...Object.fromEntries(
-            Array.from(
-              elFormRefOfListFilter.fields || [],
-              v => [v.labelFor, undefined],
-            ),
-          ),
-          ...list.filter,
-        })
-      }
-      else {
-        getList()
-      }
+    const elFormRefOfListFilter = getElFormRefOfListFilter()
+    if (elFormRefOfListFilter) {
+      // fix: 给筛选项赋初值，使得重置功能能够正常工作
+      // Object.defineProperty 对不存在的属性无法拦截
+      list.filter = reactive({
+        ...Object.fromEntries(
+          Array.from(elFormRefOfListFilter.fields || [], v => [
+            v.labelFor,
+            undefined,
+          ]),
+        ),
+        ...list.filter,
+      })
     }
   })
 
@@ -307,16 +294,13 @@ export default (admateConfig, {
     form,
     openForm,
     submitForm,
-    d,
     enable,
     disable,
     updateStatus,
     c: (...args) => {
       form.status = 'c'
       // 复制新增需要传参，常规新增不需要
-      return openForm(
-        ...(currentInstance.value.createFromCopy__ ? args : []),
-      )
+      return openForm(...(currentInstance.value.createFromCopy__ ? args : []))
     },
     r: (...args) => {
       form.status = 'r'
@@ -326,6 +310,7 @@ export default (admateConfig, {
       form.status = 'u'
       return openForm(...args)
     },
+    d,
     // 单条记录表单的标题
     formTitle: computed(() =>
       currentInstance.value?.createFromCopy__
@@ -341,6 +326,9 @@ export default (admateConfig, {
           ...initialListFilter(),
         }
       }
+      if (!list.watchFilter) {
+        getList()
+      }
     },
     // 查询列表（监听筛选条件时不需要）
     queryList: () => {
@@ -351,8 +339,9 @@ export default (admateConfig, {
     },
     // 监听页码切换（监听筛选条件时不需要）
     onPageNumberChange: () => {
-      if (!list.watchFilter)
+      if (!list.watchFilter) {
         getList()
+      }
     },
     // 当前 Vue 实例
     currentInstance,

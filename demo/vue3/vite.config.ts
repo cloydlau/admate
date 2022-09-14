@@ -1,3 +1,4 @@
+import path from 'path'
 import type { ConfigEnv, UserConfigExport } from 'vite'
 // import { loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -26,6 +27,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
   // const env = loadEnv(mode, 'env')
 
   return {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
     optimizeDeps: {
       exclude: ['vue-demi'],
     },
