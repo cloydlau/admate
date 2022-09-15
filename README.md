@@ -49,9 +49,10 @@
 
 ## 安装
 
-![NPM](https://nodei.co/npm/admate.png)
+### 外置依赖
 
-- 确保已安装外置依赖 `vue` `axios`
+- `vue`
+- `axios`
 
 <br>
 
@@ -71,7 +72,7 @@ npm add admate
 
 <br>
 
-### Vue 2.6 or earlier
+### Vue 2.6 或更早版本
 
 ```sh
 npm add admate @vue/composition-api
