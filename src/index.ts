@@ -46,9 +46,9 @@ interface ListType {
 const At = (response?: object, paths?: string | Function): any => {
   return paths
     ? (typeof paths === 'function'
-      ? paths(response)
+        ? paths(response)
       // paths 为 undefined 或 '' 时结果为 undefined
-      : at(response, paths)[0])
+        : at(response, paths)[0])
     : response
 }
 
@@ -68,34 +68,29 @@ const mergeFormData = (
     if (isVue3) {
       // merge, assignIn 会改变原始对象
       // merge, assignIn 会改变原始对象
-      if (Form.mergeData === 'deep')
+      if (Form.mergeData === 'deep') {
         merge(Form.data, newFormData)
-
-      else if (Form.mergeData === 'shallow')
+      } else if (Form.mergeData === 'shallow') {
         assignIn(Form.data, newFormData)
-
-      else if (typeof Form.mergeData === 'function')
+      } else if (typeof Form.mergeData === 'function') {
         Form.mergeData(newFormData)
-    }
-    else {
+      }
+    } else {
       // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
       // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
       // 可选择直接赋值，或者 Vue.set
       if (Form.mergeData === 'deep') {
         Form.data = merge(cloneDeep(Form.data), newFormData)
-      }
-      else if (Form.mergeData === 'shallow') {
+      } else if (Form.mergeData === 'shallow') {
         Form.data = {
           ...Form.data,
           ...newFormData,
         }
-      }
-      else if (typeof Form.mergeData === 'function') {
+      } else if (typeof Form.mergeData === 'function') {
         Form.mergeData(newFormData)
       }
     }
-  }
-  else {
+  } else {
     Form.data = newFormData
   }
 }
@@ -221,7 +216,7 @@ export default function useAdmate({
     const result = getListProxy
       ? getListProxy((...args_proxy) =>
         getList(...args_proxy.length ? args_proxy : args)
-        , getListTrigger.value)
+      , getListTrigger.value)
       : getList(...args)
 
     getListTrigger.value = undefined
@@ -267,8 +262,7 @@ export default function useAdmate({
       if (payloadAs === 'cache') {
         mergeFormData(Form, cloneDeep(payload))
         Form.show = true
-      }
-      else {
+      } else {
         Form.loading = true
         Form.show = true
         return api.r(payload, payloadAs).then((response) => {
@@ -276,8 +270,7 @@ export default function useAdmate({
           return response
         })
       }
-    }
-    else {
+    } else {
       if (['r', 'u'].includes(Form.status) && !arguments.length)
         console.warn(`${CONSOLE_PREFIX}表单状态为 'r' 或 'u' 时，openForm 的参数必传`)
 
@@ -293,12 +286,10 @@ export default function useAdmate({
         if (List.filter[List.pageNumberKey] === 1) {
           getListTrigger.value = 'd'
           GetListProxy()
-        }
-        else {
+        } else {
           List.filter[List.pageNumberKey]--
         }
-      }
-      else {
+      } else {
         getListTrigger.value = 'd'
         GetListProxy()
       }
@@ -381,8 +372,7 @@ export default function useAdmate({
           },
         })
       })
-    }
-    else {
+    } else {
       setTerminalState({
         target: Form,
         state: result,
@@ -434,8 +424,7 @@ export default function useAdmate({
           },
         })
       })
-    }
-    else {
+    } else {
       setTerminalState({
         target: Form,
         state: result,
