@@ -23,7 +23,7 @@
 
       <a-pagination v-model:current="list.filter.pageNo"
         v-model:page-size="list.filter.pageSize" :total="list.total"
-        @change="onPageNumberChange" />
+        @change="queryList" />
     </div>
 
     <a-table rowKey="name" :columns="[{
@@ -74,7 +74,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
   listFilterRef,
   formRef,
 } = useAdmateAdapter({

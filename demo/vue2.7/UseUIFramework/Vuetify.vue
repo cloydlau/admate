@@ -24,7 +24,7 @@
 
       <v-pagination v-model="list.filter.pageNo"
         :length="Math.ceil(list.total / list.filter.pageSize)"
-        @input="onPageNumberChange" />
+        @input="queryList" />
     </div>
 
     <v-simple-table>
@@ -94,7 +94,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
   listFilterRef,
   formRef,
 } = useAdmateAdapter({

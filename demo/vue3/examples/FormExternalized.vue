@@ -30,7 +30,7 @@
 
       <el-pagination v-model:current-page="list.filter.pageNo"
         v-model:page-size="list.filter.pageSize" :total="list.total"
-        @current-change="onPageNumberChange" />
+        @current-change="queryList" @size-change="queryList" />
     </div>
 
     <el-table :data="list.data" v-loading="list.loading">
@@ -66,7 +66,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
   listFilterRef,
   formRef,
 } = useAdmateAdapter({

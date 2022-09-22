@@ -30,7 +30,7 @@
 
       <Paginator :rows="list.filter.pageSize" :totalRecords="list.total" @page="({ page }) => {
         list.filter.pageNo = page + 1
-        onPageNumberChange()
+        queryList()
       }" />
     </div>
 
@@ -95,7 +95,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
 } = useAdmateAdapter({
   urlPrefix,
 }, {

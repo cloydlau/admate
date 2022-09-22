@@ -1,16 +1,22 @@
 <template>
   <div class="p-20px" data-app>
     <v-form ref="listFilterRef">
-      <v-text-field v-model="list.filter.name" label="姓名"
-        :rules="[v => !!v || 'Name is required',]" required class="w-220px"
-        style="display:inline-block !important;" />
-      <v-btn class="ml-10px" v-if="!list.watchFilter" color="#2A73C5" dark
-        @click="queryList">
+      <v-text-field
+        v-model="list.filter.name" label="姓名"
+        :rules="[v => !!v || 'Name is required']" required class="w-220px"
+        style="display:inline-block !important;"
+      />
+      <v-btn
+        v-if="!list.watchFilter" class="ml-10px" color="#2A73C5" dark
+        @click="queryList"
+      >
         查询
       </v-btn>
-      <v-btn class="ml-10px" @click="() => {
-        listFilterRef.reset()
-      }">
+      <v-btn
+        class="ml-10px" @click="() => {
+          listFilterRef.reset()
+        }"
+      >
         重置
       </v-btn>
     </v-form>
@@ -22,13 +28,15 @@
         </v-btn>
       </div>
 
-      <v-pagination v-model="list.filter.pageNo"
+      <v-pagination
+        v-model="list.filter.pageNo"
         :length="Math.ceil(list.total / list.filter.pageSize)"
-        @input="onPageNumberChange" />
+        @input="queryList"
+      />
     </div>
 
     <v-table>
-      <template v-slot:default>
+      <template #default>
         <thead>
           <tr>
             <th>
@@ -43,9 +51,15 @@
           <tr v-for="item in list.data" :key="item.name">
             <td>{{ item.name }}</td>
             <td>
-              <v-btn plain @click="r(item)">查看</v-btn>
-              <v-btn plain @click="u(item)">编辑</v-btn>
-              <v-btn plain @click="d(item)">删除</v-btn>
+              <v-btn plain @click="r(item)">
+                查看
+              </v-btn>
+              <v-btn plain @click="u(item)">
+                编辑
+              </v-btn>
+              <v-btn plain @click="d(item)">
+                删除
+              </v-btn>
             </td>
           </tr>
         </tbody>
@@ -59,8 +73,10 @@
         </v-card-title>
         <v-card-text>
           <v-form ref="formRef" :disabled="form.status === 'r' || form.submitting">
-            <v-text-field v-model="form.data.name" label="姓名*"
-              :rules="[v => !!v || 'Name is required',]" required />
+            <v-text-field
+              v-model="form.data.name" label="姓名*"
+              :rules="[v => !!v || 'Name is required']" required
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -68,8 +84,10 @@
           <v-btn @click="form.show = false">
             取 消
           </v-btn>
-          <v-btn dark color="#2A73C5" @click="() => { submitForm() }"
-            :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
+          <v-btn
+            v-if="form.status !== 'r' && !form.loading" dark color="#2A73C5"
+            :loading="form.submitting" @click="() => { submitForm() }"
+          >
             确 定
           </v-btn>
         </v-card-actions>
@@ -96,7 +114,6 @@ export default {
       submitForm,
       formTitle,
       queryList,
-      onPageNumberChange,
       listFilterRef,
       formRef,
     } = useAdmateAdapter({
@@ -123,10 +140,9 @@ export default {
       submitForm,
       formTitle,
       queryList,
-      onPageNumberChange,
       listFilterRef,
       formRef,
     }
-  }
+  },
 }
 </script>

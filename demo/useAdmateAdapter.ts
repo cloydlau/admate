@@ -334,12 +334,6 @@ export default (admateConfig, {
         getList()
       })
     },
-    // 监听页码切换（监听筛选条件时不需要）
-    onPageNumberChange: () => {
-      if (!list.watchFilter) {
-        getList()
-      }
-    },
     // 当前 Vue 实例
     currentInstance,
     // 列表筛选项表单的 ref

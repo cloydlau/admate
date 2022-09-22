@@ -13,9 +13,11 @@
         <el-button v-if="!list.watchFilter" type="primary" @click="queryList">
           查询
         </el-button>
-        <el-button @click="() => {
-          listFilterRef.resetFields()
-        }">
+        <el-button
+          @click="() => {
+            listFilterRef.resetFields()
+          }"
+        >
           重置
         </el-button>
       </el-form-item>
@@ -28,33 +30,47 @@
         </el-button>
       </div>
 
-      <el-pagination v-model:current-page="list.filter.pageNo"
+      <el-pagination
+        v-model:current-page="list.filter.pageNo"
         v-model:page-size="list.filter.pageSize" :total="list.total"
-        @current-change="onPageNumberChange" />
+        @current-change="queryList" @size-change="queryList"
+      />
     </div>
 
-    <el-table :data="list.data" v-loading="list.loading">
+    <el-table v-loading="list.loading" :data="list.data">
       <el-table-column prop="name" label="姓名" />
       <el-table-column label="操作">
         <template #default="{ row }">
-          <el-button type="text" @click="r(row)">查看</el-button>
-          <el-button type="text" @click="u(row)">编辑</el-button>
-          <el-button type="text" @click="d(row)">删除</el-button>
+          <el-button type="text" @click="r(row)">
+            查看
+          </el-button>
+          <el-button type="text" @click="u(row)">
+            编辑
+          </el-button>
+          <el-button type="text" @click="d(row)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog :title="formTitle" v-model="form.show">
-      <el-form ref="formRef" :model="form.data"
-        :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
+    <el-dialog v-model="form.show" :title="formTitle">
+      <el-form
+        ref="formRef" v-loading="form.loading"
+        :model="form.data" :disabled="form.status === 'r' || form.submitting"
+      >
         <el-form-item label="姓名" prop="name" required>
           <el-input v-model="form.data.name" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="form.show = false">取 消</el-button>
-        <el-button type="primary" @click="() => { submitForm() }"
-          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
+        <el-button @click="form.show = false">
+          取 消
+        </el-button>
+        <el-button
+          v-if="form.status !== 'r' && !form.loading" type="primary"
+          :loading="form.submitting" @click="() => { submitForm() }"
+        >
           确 定
         </el-button>
       </template>
@@ -78,7 +94,6 @@ const {
   submitForm,
   formTitle,
   queryList,
-  onPageNumberChange,
   listFilterRef,
   formRef,
 } = useAdmateAdapter({
