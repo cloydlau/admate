@@ -71,6 +71,7 @@
     "@vitejs/plugin-vue": "latest",
     "@vue/compiler-sfc": "latest",
     "@vue/test-utils": "latest",
+    "admate": "latest",
     "ant-design-vue": "latest",
     "axios": "latest",
     "case-police": "latest",

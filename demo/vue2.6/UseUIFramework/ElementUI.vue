@@ -28,9 +28,8 @@
         </el-button>
       </div>
 
-      <el-pagination :current-page.sync="list.filter.pageNo"
-        :page-size.sync="list.filter.pageSize" :total="list.total"
-        @current-change="queryList" @size-change="queryList" />
+      <el-pagination :current-page.sync="list.filter.pageNo" :page-size.sync="list.filter.pageSize"
+        :total="list.total" @current-change="queryList" @size-change="queryList" />
     </div>
 
     <el-table :data="list.data" :loading="list.loading">
@@ -45,16 +44,16 @@
     </el-table>
 
     <el-dialog :title="formTitle" :visible.sync="form.show">
-      <el-form ref="formRef" :model="form.data"
-        :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
+      <el-form ref="formRef" :model="form.data" :disabled="form.status === 'r' || form.submitting"
+        v-loading="form.loading">
         <el-form-item label="姓名" prop="name" required>
           <el-input v-model="form.data.name" />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="form.show = false">取 消</el-button>
-        <el-button type="primary" @click="() => { submitForm() }"
-          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
+        <el-button type="primary" @click="() => { submitForm() }" :loading="form.submitting"
+          v-if="form.status !== 'r' && !form.loading">
           确 定
         </el-button>
       </template>
@@ -62,34 +61,61 @@
   </div>
 </template>
 
-<script setup>
-import useAdmateAdapter from '../../useAdmateAdapter'
+<script>
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 
-const {
-  list,
-  form,
-  getList,
-  c,
-  r,
-  u,
-  d,
-  updateStatus,
-  submitForm,
-  formTitle,
-  queryList,
-  listFilterRef,
-  formRef,
-} = useAdmateAdapter({
-  urlPrefix,
-  list: {
-    filter: {
-      name: '123'
+let hasSetup = false
+
+export default {
+  setup: () => {
+    if (hasSetup) {
+      return
+    } else {
+      hasSetup = true
+    }
+
+    const {
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      listFilterRef,
+      formRef,
+    } = useAdmateAdapter({
+      urlPrefix,
+      list: {
+        filter: {
+          name: '123'
+        }
+      }
+    }, {
+      getElFormRefOfFormData() {
+        return formRef.value
+      },
+    })
+
+    return {
+      list,
+      form,
+      getList,
+      c,
+      r,
+      u,
+      d,
+      updateStatus,
+      submitForm,
+      formTitle,
+      queryList,
+      listFilterRef,
+      formRef,
     }
   }
-}, {
-  getElFormRefOfFormData() {
-    return formRef.value
-  },
-})
+}
 </script>

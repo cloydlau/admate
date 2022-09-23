@@ -1,15 +1,12 @@
-import Vue from 'vue'
 import router from './router'
 
 import 'uno.css'
-
-import VCA from '@vue/composition-api'
 
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
 import 'kikimore/dist/style.css'
-import Kikimore from 'kikimore'
+import { FormDialog, Select } from 'kikimore'
 
 import 'ant-design-vue/dist/antd.css'
 import AntD from 'ant-design-vue'
@@ -18,9 +15,10 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify'
 import App from './index.vue'
-Vue.use(VCA)
+
 Vue.use(ElementUI)
-Vue.use(Kikimore)
+Vue.use(FormDialog)
+Vue.use(Select)
 Vue.use(AntD)
 Vue.use(Vuetify)
 

@@ -5,6 +5,7 @@ import { viteMockServe } from 'vite-plugin-mock'
 import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
 import AutoImport from 'unplugin-auto-import/vite'
+import ScriptSetup from 'unplugin-vue2-script-setup/vite'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -25,13 +26,16 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': '/src',
+        '~': '/demo',
       },
     },
     optimizeDeps: {
       exclude: ['vue-demi'],
     },
     plugins: [
+      createVuePlugin(),
+      ScriptSetup(),
       AutoImport({
         // targets to transform
         include: [
@@ -43,10 +47,23 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         imports: [
           // presets
           '@vue/composition-api',
-          // 'vue-router/composables',
+          {
+            'vue': [
+              ['default', 'Vue'],
+            ],
+            'vue-router/composables': [
+              'useRoute',
+              'useRouter',
+              'useLink',
+              'onBeforeRouteUpdate',
+              'onBeforeRouteLeave',
+            ],
+            '~/useAdmateAdapter': [
+              ['default', 'useAdmateAdapter'],
+            ],
+          },
         ],
       }),
-      createVuePlugin(),
       {
         name: 'html-transform',
         transformIndexHtml(html: string) {

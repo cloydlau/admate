@@ -1,5 +1,5 @@
 <template>
-  <div>Vue 3 UI Framework demo:
+  <div>
     <span v-for="({path},i) of routes">
       <router-link :to="path">
         {{ path.substr(1) }}
@@ -9,7 +9,7 @@
 
     <router-view></router-view>
 
-<!--    <router-view v-slot="{ Component }">
+    <!--<router-view v-slot="{ Component }">
       <transition>
         <keep-alive>
           <component :is="Component"/>
@@ -23,7 +23,7 @@
 import routes from './router/routes'
 
 export default {
-  data () {
+  data() {
     return {
       routes: routes.filter(v => !v.hidden),
     }

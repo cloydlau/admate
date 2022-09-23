@@ -56,7 +56,6 @@
 </template>
 
 <script setup>
-import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
 import { cloneDeep } from 'lodash-es'
 

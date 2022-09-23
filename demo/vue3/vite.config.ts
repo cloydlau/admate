@@ -29,7 +29,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
+        '@': '/src',
+        '~': '/demo',
       },
     },
     optimizeDeps: {
@@ -48,6 +49,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           // presets
           'vue',
           'vue-router',
+          {
+            '~/useAdmateAdapter': [
+              ['default', 'useAdmateAdapter'],
+            ],
+          },
         ],
       }),
       vue({
