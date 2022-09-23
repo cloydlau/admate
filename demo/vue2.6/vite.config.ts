@@ -4,7 +4,7 @@ import { createVuePlugin } from 'vite-plugin-vue2'
 import { viteMockServe } from 'vite-plugin-mock'
 import UnoCSS from 'unocss/vite'
 import { presetAttributify, presetUno } from 'unocss'
-// import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from 'unplugin-auto-import/vite'
 
 export function configMockPlugin(isBuild: boolean) {
   return viteMockServe({
@@ -32,7 +32,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       exclude: ['vue-demi'],
     },
     plugins: [
-      /* AutoImport({
+      AutoImport({
         // targets to transform
         include: [
           /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
@@ -42,10 +42,10 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         // global imports to register
         imports: [
           // presets
-          'vue',
-          'vue-router',
+          '@vue/composition-api',
+          // 'vue-router/composables',
         ],
-      }), */
+      }),
       createVuePlugin(),
       {
         name: 'html-transform',
