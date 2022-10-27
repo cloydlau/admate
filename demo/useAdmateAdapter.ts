@@ -235,7 +235,7 @@ export default (admateConfig, {
               proceed()
             }).catch(e => {
               console.error(e)
-              reject()
+              reject(e)
             })
           } else if (result === false) {
             reject()
