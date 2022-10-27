@@ -79,6 +79,7 @@ export default (admateConfig, {
   // 自定义钩子函数 - 提交表单之前
   // 参数为 form
   // 可访问 this
+  // 返回 false 以阻止提交
   beforeSubmit = function () { },
 } = {}) => {
   // 获取当前 Vue 实例
@@ -232,8 +233,13 @@ export default (admateConfig, {
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
+            }).catch(e => {
+              console.error(e)
+              reject()
             })
-          } else if (result !== false) {
+          } else if (result === false) {
+            reject()
+          } else {
             proceed()
           }
         })
@@ -323,11 +329,10 @@ export default (admateConfig, {
       }
     },
     // 查询列表（监听筛选条件时不需要）
-    queryList: () => {
-      validateListFilter().then(() => {
-        list.filter.pageNo = 1
-        getList()
-      })
+    queryList: async () => {
+      await validateListFilter()
+      list.filter.pageNo = 1
+      getList()
     },
     // 当前 Vue 实例
     currentInstance,
