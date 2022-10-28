@@ -208,9 +208,9 @@ export default (admateConfig, {
             callback(res)
             resolve()
           }).catch((e) => {
-            callback(e)
             console.error(e)
-            reject(e)
+            callback(e)
+            reject()
           })
         })
       } else {
@@ -225,7 +225,7 @@ export default (admateConfig, {
             resolve()
           }).catch((e) => {
             console.error(e)
-            reject(e)
+            reject()
           })
         }
         validateFormData().then(() => {
@@ -235,7 +235,7 @@ export default (admateConfig, {
               proceed()
             }).catch(e => {
               console.error(e)
-              reject(e)
+              reject()
             })
           } else if (result === false) {
             reject()
