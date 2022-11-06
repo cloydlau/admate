@@ -38,7 +38,7 @@
 - 🧹 **缜密周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.js)**
+- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)**
   - 列表筛选参数重置 & 参数校验
   - 自定义钩子函数：[获取列表后](#afterGetList) / [打开表单后](#afterOpenForm) / [查询表单后](#afterRetrieve) / [提交表单前](#beforeSubmit)
   - 支持 URL 传参指定筛选项默认值
