@@ -42,12 +42,13 @@
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例: 日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
 - 🪝 **一条龙服务的生命周期钩子**
-  - [获取列表后](#afterGetList)
-  - [打开表单前](#beforeOpenForm)
+  - [查询列表后](#afterGetList)
+  - [打开表单](#onOpenForm)
   - [打开表单后](#afterOpenForm)
   - [查询表单后](#afterRetrieve)
   - [提交表单前](#beforeSubmit)
   - [提交表单后](#afterSubmit)
+  - [关闭表单](#onCloseForm)
 
 <br>
 
@@ -333,9 +334,9 @@ import { jsonToFormData, pickDeepBy } from 'kayran'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 // 过滤 list.value.filter 并转换为 FormData 格式
-FormData.from = json => {
+FormData.from = (json) => {
   const formData = new FormData()
-  for (let k in json) {
+  for (const k in json) {
     if (![NaN, null, undefined].includes(json[k])) {
       formData.append(k, json[k])
     }
@@ -536,7 +537,7 @@ useAdmate({
 ```
 
 ```ts
-// 示例: 获取列表后，修改列表数据
+// 示例: 查询列表后，修改列表数据
 
 const { list } = useAdmate({
   getListProxy(getList, trigger) {
@@ -1146,14 +1147,14 @@ const { form } = useAdmate()
 
 <br>
 
-<a name="beforeOpenForm"></a>
+<a name="onOpenForm"></a>
 
-### 生命周期钩子: 打开表单前
+### 生命周期钩子: 打开表单
 
 ```ts
-watch(() => form.value.show, n => {
-  if(n) {
-    // 打开表单前
+watch(() => form.value.show, (n) => {
+  if (n) {
+    // 打开表单
   }
 })
 ```
@@ -1166,7 +1167,7 @@ watch(() => form.value.show, n => {
 // 示例: 适配层提供「打开表单后」的生命周期钩子
 
 useAdmateAdapter({}, {
-  afterOpenForm (res) {
+  afterOpenForm(res) {
     // res 为接口返回值（新增时为空）
     // 可访问 this（组件实例）
   }
@@ -1182,7 +1183,7 @@ useAdmateAdapter({}, {
 // 新增时不触发
 
 useAdmateAdapter({}, {
-  afterRetrieve (res) {
+  afterRetrieve(res) {
     // res 为接口返回值
     // 可访问 this（组件实例）
   }
@@ -1197,7 +1198,7 @@ useAdmateAdapter({}, {
 // 示例: 适配层提供「提交表单前」的生命周期钩子
 
 useAdmateAdapter({}, {
-  beforeSubmit (form) {
+  beforeSubmit(form) {
     // 可访问 this（组件实例）
   }
 })
@@ -1210,11 +1211,23 @@ useAdmateAdapter({}, {
 ```ts
 const { submitForm } = useAdmateAdapter()
 
-submitForm().then(res => {
+submitForm().then((res) => {
   // 提交成功
   // res 为接口返回值
-}).catch(e => {
+}).catch((e) => {
   // 提交失败
+})
+```
+
+<a name="onCloseForm"></a>
+
+### 生命周期钩子: 关闭表单
+
+```ts
+watch(() => form.value.show, (n) => {
+  if (!n) {
+    // 关闭表单
+  }
 })
 ```
 
