@@ -204,9 +204,9 @@ export default (admateConfig, {
       const promise = openForm()
       if (promise) {
         return new Promise((resolve, reject) => {
-          promise.then((res) => {
+          promise.then(res => {
             callback(res)
-            resolve()
+            resolve(res)
           }).catch((e) => {
             console.error(e)
             callback(e)
@@ -221,8 +221,8 @@ export default (admateConfig, {
     submitFormProxy(submitForm) {
       return new Promise((resolve, reject) => {
         const proceed = () => {
-          submitForm().then(() => {
-            resolve()
+          submitForm().then(res => {
+            resolve(res)
           }).catch((e) => {
             console.error(e)
             reject()
