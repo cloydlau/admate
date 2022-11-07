@@ -34,14 +34,14 @@
     - 表单展现形式: 支持对话框的形式，也支持独立页面的形式
     - 单条记录状态: 支持分别调用启用/停用接口改变状态，也支持调用统一的更新状态接口指定新状态
     - 加载状态: 提供列表读取状态、表单读取状态、表单提交状态的响应式变量
-- 🧹 **缜密周全的收尾工作，没有“后顾之忧”**
+- 🧹 **周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
 - 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)**
   - 列表筛选参数重置 & 参数校验
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例: 日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
-- 🪝 **一条龙服务的生命周期钩子**
+- 🪝 **完善的生命周期**
   - [查询列表后](#afterGetList)
   - [打开表单](#onOpenForm)
   - [打开表单后](#afterOpenForm)
@@ -551,10 +551,10 @@ const { list } = useAdmate({
 
 <a name="afterGetList"></a>
 
-### 生命周期钩子: 查询列表后
+### 生命周期: 查询列表后
 
 ```ts
-// 示例: 适配层提供「查询列表后」的生命周期钩子
+// 示例: 适配层提供「查询列表后」的生命周期
 
 useAdmateAdapter({}, {
   afterGetList (response, trigger) {
@@ -1149,7 +1149,7 @@ const { form } = useAdmate()
 
 <a name="onOpenForm"></a>
 
-### 生命周期钩子: 打开表单
+### 生命周期: 打开表单
 
 ```ts
 watch(() => form.value.show, (n) => {
@@ -1161,10 +1161,10 @@ watch(() => form.value.show, (n) => {
 
 <a name="afterOpenForm"></a>
 
-### 生命周期钩子: 打开表单后
+### 生命周期: 打开表单后
 
 ```ts
-// 示例: 适配层提供「打开表单后」的生命周期钩子
+// 示例: 适配层提供「打开表单后」的生命周期
 
 useAdmateAdapter({}, {
   afterOpenForm(res) {
@@ -1176,10 +1176,10 @@ useAdmateAdapter({}, {
 
 <a name="afterRetrieve"></a>
 
-### 生命周期钩子: 查询表单后
+### 生命周期: 查询表单后
 
 ```ts
-// 示例: 适配层提供「查询表单后」的生命周期钩子
+// 示例: 适配层提供「查询表单后」的生命周期
 // 新增时不触发
 
 useAdmateAdapter({}, {
@@ -1192,10 +1192,10 @@ useAdmateAdapter({}, {
 
 <a name="beforeSubmit"></a>
 
-### 生命周期钩子: 提交表单前
+### 生命周期: 提交表单前
 
 ```ts
-// 示例: 适配层提供「提交表单前」的生命周期钩子
+// 示例: 适配层提供「提交表单前」的生命周期
 
 useAdmateAdapter({}, {
   beforeSubmit(form) {
@@ -1206,7 +1206,7 @@ useAdmateAdapter({}, {
 
 <a name="afterSubmit"></a>
 
-### 生命周期钩子: 提交表单后
+### 生命周期: 提交表单后
 
 ```ts
 const { submitForm } = useAdmateAdapter()
@@ -1221,7 +1221,7 @@ submitForm().then((res) => {
 
 <a name="onCloseForm"></a>
 
-### 生命周期钩子: 关闭表单
+### 生命周期: 关闭表单
 
 ```ts
 watch(() => form.value.show, (n) => {
