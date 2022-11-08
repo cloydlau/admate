@@ -47,7 +47,7 @@ const At = (response?: object, paths?: string | Function): any => {
   return paths
     ? (typeof paths === 'function'
         ? paths(response)
-      // paths 为 undefined 或 '' 时结果为 undefined
+        // paths 为 undefined 或 '' 时结果为 undefined
         : at(response, paths)[0])
     : response
 }
