@@ -30,7 +30,7 @@
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🍪 **贴心而不武断的 CRUD 封装**
-    - 列表筛选: 支持监听筛选参数 + 防抖控制接口调用频率的方式，也支持点击查询按钮触发的方式
+    - 列表筛选: 支持监听筛选参数 + 防抖控制接口调用频率的方式，也支持点击读取按钮触发的方式
     - 表单展现形式: 支持对话框的形式，也支持独立页面的形式
     - 单条记录状态: 支持分别调用启用/停用接口改变状态，也支持调用统一的更新状态接口指定新状态
     - 加载状态: 提供列表读取状态、表单读取状态、表单提交状态的响应式变量
@@ -42,13 +42,13 @@
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例: 日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
 - 🪝 **完善的生命周期**
-  - [查询列表后](#afterGetList)
-  - [打开表单](#onOpenForm)
-  - [打开表单后](#afterOpenForm)
-  - [查询表单后](#afterRetrieve)
-  - [提交表单前](#beforeSubmit)
-  - [提交表单后](#afterSubmit)
-  - [关闭表单](#onCloseForm)
+  - 读取列表后
+  - 打开表单
+  - 打开表单后
+  - 读取表单后
+  - 提交表单前
+  - 提交表单后
+  - 关闭表单
 
 <br>
 
@@ -117,16 +117,6 @@ npm add admate @vue/composition-api
 
 <br>
 
-### 搭配 AntDesignVue
-
-<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
-
-[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
-
-[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
-
-<br>
-
 ### 搭配 Quasar
 
 <img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
@@ -134,6 +124,16 @@ npm add admate @vue/composition-api
 [Quasar@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
 
 Quasar@1（应该）不支持 Vite，暂无示例
+
+<br>
+
+### 搭配 AntDesignVue
+
+<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
+
+[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+
+[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
@@ -167,7 +167,7 @@ useAdmate({
 useAdmate({
   // Axios 配置
   axiosConfig: {
-    // 查询列表
+    // 读取列表
     getList: {
       method: 'GET',
     },
@@ -175,7 +175,7 @@ useAdmate({
     c: {
       method: 'POST',
     },
-    // 查询一条记录（openForm 在查看、编辑时调用）
+    // 读取一条记录（openForm 在查看、编辑时调用）
     r: {
       method: 'GET',
     },
@@ -240,12 +240,12 @@ useAdmate({
 // 配置
 const { openForm, d, enable, disable, updateStatus } = useAdmate({
   axiosConfig: {
-    // 查询列表
+    // 读取列表
     getList: payload => ({
       method: 'GET',
       url: 'module/' + payload.xxx
     }),
-    // 查询一条记录（openForm 在查看、编辑时调用）
+    // 读取一条记录（openForm 在查看、编辑时调用）
     r: payload => ({
       method: 'GET',
       url: 'module/' + payload.id
@@ -379,11 +379,11 @@ useAdmate({
 
 <br>
 
-### 触发查询
+### 触发读取
 
-- 点击专用的查询按钮触发
+- 点击专用的读取按钮触发
     - :x: 操作相对繁琐。
-    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击查询按钮的次数。
+    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击读取按钮的次数。
     - :heavy_check_mark: 想同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
 
 ```ts
@@ -471,7 +471,7 @@ function handleTable() {
 
 <br>
 
-### 查询列表
+### 读取列表
 
 #### getList
 
@@ -489,7 +489,7 @@ const {
   getList
 } = useAdmate()
 
-getList() // 手动查询
+getList() // 手动读取
 ```
 
 #### getListProxy
@@ -537,7 +537,7 @@ useAdmate({
 ```
 
 ```ts
-// 示例: 查询列表后，修改列表数据
+// 示例: 读取列表后，修改列表数据
 
 const { list } = useAdmate({
   getListProxy(getList, trigger) {
@@ -549,187 +549,26 @@ const { list } = useAdmate({
 })
 ```
 
-<a name="afterGetList"></a>
-
-### 生命周期: 查询列表后
-
-```ts
-// 示例: 适配层提供「查询列表后」的生命周期
-
-useAdmateAdapter({}, {
-  afterGetList (response, trigger) {
-    // 可访问 this（组件实例）
-  }
-}
-```
-
 <br>
 
 <a name="openForm-c"></a>
 
 ## 表单
 
-### 新增
+### 表单形式
 
-打开表单，提交时会调用 `axiosConfig.c`
+表单默认是对话框的形式，但也支持[表单是独立页面](#FormDecoupled)的形式
 
-```ts
-const { form, openForm } = useAdmate()
+对比
 
-// 将表单形态设置为“新增”，然后打开表单
-form.status = 'c'
-openForm()
-```
+- 对话框: 体验好，割裂感低，表单的开闭不影响父页面状态
+- 独立页面: 体验较差，从表单返回父页面时，父页面的状态会丢失，比如列表筛选状态
 
 <br>
 
-<a name="openForm-r"></a>
+### 表单显隐
 
-### 查看
-
-打开表单，并调用 `axiosConfig.r` 回显表单内容
-
-```ts
-const { form, openForm } = useAdmate()
-
-// 将表单形态设置为“查看”，然后打开表单
-form.status = 'r'
-/**
- * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy ，则以 openFormProxy 为准
- *
- * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
- *   'cache': 将 payload 直接用作表单数据（不调用查询单条记录的接口）
- * @returns {Promise<any>} axiosConfig.r 的返回值
- */
-openForm()
-```
-
-<br>
-
-<a name="openForm-u"></a>
-
-### 编辑
-
-打开表单，并调用 `axiosConfig.r` 回显表单内容，提交时会调用 `axiosConfig.u`
-
-```ts
-const { form, openForm } = useAdmate()
-
-// 将表单形态设置为“编辑”，然后打开表单
-form.status = 'u'
-/**
- * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy，则以 openFormProxy 为准
- *
- * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
- *   'cache': 将 payload 直接用作表单数据（不调用查询单条记录的接口）
- * @returns {Promise<any>} axiosConfig.r 的返回值
- */
-openForm()
-```
-
-<br>
-
-### 删除
-
-```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.d 的返回值
-   */
-  d
-} = useAdmate()
-```
-
-<br>
-
-### 状态变更
-
-状态变更有两种方式: 
-
-1. 后端只提供一个接口，传参指定新的状态
-2. 后端提供启用和停用两个接口
-
-```vue
-<!-- 方式一: 使用 updateStatus -->
-
-<template>
-  <el-table>
-    <el-table-column label="操作" align="center">
-      <template #default="{ row: { id, status } }">
-        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
-      </template>
-    </el-table-column>
-  </el-table>
-</template>
-
-<script setup>
-import useAdmate from 'admate'
-
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
-   */
-  updateStatus,
-} = useAdmate()
-</script>
-```
-
-```vue
-<!-- 方式二: 使用 enable 和 disable -->
-
-<template>
-  <el-table>
-    <el-table-column label="操作" align="center">
-      <template #default="{ row: { id, status } }">
-        <el-switch @change="[enable, disable][status]({ id })" />
-      </template>
-    </el-table-column>
-  </el-table>
-</template>
-
-<script setup>
-import useAdmate from 'admate'
-
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.enable 的返回值
-   */
-  enable,
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.disable 的返回值
-   */
-  disable
-} = useAdmate()
-</script>
-```
+`form.show: boolean`
 
 <br>
 
@@ -831,54 +670,183 @@ const { form } = useAdmate({
 
 ### 表单形态
 
-#### 表单形式
+`form.status: StatusType`
 
-表单默认是对话框的形式，但也支持[表单是独立页面](#FormDecoupled) 的情况
+<br>
 
-对比
+### 新增
 
-- 对话框: 体验好，割裂感低，表单的开闭不影响父页面状态
-- 独立页面: 体验较差，从表单返回父页面时，父页面的状态会丢失，比如列表筛选状态
-
-<hr>
-
-#### `form.show`
-
-表单是否打开
+打开表单，提交时会调用 `axiosConfig.c`
 
 ```ts
-// 类型
+const { form, openForm } = useAdmate()
 
-boolean
+// 将表单形态设置为“新增”，然后打开表单
+form.status = 'c'
+openForm()
 ```
 
-<hr>
+<br>
 
-#### `form.status`
+### 复制新增
 
-表单的形态
-
-```ts
-// 类型
-
-type StatusType = '' | 'c' | 'r' | 'u' | string
-
-// 分别表示关闭、新增、查看、编辑、自定义
-```
-
-`form.show` 为 `false` 时，`form.status` 为 `''`
-
-<hr>
-
-#### 交叉形态
-
-比如“复制新增”: 表单的初始数据不是空白，而是复制一条已有的记录。
+> 表单的初始数据不是空白，而是复制一条已有的记录
 
 1. 打开表单时，和查看/编辑一样，需要调接口回显
-2. 调用的接口是新增的接口
+2. 提交表单时调用的是新增的接口
 3. 表单名称显示为“复制新增”
 
-对于这种需求，没有必要专门增加一种表单形态，可以借助一个辅助变量如 `isCopy`，用 `isCopy && form.status ==='c'` 来判断是不是复制新增，然后给 `openForm` 传参即可回显。
+复制新增属于一种交叉状态，这种情况没有必要专门增加一种表单形态，可以借助一个辅助变量如 `isCopy`，用 `isCopy && form.status ==='c'` 来判断是不是复制新增，然后给 `openForm` 传参即可回显。
+
+<br>
+
+<a name="openForm-r"></a>
+
+### 查看
+
+打开表单，并调用 `axiosConfig.r` 回显表单内容
+
+```ts
+const { form, openForm } = useAdmate()
+
+// 将表单形态设置为“查看”，然后打开表单
+form.status = 'r'
+/**
+ * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy ，则以 openFormProxy 为准
+ *
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
+ * @returns {Promise<any>} axiosConfig.r 的返回值
+ */
+openForm()
+```
+
+<br>
+
+<a name="openForm-u"></a>
+
+### 编辑
+
+打开表单，并调用 `axiosConfig.r` 回显表单内容，提交时会调用 `axiosConfig.u`
+
+```ts
+const { form, openForm } = useAdmate()
+
+// 将表单形态设置为“编辑”，然后打开表单
+form.status = 'u'
+/**
+ * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy，则以 openFormProxy 为准
+ *
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
+ * @returns {Promise<any>} axiosConfig.r 的返回值
+ */
+openForm()
+```
+
+<br>
+
+### 删除
+
+```ts
+const {
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+   * @returns {Promise<any>} axiosConfig.d 的返回值
+   */
+  d
+} = useAdmate()
+```
+
+<br>
+
+### 状态变更
+
+状态变更有两种方式: 
+
+1. 后端只提供一个接口，传参指定新的状态
+2. 后端提供启用和停用两个接口
+
+```vue
+<!-- 方式一: 使用 updateStatus -->
+
+<template>
+  <el-table>
+    <el-table-column label="操作" align="center">
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script setup>
+import useAdmate from 'admate'
+
+const {
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
+   */
+  updateStatus,
+} = useAdmate()
+</script>
+```
+
+```vue
+<!-- 方式二: 使用 enable 和 disable -->
+
+<template>
+  <el-table>
+    <el-table-column label="操作" align="center">
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="[enable, disable][status]({ id })" />
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+
+<script setup>
+import useAdmate from 'admate'
+
+const {
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+   * @returns {Promise<any>} axiosConfig.enable 的返回值
+   */
+  enable,
+  /**
+   * @param {any} [payload]
+   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+   * @returns {Promise<any>} axiosConfig.disable 的返回值
+   */
+  disable
+} = useAdmate()
+</script>
+```
 
 <br>
 
@@ -1147,9 +1115,23 @@ const { form } = useAdmate()
 
 <br>
 
-<a name="onOpenForm"></a>
+## 生命周期
 
-### 生命周期: 打开表单
+### 读取列表后
+
+```ts
+// 示例: 适配层提供 afterGetList
+
+useAdmateAdapter({}, {
+  afterGetList (response, trigger) {
+    // 可访问 this（组件实例）
+  }
+}
+```
+
+<br>
+
+### 打开表单
 
 ```ts
 watch(() => form.value.show, (n) => {
@@ -1159,12 +1141,12 @@ watch(() => form.value.show, (n) => {
 })
 ```
 
-<a name="afterOpenForm"></a>
+<br>
 
-### 生命周期: 打开表单后
+### 打开表单后
 
 ```ts
-// 示例: 适配层提供「打开表单后」的生命周期
+// 示例: 适配层提供 afterOpenForm
 
 useAdmateAdapter({}, {
   afterOpenForm(res) {
@@ -1174,12 +1156,12 @@ useAdmateAdapter({}, {
 })
 ```
 
-<a name="afterRetrieve"></a>
+<br>
 
-### 生命周期: 查询表单后
+### 读取表单后
 
 ```ts
-// 示例: 适配层提供「查询表单后」的生命周期
+// 示例: 适配层提供 afterRetrieve
 // 新增时不触发
 
 useAdmateAdapter({}, {
@@ -1190,12 +1172,12 @@ useAdmateAdapter({}, {
 })
 ```
 
-<a name="beforeSubmit"></a>
+<br>
 
-### 生命周期: 提交表单前
+### 提交表单前
 
 ```ts
-// 示例: 适配层提供「提交表单前」的生命周期
+// 示例: 适配层提供 beforeSubmit
 
 useAdmateAdapter({}, {
   beforeSubmit(form) {
@@ -1204,9 +1186,9 @@ useAdmateAdapter({}, {
 })
 ```
 
-<a name="afterSubmit"></a>
+<br>
 
-### 生命周期: 提交表单后
+### 提交表单后
 
 ```ts
 const { submitForm } = useAdmateAdapter()
@@ -1219,9 +1201,9 @@ submitForm().then((res) => {
 })
 ```
 
-<a name="onCloseForm"></a>
+<br>
 
-### 生命周期: 关闭表单
+### 关闭表单
 
 ```ts
 watch(() => form.value.show, (n) => {
@@ -1233,9 +1215,19 @@ watch(() => form.value.show, (n) => {
 
 <br>
 
-## 示例: 表单是子组件
+## 类型
 
-将表单抽离为子组件
+```ts
+type StatusType = '' | 'c' | 'r' | 'u' | string
+```
+
+<br>
+
+## 场景
+
+### 表单是子组件
+
+> 将表单抽离为子组件
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
 
@@ -1243,25 +1235,25 @@ watch(() => form.value.show, (n) => {
 
 <a name="FormDecoupled"></a>
 
-## 示例: 表单是独立页面
+### 表单是独立页面
 
-操作单条记录时，跳转到专用的表单页面，操作完毕后返回
+> 操作单条记录时，跳转到专用的表单页面，操作完毕后返回
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormDecoupled.vue)
 
 <br>
 
-## 示例: 只有表单没有列表
+### 只有表单没有列表
 
-表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
+> 表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormOnly.vue)
 
 <br>
 
-## 示例: 嵌套使用
+### 嵌套使用
 
-嵌套其它也使用 Admate 的页面
+> 嵌套其它也使用 Admate 的页面
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
