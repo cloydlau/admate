@@ -95,7 +95,7 @@ npm add admate @vue/composition-api
 
 <img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
 
-[Vuetify@3 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Vuetify.vue) 
+[Vuetify@3 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Vuetify.vue)
 
 [Vuetify@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
 
