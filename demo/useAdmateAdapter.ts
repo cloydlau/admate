@@ -15,72 +15,78 @@ export default (admateConfig, {
     u: '编辑',
   },
 
-  // 是否在初始化时查询列表
+  // 是否在初始化时读取列表
   getListInitially = true,
 
   // 列表筛选参数的初始值，用于动态获取的参数，比如时间
   // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
   // 所以需要调方法动态获取
-  // 可访问 this
+  // 可访问 this（组件实例）
   initialListFilter = function () { },
 
   // 获取列表筛选项的表单 ref
-  // 可访问 this
+  // 可访问 this（组件实例）
   getElFormRefOfListFilter = function () {
     return this.$refs.listFilterRef
   },
 
   // 校验列表筛选项
-  // 可访问 this
+  // 可访问 this（组件实例）
   validateListFilter = function () {
     return getElFormRefOfListFilter()?.validate()
   },
 
   // 重置列表筛选项
-  // 可访问 this
+  // 可访问 this（组件实例）
   resetListFilter = function () {
     return getElFormRefOfListFilter().resetFields()
   },
 
   // 获取详情的表单 ref
-  // 可访问 this
+  // 可访问 this（组件实例）
   // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
   getElFormRefOfFormData = function () {
     return this?.$refs.formRef // TODO
   },
 
   // 清除详情表单校验
-  // 可访问 this
+  // 可访问 this（组件实例）
   clearValidateOfFormData = function () {
     return getElFormRefOfFormData()?.clearValidate()
   },
 
   // 校验详情表单
-  // 可访问 this
+  // 可访问 this（组件实例）
   validateFormData = function () {
     return getElFormRefOfFormData().validate()
   },
 
-  // 自定义钩子函数 - 获取列表之后
+  // 自定义钩子函数 - 读取列表后
   // 参数1为接口返回值，参数2为触发动机
-  // 可访问 this
+  // 可访问 this（组件实例）
   afterGetList = function () { },
 
-  // 自定义钩子函数 - 查询表单详情之后（新增时不触发）
+  // 自定义钩子函数 - 读取表单后
+  // 新增时不触发
   // 参数为接口返回值
-  // 可访问 this
+  // 可访问 this（组件实例）
   afterRetrieve = function () { },
 
-  // 自定义钩子函数 - 打开表单之后
+  // 自定义钩子函数 - 打开表单后
   // 参数为接口返回值（新增时为空）
-  // 可访问 this
+  // 可访问 this（组件实例）
   afterOpenForm = function () { },
 
-  // 自定义钩子函数 - 提交表单之前
+  // 自定义钩子函数 - 提交表单前
   // 参数为 form
-  // 可访问 this
+  // 可访问 this（组件实例）
   // 返回 false 以阻止提交
   beforeSubmit = function () { },
+
+  // 自定义钩子函数 - 提交表单后
+  // 参数为接口返回值
+  // 可访问 this（组件实例）
+  afterSubmit = function () { },
 } = {}) => {
   // 获取当前 Vue 实例
   const currentInstance = ref()
@@ -129,7 +135,7 @@ export default (admateConfig, {
       },
     },
     list: {
-      // 查询列表接口的默认参数
+      // 读取列表接口的默认参数
       filter: {
         // 页容量
         // 注意：如果修改了默认值，需要同步修改 el-pagination 组件 pageSize 参数的值
@@ -204,9 +210,10 @@ export default (admateConfig, {
       const promise = openForm()
       if (promise) {
         return new Promise((resolve, reject) => {
-          promise.then(res => {
+          promise.then((res) => {
             callback(res)
-            resolve(res)
+            // 返回值用于设置 form 的终态
+            resolve()
           }).catch((e) => {
             console.error(e)
             callback(e)
@@ -221,10 +228,13 @@ export default (admateConfig, {
     submitFormProxy(submitForm) {
       return new Promise((resolve, reject) => {
         const proceed = () => {
-          submitForm().then(res => {
-            resolve(res)
+          submitForm().then((res) => {
+            afterSubmit(res)
+            // 返回值用于设置 form 的终态
+            resolve()
           }).catch((e) => {
             console.error(e)
+            afterSubmit(e)
             reject()
           })
         }
@@ -233,7 +243,7 @@ export default (admateConfig, {
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
-            }).catch(e => {
+            }).catch((e) => {
               console.error(e)
               reject()
             })
@@ -272,6 +282,7 @@ export default (admateConfig, {
     afterRetrieve = afterRetrieve.bind(currentInstance.value)
     afterOpenForm = afterOpenForm.bind(currentInstance.value)
     beforeSubmit = beforeSubmit.bind(currentInstance.value)
+    afterSubmit = afterSubmit.bind(currentInstance.value)
 
     const elFormRefOfListFilter = getElFormRefOfListFilter()
     if (elFormRefOfListFilter) {
@@ -328,7 +339,7 @@ export default (admateConfig, {
         getList()
       }
     },
-    // 查询列表（监听筛选条件时不需要）
+    // 读取列表（监听筛选条件时不需要）
     queryList: async () => {
       await validateListFilter()
       list.filter.pageNo = 1

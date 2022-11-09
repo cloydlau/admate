@@ -1191,13 +1191,13 @@ useAdmateAdapter({}, {
 ### 提交表单后
 
 ```ts
-const { submitForm } = useAdmateAdapter()
+// 示例: 适配层提供 afterSubmit
 
-submitForm().then((res) => {
-  // 提交成功
-  // res 为接口返回值
-}).catch((e) => {
-  // 提交失败
+useAdmateAdapter({}, {
+  afterSubmit(res) {
+    // res 为接口返回值
+    // 可访问 this（组件实例）
+  }
 })
 ```
 
