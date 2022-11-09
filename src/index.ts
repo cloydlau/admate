@@ -47,7 +47,7 @@ const At = (response?: object, paths?: string | Function): any => {
   return paths
     ? (typeof paths === 'function'
         ? paths(response)
-        // paths 为 undefined 或 '' 时结果为 undefined
+      // paths 为 undefined 或 '' 时结果为 undefined
         : at(response, paths)[0])
     : response
 }
@@ -178,8 +178,6 @@ export default function useAdmate({
     payload = List.filter,
     payloadAs?: CUDFormType,
   ): GetListType => {
-    // console.log(`getList 被调用`)
-
     List.loading = true
     return api.getList(payload, payloadAs)
       .then((response) => {
@@ -279,9 +277,8 @@ export default function useAdmate({
   }
 
   // 删除单条记录
-  const d = (payload?, payloadAs?: CUDFormType) => {
-    List.loading = true
-    return api.d(payload, payloadAs).then((response) => {
+  const d = (payload?, payloadAs?: CUDFormType) =>
+    api.d(payload, payloadAs).then((response) => {
       if (List.data?.length === 1) {
         if (List.filter[List.pageNumberKey] === 1) {
           getListTrigger.value = 'd'
@@ -294,46 +291,31 @@ export default function useAdmate({
         GetListProxy()
       }
       return response
-    }).finally(() => {
-      List.loading = false
     })
-  }
 
   // 改变单条记录状态
-  const updateStatus = (payload?, payloadAs?: CUDFormType) => {
-    List.loading = true
-    return api.updateStatus(payload, payloadAs).then((response) => {
+  const updateStatus = (payload?, payloadAs?: CUDFormType) =>
+    api.updateStatus(payload, payloadAs).then((response) => {
       getListTrigger.value = 'updateStatus'
       GetListProxy()
       return response
-    }).finally(() => {
-      List.loading = false
     })
-  }
 
   // 启用单条记录
-  const enable = (payload?, payloadAs?: CUDFormType) => {
-    List.loading = true
-    return api.enable(payload, payloadAs).then((response) => {
+  const enable = (payload?, payloadAs?: CUDFormType) =>
+    api.enable(payload, payloadAs).then((response) => {
       getListTrigger.value = 'enable'
       GetListProxy()
       return response
-    }).finally(() => {
-      List.loading = false
     })
-  }
 
   // 停用单条记录
-  const disable = (payload?, payloadAs?: CUDFormType) => {
-    List.loading = true
-    return api.disable(payload, payloadAs).then((response) => {
+  const disable = (payload?, payloadAs?: CUDFormType) =>
+    api.disable(payload, payloadAs).then((response) => {
       getListTrigger.value = 'disable'
       GetListProxy()
       return response
-    }).finally(() => {
-      List.loading = false
     })
-  }
 
   // 坑：
   /*
@@ -467,7 +449,6 @@ export default function useAdmate({
     if (List.watchFilter) {
       const getListDebounced = ref(debounce(() => {
         getListTrigger.value = 'filterChange'
-        List.loading = false
         GetListProxy()
       }, List.debounceInterval))
 
@@ -475,7 +456,6 @@ export default function useAdmate({
       setTimeout(() => {
         watch(() => List.filter, () => {
           if (List.filter[List.pageNumberKey] === oldPageNumber) {
-            List.loading = true
             getListDebounced.value()
           } else {
             // 翻页不需要防抖
