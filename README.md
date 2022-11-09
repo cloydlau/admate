@@ -435,35 +435,6 @@ useAdmate({
 
 <br>
 
-### 读取状态
-
-`list.loading`
-
-`axiosConfig.getList` 被调用时值为 `true`，否则为 `false`
-
-```vue
-<!-- 示例 -->
-
-<template>
-  <el-table v-loading="list.loading" />
-</template>
-
-<script setup>
-import useAdmate from 'admate'
-
-const { list } = useAdmate()
-
-function handleTable() {
-  list.value.loading = true
-  Vue.prototype.$POST('').finally(() => {
-    list.value.loading = false
-  })
-}
-</script>
-```
-
-<br>
-
 ### 读取列表
 
 #### getList
@@ -540,6 +511,35 @@ const { list } = useAdmate({
     })
   },
 })
+```
+
+<br>
+
+### 读取状态
+
+`list.loading`
+
+`axiosConfig.getList` 被调用时值为 `true`，否则为 `false`
+
+```vue
+<!-- 示例 -->
+
+<template>
+  <el-table v-loading="list.loading" />
+</template>
+
+<script setup>
+import useAdmate from 'admate'
+
+const { list } = useAdmate()
+
+function handleTable() {
+  list.value.loading = true
+  Vue.prototype.$POST('').finally(() => {
+    list.value.loading = false
+  })
+}
+</script>
 ```
 
 <br>
