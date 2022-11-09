@@ -66,8 +66,7 @@ export default (admateConfig, {
   // 可访问 this（组件实例）
   afterGetList = function () { },
 
-  // 自定义钩子函数 - 读取表单后
-  // 新增时不触发
+  // 自定义钩子函数 - 读取表单后（新增时不触发）
   // 参数为接口返回值
   // 可访问 this（组件实例）
   afterRetrieve = function () { },
