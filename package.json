@@ -1,6 +1,6 @@
 {
   "name": "admate",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "private": false,
   "description": "Mate / Helper / Assistant of admin interfaces for Vue 2.6 / 2.7 / 3, extremely concise without losing flexibility.",
   "author": "cloydlau",
@@ -48,7 +48,7 @@
     "dev2.6": "cl switchVue 2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
     "serve": "vite preview",
     "build": "vite build",
-    "release": "npx case-police --fix && npx lint-staged && cl switchVue 3 && pnpm build && cl release"
+    "release": "cl switchVue 3 && npx case-police --fix && npx lint-staged && pnpm build && cl release"
   },
   "peerDependencies": {
     "@vue/composition-api": ">=1",
@@ -86,8 +86,8 @@
     "quasar": "latest",
     "sass": "latest",
     "typescript": "latest",
-    "unocss": "latest",
-    "unplugin-auto-import": "latest",
+    "unocss": "0.43.1",
+    "unplugin-auto-import": "0.11.2",
     "vite": "latest",
     "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
