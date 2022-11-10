@@ -1244,7 +1244,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 ### 嵌套使用
 
-> 嵌套其它也使用 Admate 的页面
+> 当前页面的弹框也使用 Admate
 
 [示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
 
