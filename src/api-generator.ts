@@ -1,8 +1,6 @@
 import { merge } from 'lodash-es'
-// import { CancelToken } from 'axios'
 
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
-// let source
 
 export interface ConfigCatalogType {
   c?: object | ((objForConfig: object) => object)
@@ -62,7 +60,7 @@ export default function createAPIGenerator(
 
   Object.freeze(configCatalog_default)
 
-  const getUrl = (urlSuffix: string, url: string) =>
+  const createURL = (urlSuffix: string, url: string) =>
     url.startsWith('/')
       ? url
       : (urlSuffix.endsWith('/') ? urlSuffix : `${urlSuffix}/`) + url
@@ -79,17 +77,13 @@ export default function createAPIGenerator(
       result[k] = (payload, payloadAs) => {
         const configObj_default = configCatalog_default[k]
 
-        const configObj_global
-          = typeof configCatalog_global[k] === 'function'
-            ? configCatalog_global[k](payload)
-            : configCatalog_global[k]
+        const configObj_global = typeof configCatalog_global[k] === 'function'
+          ? configCatalog_global[k](payload)
+          : configCatalog_global[k]
 
-        const configObj = {
-          // cancelToken: source.token,
-          ...typeof configCatalog[k] === 'function'
-            ? configCatalog[k](payload)
-            : configCatalog[k],
-        }
+        const configObj = typeof configCatalog[k] === 'function'
+          ? configCatalog[k](payload)
+          : configCatalog[k]
 
         const config = merge(configObj_default, configObj_global, configObj)
 
@@ -99,7 +93,7 @@ export default function createAPIGenerator(
           ...payloadAs === 'data' && { data: payload },
           ...payloadAs === 'params' && { params: payload },
           ...config,
-          url: getUrl(urlSuffix, config.url),
+          url: createURL(urlSuffix, config.url),
         })
       }
     }
