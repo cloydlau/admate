@@ -1,11 +1,8 @@
-import { name as title, description } from '../package.json'
+import { name as title } from '../package.json'
 
 export default {
   title,
-  description,
   themeConfig: {
-    sidebar: {
-
-    }
-  }
+    outline: 'deep',
+  },
 }
