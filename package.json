@@ -48,6 +48,7 @@
     "dev2.6": "cl switchVue 2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
     "serve": "vite preview",
     "build": "vite build",
+    "docs": "vitepress dev",
     "release": "cl switchVue 3 && npx case-police --fix && npx lint-staged && pnpm build && cl release"
   },
   "peerDependencies": {
@@ -91,6 +92,7 @@
     "vite": "latest",
     "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
+    "vitepress": "latest",
     "vue": "latest",
     "vue-router": "latest",
     "vuetify": "next"
