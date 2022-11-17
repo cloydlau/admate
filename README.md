@@ -4,6 +4,7 @@
   <a href="https://npmjs.com/package/admate"><img src="https://img.shields.io/npm/v/admate.svg" alt="npm package"></a>
   <a href="https://npmjs.com/package/admate"><img src="http://img.badgesize.io/https://unpkg.com/admate/dist/admate.umd.js?compression=gzip&label=gziped" alt="gziped"></a>
   <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fcloydlau%2Fadmate?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcloydlau%2Fadmate.svg?type=shield"/></a>
+  <a href="https://github.com/cloydlau/admate#develop"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
 > 管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
@@ -1296,8 +1297,6 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 <br>
 
 ## 开发
-
-**PR welcome!** 💗
 
 1. [安装 Deno](https://x.deno.js.cn/#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88)
 
