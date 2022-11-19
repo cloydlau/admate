@@ -7,9 +7,6 @@
   <a href="https://bundlephobia.com/package/admate">
     <img alt="minzipped size" src="https://img.shields.io/bundlephobia/minzip/admate">
   </a>
-  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fcloydlau%2Fadmate?ref=badge_shield">
-    <img alt="fossa status" src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcloydlau%2Fadmate.svg?type=shield"/>
-  </a>
   <a href="https://eslint.org">
     <img alt="code style" src="https://img.shields.io/badge/code_style-eslint-4B32C3.svg">
   </a>
