@@ -67,6 +67,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "latest",
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
     "@mdi/font": "latest",
     "@quasar/vite-plugin": "latest",
     "@vitejs/plugin-vue": "latest",
