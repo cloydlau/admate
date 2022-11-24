@@ -7,12 +7,7 @@
       <el-table-column label="操作">
         <template #default="{ row }">
           <el-button
-            @click="() => {
-              SubPage.data = row
-              SubPage.list.filter.id = row.id
-              SubPage.getList()
-              SubPage.show = true
-            }"
+            @click="SubPage.open(row.id)"
           >
             查看子页面
           </el-button>
@@ -53,11 +48,41 @@ const {
   urlPrefix,
 })
 
+const elFormRefOfSubPage = ref()
+const idKeyOfSubPage = ''
 const SubPage = reactive({
+  initialized: false,
   show: false,
-  data: {},
+  open: (id) => {
+    SubPage.show = true
+    if (!SubPage.initialized) {
+      nextTick(() => {
+        SubPage.list.filter = reactive({
+          ...Object.fromEntries(Array.from(elFormRefOfSubPage.value.fields || [], v => [v.labelFor, undefined])),
+          ...SubPage.list.filter,
+          [idKeyOfSubPage]: id,
+        })
+        SubPage.initialized = true
+      })
+    } else if (SubPage.list.filter[idKeyOfSubPage] === id) {
+      SubPage.getList()
+    } else {
+      SubPage.list.filter[idKeyOfSubPage] = id
+    }
+  },
+  onClosed: () => elFormRefOfSubPage.value.resetFields(),
   ...useAdmateAdapter({
     urlPrefix: '',
+    axiosConfig: {
+      getList: {
+        url: '',
+      },
+    },
+    list: {
+      filter: {
+        [idKeyOfSubPage]: undefined,
+      },
+    },
   }, {
     getListInitially: false,
   }),
