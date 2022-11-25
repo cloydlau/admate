@@ -28,8 +28,7 @@
     ".": {
       "types": "./dist/src/index.d.ts",
       "require": "./dist/admate.umd.js",
-      "import": "./dist/admate.mjs",
-      "browser": "./dist/admate.mjs"
+      "import": "./dist/admate.mjs"
     },
     "./*": "./*"
   },
