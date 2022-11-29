@@ -10,6 +10,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         name,
         entry: 'src/index.ts',
       },
+      sourcemap: true,
       rollupOptions: {
         external: [
           'vue',
