@@ -12,7 +12,7 @@
 
 > 管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
-> 后台页面的特点是重复度高，如果提取公共代码又难以满足定制化需求，Admate 致力于解决这一痛点。
+> 后台页面的特点是重复度高，提取公共代码又难以兼顾定制化需求，Admate 致力于解决这一痛点。
 
 ![我全都要](https://raw.githubusercontent.com/cloydlau/admate/main/我全都要.gif)
 
