@@ -14,11 +14,11 @@
 , [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
 > 后台页面的特点是重复度高，如果提取公共代码又难以满足定制化需求，Admate 致力于解决这一痛点。
 
-![我全都要](https://raw.githubusercontent.com/cloydlau/admate/master/我全都要.gif)
+![我全都要](https://raw.githubusercontent.com/cloydlau/admate/main/我全都要.gif)
 
 | 案例对比                                                                                                          | 技术栈                         |                                  业务代码量（字符数）                                   |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------ | :-------------------------------------------------------------------------------------: |
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/master/src/views/table/complex-table.vue) | Vue 2 + ElementUI              |                                         13,330                                          |
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + ElementUI              |                                         13,330                                          |
 | 常规增删查改页面                                                                                                  | Vue 2 + ElementUI + **Admate** |                                      **约 5,000**                                       |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                     | Vue 2 + ElementUI              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                          | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
@@ -42,7 +42,7 @@
 - 🧹 **缜密周全的收尾工作，没有“后顾之忧”**
     - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
     - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
-- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/master/demo/useAdmateAdapter.ts)**
+- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/main/demo/useAdmateAdapter.ts)**
   - 列表筛选参数重置 & 参数校验
   - 支持 URL 传参指定筛选项默认值
   - 支持动态生成筛选项默认值，使用场景举例: 日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
@@ -51,7 +51,7 @@
 
 ## 架构
 
-![架构图](https://raw.githubusercontent.com/cloydlau/admate/master/architecture-diagram.png)
+![架构图](https://raw.githubusercontent.com/cloydlau/admate/main/architecture-diagram.png)
 
 <br>
 
@@ -92,9 +92,9 @@ npm add admate @vue/composition-api
 
 <img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
 
-[Vuetify@3 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Vuetify.vue)
+[Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
-[Vuetify@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/Vuetify.vue)
+[Vuetify@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/Vuetify.vue)
 
 <br>
 
@@ -102,7 +102,7 @@ npm add admate @vue/composition-api
 
 <img src="https://img.shields.io/npm/dm/element-ui.svg"> <img src="https://img.shields.io/github/stars/ElemeFE/element">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/ElementUI.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
 
 <br>
 
@@ -110,7 +110,7 @@ npm add admate @vue/composition-api
 
 <img src="https://img.shields.io/npm/dm/element-plus.svg"> <img src="https://img.shields.io/github/stars/element-plus/element-plus">
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/ElementPlus.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 <br>
 
@@ -118,7 +118,7 @@ npm add admate @vue/composition-api
 
 <img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
 
-[Quasar@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/Quasar.vue)
+[Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
 Quasar@1（应该）不支持 Vite，暂无示例
 
@@ -128,9 +128,9 @@ Quasar@1（应该）不支持 Vite，暂无示例
 
 <img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
 
-[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/AntDesignVue.vue)
+[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
-[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/master/demo/vue2/UseUIFramework/AntDesignVue.vue)
+[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
 <br>
 
@@ -138,7 +138,7 @@ Quasar@1（应该）不支持 Vite，暂无示例
 
 <img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue">
 
-[PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/UseUIFramework/PrimeVue.vue)
+[PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
 PrimeVue@2（应该）不支持 Vite，暂无示例
 
@@ -1263,7 +1263,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 > 将表单抽离为子组件
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormExternalized.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/examples/FormExternalized.vue)
 
 <br>
 
@@ -1273,7 +1273,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 > 操作单条记录时，跳转到专用的表单页面，操作完毕后返回
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormDecoupled.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/examples/FormDecoupled.vue)
 
 <br>
 
@@ -1281,7 +1281,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 > 表单默认打开，且无法关闭，通常用于列表中只有一条数据，故列表被省略的场景
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/FormOnly.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/examples/FormOnly.vue)
 
 <br>
 
@@ -1289,7 +1289,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 > 当前页面的弹框也使用 Admate
 
-[示例](https://github.com/cloydlau/admate/blob/master/demo/vue3/examples/Nested.vue)
+[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/examples/Nested.vue)
 
 <br>
 
