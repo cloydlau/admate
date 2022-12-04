@@ -66,7 +66,7 @@
 
 ### Vue 3
 
-```sh
+```shell
 npm add admate
 ```
 
@@ -74,7 +74,7 @@ npm add admate
 
 ### Vue 2.7
 
-```sh
+```shell
 npm add admate
 ```
 
@@ -82,7 +82,7 @@ npm add admate
 
 ### Vue 2.6 或更早版本
 
-```sh
+```shell
 npm add admate @vue/composition-api
 ```
 
