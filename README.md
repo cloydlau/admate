@@ -1,29 +1,40 @@
-# Admate <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
+<h1 align="center">
+  <a href="https://npmjs.com/package/admate" target="_blank" rel="noopener noreferrer">
+    Admate <sup><img alt="version" src="https://versionbadg.es/cloydlau/admate.svg"></sup>
+  </a>
+</h1>
 
-[npm-version-svg]: https://versionbadg.es/cloydlau/admate.svg
-[package-url]: https://npmjs.com/package/admate
+<p align="center">
+  管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面
+  <br>
+  可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
+  <br>
+  后台页面的特点是重复度高，提取公共代码又难以兼顾定制化需求，Admate 致力于解决这一痛点
+</p>
 
-<p align="left">
+<p align="center">
   <a href="https://bundlephobia.com/package/admate"><img alt="minzipped size" src="https://img.shields.io/bundlephobia/minzip/admate"></a>
   <a href="https://eslint.org"><img alt="code style" src="https://img.shields.io/badge/code_style-ESLint-4B32C3.svg?logo=eslint"></a>
   <a href="https://conventionalcommits.org"><img alt="conventional commits" src="https://img.shields.io/badge/commits-Conventional-FE5196.svg?logo=conventionalcommits&logoColor=white"></a>
   <a href="https://github.com/cloydlau/admate#develop"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
 </p>
 
-> 管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，可以集成进任意管理后台框架如 [vue-vben-admin](https://github.com/anncwb/vue-vben-admin)
-, [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 中。
-> 后台页面的特点是重复度高，提取公共代码又难以兼顾定制化需求，Admate 致力于解决这一痛点。
+<p align="center">
+  <img alt="我全都要" src="https://raw.githubusercontent.com/cloydlau/admate/main/我全都要.gif">
+</p>
 
-![我全都要](https://raw.githubusercontent.com/cloydlau/admate/main/我全都要.gif)
+<br>
 
-| 案例对比                                                                                                          | 技术栈                         |                                  业务代码量（字符数）                                   |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------ | :-------------------------------------------------------------------------------------: |
+## 对比
+
+| 案例                                                                                                            | 技术栈                         |                                  业务代码量（字符数）                                   |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------ | :-------------------------------------------------------------------------------------: |
 | [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + ElementUI              |                                         13,330                                          |
-| 常规增删查改页面                                                                                                  | Vue 2 + ElementUI + **Admate** |                                      **约 5,000**                                       |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                     | Vue 2 + ElementUI              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                          | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| 电商后台的商品管理                                                                                                | Vue 2 + ElementUI              |                                         425,885                                         |
-| 电商后台的商品管理                                                                                                | Vue 2 + ElementUI + **Admate** |                                       **235,979**                                       |
+| 常规增删查改页面                                                                                                | Vue 2 + ElementUI + **Admate** |                                      **约 5,000**                                       |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + ElementUI              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
+| 电商后台的商品管理                                                                                              | Vue 2 + ElementUI              |                                         425,885                                         |
+| 电商后台的商品管理                                                                                              | Vue 2 + ElementUI + **Admate** |                                       **235,979**                                       |
 
 <br>
 
