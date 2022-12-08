@@ -424,14 +424,18 @@ useAdmate({
     // 列表数据
     data: [],
 
-    // 指定接口返回值中列表数据所在的位置
-    // 支持属性名如 'data'，属性路径如 'data.records'
-    // 还支持 function，如 response => response.data
+    // 指定接口返回值中列表数据的位置
+    // 支持属性名，如 `'data'`
+    // 支持属性路径，如 `'data[0].records'`
+    // 支持 symbol 类型的属性名
+    // 支持 function，如 `response => response.data`
     dataAt: undefined,
 
-    // 指定接口返回值中记录总数所在的位置
-    // 支持属性名如 'total'，属性路径如 'data.total'
-    // 还支持 function，如 response => response.total + 1
+    // 指定接口返回值中记录总数的位置
+    // 支持属性名，如 `'total'`
+    // 支持属性路径，如 `'data[0].total'`
+    // 支持 symbol 类型的属性名
+    // 支持 function，如 `response => response.total`
     totalAt: undefined,
   }
 })
@@ -580,9 +584,11 @@ useAdmate({
     data: {},
 
     // 在查看、编辑表单时，可能需要调用接口（axiosConfig.r）回显表单的数据
-    // dataAt 用于指定接口返回值中表单数据所在的位置
-    // 支持属性名如 'data'，属性路径如 'data.detail'
-    // 还支持 function，如 response => response.data
+    // dataAt 用于指定接口返回值中表单数据的位置
+    // 支持属性名，如 `'detail'`
+    // 支持属性路径，如 `'data[0].detail'`
+    // 支持 symbol 类型的属性名
+    // 支持 function，如 `response => response.detail`
     dataAt: undefined,
 
     // 接口（axiosConfig.r）返回值与 form.data 合并的方式

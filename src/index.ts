@@ -43,13 +43,21 @@ interface ListType {
   loading?: boolean
 }
 
-const At = (response?: object, paths?: string | Function): any => {
-  return paths
-    ? (typeof paths === 'function'
-        ? paths(response)
+function At<V = any>(value: V, path?: string | ((value: V) => any) | symbol): any {
+  if (!(value && path)) {
+    return value
+  }
+  switch (typeof path) {
+    case 'string':
       // paths 为 undefined 或 '' 时结果为 undefined
-        : at(response, paths)[0])
-    : response
+      return at(value, path)[0]
+    case 'function':
+      return path(value)
+    case 'symbol':
+      if (isPlainObject(value)) {
+        return value[path as keyof typeof value]
+      }
+  }
 }
 
 // 将接口返回值混入form.data
