@@ -237,8 +237,8 @@ export default (admateConfig, {
             reject()
           })
         }
-        validateFormData().then(() => {
-          const result = beforeSubmit(form)
+        validateFormData().then(async () => {
+          const result = await beforeSubmit(form)
           if (result instanceof Promise) {
             result.then(() => {
               proceed()
