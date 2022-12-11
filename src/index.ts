@@ -277,8 +277,10 @@ export default function useAdmate({
         })
       }
     } else {
-      if (['r', 'u'].includes(Form.status) && !arguments.length)
-        console.warn(`${CONSOLE_PREFIX}表单状态为 'r' 或 'u' 时，openForm 的参数必传`)
+      // 查看时参数必传，编辑时可以不传因为可能是覆盖式编辑
+      if (Form.status === 'r' && !arguments.length) {
+        console.warn(`${CONSOLE_PREFIX}表单状态为 'r' 时，openForm 的参数必传`)
+      }
 
       Form.show = true
     }
