@@ -1294,7 +1294,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 ## 更新日志
 
-各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases)
+各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases) 。
 
 <br>
 
