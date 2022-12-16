@@ -1,7 +1,7 @@
 {
   "name": "admate",
   "PascalCasedName": "Admate",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "private": false,
   "packageManager": "pnpm@7.18.2",
   "description": "Mate / Helper / Assistant of admin interfaces for Vue 2.6 / 2.7 / 3, extremely concise without losing flexibility.",

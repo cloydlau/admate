@@ -421,14 +421,14 @@ useAdmate({
     // 支持属性名，如 `'data'`
     // 支持属性路径，如 `'data[0].records'`
     // 支持 symbol 类型的属性名
-    // 支持 function，如 `response => response.data`
+    // 支持 Function，如 `response => response.data`
     dataAt: undefined,
 
     // 指定接口返回值中记录总数的位置
     // 支持属性名，如 `'total'`
     // 支持属性路径，如 `'data[0].total'`
     // 支持 symbol 类型的属性名
-    // 支持 function，如 `response => response.total`
+    // 支持 Function，如 `response => response.total`
     totalAt: undefined,
   }
 })
@@ -581,7 +581,7 @@ useAdmate({
     // 支持属性名，如 `'detail'`
     // 支持属性路径，如 `'data[0].detail'`
     // 支持 symbol 类型的属性名
-    // 支持 function，如 `response => response.detail`
+    // 支持 Function，如 `response => response.detail`
     dataAt: undefined,
 
     // 接口（axiosConfig.r）返回值与 form.data 合并的方式
