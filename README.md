@@ -280,11 +280,11 @@ updateStatus({ id: 1 }, 'config')
 
 ### FormData
 
-Axios 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`: 
+`Axios` 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`:
 
 - 全局配置
 
-给你的 Axios 配置 `transformRequest`、`headers['Content-Type']`
+给你的 `Axios` 配置 `transformRequest`、`headers['Content-Type']`
 
 - 局部配置
 

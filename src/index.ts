@@ -43,7 +43,7 @@ interface ListType {
   loading?: boolean
 }
 
-function At<V = any>(value: V, path?: string | ((value: V) => any) | symbol): any {
+export function unwrap<V = any>(value: V, path?: string | ((value: V) => any) | symbol): any {
   if (!(value && path)) {
     return value
   }
@@ -189,8 +189,8 @@ export default function useAdmate({
     List.loading = true
     return api.getList(payload, payloadAs)
       .then((response) => {
-        List.data = At(response, List.dataAt) ?? []
-        List.total = List.data?.length ? At(response, List.totalAt) ?? 0 : 0
+        List.data = unwrap(response, List.dataAt) ?? []
+        List.total = List.data?.length ? unwrap(response, List.totalAt) ?? 0 : 0
         return response
       }).catch(() => {
         // List.data.length = 0 // List.data 可能为空
@@ -272,7 +272,7 @@ export default function useAdmate({
         Form.loading = true
         Form.show = true
         return api.r(payload, payloadAs).then((response) => {
-          mergeFormData(Form, At(response, Form.dataAt))
+          mergeFormData(Form, unwrap(response, Form.dataAt))
           return response
         })
       }
