@@ -5,11 +5,11 @@
 </h1>
 
 <p align="center">
-  管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面
+  管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，
   <br>
-  可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
+  可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
-  致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点
+  致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点。
 </p>
 
 <p align="center">
@@ -41,9 +41,9 @@
 ## 特性
 
 - 🕶 **Vue 2.6 / 2.7 / 3 通用** - 零成本升级
-- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码（Vuetify，Element，AntDesignVue，Quasar，PrimeVue）
+- 🤝 **不限制 UI 框架** - 只要技术栈是 `Vue` + `Axios` 便可使用，提供主流 UI 框架示例代码（`Vuetify`，`ElementUI`，`AntDesignVue`，`Quasar`，`PrimeVue`）
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
-- 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
+- 🥥 **模块级别的请求配置** - 虽然 `Axios` 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 使用代理模式实现控制反转，定制属于你的生命周期行为
 - 🍪 **贴心而不武断的 CRUD 封装**
     - 列表筛选: 支持监听筛选参数（防抖控制接口调用频率）的方式，也支持点击读取按钮触发的方式
