@@ -9,7 +9,7 @@
   <br>
   可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
   <br>
-  后台页面的特点是重复度高，提取公共代码又难以兼顾定制化需求，Admate 致力于解决这一痛点
+  致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点
 </p>
 
 <p align="center">
@@ -73,15 +73,11 @@
 - `vue`
 - `axios`
 
-<br>
-
 ### Vue 3
 
 ```shell
 npm add admate
 ```
-
-<br>
 
 ### Vue 2.7
 
@@ -89,65 +85,51 @@ npm add admate
 npm add admate
 ```
 
-<br>
-
 ### Vue 2.6 或更早版本
 
 ```shell
 npm add admate @vue/composition-api
 ```
 
-<br>
-
 ### 搭配 Vuetify
 
-<img src="https://img.shields.io/npm/dm/vuetify.svg"> <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">
+<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify"> <img src="https://img.shields.io/npm/dm/vuetify.svg">
 
 [Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
 [Vuetify@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/Vuetify.vue)
 
-<br>
-
 ### 搭配 ElementUI
 
-<img src="https://img.shields.io/npm/dm/element-ui.svg"> <img src="https://img.shields.io/github/stars/ElemeFE/element">
+<img src="https://img.shields.io/github/stars/ElemeFE/element"> <img src="https://img.shields.io/npm/dm/element-ui.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
 
-<br>
-
 ### 搭配 ElementPlus
 
-<img src="https://img.shields.io/npm/dm/element-plus.svg"> <img src="https://img.shields.io/github/stars/element-plus/element-plus">
+<img src="https://img.shields.io/github/stars/element-plus/element-plus"> <img src="https://img.shields.io/npm/dm/element-plus.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
 
-<br>
-
 ### 搭配 Quasar
 
-<img src="https://img.shields.io/npm/dm/quasar.svg"> <img src="https://img.shields.io/github/stars/quasarframework/quasar">
+<img src="https://img.shields.io/github/stars/quasarframework/quasar"> <img src="https://img.shields.io/npm/dm/quasar.svg">
 
 [Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
 Quasar@1（应该）不支持 Vite，暂无示例
 
-<br>
-
 ### 搭配 AntDesignVue
 
-<img src="https://img.shields.io/npm/dm/ant-design-vue.svg"> <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">
+<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue"> <img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
 
 [AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
 [AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/AntDesignVue.vue)
 
-<br>
-
 ### 搭配 PrimeVue
 
-<img src="https://img.shields.io/npm/dm/primevue.svg"> <img src="https://img.shields.io/github/stars/primefaces/primevue">
+<img src="https://img.shields.io/github/stars/primefaces/primevue"> <img src="https://img.shields.io/npm/dm/primevue.svg">
 
 [PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
@@ -1312,7 +1294,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 ## 更新日志
 
-各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases) 。
+各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases)
 
 <br>
 
