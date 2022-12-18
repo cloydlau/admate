@@ -41,22 +41,22 @@
 ## 特性
 
 - 🕶 **Vue 2.6 / 2.7 / 3 通用** - 零成本升级
-- 🤝 **不限制 UI 框架** - 只要技术栈是 `Vue` + `Axios` 便可使用，提供主流 UI 框架示例代码（`Vuetify`，`ElementUI`，`AntDesignVue`，`Quasar`，`PrimeVue`）
+- 🤝 **不限制 UI 框架** - 只要技术栈是 `Vue` + `Axios` 便可使用，提供主流 UI 框架示例代码 (`Vuetify`，`ElementUI`，`AntDesignVue`，`Quasar`，`PrimeVue`)
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 `Axios` 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 使用代理模式实现控制反转，定制属于你的生命周期行为
 - 🍪 **贴心而不武断的 CRUD 封装**
-    - 列表筛选: 支持监听筛选参数（防抖控制接口调用频率）的方式，也支持点击读取按钮触发的方式
-    - 表单展现风格: 支持对话框的风格，也支持独立页面的风格
-    - 单条记录状态: 支持调用「编辑接口」改变状态，也支持调用独立的「更新状态接口」指定新状态，也支持分别调用「启用接口」和「停用接口」改变状态
-    - 加载状态: 提供列表读取状态、表单读取状态、表单提交状态的响应式变量
-- 🧹 **缜密周全的收尾工作，没有“后顾之忧”**
-    - 关闭表单时，自动将表单绑定的数据恢复至初始状态（不是直接清空）
-    - 删除当前分页最后一条记录时，自动切换至上一页（如果当前不在第一页）
+    - 列表筛选：支持监听筛选参数 (防抖控制接口调用频率) 的方式，也支持点击读取按钮触发的方式
+    - 表单展现风格：支持对话框的风格，也支持独立页面的风格
+    - 单条记录状态：支持调用 “编辑接口” 改变状态，也支持调用独立的 “更新状态接口” 指定新状态，也支持分别调用 “启用接口” 和 “停用接口” 改变状态
+    - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
+- 🧹 **缜密周全的收尾工作，没有 “后顾之忧”**
+    - 关闭表单时，自动将表单绑定的数据恢复至初始状态 (不是直接清空)
+    - 删除当前分页最后一条记录时，自动切换至上一页 (如果当前不在第一页)
 - 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/main/demo/useAdmateAdapter.ts)**
   - 列表筛选参数重置 & 参数校验
   - 支持 URL 传参指定筛选项默认值
-  - 支持动态生成筛选项默认值，使用场景举例: 日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
+  - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
 
 <br>
 
@@ -93,7 +93,7 @@ npm add admate @vue/composition-api
 
 ### 搭配 Vuetify
 
-<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify"> <img src="https://img.shields.io/npm/dm/vuetify.svg">
+<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify"><img src="https://img.shields.io/npm/dm/vuetify.svg">
 
 [Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
@@ -101,27 +101,27 @@ npm add admate @vue/composition-api
 
 ### 搭配 ElementUI
 
-<img src="https://img.shields.io/github/stars/ElemeFE/element"> <img src="https://img.shields.io/npm/dm/element-ui.svg">
+<img src="https://img.shields.io/github/stars/ElemeFE/element"><img src="https://img.shields.io/npm/dm/element-ui.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
 
 ### 搭配 ElementPlus
 
-<img src="https://img.shields.io/github/stars/element-plus/element-plus"> <img src="https://img.shields.io/npm/dm/element-plus.svg">
+<img src="https://img.shields.io/github/stars/element-plus/element-plus"><img src="https://img.shields.io/npm/dm/element-plus.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 ### 搭配 Quasar
 
-<img src="https://img.shields.io/github/stars/quasarframework/quasar"> <img src="https://img.shields.io/npm/dm/quasar.svg">
+<img src="https://img.shields.io/github/stars/quasarframework/quasar"><img src="https://img.shields.io/npm/dm/quasar.svg">
 
 [Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
-Quasar@1（应该）不支持 Vite，暂无示例
+Quasar@1 (应该) 不支持 Vite，暂无示例
 
 ### 搭配 AntDesignVue
 
-<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue"> <img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
+<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue"><img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
 
 [AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
@@ -129,11 +129,11 @@ Quasar@1（应该）不支持 Vite，暂无示例
 
 ### 搭配 PrimeVue
 
-<img src="https://img.shields.io/github/stars/primefaces/primevue"> <img src="https://img.shields.io/npm/dm/primevue.svg">
+<img src="https://img.shields.io/github/stars/primefaces/primevue"><img src="https://img.shields.io/npm/dm/primevue.svg">
 
 [PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
-PrimeVue@2（应该）不支持 Vite，暂无示例
+PrimeVue@2 (应该) 不支持 Vite，暂无示例
 
 <br>
 
@@ -280,7 +280,7 @@ updateStatus({ id: 1 }, 'config')
 
 ### FormData
 
-`Axios` 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`:
+`Axios` 的 data 默认以 `application/json` 作为 MIME type，如果你需要使用 `multipart/form-data`：
 
 - 全局配置
 
@@ -372,9 +372,9 @@ useAdmate({
 ### 触发读取
 
 - 点击专用的读取按钮触发
-    - :x: 操作相对繁琐。
-    - :x: 列表数据与筛选条件可能是无关的。可能产生“当前的列表数据是否基于筛选项？”的顾虑，导致徒增点击读取按钮的次数。
-    - :heavy_check_mark: 想同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
+    - ❌ 操作相对繁琐。
+    - ❌ 列表数据与筛选条件可能是无关的。可能产生 “当前的列表数据是否基于筛选项？” 的顾虑，导致徒增点击读取按钮的次数。
+    - ✔️ 想同时设置多个筛选条件时，只调用一次接口，不会造成资源浪费。
 
 ```ts
 useAdmate({
@@ -387,9 +387,9 @@ useAdmate({
 <hr>
 
 - **改变筛选条件后即时触发**
-    - :heavy_check_mark: 操作相对简便。
-    - :heavy_check_mark: 列表数据与筛选条件即时绑定。
-    - :heavy_check_mark: ~~想同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~（Admate 已优化）。
+    - ✔️ 操作相对简便。
+    - ✔️ 列表数据与筛选条件即时绑定。
+    - ✔️ ~~想同时设置多个筛选条件时，接口会被多次调用，造成资源浪费~~ (Admate 已优化)。
 
 ```ts
 useAdmate({
@@ -555,8 +555,8 @@ function handleTable() {
 
 对比
 
-- 对话框: 体验好，割裂感低，表单的开闭不影响父页面状态
-- 独立页面: 体验较差，从表单返回父页面时，父页面的状态会丢失，比如列表筛选状态
+- 对话框：体验好，割裂感低，表单的开闭不影响父页面状态
+- 独立页面：体验较差，从表单返回父页面时，父页面的状态会丢失，比如列表筛选状态
 
 <br>
 
@@ -590,18 +590,18 @@ useAdmate({
 })
 ```
 
-**mergeData:**
+**mergeData：**
 
-- `'deep'`: 深合并（默认）
-- `'shallow'`: 浅合并
-- `(newFormData: any) => any`: 自定义合并方式
-- `false`: 不合并，直接替换
+- `'deep'`：深合并 (默认)
+- `'shallow'`：浅合并
+- `(newFormData: any) => any`：自定义合并方式
+- `false`：不合并，直接替换
 
 **为什么默认是深合并？**
 
 在 Vue 2 中，template 不支持 `?.` 语法，要在 template 中判空，代码写起来会非常冗余，通常的做法是在 data 中声明空对象
 
-比如给 form.data 提供默认值: 
+比如给 form.data 提供默认值：
 
 ```vue
 <template>
@@ -623,13 +623,13 @@ const { form } = useAdmate({
 </script>
 ```
 
-如果 axiosConfig.r 的返回值为: 
+如果 axiosConfig.r 的返回值为： 
 `{ a: {} }`
 
-如果与默认值<span style="color:red">浅合并</span>后将得到: 
-`{ a: {} }` —— 默认值中的对象b丢失了，引发空指针异常。
+如果与默认值<span style="color:red">浅合并</span>后将得到： 
+`{ a: {} }` —— 默认值中的对象 b 丢失了，引发空指针异常。
 
-如果与默认值<span style="color:red">深合并</span>后将得到: 
+如果与默认值<span style="color:red">深合并</span>后将得到： 
 `{ a: { b: {} } }` —— 代码正常工作。
 
 ```ts
@@ -690,7 +690,7 @@ openForm()
 
 1. 打开表单时，和查看/编辑一样，需要调接口回显
 2. 提交表单时调用的是新增的接口
-3. 表单名称显示为“复制新增”
+3. 表单名称显示为 “复制新增”
 
 复制新增属于一种交叉状态，这种情况没有必要专门增加一种表单形态，可以借助一个辅助变量如 `isCopy`，用 `isCopy && form.status ==='c'` 来判断是不是复制新增，然后给 `openForm` 传参即可回显。
 
@@ -770,7 +770,7 @@ const {
 
 ### 状态变更
 
-状态变更有三种方式:
+状态变更有三种方式：
 
 1. 后端提供一个统一的接口，传参指定新的状态
 
@@ -889,7 +889,7 @@ const {
 
 #### openForm
 
-打开表单，函数签名要分情况: 
+打开表单，函数签名要分情况：
 
 - [新增时](#openForm-c)
 - [查看时](#openForm-r)
@@ -1028,7 +1028,7 @@ const {
 
 #### submitFormProxy
 
-你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变submitForm的行为
+你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变 submitForm 的行为
 
 ```ts
 useAdmate({
@@ -1192,7 +1192,7 @@ useAdmateAdapter({}, {
 })
 ```
 
-- 读取表单后（不含新增）
+- 读取表单后 (不含新增)
 
 ```ts
 // 示例: 适配层提供 afterRetrieve
@@ -1294,7 +1294,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 ## 更新日志
 
-各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases) 。
+各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases)。
 
 <br>
 
