@@ -428,15 +428,15 @@ export default function useAdmate({
     return result
   }
 
-  watch(() => Form.show, (n) => {
-    if (!n) {
+  watch(() => Form.show, (newShow) => {
+    if (!newShow) {
       // 表单关闭时，重置表单
       // 可能会有关闭动画，所以加延迟
       setTimeout(() => {
         Object.assign(Form, {
           ...getInitialForm(),
           // 不能重置被监听的 show
-          // 因为重置是异步的，如果在此150ms期间 show 被外部赋为 true，将导致死循环
+          // 因为重置是异步的，如果在此 500ms 期间 show 被外部赋为 true，将导致死循环
           show: Form.show,
         })
       }, 500)
