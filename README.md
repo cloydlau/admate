@@ -76,19 +76,19 @@
 ### Vue 3
 
 ```shell
-npm add admate
+npm i admate
 ```
 
 ### Vue 2.7
 
 ```shell
-npm add admate
+npm i admate
 ```
 
 ### Vue 2.6 或更早版本
 
 ```shell
-npm add admate @vue/composition-api
+npm i admate @vue/composition-api
 ```
 
 ### 搭配 Vuetify
@@ -1302,7 +1302,7 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 1. [安装 Deno](https://x.deno.js.cn/#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88)
 
-2. `npm add pnpm @cloydlau/scripts -g; pnpm i`
+2. `npm i pnpm @cloydlau/scripts -g; pnpm i`
 
 3. 启动
 
