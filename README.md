@@ -93,7 +93,7 @@ npm i admate @vue/composition-api
 
 ### 搭配 Vuetify
 
-<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify"><img src="https://img.shields.io/npm/dm/vuetify.svg">
+<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">&nbsp;<img src="https://img.shields.io/npm/dm/vuetify.svg">
 
 [Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
@@ -101,19 +101,19 @@ npm i admate @vue/composition-api
 
 ### 搭配 ElementUI
 
-<img src="https://img.shields.io/github/stars/ElemeFE/element"><img src="https://img.shields.io/npm/dm/element-ui.svg">
+<img src="https://img.shields.io/github/stars/ElemeFE/element">&nbsp;<img src="https://img.shields.io/npm/dm/element-ui.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
 
 ### 搭配 ElementPlus
 
-<img src="https://img.shields.io/github/stars/element-plus/element-plus"><img src="https://img.shields.io/npm/dm/element-plus.svg">
+<img src="https://img.shields.io/github/stars/element-plus/element-plus">&nbsp;<img src="https://img.shields.io/npm/dm/element-plus.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 ### 搭配 Quasar
 
-<img src="https://img.shields.io/github/stars/quasarframework/quasar"><img src="https://img.shields.io/npm/dm/quasar.svg">
+<img src="https://img.shields.io/github/stars/quasarframework/quasar">&nbsp;<img src="https://img.shields.io/npm/dm/quasar.svg">
 
 [Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
@@ -121,7 +121,7 @@ Quasar@1 (应该) 不支持 Vite，暂无示例
 
 ### 搭配 AntDesignVue
 
-<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue"><img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
+<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">&nbsp;<img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
 
 [AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
@@ -129,7 +129,7 @@ Quasar@1 (应该) 不支持 Vite，暂无示例
 
 ### 搭配 PrimeVue
 
-<img src="https://img.shields.io/github/stars/primefaces/primevue"><img src="https://img.shields.io/npm/dm/primevue.svg">
+<img src="https://img.shields.io/github/stars/primefaces/primevue">&nbsp;<img src="https://img.shields.io/npm/dm/primevue.svg">
 
 [PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
