@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-  管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，
+  管理后台伴侣/助手，用简洁而不失灵活的方式开发管理后台页面，
   <br>
   可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
