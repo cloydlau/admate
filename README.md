@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-  管理后台伴侣 / 助手，用简洁而不失灵活的方式开发管理后台页面，
+  管理后台伴侣/助手，用简洁而不失灵活的方式开发管理后台页面，
   <br>
   可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
@@ -93,7 +93,7 @@ npm i admate @vue/composition-api
 
 ### 搭配 Vuetify
 
-<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify"><img src="https://img.shields.io/npm/dm/vuetify.svg">
+<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">&nbsp;<img src="https://img.shields.io/npm/dm/vuetify.svg">
 
 [Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
@@ -101,19 +101,19 @@ npm i admate @vue/composition-api
 
 ### 搭配 ElementUI
 
-<img src="https://img.shields.io/github/stars/ElemeFE/element"><img src="https://img.shields.io/npm/dm/element-ui.svg">
+<img src="https://img.shields.io/github/stars/ElemeFE/element">&nbsp;<img src="https://img.shields.io/npm/dm/element-ui.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
 
 ### 搭配 ElementPlus
 
-<img src="https://img.shields.io/github/stars/element-plus/element-plus"><img src="https://img.shields.io/npm/dm/element-plus.svg">
+<img src="https://img.shields.io/github/stars/element-plus/element-plus">&nbsp;<img src="https://img.shields.io/npm/dm/element-plus.svg">
 
 [示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
 
 ### 搭配 Quasar
 
-<img src="https://img.shields.io/github/stars/quasarframework/quasar"><img src="https://img.shields.io/npm/dm/quasar.svg">
+<img src="https://img.shields.io/github/stars/quasarframework/quasar">&nbsp;<img src="https://img.shields.io/npm/dm/quasar.svg">
 
 [Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
@@ -121,7 +121,7 @@ Quasar@1 (应该) 不支持 Vite，暂无示例
 
 ### 搭配 AntDesignVue
 
-<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue"><img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
+<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">&nbsp;<img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
 
 [AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
@@ -129,7 +129,7 @@ Quasar@1 (应该) 不支持 Vite，暂无示例
 
 ### 搭配 PrimeVue
 
-<img src="https://img.shields.io/github/stars/primefaces/primevue"><img src="https://img.shields.io/npm/dm/primevue.svg">
+<img src="https://img.shields.io/github/stars/primefaces/primevue">&nbsp;<img src="https://img.shields.io/npm/dm/primevue.svg">
 
 [PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
@@ -1301,13 +1301,8 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 ## 开发
 
 1. [安装 Deno](https://x.deno.js.cn/#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88)
-
-2. `npm i pnpm @cloydlau/scripts -g; pnpm i`
-
-3. 启动
-
-    - `pnpm dev3`
-    - `pnpm dev2.7`
-    - `pnpm dev2.6`
+2. 执行 `npm i -g @cloydlau/scripts`
+3. 执行 `cl i` 并选择 pnpm
+4. 执行 `cl dev3`/`cl dev2.7`/`cl dev2.6`
 
 <br>
