@@ -195,46 +195,46 @@ export default (admateConfig, {
     openFormProxy(openForm) {
       // 打开表单后的回调
       function callback(res) {
-        afterOpenForm(res)
+        let endState = afterOpenForm(res)
         if (form.status !== 'c' || currentInstance.value?.createFromCopy__) {
-          afterRetrieve(res)
+          endState = afterRetrieve(res)
         }
 
         // 回显表单后，清除校验
         setTimeout(() => {
           clearValidateOfFormData()
         }, 0)
+
+        return endState
       }
 
       const promise = openForm()
       if (promise) {
         return new Promise((resolve, reject) => {
           promise.then((res) => {
-            callback(res)
             // 返回值用于设置 form 的终态
-            resolve()
+            resolve(callback(res))
           }).catch((e) => {
             console.error(e)
-            callback(e)
-            reject()
+            // 返回值用于设置 form 的终态
+            reject(callback(e))
           })
         })
       } else {
         // 新增、复用列表数据时 openForm 没有返回值
-        callback()
+        return callback()
       }
     },
     submitFormProxy(submitForm) {
       return new Promise((resolve, reject) => {
         const proceed = () => {
           submitForm().then((res) => {
-            afterSubmit(res)
             // 返回值用于设置 form 的终态
-            resolve()
+            resolve(afterSubmit(res))
           }).catch((e) => {
             console.error(e)
-            afterSubmit(e)
-            reject()
+            // 返回值用于设置 form 的终态
+            reject(afterSubmit(e))
           })
         }
         validateFormData().then(async () => {
