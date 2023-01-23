@@ -27,10 +27,7 @@ interface APIType {
 export default function createAPIGenerator(
   axios: (args: any) => Promise<any>,
   configCatalog_global: ConfigCatalogType = {},
-): (
-    urlSuffix: string,
-    configCatalog?: ConfigCatalogType
-  ) => APIType {
+): (urlSuffix: string, configCatalog?: ConfigCatalogType) => APIType {
   const configCatalog_default = {
     c: {
       method: 'POST',
@@ -61,14 +58,9 @@ export default function createAPIGenerator(
   Object.freeze(configCatalog_default)
 
   const createURL = (urlSuffix: string, url: string) =>
-    url.startsWith('/')
-      ? url
-      : (urlSuffix.endsWith('/') ? urlSuffix : `${urlSuffix}/`) + url
+    url.startsWith('/') ? url : (urlSuffix.endsWith('/') ? urlSuffix : `${urlSuffix}/`) + url
 
-  return (
-    urlSuffix = '',
-    configCatalog: ConfigCatalogType = {},
-  ): APIType => {
+  return (urlSuffix = '', configCatalog: ConfigCatalogType = {}): APIType => {
     // cancelAllRequest() // 嵌套使用 Admate 时，可能导致将父级的请求取消掉
     // source = CancelToken.source()
 
@@ -77,21 +69,18 @@ export default function createAPIGenerator(
       result[k] = (payload, payloadAs) => {
         const configObj_default = configCatalog_default[k]
 
-        const configObj_global = typeof configCatalog_global[k] === 'function'
-          ? configCatalog_global[k](payload)
-          : configCatalog_global[k]
+        const configObj_global =
+          typeof configCatalog_global[k] === 'function' ? configCatalog_global[k](payload) : configCatalog_global[k]
 
-        const configObj = typeof configCatalog[k] === 'function'
-          ? configCatalog[k](payload)
-          : configCatalog[k]
+        const configObj = typeof configCatalog[k] === 'function' ? configCatalog[k](payload) : configCatalog[k]
 
         const config = merge(configObj_default, configObj_global, configObj)
 
         payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
 
         return axios({
-          ...payloadAs === 'data' && { data: payload },
-          ...payloadAs === 'params' && { params: payload },
+          ...(payloadAs === 'data' && { data: payload }),
+          ...(payloadAs === 'params' && { params: payload }),
           ...config,
           url: createURL(urlSuffix, config.url),
         })

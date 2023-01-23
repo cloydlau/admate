@@ -52,7 +52,7 @@
     "dev2.6": "cl switchVue 2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
     "build": "vite build",
     "doc": "vitepress dev --open /README",
-    "release": "npx case-police --fix && npx zhlint README.md --fix && npx lint-staged && pnpm build && cl release"
+    "release": "npx lint-staged && pnpm build && cl release"
   },
   "peerDependencies": {
     "@vue/composition-api": ">=1",
@@ -69,7 +69,6 @@
     "vue-global-config": "^0.3.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.34.0",
     "@commitlint/cli": "^17.3.0",
     "@commitlint/config-conventional": "^17.3.0",
     "@mdi/font": "^7.1.96",
@@ -84,7 +83,6 @@
     "axios": "^1.2.1",
     "case-police": "^0.5.10",
     "element-plus": "^2.2.27",
-    "eslint": "^8.30.0",
     "husky": "^8.0.2",
     "lint-staged": "^13.1.0",
     "mockjs": "^1.1.0",
@@ -92,6 +90,7 @@
     "primevue": "^3.21.0",
     "qs": "^6.11.0",
     "quasar": "^2.11.0",
+    "rome": "^11.0.0",
     "sass": "^1.57.0",
     "typescript": "^4.9.4",
     "unocss": "^0.47.6",
@@ -106,8 +105,9 @@
     "zhlint": "^0.7.1"
   },
   "lint-staged": {
-    "{src,__tests__}/**.*": [
-      "eslint --fix"
+    "*.md": [
+      "case-police --fix",
+      "zhlint --fix"
     ]
   },
   "publishConfig": {
