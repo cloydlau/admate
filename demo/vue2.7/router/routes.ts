@@ -1,15 +1,15 @@
 export default [
   {
-    path: '/ant-design-vue', component: () =>
-      import('../UseUIFramework/AntDesignVue.vue')
+    path: '/ant-design-vue',
+    component: () => import('../UseUIFramework/AntDesignVue.vue'),
   },
   {
-    path: '/element-ui', component: () =>
-      import('../UseUIFramework/ElementUI.vue')
+    path: '/element-ui',
+    component: () => import('../UseUIFramework/Element.vue'),
   },
   {
-    path: '/vuetify', component: () =>
-      import('../UseUIFramework/Vuetify.vue')
+    path: '/vuetify',
+    component: () => import('../UseUIFramework/Vuetify.vue'),
   },
   /*{
     path: '/quasar-1', component: () =>
@@ -20,8 +20,8 @@ export default [
       import('../UseUIFramework/PrimeVue.vue')
   },*/
   {
-    path: '/form-externalized', component: () =>
-      import('../examples/FormExternalized.vue')
+    path: '/form-externalized',
+    component: () => import('../examples/FormExternalized.vue'),
   },
   /* {
     path: '/form-decoupled', component: () =>
@@ -35,7 +35,7 @@ export default [
       import('../examples/FormPage.vue')
   }, */
   {
-    path: '/form-only', component: () =>
-      import('../examples/FormOnly.vue')
+    path: '/form-only',
+    component: () => import('../examples/FormOnly.vue'),
   },
 ]

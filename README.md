@@ -27,21 +27,21 @@
 
 ## 对比
 
-| 案例                                                                                                            | 技术栈                         |                                  业务代码量（字符数）                                   |
-| --------------------------------------------------------------------------------------------------------------- | ------------------------------ | :-------------------------------------------------------------------------------------: |
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + ElementUI              |                                         13,330                                          |
-| 常规增删查改页面                                                                                                | Vue 2 + ElementUI + **Admate** |                                      **约 5,000**                                       |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + ElementUI              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + ElementUI + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| 电商后台的商品管理                                                                                              | Vue 2 + ElementUI              |                                         425,885                                         |
-| 电商后台的商品管理                                                                                              | Vue 2 + ElementUI + **Admate** |                                       **235,979**                                       |
+| 案例                                                                                                            | 技术栈                       |                                  业务代码量（字符数）                                   |
+| --------------------------------------------------------------------------------------------------------------- | ---------------------------- | :-------------------------------------------------------------------------------------: |
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                         13,330                                          |
+| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                      **约 5,000**                                       |
+| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + Element              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
+| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + Element + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                         425,885                                         |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                       **235,979**                                       |
 
 <br>
 
 ## 特性
 
 - 🕶 **Vue 2.6/2.7/3 通用** - 零成本升级
-- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码 (Vuetify，ElementUI，AntDesignVue，Quasar，PrimeVue)
+- 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码 (Vuetify，Element，AntDesignVue，Quasar，PrimeVue)
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
@@ -72,68 +72,61 @@
 
 - vue
 - axios
-
-### Vue 3
-
-```shell
-npm i admate
-```
-
-### Vue 2.7
+- ~~@vue/composition-api~~：仅 Vue 2.6 或更早版本需要
 
 ```shell
 npm i admate
-```
-
-### Vue 2.6 或更早版本
-
-```shell
-npm i admate @vue/composition-api
 ```
 
 ### 搭配 Vuetify
 
 <img src="https://img.shields.io/github/stars/vuetifyjs/vuetify">&nbsp;<img src="https://img.shields.io/npm/dm/vuetify.svg">
 
-[Vuetify@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
+[Vuetify 3 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
 
-[Vuetify@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/Vuetify.vue)
+[Vuetify 2 (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/Vuetify.vue)
 
-### 搭配 ElementUI
-
-<img src="https://img.shields.io/github/stars/ElemeFE/element">&nbsp;<img src="https://img.shields.io/npm/dm/element-ui.svg">
-
-[示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/ElementUI.vue)
+[Vuetify 2 (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/Vuetify.vue)
 
 ### 搭配 ElementPlus
 
 <img src="https://img.shields.io/github/stars/element-plus/element-plus">&nbsp;<img src="https://img.shields.io/npm/dm/element-plus.svg">
 
-[示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
+[ElementPlus (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
+
+### 搭配 Element
+
+<img src="https://img.shields.io/github/stars/ElemeFE/element">&nbsp;<img src="https://img.shields.io/npm/dm/element-ui.svg">
+
+[Element (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/Element.vue)
+
+[Element (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/Element.vue)
 
 ### 搭配 Quasar
 
 <img src="https://img.shields.io/github/stars/quasarframework/quasar">&nbsp;<img src="https://img.shields.io/npm/dm/quasar.svg">
 
-[Quasar@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
+[Quasar 2 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
 
-Quasar@1 (应该) 不支持 Vite，暂无示例
+Quasar 1 不支持 Vite，暂无示例
 
 ### 搭配 AntDesignVue
 
 <img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue">&nbsp;<img src="https://img.shields.io/npm/dm/ant-design-vue.svg">
 
-[AntDesignVue@2 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
+[AntDesignVue 2 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
 
-[AntDesignVue@1 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2/UseUIFramework/AntDesignVue.vue)
+[AntDesignVue 1 (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/AntDesignVue.vue)
+
+[AntDesignVue 1 (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/AntDesignVue.vue)
 
 ### 搭配 PrimeVue
 
 <img src="https://img.shields.io/github/stars/primefaces/primevue">&nbsp;<img src="https://img.shields.io/npm/dm/primevue.svg">
 
-[PrimeVue@3 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
+[PrimeVue 3 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
 
-PrimeVue@2 (应该) 不支持 Vite，暂无示例
+PrimeVue 2 不支持 Vite，暂无示例
 
 <br>
 
