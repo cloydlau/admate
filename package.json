@@ -5,7 +5,7 @@
   "private": false,
   "packageManager": "pnpm@7.18.2",
   "description": "Mate/Helper/Assistant of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
-  "author": "cloydlau",
+  "author": "Cloyd Lau",
   "license": "MIT",
   "repository": "https://github.com/cloydlau/admate",
   "keywords": [
