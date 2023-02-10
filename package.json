@@ -10,15 +10,15 @@
   "repository": "https://github.com/cloydlau/admate",
   "keywords": [
     "crud",
-    "admin",
+    "back-office",
     "manage",
     "management",
-    "back-office",
+    "admin",
     "admin-interfaces",
     "vue",
     "vue-demi",
-    "vue-vben-admin",
     "vue-element-admin",
+    "vue-vben-admin",
     "axios",
     "element",
     "element-ui",
@@ -26,8 +26,9 @@
     "quasar",
     "vuetify",
     "prime-vue",
-    "ant-design-vue",
-    "antd"
+    "antd",
+    "ant-design",
+    "ant-design-vue"
   ],
   "exports": {
     ".": {
