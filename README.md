@@ -68,15 +68,15 @@
 
 ## 安装
 
+```shell
+npm i admate
+```
+
 ### 外置依赖
 
 - vue
 - axios
 - ~~@vue/composition-api~~：仅 Vue 2.6 或更早版本需要
-
-```shell
-npm i admate
-```
 
 ### 搭配 Vuetify
 
