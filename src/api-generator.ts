@@ -70,13 +70,18 @@ export default function createAPIGenerator(
         const configObj_default = configCatalog_default[k]
 
         const configObj_global =
-          typeof configCatalog_global[k] === 'function' ? configCatalog_global[k](payload) : configCatalog_global[k]
+          typeof configCatalog_global[k] === 'function'
+            ? configCatalog_global[k](payload)
+            : configCatalog_global[k]
 
-        const configObj = typeof configCatalog[k] === 'function' ? configCatalog[k](payload) : configCatalog[k]
+        const configObj =
+          typeof configCatalog[k] === 'function' ? configCatalog[k](payload) : configCatalog[k]
 
         const config = merge(configObj_default, configObj_global, configObj)
 
-        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase()) ? 'data' : 'params'
+        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase())
+          ? 'data'
+          : 'params'
 
         return axios({
           ...(payloadAs === 'data' && { data: payload }),

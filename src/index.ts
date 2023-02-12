@@ -204,7 +204,10 @@ export default function useAdmate({
     // args 是用户直接调用 getList 传的参，优先级低
     // args_proxy 是用户在 getListProxy 内部调用 getList 传的参，优先级高
     const result = getListProxy
-      ? getListProxy((...args_proxy) => getList(...(args_proxy.length ? args_proxy : args)), getListTrigger.value)
+      ? getListProxy(
+          (...args_proxy) => getList(...(args_proxy.length ? args_proxy : args)),
+          getListTrigger.value,
+        )
       : getList(...args)
 
     getListTrigger.value = undefined
