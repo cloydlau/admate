@@ -3,38 +3,40 @@
   "PascalCasedName": "Admate",
   "version": "0.9.5",
   "private": false,
-  "packageManager": "pnpm@7.18.2",
   "description": "Mate/Helper/Assistant of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
-  "author": "Cloyd Lau",
+  "author": {
+    "name": "Cloyd Lau",
+    "url": "https://github.com/cloydlau"
+  },
   "license": "MIT",
   "repository": "https://github.com/cloydlau/admate",
   "keywords": [
-    "crud",
-    "back-office",
-    "manage",
-    "management",
     "admin",
     "admin-interfaces",
-    "vue",
-    "vue-demi",
-    "vue-element-admin",
-    "vue-vben-admin",
+    "antd",
+    "ant-design",
+    "ant-design-vue",
     "axios",
+    "back-office",
+    "crud",
     "element",
     "element-ui",
     "element-plus",
+    "manage",
+    "management",
+    "prime-vue",
     "quasar",
     "vuetify",
-    "prime-vue",
-    "antd",
-    "ant-design",
-    "ant-design-vue"
+    "vue-demi",
+    "vue-element-admin",
+    "vue-vben-admin",
+    "vue-pure-admin"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/admate.umd.js",
-      "import": "./dist/admate.mjs"
+      "types": "./dist/admate.d.ts",
+      "import": "./dist/admate.mjs",
+      "require": "./dist/admate.umd.js"
     },
     "./*": "./*"
   },
@@ -42,18 +44,20 @@
   "module": "./dist/admate.mjs",
   "unpkg": "./dist/admate.umd.js",
   "jsdelivr": "./dist/admate.umd.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/admate.d.ts",
   "files": [
+    "demo",
     "dist",
     "docs"
   ],
   "scripts": {
-    "dev3": "cl switchVue 3 && vite --config ./demo/vue3/vite.config.ts --open",
-    "dev2.7": "cl switchVue 2.7 && vite --config ./demo/vue2.7/vite.config.ts --open",
-    "dev2.6": "cl switchVue 2.6 && vite --config ./demo/vue2.6/vite.config.ts --open",
-    "build": "vite build",
+    "dev": "esno ./scripts/dev.mts",
     "doc": "vitepress dev --open /README",
-    "release": "npx lint-staged && pnpm build && cl release"
+    "build": "vite build",
+    "serve": "vite preview",
+    "release": "esno ./scripts/release.mts",
+    "pnpm:devPreinstall": "node ./scripts/devPreinstall.js",
+    "preinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx only-allow pnpm"
   },
   "peerDependencies": {
     "@vue/composition-api": ">=1",
@@ -65,13 +69,13 @@
     }
   },
   "dependencies": {
-    "lodash-es": "latest",
-    "vue-demi": "latest",
-    "vue-global-config": "latest"
+    "vue-demi": "^0.14.6"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "~0.42.1",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
+    "@element-plus/icons-vue": "latest",
     "@mdi/font": "latest",
     "@quasar/vite-plugin": "latest",
     "@types/lodash-es": "latest",
@@ -79,28 +83,38 @@
     "@vitejs/plugin-vue": "latest",
     "@vue/compiler-sfc": "latest",
     "@vue/test-utils": "latest",
-    "admate": "latest",
+    "admate": "workspace:*",
     "ant-design-vue": "latest",
     "axios": "latest",
     "case-police": "latest",
+    "cross-spawn": "latest",
+    "del": "latest",
     "element-plus": "latest",
-    "husky": "latest",
+    "esno": "latest",
+    "kolorist": "latest",
     "lint-staged": "latest",
+    "lodash-es": "latest",
+    "magicast": "latest",
     "mockjs": "latest",
+    "only-allow": "latest",
+    "open": "latest",
     "primeicons": "latest",
     "primevue": "latest",
+    "prompts": "latest",
     "qs": "latest",
     "quasar": "latest",
-    "rome": "latest",
     "sass": "latest",
+    "semver": "latest",
     "typescript": "latest",
     "unocss": "latest",
     "unplugin-auto-import": "latest",
+    "unplugin-vue-components": "latest",
     "vite": "latest",
     "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
     "vitepress": "latest",
     "vue": "latest",
+    "vue-global-config": "latest",
     "vue-router": "latest",
     "vuetify": "latest",
     "zhlint": "latest"
@@ -110,8 +124,5 @@
       "case-police --fix",
       "zhlint --fix"
     ]
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
   }
 }

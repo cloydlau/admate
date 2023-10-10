@@ -1,20 +1,20 @@
 <h1 align="center">
   <a href="https://npmjs.com/package/admate" target="_blank" rel="noopener noreferrer">
-    Admate <sup><img alt="version" src="https://versionbadg.es/cloydlau/admate.svg"></sup>
+    Admate <sup><img alt="version" src="https://img.shields.io/npm/v/admate.svg?style=flat-square&color=white&label="></sup>
   </a>
 </h1>
 
 <p align="center">
   管理后台伴侣/助手，用简洁而不失灵活的方式开发管理后台页面，
   <br>
-  可以集成进任意管理后台框架如 <a href="https://github.com/anncwb/vue-vben-admin">vue-vben-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
+  可以集成进任意管理后台框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
   致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点。
 </p>
 
 <p align="center">
   <a href="https://bundlephobia.com/package/admate"><img alt="minzipped size" src="https://img.shields.io/bundlephobia/minzip/admate"></a>
-  <a href="https://rome.tools"><img alt="code style" src="https://img.shields.io/badge/code_style-Rome-FFC905.svg?logo=rome"></a>
+  <a href="https://github.com/antfu/eslint-config"><img alt="code style" src="https://antfu.me/badge-code-style.svg"></a>
   <a href="https://conventionalcommits.org"><img alt="conventional commits" src="https://img.shields.io/badge/commits-Conventional-FE5196.svg?logo=conventionalcommits"></a>
   <a href="https://github.com/cloydlau/admate#develop"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
 </p>
@@ -28,19 +28,19 @@
 ## 对比
 
 | 案例                                                                                                            | 技术栈                       |                                  业务代码量（字符数）                                   |
-| --------------------------------------------------------------------------------------------------------------- | ---------------------------- | :-------------------------------------------------------------------------------------: |
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                         13,330                                          |
-| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                      **约 5,000**                                       |
+|---------------------------------------------------------------------------------------------------------------|------------------------------|:-------------------------------------------------------------------------------------:|
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                        13,330                                         |
+| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                     **约 5,000**                                      |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + Element              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + Element + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                         425,885                                         |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                       **235,979**                                       |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                        425,885                                        |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                      **235,979**                                      |
 
 <br>
 
 ## 特性
 
-- 🕶 **Vue 2.6/2.7/3 通用** - 零成本升级
+- 🕶 **Vue 2.6/2.7/3 一体通用** - 零成本升级
 - 🤝 **不限制 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码 (Vuetify，Element，AntDesignVue，Quasar，PrimeVue)
 - 🌐 **规范统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
@@ -1287,6 +1287,6 @@ type StatusType = '' | 'c' | 'r' | 'u' | string
 
 ## 更新日志
 
-各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases)。
+各版本详细改动请参考 [release notes](https://github.com/cloydlau/admate/releases)
 
 <br>
