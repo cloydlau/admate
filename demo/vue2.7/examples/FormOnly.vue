@@ -1,26 +1,6 @@
-<template>
-  <div class="wrapper">
-    <el-dialog visible title="编辑" :show-close="false" :modal="false"
-      :close-on-click-modal="false" :close-on-press-escape="false">
-      <el-form ref="formRef" :model="form.data"
-        :disabled="form.status === 'r' || form.submitting" v-loading="form.loading">
-        <el-form-item label="姓名" prop="name" required>
-          <el-input v-model="form.data.name" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button type="primary" @click="() => { submitForm() }"
-          :loading="form.submitting" v-if="form.status !== 'r' && !form.loading">
-          确 定
-        </el-button>
-      </template>
-    </el-dialog>
-  </div>
-</template>
-
 <script>
 import useAdmateAdapter from '../../useAdmateAdapter'
-import { API_PREFIX as urlPrefix } from '../../../mock/demo/crud'
+import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 
 export default {
   setup: () => {
@@ -66,9 +46,47 @@ export default {
       formRef,
       submitForm,
     }
-  }
+  },
 }
 </script>
+
+<template>
+  <div class="wrapper">
+    <el-dialog
+      visible
+      title="编辑"
+      :show-close="false"
+      :modal="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form
+        ref="formRef"
+        v-loading="form.loading"
+        :model="form.data"
+        :disabled="form.status === 'r' || form.submitting"
+      >
+        <el-form-item
+          label="姓名"
+          prop="name"
+          required
+        >
+          <el-input v-model="form.data.name" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button
+          v-if="form.status !== 'r' && !form.loading"
+          type="primary"
+          :loading="form.submitting"
+          @click="() => { submitForm() }"
+        >
+          确 定
+        </el-button>
+      </template>
+    </el-dialog>
+  </div>
+</template>
 
 <style lang="scss">
 .wrapper>div {

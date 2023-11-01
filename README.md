@@ -75,7 +75,6 @@ npm i admate
 ### 外置依赖
 
 - vue
-- axios
 - ~~@vue/composition-api~~：仅 Vue 2.6 或更早版本需要
 
 ### 搭配 Vuetify
@@ -286,6 +285,30 @@ updateStatus({ id: 1 }, 'config')
 ```vue
 <!-- 示例: 局部配置 -->
 
+<script setup>
+import { jsonToFormData, pickDeepBy } from 'kayran'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
+
+// 过滤 list.value.filter 并转换为 FormData 格式
+FormData.from = (json) => {
+  const formData = new FormData()
+  for (const k in json) {
+    if (![Number.NaN, null, undefined].includes(json[k])) {
+      formData.append(k, json[k])
+    }
+  }
+  return formData
+}
+
+useAdmateAdapter({
+  getListProxy(getList, trigger) {
+    getList(FormData.from(list.value.filter))
+  },
+})
+
+const FormData = window.FormData
+</script>
+
 <template>
   <el-table>
     <el-table-column label="操作">
@@ -311,30 +334,6 @@ updateStatus({ id: 1 }, 'config')
     </template>
   </el-dialog>
 </template>
-
-<script setup>
-import { jsonToFormData, pickDeepBy } from 'kayran'
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
-
-// 过滤 list.value.filter 并转换为 FormData 格式
-FormData.from = (json) => {
-  const formData = new FormData()
-  for (const k in json) {
-    if (![NaN, null, undefined].includes(json[k])) {
-      formData.append(k, json[k])
-    }
-  }
-  return formData
-}
-
-useAdmateAdapter({
-  getListProxy(getList, trigger) {
-    getList(FormData.from(list.value.filter))
-  },
-})
-
-const FormData = window.FormData
-</script>
 ```
 
 <br>
@@ -473,8 +472,7 @@ useAdmate({
       listFilterRef.value.validate().then(() => {
         getList()
       })
-    }
-    else {
+    } else {
       getList()
     }
   },
@@ -518,10 +516,6 @@ const { list } = useAdmate({
 ```vue
 <!-- 示例 -->
 
-<template>
-  <el-table v-loading="list.loading" />
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
@@ -534,6 +528,10 @@ function handleTable() {
   })
 }
 </script>
+
+<template>
+  <el-table v-loading="list.loading" />
+</template>
 ```
 
 <br>
@@ -597,10 +595,6 @@ useAdmate({
 比如给 form.data 提供默认值：
 
 ```vue
-<template>
-  {{ form.data.a.b.c }}
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
@@ -614,6 +608,10 @@ const { form } = useAdmate({
   }
 })
 </script>
+
+<template>
+  {{ form.data.a.b.c }}
+</template>
 ```
 
 如果 axiosConfig.r 的返回值为： 
@@ -630,11 +628,13 @@ const { form } = useAdmate({
 
 import { mergeWith } from 'lodash'
 
-const defaultFormData = () => ({
-  a: {
-    b: {}
+function defaultFormData() {
+  return {
+    a: {
+      b: {}
+    }
   }
-})
+}
 
 const { form } = useAdmate({
   form: {
@@ -770,16 +770,6 @@ const {
 > 使用 `updateStatus`
 
 ```vue
-<template>
-  <el-table>
-    <el-table-column label="操作" align="center">
-      <template #default="{ row: { id, status } }">
-        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
-      </template>
-    </el-table-column>
-  </el-table>
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
@@ -795,6 +785,19 @@ const {
   updateStatus,
 } = useAdmate()
 </script>
+
+<template>
+  <el-table>
+    <el-table-column
+      label="操作"
+      align="center"
+    >
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
 ```
 
 2. 后端提供启用和停用两个接口
@@ -802,16 +805,6 @@ const {
 > 使用 `enable` 和 `disable`
 
 ```vue
-<template>
-  <el-table>
-    <el-table-column label="操作" align="center">
-      <template #default="{ row: { id, status } }">
-        <el-switch @change="[enable, disable][status]({ id })" />
-      </template>
-    </el-table-column>
-  </el-table>
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
@@ -836,6 +829,19 @@ const {
   disable
 } = useAdmate()
 </script>
+
+<template>
+  <el-table>
+    <el-table-column
+      label="操作"
+      align="center"
+    >
+      <template #default="{ row: { id, status } }">
+        <el-switch @change="[enable, disable][status]({ id })" />
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
 ```
 
 3. 后端未提供独立的接口，使用编辑接口改变状态
@@ -843,16 +849,6 @@ const {
 > 把 `updateStatus` 当作 `u` 来使用
 
 ```vue
-<template>
-  <el-table>
-    <el-table-column label="操作" align="center">
-      <template #default="{ row }">
-        <el-switch @change="updateStatus({ ...row, status: row.status ^ 1 })" />
-      </template>
-    </el-table-column>
-  </el-table>
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
@@ -874,6 +870,19 @@ const {
   },
 })
 </script>
+
+<template>
+  <el-table>
+    <el-table-column
+      label="操作"
+      align="center"
+    >
+      <template #default="{ row }">
+        <el-switch @change="updateStatus({ ...row, status: row.status ^ 1 })" />
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
 ```
 
 <br>
@@ -985,17 +994,17 @@ useAdmate({
 ```vue
 <!-- 示例 -->
 
-<template>
-  <el-dialog>
-    <el-form v-loading="form.loading" />
-  </el-dialog>
-</template>
-
 <script setup>
 import useAdmate from 'admate'
 
 const { form } = useAdmate()
 </script>
+
+<template>
+  <el-dialog>
+    <el-form v-loading="form.loading" />
+  </el-dialog>
+</template>
 ```
 
 <br>
@@ -1124,6 +1133,12 @@ useAdmate({
 ```vue
 <!-- 示例 -->
 
+<script setup>
+import useAdmate from 'admate'
+
+const { form } = useAdmate()
+</script>
+
 <template>
   <el-dialog>
     <template #footer>
@@ -1133,12 +1148,6 @@ useAdmate({
     </template>
   </el-dialog>
 </template>
-
-<script setup>
-import useAdmate from 'admate'
-
-const { form } = useAdmate()
-</script>
 ```
 
 <br>

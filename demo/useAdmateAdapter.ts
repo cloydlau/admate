@@ -1,6 +1,9 @@
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
-import useAdmate from '../src' // TODO
+
+import useAdmate from '../src'
+
+// TODO
 import request from './request' // TODO
 
 // Vue@2.6 or earlier only

@@ -46,18 +46,19 @@
   "jsdelivr": "./dist/admate.umd.js",
   "types": "./dist/admate.d.ts",
   "files": [
-    "demo",
     "dist",
     "docs"
   ],
   "scripts": {
     "dev": "esno ./scripts/dev.mts",
+    "up": "nu -L !@antfu/eslint-config",
     "doc": "vitepress dev --open /README",
     "build": "vite build",
     "serve": "vite preview",
     "release": "esno ./scripts/release.mts",
     "pnpm:devPreinstall": "node ./scripts/devPreinstall.js",
-    "preinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx only-allow pnpm"
+    "preinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx only-allow pnpm",
+    "postinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx simple-git-hooks"
   },
   "peerDependencies": {
     "@vue/composition-api": ">=1",
@@ -105,6 +106,7 @@
     "quasar": "latest",
     "sass": "latest",
     "semver": "latest",
+    "simple-git-hooks": "latest",
     "typescript": "latest",
     "unocss": "latest",
     "unplugin-auto-import": "latest",
@@ -112,17 +114,22 @@
     "vite": "latest",
     "vite-plugin-dts": "latest",
     "vite-plugin-mock": "latest",
-    "vitepress": "latest",
+    "vitepress": "1.0.0-rc.24",
     "vue": "latest",
     "vue-global-config": "latest",
     "vue-router": "latest",
     "vuetify": "latest",
     "zhlint": "latest"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged --concurrent false",
+    "commit-msg": "npx --no -- commitlint --edit ${1}"
+  },
   "lint-staged": {
     "*.md": [
       "case-police --fix",
       "zhlint --fix"
-    ]
+    ],
+    "{scripts,src}": "eslint --cache --fix"
   }
 }

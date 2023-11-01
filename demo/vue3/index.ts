@@ -1,15 +1,13 @@
 import { createApp } from 'vue'
 import router from './router/vue-router'
-import App from './index.vue'
 
-//install()
+// install()
 
 import 'uno.css'
 
 import 'element-plus/dist/index.css'
 import ElementPlus from 'element-plus'
 
-import 'ant-design-vue/dist/antd.css'
 import AntD from 'ant-design-vue'
 
 import 'quasar/src/css/index.sass'
@@ -25,19 +23,20 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import App from './index.vue'
 
 const app = createApp(App)
-.use(router)
-.use(ElementPlus)
-.use(AntD)
-.use(Quasar, {
-  plugins: {},
-})
-.use(PrimeVue)
-.use(ToastService)
-.use(createVuetify({
-  components,
-  directives,
-}))
+  .use(router)
+  .use(ElementPlus)
+  .use(AntD)
+  .use(Quasar, {
+    plugins: {},
+  })
+  .use(PrimeVue)
+  .use(ToastService)
+  .use(createVuetify({
+    components,
+    directives,
+  }))
 
 app.mount('#app')

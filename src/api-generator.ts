@@ -1,34 +1,16 @@
 import { merge } from 'lodash-es'
+import type { AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { PayloadAs } from './index'
 
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
 
-export interface ConfigCatalogType {
-  c?: object | ((objForConfig: object) => object)
-  r?: object | ((objForConfig: object) => object)
-  u?: object | ((objForConfig: object) => object)
-  d?: object | ((objForConfig: object) => object)
-  getList?: object | ((objForConfig: object) => object)
-  updateStatus?: object | ((objForConfig: object) => object)
-  enable?: object | ((objForConfig: object) => object)
-  disable?: object | ((objForConfig: object) => object)
-}
-
-interface APIType {
-  getList: Function
-  c: Function
-  r: Function
-  u: Function
-  d: Function
-  updateStatus: Function
-  enable: Function
-  disable: Function
-}
+export type Actions = 'c' | 'r' | 'u' | 'd' | 'getList' | 'updateStatus' | 'enable' | 'disable' | any
 
 export default function createAPIGenerator(
-  axios: (args: any) => Promise<any>,
-  configCatalog_global: ConfigCatalogType = {},
-): (urlSuffix: string, configCatalog?: ConfigCatalogType) => APIType {
-  const configCatalog_default = {
+  axios: AxiosInstance,
+  // configCatalog_global: Record<Actions, AxiosRequestConfig | ((config?: object) => AxiosRequestConfig)>,
+): (urlSuffix: string, configCatalog?: Record<Actions, object | ((config?: object) => AxiosRequestConfig)>) => Record<Actions, (payload: any, payloadAs: PayloadAs) => Promise<unknown>> {
+  const configCatalog_default: Record<Actions, AxiosRequestConfig> = {
     c: {
       method: 'POST',
     },
@@ -57,29 +39,33 @@ export default function createAPIGenerator(
 
   Object.freeze(configCatalog_default)
 
-  const createURL = (urlSuffix: string, url: string) =>
-    url.startsWith('/') ? url : (urlSuffix.endsWith('/') ? urlSuffix : `${urlSuffix}/`) + url
+  const createURL = (urlSuffix: string, url?: string): string =>
+    url ? url.startsWith('/') ? url : (urlSuffix.endsWith('/') ? urlSuffix : `${urlSuffix}/`) + url : urlSuffix
 
-  return (urlSuffix = '', configCatalog: ConfigCatalogType = {}): APIType => {
+  return (urlSuffix: string, configCatalog?: Record<Actions, object | ((config?: object) => AxiosRequestConfig)>): Record<Actions, (payload: any, payloadAs: PayloadAs) => Promise<unknown>> => {
     // cancelAllRequest() // 嵌套使用 Admate 时，可能导致将父级的请求取消掉
     // source = CancelToken.source()
 
-    const result = {} as APIType
+    const result: Record<Actions, (payload: any, payloadAs: PayloadAs) => Promise<unknown>> = {}
     for (const k in configCatalog_default) {
-      result[k] = (payload, payloadAs) => {
+      result[k] = (payload: any, payloadAs: PayloadAs) => {
         const configObj_default = configCatalog_default[k]
 
-        const configObj_global =
-          typeof configCatalog_global[k] === 'function'
-            ? configCatalog_global[k](payload)
+        /* let configObj_global
+        if (configCatalog_global) {
+          configObj_global = typeof configCatalog_global[k] === 'function'
+            ? (configCatalog_global[k] as (config?: object) => AxiosRequestConfig)(payload)
             : configCatalog_global[k]
+        } */
 
-        const configObj =
-          typeof configCatalog[k] === 'function' ? configCatalog[k](payload) : configCatalog[k]
+        let configObj
+        if (configCatalog) {
+          configObj = typeof configCatalog[k] === 'function' ? (configCatalog[k] as (config?: object) => AxiosRequestConfig)(payload) : configCatalog[k]
+        }
 
-        const config = merge(configObj_default, configObj_global, configObj)
+        const config = merge(configObj_default, configObj)
 
-        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase())
+        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(config.method?.toUpperCase() || '')
           ? 'data'
           : 'params'
 

@@ -64,16 +64,7 @@ export default {
       ],
     }),
     Components(),
-    viteMockServe({
-      ignore: /^\_/,
-      mockPath: 'mock',
-      localEnabled: true,
-      prodEnabled: false,
-      injectCode: `
-        import { setupProdMockServer } from './mock/_createProductionServer'
-        setupProdMockServer()
-      `,
-    }),
+    viteMockServe(),
     vue(),
   ],
 }
