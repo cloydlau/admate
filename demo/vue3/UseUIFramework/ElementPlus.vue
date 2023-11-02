@@ -102,19 +102,19 @@ const {
       <el-table-column label="操作">
         <template #default="{ row }">
           <el-button
-            type="text"
+            text
             @click="r(row)"
           >
             查看
           </el-button>
           <el-button
-            type="text"
+            text
             @click="u(row)"
           >
             编辑
           </el-button>
           <el-button
-            type="text"
+            text
             @click="d(row)"
           >
             删除
