@@ -105,7 +105,17 @@ export default function useAdmate({
   getListProxy?: (getList: GetList, trigger?: string) => void
   openFormProxy?: (openForm: OpenForm) => Promise<Form> | Form | undefined
   submitFormProxy?: (submitForm: SubmitForm) => Promise<Form> | Form | undefined
-}): object {
+}): {
+    list: List
+    getList: (...args: any) => Promise<unknown> | void
+    form: Form
+    openForm: (...args: any) => Form | Promise<any> | undefined
+    submitForm: (...args: any) => Form | Promise<any> | undefined
+    d: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+    enable: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+    disable: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+    updateStatus: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+  } {
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
 
@@ -185,7 +195,7 @@ export default function useAdmate({
 
   let oldPageNumber = 1
 
-  const GetListProxy = (...args: any) => {
+  const _getListProxy = (...args: any) => {
     // console.log(`getListProxy 因 ${trigger} 被调用`)
     const newPageNumber = _list.filter[_list.pageNumberKey]
     if (getListTrigger.value === 'filterChange' && newPageNumber !== 1) {
@@ -249,13 +259,13 @@ export default function useAdmate({
       if (_list.data?.length === 1) {
         if (_list.filter[_list.pageNumberKey] === 1) {
           getListTrigger.value = 'd'
-          GetListProxy()
+          _getListProxy()
         } else {
           _list.filter[_list.pageNumberKey]--
         }
       } else {
         getListTrigger.value = 'd'
-        GetListProxy()
+        _getListProxy()
       }
       return response
     })
@@ -264,7 +274,7 @@ export default function useAdmate({
   const updateStatus = (payload: any, payloadAs: PayloadAs) =>
     api.updateStatus(payload, payloadAs).then((response) => {
       getListTrigger.value = 'updateStatus'
-      GetListProxy()
+      _getListProxy()
       return response
     })
 
@@ -272,7 +282,7 @@ export default function useAdmate({
   const enable = (payload: any, payloadAs: PayloadAs) =>
     api.enable(payload, payloadAs).then((response) => {
       getListTrigger.value = 'enable'
-      GetListProxy()
+      _getListProxy()
       return response
     })
 
@@ -280,7 +290,7 @@ export default function useAdmate({
   const disable = (payload: any, payloadAs: PayloadAs) =>
     api.disable(payload, payloadAs).then((response) => {
       getListTrigger.value = 'disable'
-      GetListProxy()
+      _getListProxy()
       return response
     })
 
@@ -319,7 +329,7 @@ export default function useAdmate({
     }
   }
 
-  const OpenFormProxy = (...args: any) => {
+  const _openFormProxy = (...args: any) => {
     const result = openFormProxy
       ? openFormProxy((...args_proxy) =>
         // args 是用户直接调用 openForm 传的参，优先级低
@@ -368,12 +378,12 @@ export default function useAdmate({
     _form.submitting = true
     return api[_form.status](payload, payloadAs).then((response) => {
       getListTrigger.value = _form.status
-      GetListProxy()
+      _getListProxy()
       return response
     })
   }
 
-  const SubmitFormProxy = (params: any) => {
+  const _submitFormProxy = (params: any) => {
     const result = submitFormProxy
       ? submitFormProxy((...args) =>
         // params 是用户直接调用 submitForm 传的参，优先级低
@@ -440,7 +450,7 @@ export default function useAdmate({
 
   // 首次获取列表
   getListTrigger.value = 'init'
-  GetListProxy()
+  _getListProxy()
 
   onMounted(() => {
     // 筛选项改变时，刷新列表
@@ -448,7 +458,7 @@ export default function useAdmate({
       const getListDebounced = ref(
         debounce(() => {
           getListTrigger.value = 'filterChange'
-          GetListProxy()
+          _getListProxy()
         }, _list.debounceInterval),
       )
 
@@ -462,7 +472,7 @@ export default function useAdmate({
             } else {
               // 翻页不需要防抖
               getListTrigger.value = 'pageNumberChange'
-              GetListProxy()
+              _getListProxy()
             }
           },
           {
@@ -486,10 +496,10 @@ export default function useAdmate({
 
   return {
     list: _list,
-    getList: GetListProxy,
+    getList: _getListProxy,
     form: _form,
-    openForm: OpenFormProxy,
-    submitForm: SubmitFormProxy,
+    openForm: _openFormProxy,
+    submitForm: _submitFormProxy,
     d,
     enable,
     disable,
