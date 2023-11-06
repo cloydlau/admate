@@ -1,7 +1,7 @@
 {
   "name": "admate",
   "PascalCasedName": "Admate",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "private": false,
   "description": "Assistant/Helper of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": {
