@@ -46,9 +46,9 @@ export const API_PREFIX = `${BASE}${MODULE}`
 
 export default [
   {
-    url: `${API_PREFIX}/queryForPage`,
+    url: `${API_PREFIX}/list`,
     timeout: 100,
-    method: 'post',
+    method: 'get',
     response: ({ query }) => {
       const { page = 1, pageSize = 10 } = query
       return {
@@ -60,22 +60,22 @@ export default [
     },
   },
   {
-    url: `${API_PREFIX}/create`,
-    method: 'POST',
+    url: `${API_PREFIX}`,
+    method: 'post',
     response: () => {
       return { code: 0 }
     },
   },
   {
-    url: `${API_PREFIX}/delete`,
-    method: 'POST',
+    url: `${API_PREFIX}`,
+    method: 'delete',
     response: () => {
       return { code: 0 }
     },
   },
   {
-    url: `${API_PREFIX}/queryForDetail`,
-    method: 'POST',
+    url: `${API_PREFIX}`,
+    method: 'get',
     response: () => {
       return {
         code: 0,
@@ -84,15 +84,15 @@ export default [
     },
   },
   {
-    url: `${API_PREFIX}/update`,
-    method: 'POST',
+    url: `${API_PREFIX}`,
+    method: 'put',
     response: () => {
       return { code: 0 }
     },
   },
   {
     url: `${API_PREFIX}/updateStatus`,
-    method: 'POST',
+    method: 'put',
     response: () => {
       return { code: 0 }
     },

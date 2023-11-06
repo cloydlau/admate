@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -12,7 +13,21 @@ import { PascalCasedName, name } from './package.json'
 
 const { major, minor } = parse(version) as SemVer
 
+/** 路径查找 */
+function pathResolve(dir: string): string {
+  return resolve(__dirname, '.', dir)
+}
+
+/** 设置别名 */
+const alias: Record<string, string> = {
+  '@': pathResolve('src'),
+  '@build': pathResolve('build'),
+}
+
 export default {
+  resolve: {
+    alias,
+  },
   optimizeDeps: {
     include: ['faim > mime', 'faim > qrcode', 'faim > sweetalert2', 'faim > upng-js'],
     exclude: ['vue-demi'],
