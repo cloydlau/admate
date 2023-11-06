@@ -3,28 +3,28 @@ import { conclude } from 'vue-global-config'
 import { assignIn, at, cloneDeep, debounce, isPlainObject, merge } from 'lodash-es'
 import type { AxiosInstance } from 'axios'
 import createAPIGenerator from './api-generator'
-import type { Actions } from './api-generator'
+import type { Actions, PayloadAs } from './api-generator'
 
-type Status = '' | 'c' | 'r' | 'u' | string
-type MergeData = 'deep' | 'shallow' | false | ((newFormData: any) => any)
+type _GetList = (payload: any, payloadAs?: PayloadAs) => Promise<any>
+type _OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => Promise<any> | undefined
+type _SubmitForm = (params: any) => Promise<any>
 type MergeState = 'deep' | 'shallow'
-export type PayloadAs = 'data' | 'params' | 'config' | undefined
-type GetList = (payload: any, payloadAs?: PayloadAs) => Promise<any>
-type OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => Promise<any> | undefined
-type SubmitForm = (params: any) => Promise<any>
-export type Trigger = 'init' | 'pageNumberChange' | 'filterChange' | 'c' | 'r' | 'u' | 'd' | 'updateStatus' | 'enable' | 'disable'
-interface Form {
+
+export type FormStatus = '' | 'c' | 'r' | 'u' | string
+export type MergeFormData = 'deep' | 'shallow' | false | ((newFormData: any) => any)
+export type GetListTrigger = 'init' | 'pageNumberChange' | 'filterChange' | 'c' | 'r' | 'u' | 'd' | 'updateStatus' | 'enable' | 'disable'
+export interface Form {
+  status?: FormStatus
   show?: boolean
   // closeDelay?: number | null,
   // closed?: boolean,
   data?: any
   dataAt?: string | ((...args: any) => unknown)
-  mergeData?: MergeData
+  mergeData?: MergeFormData
   loading?: boolean
   submitting?: boolean
-  status?: Status
 }
-interface List {
+export interface List {
   filter: Record<keyof any, any>
   pageNumberKey: string
   watchFilter?: boolean
@@ -35,6 +35,13 @@ interface List {
   totalAt?: string | ((...args: any) => unknown)
   loading?: boolean
 }
+export type GetList = (...args: any) => Promise<unknown> | void
+export type OpenForm = (...args: any) => Form | Promise<any> | undefined
+export type SubmitForm = (...args: any) => Form | Promise<any> | undefined
+export type D = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+export type Enable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+export type Disable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+export type UpdateStatus = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
 
 export function unwrap<V = any>(value: V, path?: string | ((value: V) => any) | symbol): any {
   if (!(value && path)) {
@@ -103,19 +110,19 @@ export default function useAdmate({
   urlPrefix: string
   form?: Form
   list?: List
-  getListProxy?: (getList: GetList, trigger?: Trigger) => void
-  openFormProxy?: (openForm: OpenForm) => Promise<Form> | Form | undefined
-  submitFormProxy?: (submitForm: SubmitForm) => Promise<Form> | Form | undefined
+  getListProxy?: (getList: _GetList, trigger?: GetListTrigger) => void
+  openFormProxy?: (openForm: _OpenForm) => Promise<Form> | Form | undefined
+  submitFormProxy?: (submitForm: _SubmitForm) => Promise<Form> | Form | undefined
 }): {
     list: List
-    getList: (...args: any) => Promise<unknown> | void
+    getList: GetList
     form: Form
-    openForm: (...args: any) => Form | Promise<any> | undefined
-    submitForm: (...args: any) => Form | Promise<any> | undefined
-    d: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-    enable: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-    disable: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-    updateStatus: (payload: any, payloadAs: PayloadAs) => Promise<unknown>
+    openForm: OpenForm
+    submitForm: SubmitForm
+    d: D
+    enable: Enable
+    disable: Disable
+    updateStatus: UpdateStatus
   } {
   const apiGenerator = createAPIGenerator(axios)
   const api = apiGenerator(urlPrefix, axiosConfig)
@@ -144,14 +151,14 @@ export default function useAdmate({
   // TODO: 为什么需要深拷贝？
   const getInitialForm = (): Form =>
     cloneDeep({
-      loading: false,
-      submitting: false,
+      status: '',
       show: false,
       // closeDelay: 500,
       // closed: true,
       data: {},
       mergeData: 'deep',
-      status: '',
+      loading: false,
+      submitting: false,
       ...form,
     })
 
@@ -306,7 +313,7 @@ export default function useAdmate({
     }
   */
 
-  const openForm: OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => {
+  const openForm: _OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => {
     // 查看和编辑时，回显单条记录数据
     if (payload) {
       if (payloadAs === 'cache') {
@@ -371,7 +378,7 @@ export default function useAdmate({
   }
 
   // 表单提交
-  const submitForm: SubmitForm = (payload = _form.data, payloadAs?: PayloadAs) => {
+  const submitForm: _SubmitForm = (payload = _form.data, payloadAs?: PayloadAs) => {
     if (!_form.status || !['c', 'u'].includes(_form.status)) {
       throw new Error('submitForm can only be called when the form status is \'c\' or \'u\'')
     }

@@ -1,10 +1,10 @@
 import { merge } from 'lodash-es'
 import type { AxiosInstance, AxiosRequestConfig } from 'axios'
-import type { PayloadAs } from './index'
 
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
 
 export type Actions = 'c' | 'r' | 'u' | 'd' | 'getList' | 'updateStatus' | 'enable' | 'disable' | any
+export type PayloadAs = 'data' | 'params' | 'config' | undefined
 
 export default function createAPIGenerator(
   axios: AxiosInstance,
