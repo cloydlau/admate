@@ -1,14 +1,15 @@
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
 
+// import Vue from 'vue'
+
+// import VueCompositionAPI from '@vue/composition-api' // Vue@2.6 or earlier only
 import useAdmate from '../src'
 
 // TODO
-import request from './request' // TODO
+import http from './http'
 
-// Vue@2.6 or earlier only
-/* import VueCompositionAPI from '@vue/composition-api'
-Vue.use(VueCompositionAPI) */
+// Vue.use(VueCompositionAPI) // Vue@2.6 or earlier only
 
 export default (admateConfig, {
   // 表单标题
@@ -109,7 +110,7 @@ export default (admateConfig, {
     disable,
     updateStatus,
   } = useAdmate(merge({
-    axios: request,
+    axios: http,
     axiosConfig: {
       c: {
         url: 'create',

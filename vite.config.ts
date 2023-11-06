@@ -14,6 +14,7 @@ const { major, minor } = parse(version) as SemVer
 
 export default {
   optimizeDeps: {
+    include: ['faim > mime', 'faim > qrcode', 'faim > sweetalert2', 'faim > upng-js'],
     exclude: ['vue-demi'],
   },
   build: {
@@ -36,35 +37,27 @@ export default {
       },
     },
   },
-  plugins: [
-    {
-      name: 'html-transform',
-      transformIndexHtml(html: string) {
-        return html.replace(/\{\{ NAME \}\}/, name).replace(/\{\{ VUE_VERSION \}\}/g, String(major === 3 ? major : `${major}.${minor}`))
-      },
+  plugins: [{
+    name: 'html-transform',
+    transformIndexHtml(html: string) {
+      return html.replace(/\{\{ NAME \}\}/, name).replace(/\{\{ VUE_VERSION \}\}/g, String(major === 3 ? major : `${major}.${minor}`))
     },
-    dts({ rollupTypes: true }),
-    AutoImport({
-      // targets to transform
-      include: [
-        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-        /\.vue$/, /\.vue\?vue/, // .vue
-        /\.md$/, // .md
-      ],
-      // global imports to register
-      imports: [
-        // presets
-        (major === 3 || (major === 2 && minor >= 7)) ? 'vue' : '@vue/composition-api',
-      ],
-    }),
-    UnoCSS({
-      presets: [
-        presetAttributify({}),
-        presetUno(),
-      ],
-    }),
-    Components(),
-    viteMockServe(),
-    vue(),
-  ],
+  }, dts({ rollupTypes: true }), AutoImport({
+    // targets to transform
+    include: [
+      /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+      /\.vue$/, /\.vue\?vue/, // .vue
+      /\.md$/, // .md
+    ],
+    // global imports to register
+    imports: [
+      // presets
+      (major === 3 || (major === 2 && minor >= 7)) ? 'vue' : '@vue/composition-api',
+    ],
+  }), UnoCSS({
+    presets: [
+      presetAttributify({}),
+      presetUno(),
+    ],
+  }), Components(), viteMockServe(), vue()],
 }

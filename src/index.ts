@@ -12,6 +12,7 @@ export type PayloadAs = 'data' | 'params' | 'config' | undefined
 type GetList = (payload: any, payloadAs?: PayloadAs) => Promise<any>
 type OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => Promise<any> | undefined
 type SubmitForm = (params: any) => Promise<any>
+export type Trigger = 'init' | 'pageNumberChange' | 'filterChange' | 'c' | 'r' | 'u' | 'd' | 'updateStatus' | 'enable' | 'disable'
 interface Form {
   show?: boolean
   // closeDelay?: number | null,
@@ -102,7 +103,7 @@ export default function useAdmate({
   urlPrefix: string
   form?: Form
   list?: List
-  getListProxy?: (getList: GetList, trigger?: string) => void
+  getListProxy?: (getList: GetList, trigger?: Trigger) => void
   openFormProxy?: (openForm: OpenForm) => Promise<Form> | Form | undefined
   submitFormProxy?: (submitForm: SubmitForm) => Promise<Form> | Form | undefined
 }): {

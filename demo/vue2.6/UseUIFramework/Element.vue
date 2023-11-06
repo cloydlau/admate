@@ -1,5 +1,6 @@
 <script>
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import useAdmateAdapter from '../../useAdmateAdapter'
 
 let hasSetup = false
 

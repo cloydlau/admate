@@ -1,7 +1,22 @@
+<script>
+import routes from './router/routes'
+
+export default {
+  data() {
+    return {
+      routes: routes.filter(v => !v.hidden),
+    }
+  },
+}
+</script>
+
 <template>
   <div>
     Vue 2 UI Framework demo:
-    <span v-for="({ path }, i) of routes">
+    <span
+      v-for="({ path }, i) of routes"
+      :key="i"
+    >
       <router-link :to="path">
         {{ path.substr(1) }}
       </router-link>
@@ -19,15 +34,3 @@
     </router-view> -->
   </div>
 </template>
-
-<script>
-import routes from './router/routes'
-
-export default {
-  data() {
-    return {
-      routes: routes.filter(v => !v.hidden),
-    }
-  },
-}
-</script>
