@@ -5,9 +5,9 @@
 </h1>
 
 <p align="center">
-  管理后台伴侣/助手，用简洁而不失灵活的方式开发管理后台页面，
+  中后台 CRUD 前端框架，极致简洁的基础上不向灵活性妥协，
   <br>
-  可以集成进任意管理后台框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
+  可集成进任意管理后台框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
   致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点。
 </p>

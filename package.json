@@ -3,7 +3,7 @@
   "PascalCasedName": "Admate",
   "version": "0.9.9",
   "private": false,
-  "description": "Assistant/Helper of admin interfaces for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
+  "description": "Admin interfaces CRUD frontend framework for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": {
     "name": "Cloyd Lau",
     "url": "https://github.com/cloydlau"
@@ -13,12 +13,13 @@
   "keywords": [
     "admin",
     "admin-interfaces",
+    "assistant",
+    "helper",
     "manage",
     "management",
     "vue-pure-admin",
     "vue-vben-admin",
     "vue-element-admin",
-    "crud",
     "vue-demi",
     "axios",
     "antd",
