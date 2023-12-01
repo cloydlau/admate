@@ -9,7 +9,7 @@
   <br>
   可集成进任意管理后台框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>, <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>，
   <br>
-  致力于解决「页面重复度高，提取公共代码又难以兼顾定制化需求」的痛点。
+  致力于攻克「页面重复度高，提取公共代码却难以兼顾定制化需求」的痛点。
 </p>
 
 <p align="center">
