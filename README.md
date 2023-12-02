@@ -29,7 +29,7 @@
 
 - 🕶 **Vue 2.6/2.7/3 一体通用** - 零成本升级
 - 🔓 **解耦合 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码如 Vuetify，Element，AntDesignVue，Quasar 和 PrimeVue
-- 🤝 **后台框架友好** - 可集成进任意管理后台框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
+- 🤝 **后台模板友好** - 可集成进任意管理后台模板如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
 - 🌐 **规整统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
