@@ -3,7 +3,7 @@
   "PascalCasedName": "Admate",
   "version": "0.9.9",
   "private": false,
-  "description": "Admin interfaces CRUD frontend framework for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
+  "description": "Admin CRUD frontend framework for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": {
     "name": "Cloyd Lau",
     "url": "https://github.com/cloydlau"
