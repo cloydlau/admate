@@ -18,9 +18,9 @@
 </p>
 
 <p align="center">
-  <img alt="i want it all" src="./docs/i-want-it-all.gif">
+  <img alt="i want it all" src="https://raw.githubusercontent.com/cloydlau/admate/main/docs/i-want-it-all.gif">
   <br>
-  <img alt="assessment" src="./docs/assessment.png">
+  <img alt="assessment" src="https://raw.githubusercontent.com/cloydlau/admate/main/docs/assessment.png">
 </p>
 
 <br>
@@ -63,7 +63,7 @@
 
 ## 架构
 
-![架构图](./docs/architecture-diagram.png)
+![架构图](https://raw.githubusercontent.com/cloydlau/admate/main/docs/architecture-diagram.png)
 
 <br>
 
