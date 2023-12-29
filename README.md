@@ -287,7 +287,6 @@ updateStatus({ id: 1 }, 'config')
 <!-- 示例: 局部配置 -->
 
 <script setup>
-import { jsonToFormData, pickDeepBy } from 'kayran'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 // 过滤 list.value.filter 并转换为 FormData 格式
