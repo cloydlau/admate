@@ -132,6 +132,6 @@
       "case-police --fix",
       "zhlint --fix"
     ],
-    "{scripts,src}": "eslint --cache --fix"
+    "*.{vue,js,ts,mjs,mts,jsx,tsx,md,json}": "eslint --cache --fix"
   }
 }
