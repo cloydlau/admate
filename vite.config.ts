@@ -65,7 +65,8 @@ export default {
     // targets to transform
       include: [
         /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-        /\.vue$/, /\.vue\?vue/, // .vue
+        /\.vue$/,
+        /\.vue\?vue/, // .vue
         /\.md$/, // .md
       ],
       // global imports to register

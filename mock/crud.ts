@@ -54,7 +54,9 @@ export default [
       return {
         code: 0,
         data: {
-          page, pageSize, records,
+          page,
+          pageSize,
+          records,
         },
       }
     },

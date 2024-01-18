@@ -61,8 +61,7 @@ export function unwrap<V = any>(value: V, path?: string | ((value: V) => any) | 
 }
 
 // 将接口返回值混入form.data
-function mergeFormData(_form: Form,
-  newFormData?: any) {
+function mergeFormData(_form: Form, newFormData?: any) {
   if (_form.mergeData && isPlainObject(_form.data) && isPlainObject(newFormData)) {
     // if (isProxy(_form.data)) { // vue 2中报错
     if (isVue3) {

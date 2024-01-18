@@ -34,13 +34,13 @@
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
 - 🍪 **贴心而不武断的逻辑封装**
-    - 列表筛选：支持监听筛选参数 (防抖控制接口调用频率) 的方式，也支持点击读取按钮触发的方式
-    - 表单展现风格：支持对话框的风格，也支持独立页面的风格
-    - 单条记录状态：支持调用 “编辑接口” 改变状态，也支持调用独立的 “更新状态接口” 指定新状态，也支持分别调用 “启用接口” 和 “停用接口” 改变状态
-    - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
+  - 列表筛选：支持监听筛选参数 (防抖控制接口调用频率) 的方式，也支持点击读取按钮触发的方式
+  - 表单展现风格：支持对话框的风格，也支持独立页面的风格
+  - 单条记录状态：支持调用 “编辑接口” 改变状态，也支持调用独立的 “更新状态接口” 指定新状态，也支持分别调用 “启用接口” 和 “停用接口” 改变状态
+  - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
 - 🧹 **缜密周全的收尾工作，无后顾之忧**
-    - 关闭表单时，自动将表单绑定的数据恢复至初始状态 (不是直接清空)
-    - 删除当前分页最后一条记录时，自动切换至上一页 (如果当前不在第一页)
+  - 关闭表单时，自动将表单绑定的数据恢复至初始状态 (不是直接清空)
+  - 删除当前分页最后一条记录时，自动切换至上一页 (如果当前不在第一页)
 - 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/main/demo/useAdmateAdapter.ts)**
   - 列表筛选参数重置 & 参数校验
   - 支持 URL 传参指定筛选项默认值
@@ -51,13 +51,13 @@
 ## 对比
 
 | 案例                                                                                                            | 技术栈                       |                                  业务代码量（字符数）                                   |
-|---------------------------------------------------------------------------------------------------------------|------------------------------|:-------------------------------------------------------------------------------------:|
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                        13,330                                         |
-| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                     **约 5,000**                                      |
+| --------------------------------------------------------------------------------------------------------------- | ---------------------------- | :-------------------------------------------------------------------------------------: |
+| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                         13,330                                          |
+| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                      **约 5,000**                                       |
 | 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + Element              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
 | 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + Element + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                        425,885                                        |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                      **235,979**                                      |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                         425,885                                         |
+| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                       **235,979**                                       |
 
 <br>
 
@@ -218,45 +218,43 @@ useAdmate({
 如果接口地址需要进行动态拼接
 
 ```ts
-<!-- 示例 -->
-
 // 配置
 const { openForm, d, enable, disable, updateStatus } = useAdmate({
   axiosConfig: {
     // 读取列表
     getList: payload => ({
       method: 'GET',
-      url: 'module/' + payload.xxx
+      url: `module/${payload.xxx}`
     }),
     // 读取一条记录（openForm 在查看、编辑时调用）
     r: payload => ({
       method: 'GET',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
     // 编辑一条记录（submitForm 在编辑时调用）
     u: payload => ({
       method: 'PUT',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
     // 删除一条记录
     d: payload => ({
       method: 'DELETE',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
     // 启用一条记录
     enable: payload => ({
       method: 'PUT',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
     // 禁用一条记录
     disable: payload => ({
       method: 'PUT',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
     // 变更一条记录的状态
     updateStatus: payload => ({
       method: 'PUT',
-      url: 'module/' + payload.id
+      url: `module/${payload.id}`
     }),
   }
 })
@@ -364,9 +362,9 @@ useAdmate({
 ### 触发读取
 
 - 点击专用的读取按钮触发
-    - ✗ 操作相对繁琐。
-    - ✗ 列表数据与筛选条件可能是无关的。可能产生 “当前的列表数据是否基于筛选项？” 的顾虑，导致徒增点击读取按钮的次数。
-    - ✓ 想同时设置多个筛选条件时，只调用一次接口，不浪费服务器资源。
+  - ✗ 操作相对繁琐。
+  - ✗ 列表数据与筛选条件可能是无关的。可能产生 “当前的列表数据是否基于筛选项？” 的顾虑，导致徒增点击读取按钮的次数。
+  - ✓ 想同时设置多个筛选条件时，只调用一次接口，不浪费服务器资源。
 
 ```ts
 useAdmate({
@@ -379,9 +377,9 @@ useAdmate({
 <hr>
 
 - **改变筛选条件后即时触发**
-    - ✓ 操作相对简便。
-    - ✓ 列表数据与筛选条件即时绑定。
-    - ✓ ~~想同时设置多个筛选条件时，接口会被多次调用，浪费服务器资源~~ (Admate 已优化)。
+  - ✓ 操作相对简便。
+  - ✓ 列表数据与筛选条件即时绑定。
+  - ✓ ~~想同时设置多个筛选条件时，接口会被多次调用，浪费服务器资源~~ (Admate 已优化)。
 
 ```ts
 useAdmate({
@@ -614,13 +612,13 @@ const { form } = useAdmate({
 </template>
 ```
 
-如果 axiosConfig.r 的返回值为： 
+如果 axiosConfig.r 的返回值为：
 `{ a: {} }`
 
-如果与默认值<span style="color:red">浅合并</span>后将得到： 
+如果与默认值<span style="color:red">浅合并</span>后将得到：
 `{ a: {} }` —— 默认值中的对象 b 丢失了，引发空指针异常。
 
-如果与默认值<span style="color:red">深合并</span>后将得到： 
+如果与默认值<span style="color:red">深合并</span>后将得到：
 `{ a: { b: {} } }` —— 代码正常工作。
 
 ```ts
@@ -923,8 +921,8 @@ const { form } = useAdmate({
         // 修改表单数据
         form.data.status = 1
         resolve()
-      }).catch(() => {
-        reject()
+      }).catch((e) => {
+        reject(e)
       })
     })
   },
@@ -941,8 +939,8 @@ useAdmate({
         formRef.value.clearValidate()
       }).then(() => {
         resolve()
-      }).catch(() => {
-        reject()
+      }).catch((e) => {
+        reject(e)
       })
     })
   },
@@ -962,7 +960,7 @@ useAdmate({
         })
       }).catch(() => {
         // 回显失败后，默认关闭表单并停止加载
-        reject({
+        resolve({
           show: false,
           loading: false,
         })
@@ -1059,8 +1057,8 @@ useAdmate({
         status: 1,
       }).then(() => {
         resolve()
-      }).catch(() => {
-        reject()
+      }).catch((e) => {
+        reject(e)
       })
     })
   }
@@ -1076,8 +1074,8 @@ useAdmate({
       formRef.value.validate().then(() => {
         submitForm().then(() => {
           resolve()
-        }).catch(() => {
-          reject()
+        }).catch((e) => {
+          reject(e)
         })
       })
     })
@@ -1101,7 +1099,7 @@ useAdmate({
           })
         }).catch(() => {
           // 提交失败后，默认仅停止加载
-          reject({
+          resolve({
             show: true,
             submitting: false,
           })
@@ -1160,11 +1158,11 @@ const { form } = useAdmate()
 // 示例: 适配层提供 afterGetList
 
 useAdmateAdapter({}, {
-  afterGetList (res, trigger) {
+  afterGetList(res, trigger) {
     // res 为接口返回值，trigger 为调用动机
     // 可访问 this（组件实例）
   }
-}
+})
 ```
 
 <br>
