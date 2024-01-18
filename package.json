@@ -124,7 +124,7 @@
     "zhlint": "latest"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm exec lint-staged --concurrent false",
+    "pre-commit": "pnpm lint-staged",
     "commit-msg": "npx --no -- commitlint --edit ${1}"
   },
   "lint-staged": {
