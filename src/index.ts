@@ -1,6 +1,6 @@
 import { isVue3, onMounted, reactive, ref, watch } from 'vue-demi'
 import { conclude } from 'vue-global-config'
-import { assignIn, at, cloneDeep, debounce, isPlainObject, merge } from 'lodash-es'
+import { assignIn, at, cloneDeep, debounce, isPlainObject, merge, set } from 'lodash-es'
 import type { AxiosInstance } from 'axios'
 import createAPIGenerator from './api-generator'
 import type { Actions, PayloadAs } from './api-generator'
@@ -19,20 +19,20 @@ export interface Form {
   // closeDelay?: number | null,
   // closed?: boolean,
   data?: any
-  dataAt?: string | ((...args: any) => unknown)
+  dataAt?: string | ((...args: any) => unknown) | symbol
   mergeData?: MergeFormData
   loading?: boolean
   submitting?: boolean
 }
 export interface List {
   filter: Record<keyof any, any>
-  pageNumberKey: string
+  pageNumberAt: string
   watchFilter?: boolean
   debounceInterval?: number
   data?: any[]
-  dataAt?: string | ((...args: any) => unknown)
+  dataAt?: string | ((...args: any) => unknown) | symbol
   total?: number
-  totalAt?: string | ((...args: any) => unknown)
+  totalAt?: string | ((...args: any) => unknown) | symbol
   loading?: boolean
 }
 export type GetList = (...args: any) => Promise<unknown> | void
@@ -43,21 +43,39 @@ export type Enable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
 export type Disable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
 export type UpdateStatus = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
 
-export function unwrap<V = any>(value: V, path?: string | ((value: V) => any) | symbol): any {
-  if (!(value && path)) {
-    return value
+export function getValue<V = any>(object: V, path?: string | ((object: V) => unknown) | symbol): any {
+  if (object && path) {
+    switch (typeof path) {
+      case 'string':
+        // paths 为 undefined 或 '' 时结果为 undefined
+        return at(object, path)[0]
+      case 'function':
+        return path(object)
+      case 'symbol':
+        if (isPlainObject(object)) {
+          return object[path as keyof typeof object]
+        }
+    }
   }
-  switch (typeof path) {
-    case 'string':
-      // paths 为 undefined 或 '' 时结果为 undefined
-      return at(value, path)[0]
-    case 'function':
-      return path(value)
-    case 'symbol':
-      if (isPlainObject(value)) {
-        return value[path as keyof typeof value]
-      }
+  return object
+}
+
+export function setValue<V = any>(object: V, path: string | ((object: V) => unknown) | symbol, value: any): any {
+  if (object && path) {
+    switch (typeof path) {
+      case 'string':
+        // paths 为 undefined 或 '' 时结果为 undefined
+        // set 会改变原始对象
+        return set(object, path, value)
+      case 'function':
+        return path(object)
+      case 'symbol':
+        if (isPlainObject(object)) {
+          object[path as keyof typeof object] = value
+        }
+    }
   }
+  return object
 }
 
 // 将接口返回值混入form.data
@@ -134,10 +152,8 @@ export default function useAdmate({
         data: [],
         loading: false,
         total: 0,
-        ...userProp?.pageNumberKey && {
-          filter: {
-            [userProp.pageNumberKey]: 1,
-          },
+        ...userProp?.pageNumberAt && {
+          filter: setValue({}, userProp.pageNumberAt, 1),
         },
         watchFilter: true,
         debounceInterval: 300,
@@ -187,8 +203,8 @@ export default function useAdmate({
     return api
       .getList(payload, payloadAs)
       .then((response: unknown) => {
-        _list.data = unwrap(response, _list.dataAt) ?? []
-        _list.total = _list.data?.length ? unwrap(response, _list.totalAt) ?? 0 : 0
+        _list.data = getValue(response, _list.dataAt) ?? []
+        _list.total = _list.data?.length ? getValue(response, _list.totalAt) ?? 0 : 0
         return response
       })
       .catch(() => {
@@ -204,10 +220,10 @@ export default function useAdmate({
 
   const _getListProxy = (...args: any) => {
     // console.log(`getListProxy 因 ${trigger} 被调用`)
-    const newPageNumber = _list.filter[_list.pageNumberKey]
+    const newPageNumber = getValue(_list.filter, _list.pageNumberAt)
     if (getListTrigger.value === 'filterChange' && newPageNumber !== 1) {
       // 如果改变的不是页码 页码重置为1 并拦截本次请求
-      _list.filter[_list.pageNumberKey] = 1
+      setValue(_list.filter, _list.pageNumberAt, 1)
       getListTrigger.value = undefined
       return
     }
@@ -264,11 +280,12 @@ export default function useAdmate({
   const d = (payload: any, payloadAs: PayloadAs) =>
     api.d(payload, payloadAs).then((response) => {
       if (_list.data?.length === 1) {
-        if (_list.filter[_list.pageNumberKey] === 1) {
+        const currPageNumber = getValue(_list.filter, _list.pageNumberAt)
+        if (currPageNumber === 1) {
           getListTrigger.value = 'd'
           _getListProxy()
         } else {
-          _list.filter[_list.pageNumberKey]--
+          setValue(_list.filter, _list.pageNumberAt, currPageNumber - 1)
         }
       } else {
         getListTrigger.value = 'd'
@@ -322,7 +339,7 @@ export default function useAdmate({
         _form.loading = true
         _form.show = true
         return api.r(payload, payloadAs).then((response: unknown) => {
-          mergeFormData(_form, unwrap(response, _form.dataAt))
+          mergeFormData(_form, getValue(response, _form.dataAt))
           return response
         })
       }
@@ -474,7 +491,7 @@ export default function useAdmate({
         watch(
           () => _list.filter,
           () => {
-            if (_list.filter[_list.pageNumberKey] === oldPageNumber) {
+            if (getValue(_list.filter, _list.pageNumberAt) === oldPageNumber) {
               getListDebounced.value()
             } else {
               // 翻页不需要防抖

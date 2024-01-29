@@ -7,8 +7,8 @@ import {
   toRefs,
   watch,
 } from 'vue'
-import useAdmate from 'admate'
-import type { Form, FormStatus, GetListTrigger } from 'admate'
+import useAdmate from '../src'
+import type { Form, FormStatus, GetListTrigger } from '../src'
 import type {
   FormInstance,
   FormItemInstance,
@@ -194,7 +194,7 @@ export default (
           },
           dataAt: 'data.records',
           totalAt: res => Number(res.data.total),
-          pageNumberKey: 'pageNo',
+          pageNumberAt: 'pageNo',
         },
         form: {
           dataAt: 'data',

@@ -41,13 +41,11 @@ export default {
     sourcemap: true,
     rollupOptions: {
       external: [
-        'vue',
         'vue-demi',
       ],
       output: {
         globals: {
           [name]: PascalCasedName,
-          'vue': 'Vue',
           'vue-demi': 'VueDemi',
         },
       },
@@ -77,7 +75,7 @@ export default {
     }),
     UnoCSS({
       presets: [
-        presetAttributify({}),
+        presetAttributify(),
         presetUno(),
       ],
     }),

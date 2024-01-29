@@ -345,14 +345,15 @@ const FormData = window.FormData
 ```ts
 useAdmate({
   list: {
+    // 页码的参数名称或路径，必填
+    // 支持属性名，如 `'pageNo'`
+    // 支持属性路径，如 `'page.pageNo'`
+    pageNumberAt: undefined,
+
     // 可以在这里提供筛选参数的默认值
     filter: {
-      [list.pageNumberKey]: 1,
+      'pageNumberAt 生成的页码参数名称': 1
     },
-
-    // 必填
-    // 页码的参数名
-    pageNumberKey: undefined,
   },
 })
 ```
