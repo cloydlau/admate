@@ -471,7 +471,8 @@ useAdmate({
       listFilterRef.value.validate().then(() => {
         getList()
       })
-    } else {
+    }
+    else {
       getList()
     }
   },

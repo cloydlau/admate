@@ -89,26 +89,26 @@ export default {
 </template>
 
 <style lang="scss">
-.wrapper>div {
+.wrapper > div {
   position: relative !important;
 
-  &>.el-overlay-dialog {
+  & > .el-overlay-dialog {
     position: relative !important;
 
-    &>.el-dialog {
+    & > .el-dialog {
       margin-top: 2px !important;
       margin-bottom: 2px !important;
 
-      &>.el-dialog__header {
+      & > .el-dialog__header {
         display: none;
       }
 
-      &>.el-dialog__body>div {
-        &>div:first-child {
+      & > .el-dialog__body > div {
+        & > div:first-child {
           max-height: calc(100vh - 135px) !important;
         }
 
-        &>[slot='footer']>button:first-child {
+        & > [slot='footer'] > button:first-child {
           display: none;
         }
       }

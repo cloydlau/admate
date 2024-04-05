@@ -11,14 +11,14 @@ export default [
     path: '/vuetify',
     component: () => import('../UseUIFramework/Vuetify.vue'),
   },
-  /*{
+  /* {
     path: '/quasar-1', component: () =>
       import('./UseUIFramework/Quasar1.vue')
-  },*/
-  /*{
+  }, */
+  /* {
     path: '/prime-vue', component: () =>
       import('../UseUIFramework/PrimeVue.vue')
-  },*/
+  }, */
   {
     path: '/form-externalized',
     component: () => import('../examples/FormExternalized.vue'),

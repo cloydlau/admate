@@ -7,8 +7,6 @@ import {
   toRefs,
   watch,
 } from 'vue'
-import useAdmate from '../src'
-import type { Form, FormStatus, GetListTrigger } from '../src'
 import type {
   FormInstance,
   FormItemInstance,
@@ -17,6 +15,8 @@ import type {
 import { FaMessageBox } from 'faim'
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
+import type { Form, FormStatus, GetListTrigger } from '../src'
+import useAdmate from '../src'
 import http from './http'
 
 // Vue@2.6 or earlier only
@@ -225,10 +225,12 @@ export default (
               promise.then(() => {
                 GetList()
               })
-            } else {
+            }
+            else {
               GetList()
             }
-          } else {
+          }
+          else {
             GetList()
             if (
               ['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(
@@ -272,7 +274,8 @@ export default (
                   reject(callback(e))
                 })
             })
-          } else {
+          }
+          else {
             // 新增、复用列表数据时 openForm 没有返回值
             return callback()
           }
@@ -303,10 +306,12 @@ export default (
                     // eslint-disable-next-line prefer-promise-reject-errors
                     reject()
                   })
-              } else if (result === false) {
+              }
+              else if (result === false) {
                 // eslint-disable-next-line prefer-promise-reject-errors
                 reject()
-              } else {
+              }
+              else {
                 proceed()
               }
             })

@@ -8,7 +8,8 @@ request.interceptors.response.use(
 
     if (res.code === 0) {
       return res
-    } else {
+    }
+    else {
       console.error(res.message)
       return Promise.reject(res)
     }
@@ -16,7 +17,12 @@ request.interceptors.response.use(
   (error) => {
     // cancel请求会进入该回调 此时message为空
     if (error.message) {
-      if (error.message.includes('timeout')) { error.message = '网络超时' } else if (error.message === 'Network Error') { error.message = '网络错误' }
+      if (error.message.includes('timeout')) {
+        error.message = '网络超时'
+      }
+      else if (error.message === 'Network Error') {
+        error.message = '网络错误'
+      }
 
       console.error(error.message)
     }

@@ -41,10 +41,20 @@ export default {
       urlPrefix,
     }, {
       validateListFilter: (...args) => new Promise((resolve, reject) => {
-        if (list.value.filter.name) { resolve() } else { reject() }
+        if (list.value.filter.name) {
+          resolve()
+        }
+        else {
+          reject()
+        }
       }),
       validateFormData: (...args) => new Promise((resolve, reject) => {
-        if (form.value.data.name) { resolve() } else { reject() }
+        if (form.value.data.name) {
+          resolve()
+        }
+        else {
+          reject()
+        }
       }),
     })
 

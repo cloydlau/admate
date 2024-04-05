@@ -37,9 +37,11 @@ const SubPage = reactive({
         })
         SubPage.initialized = true
       })
-    } else if (SubPage.list.filter[idKeyOfSubPage] === id) {
+    }
+    else if (SubPage.list.filter[idKeyOfSubPage] === id) {
       SubPage.getList()
-    } else {
+    }
+    else {
       SubPage.list.filter[idKeyOfSubPage] = id
     }
   },

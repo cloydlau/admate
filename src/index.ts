@@ -87,27 +87,33 @@ function mergeFormData(_form: Form, newFormData?: any) {
       // merge, assignIn 会改变原始对象
       if (_form.mergeData === 'deep') {
         merge(_form.data, newFormData)
-      } else if (_form.mergeData === 'shallow') {
+      }
+      else if (_form.mergeData === 'shallow') {
         assignIn(_form.data, newFormData)
-      } else if (typeof _form.mergeData === 'function') {
+      }
+      else if (typeof _form.mergeData === 'function') {
         _form.mergeData(newFormData)
       }
-    } else {
+    }
+    else {
       // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
       // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
       // 可选择直接赋值，或者 Vue.set
       if (_form.mergeData === 'deep') {
         _form.data = merge(cloneDeep(_form.data), newFormData)
-      } else if (_form.mergeData === 'shallow') {
+      }
+      else if (_form.mergeData === 'shallow') {
         _form.data = {
           ..._form.data,
           ...newFormData,
         }
-      } else if (typeof _form.mergeData === 'function') {
+      }
+      else if (typeof _form.mergeData === 'function') {
         _form.mergeData(newFormData)
       }
     }
-  } else {
+  }
+  else {
     _form.data = newFormData
   }
 }
@@ -284,10 +290,12 @@ export default function useAdmate({
         if (currPageNumber === 1) {
           getListTrigger.value = 'd'
           _getListProxy()
-        } else {
+        }
+        else {
           setValue(_list.filter, _list.pageNumberAt, currPageNumber - 1)
         }
-      } else {
+      }
+      else {
         getListTrigger.value = 'd'
         _getListProxy()
       }
@@ -335,7 +343,8 @@ export default function useAdmate({
       if (payloadAs === 'cache') {
         mergeFormData(_form, cloneDeep(payload))
         _form.show = true
-      } else {
+      }
+      else {
         _form.loading = true
         _form.show = true
         return api.r(payload, payloadAs).then((response: unknown) => {
@@ -343,7 +352,8 @@ export default function useAdmate({
           return response
         })
       }
-    } else {
+    }
+    else {
       // 查看时参数必传，编辑时可以不传因为可能是覆盖式编辑
       if (_form.status === 'r' && !arguments.length) {
         console.warn('表单状态为 \'r\' 时，openForm 的参数必传')
@@ -381,7 +391,8 @@ export default function useAdmate({
             },
           })
         })
-    } else {
+    }
+    else {
       setTerminalState({
         target: _form,
         state: result,
@@ -435,7 +446,8 @@ export default function useAdmate({
             },
           })
         })
-    } else {
+    }
+    else {
       setTerminalState({
         target: _form,
         state: result,
@@ -493,7 +505,8 @@ export default function useAdmate({
           () => {
             if (getValue(_list.filter, _list.pageNumberAt) === oldPageNumber) {
               getListDebounced.value()
-            } else {
+            }
+            else {
               // 翻页不需要防抖
               getListTrigger.value = 'pageNumberChange'
               _getListProxy()

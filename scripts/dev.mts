@@ -217,6 +217,7 @@ async function dev() {
 
 try {
   dev()
-} catch (e) {
+}
+catch (e) {
   console.error(e)
 }

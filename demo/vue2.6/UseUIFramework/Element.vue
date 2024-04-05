@@ -8,7 +8,8 @@ export default {
   setup: () => {
     if (hasSetup) {
       return
-    } else {
+    }
+    else {
       hasSetup = true
     }
 
