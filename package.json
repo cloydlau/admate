@@ -55,8 +55,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "release": "esno ./scripts/release.mts",
-    "lint": "eslint \"**/*.{vue,js,ts,mjs,mts,jsx,tsx,md,json}\"",
-    "lint:fix": "eslint \"**/*.{vue,js,ts,mjs,mts,jsx,tsx,md,json}\" --fix",
+    "lint": "eslint \"**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue,json,md}\"",
+    "lint:fix": "eslint \"**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue,json,md}\" --fix",
     "preinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx only-allow pnpm",
     "postinstall": "node -e \"if (process.env.INIT_CWD === process.cwd()) { process.exit(1) }\" || npx simple-git-hooks"
   },
@@ -135,6 +135,6 @@
       "case-police --fix",
       "zhlint --fix"
     ],
-    "*.{vue,js,ts,mjs,mts,jsx,tsx,md,json}": "eslint --ignore-pattern demo/* --cache --fix"
+    "*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,vue,json,md}": "eslint --ignore-pattern demo/* --cache --fix"
   }
 }
