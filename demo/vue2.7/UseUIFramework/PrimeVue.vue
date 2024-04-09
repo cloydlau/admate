@@ -107,8 +107,8 @@ export default {
           label: '启用',
           value: 1,
         }]"
-        optionLabel="label"
-        optionValue="value"
+        option-label="label"
+        option-value="value"
         placeholder="状态"
       />
       <Button
@@ -134,7 +134,7 @@ export default {
 
       <Paginator
         :rows="list.filter.pageSize"
-        :totalRecords="list.total"
+        :total-records="list.total"
         @page="({ page }) => {
           list.filter.pageNo = page + 1
           queryList()

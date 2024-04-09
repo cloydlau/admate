@@ -82,7 +82,7 @@ const reset = function () {
     </div>
 
     <a-table
-      rowKey="name"
+      row-key="name"
       :columns="[{
         title: '姓名',
         dataIndex: 'name',
@@ -90,7 +90,7 @@ const reset = function () {
         title: '操作',
         scopedSlots: { customRender: 'action' },
       }]"
-      :dataSource="list.data"
+      :data-source="list.data"
       :loading="list.loading"
     >
       <template #action="text, record">

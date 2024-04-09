@@ -127,8 +127,8 @@ const {
     <FormDialog
       ref="formRef"
       v-model:form="form"
-      :formTitle="formTitle"
-      :submitForm="submitForm"
+      :form-title="formTitle"
+      :submit-form="submitForm"
     />
   </div>
 </template>

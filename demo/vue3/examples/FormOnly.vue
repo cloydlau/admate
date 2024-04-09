@@ -53,7 +53,7 @@ export default {
 <template>
   <div class="wrapper">
     <el-dialog
-      modelValue
+      model-value
       title="编辑"
       :show-close="false"
       :modal="false"

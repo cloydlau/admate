@@ -127,8 +127,8 @@ const {
     <FormDialog
       ref="formRef"
       :form.sync="form"
-      :formTitle="formTitle"
-      :submitForm="submitForm"
+      :form-title="formTitle"
+      :submit-form="submitForm"
     />
   </div>
 </template>
