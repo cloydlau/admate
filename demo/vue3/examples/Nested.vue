@@ -1,6 +1,6 @@
 <script setup>
-import useAdmateAdapter from '../../useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,
@@ -21,45 +21,34 @@ const {
   urlPrefix,
 })
 
-const elFormRefOfSubPage = ref()
-const idKeyOfSubPage = ''
+const SubPage_listFilterRef = ref()
+const SubPage_idKey = 'id'
 const SubPage = reactive({
   initialized: false,
   show: false,
   open: (id) => {
     SubPage.show = true
-    if (!SubPage.initialized) {
+    if (SubPage.initialized) {
+      SubPage.list.filter[SubPage_idKey] = id
+    }
+    else {
       nextTick(() => {
-        SubPage.list.filter = reactive({
-          ...Object.fromEntries(Array.from(elFormRefOfSubPage.value.fields || [], v => [v.labelFor, undefined])),
-          ...SubPage.list.filter,
-          [idKeyOfSubPage]: id,
-        })
+        SubPage.initializeListFilter()
+        SubPage.list.filter[SubPage_idKey] = id
         SubPage.initialized = true
       })
     }
-    else if (SubPage.list.filter[idKeyOfSubPage] === id) {
-      SubPage.getList()
-    }
-    else {
-      SubPage.list.filter[idKeyOfSubPage] = id
-    }
   },
-  onClosed: () => elFormRefOfSubPage.value.resetFields(),
   ...useAdmateAdapter({
-    urlPrefix: '',
-    axiosConfig: {
-      getList: {
-        url: '',
-      },
-    },
+    urlPrefix,
     list: {
       filter: {
-        [idKeyOfSubPage]: undefined,
+        [SubPage_idKey]: undefined,
       },
     },
   }, {
     getListInitially: false,
+    getElFormRefOfListFilter: () => SubPage_listFilterRef.value,
   }),
 })
 </script>
@@ -90,7 +79,14 @@ const SubPage = reactive({
     <el-dialog
       v-model="SubPage.show"
       title="子页面"
+      @closed="SubPage.resetListFilter"
     >
+      <el-form
+        ref="SubPage_listFilterRef"
+        :model="SubPage.list.filter"
+      >
+        <el-form-item :prop="SubPage_idKey" />
+      </el-form>
       <div class="p-20px">
         <el-table
           v-loading="SubPage.list.loading"

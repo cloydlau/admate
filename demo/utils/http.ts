@@ -7,7 +7,7 @@ request.interceptors.response.use(
     const res = response.data
 
     if (res.code === 0) {
-      return res
+      return res.data
     }
     else {
       console.error(res.message)

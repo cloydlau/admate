@@ -1,6 +1,6 @@
 <script setup>
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
-import useAdmateAdapter from '../../useAdmateAdapter'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,

@@ -48,7 +48,7 @@ export default [
   {
     url: `${API_PREFIX}/list`,
     timeout: 100,
-    method: 'get',
+    method: 'POST',
     response: ({ query }) => {
       const { page = 1, pageSize = 10 } = query
       return {

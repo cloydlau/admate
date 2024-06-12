@@ -10,7 +10,7 @@ import Column from 'primevue/column'
 import Dialog from 'primevue/dialog'
 import ProgressSpinner from 'primevue/progressspinner'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
-import useAdmateAdapter from '../../useAdmateAdapter'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 export default {
   components: {

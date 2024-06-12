@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import useAdmateAdapter from '../../useAdmateAdapter'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const formRef = ref(null)
 const route = useRoute()

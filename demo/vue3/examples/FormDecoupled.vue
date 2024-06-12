@@ -1,7 +1,7 @@
 <script setup>
 import { toRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import useAdmateAdapter from '../../useAdmateAdapter'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 
 const router = useRouter()

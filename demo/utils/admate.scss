@@ -1,0 +1,31 @@
+.app-container {
+  padding: 20px 5px;
+}
+
+.app-container .el-form--inline:first-child,
+.list-filter.el-form--inline:first-child {
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgb(221 221 221 / 80%);
+
+  & > .el-form-item {
+    margin-right: 12px;
+    margin-bottom: 12px;
+
+    .el-input,
+    .el-select {
+      width: 200px;
+    }
+  }
+}
+
+.table-operation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  & > div:first-child {
+    display: flex;
+    gap: 10px;
+  }
+}

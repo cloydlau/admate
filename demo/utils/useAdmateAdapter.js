@@ -1,38 +1,35 @@
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  reactive,
-  ref,
-  toRefs,
-  watch,
-} from 'vue'
+import './admate.scss'
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue'
+
+/* import type { Form, FormStatus, GetListTrigger } from "admate";
 import type {
   FormInstance,
   FormItemInstance,
-  FormValidationResult,
-} from 'element-plus'
+  FormValidationResult
+} from "element-plus"; */
 import { FaMessageBox } from 'faim'
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
-import type { Form, FormStatus, GetListTrigger } from '../src'
-import useAdmate from '../src'
-import http from './http'
+import useAdmate from '../../src'
+
+import http from '@/utils/http'
 
 // Vue@2.6 or earlier only
 /* import Vue from "vue";
 import VueCompositionAPI from "@vue/composition-api";
 Vue.use(VueCompositionAPI); */
 
+const formTitleMapDefault = {
+  c: '新增',
+  r: '查看',
+  u: '编辑',
+}
+
 export default (
   admateConfig,
   {
     // 表单标题
-    formTitleHash = {
-      c: '新增',
-      r: '查看',
-      u: '编辑',
-    },
+    formTitleMap = formTitleMapDefault,
 
     // 是否在初始化时读取列表
     getListInitially = true,
@@ -46,7 +43,6 @@ export default (
     // 获取列表筛选项的表单 ref
     // 可访问 this（组件实例）
     getElFormRefOfListFilter = function () {
-      // eslint-disable-next-line @typescript-eslint/no-invalid-this
       return this.$refs.listFilterRef
     },
 
@@ -66,8 +62,7 @@ export default (
     // 可访问 this（组件实例）
     // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
     getElFormRefOfFormData = function () {
-      // eslint-disable-next-line @typescript-eslint/no-invalid-this
-      return this?.$refs.faFormDialogRef.$refs.elFormRef
+      return this?.$refs.formRef
     },
 
     // 清除详情表单校验
@@ -107,22 +102,24 @@ export default (
     // 参数为接口返回值
     // 可访问 this（组件实例）
     afterSubmit = function () {},
-  }: {
-    formTitleHash?: Record<FormStatus, string>
-    getListInitially?: boolean
-    initialListFilter?: (...args: any) => Record<keyof any, any> | void
-    getElFormRefOfListFilter?: () => FormInstance
-    validateListFilter?: () => FormValidationResult | void
-    resetListFilter?: () => void
-    getElFormRefOfFormData?: () => FormInstance
-    clearValidateOfFormData?: () => void
-    validateFormData?: () => FormValidationResult
-    afterGetList?: (res: any, trigger: GetListTrigger) => unknown
-    afterRetrieve?: (res: any) => void
-    afterOpenForm?: (res: any) => void
-    beforeSubmit?: (form: Form) => Promise<unknown> | boolean | void
-    afterSubmit?: (form: Form | void) => void
-  } = {},
+  }
+  /* : {
+    formTitleMap?: Record<FormStatus, string>;
+    getListInitially?: boolean;
+    initialListFilter?: (...args: any) => Record<keyof any, any> | void;
+    getElFormRefOfListFilter?: () => FormInstance;
+    validateListFilter?: () => FormValidationResult | void;
+    resetListFilter?: () => void;
+    getElFormRefOfFormData?: () => FormInstance;
+    clearValidateOfFormData?: () => void;
+    validateFormData?: () => FormValidationResult;
+    afterGetList?: (res: any, trigger: GetListTrigger) => unknown;
+    afterRetrieve?: (res: any) => void;
+    afterOpenForm?: (res: any) => void;
+    beforeSubmit?: (form: Form) => Promise<unknown> | boolean | void;
+    afterSubmit?: (form: Form | void) => void;
+  } */
+  = {},
 ) => {
   // 获取当前 Vue 实例
   const currentInstance = ref()
@@ -154,26 +151,26 @@ export default (
             method: 'GET',
           },
           u: {
-            method: 'PUT',
+            method: 'POST',
           },
           d: {
-            method: 'DELETE',
+            method: 'POST',
           },
           getList: {
             url: 'list',
-            method: 'GET',
+            method: 'POST',
           },
           enable: {
             url: 'enable',
-            method: 'PUT',
+            method: 'POST',
           },
           disable: {
             url: 'disable',
-            method: 'PUT',
+            method: 'POST',
           },
           updateStatus: {
-            url: 'changeStatus',
-            method: 'PUT',
+            url: 'status',
+            method: 'POST',
           },
         },
         list: {
@@ -181,7 +178,9 @@ export default (
           filter: {
             // 页容量
             // 注意：如果修改了默认值，需要同步修改 el-pagination 组件 pageSize 参数的值
-            pageSize: 10,
+            page: {
+              pageSize: 10,
+            },
 
             // 动态的默认参数
             ...initialListFilter(),
@@ -192,12 +191,12 @@ export default (
             // this.$router.push('path' + qs.stringify(query, { addQueryPrefix: true }))
             ...qs.parse(window.location.hash.split('?')[1]),
           },
-          dataAt: 'data.records',
-          totalAt: res => Number(res.data.total),
-          pageNumberAt: 'pageNo',
+          dataAt: 'records',
+          totalAt: data => Number(data.total),
+          pageNumberAt: 'page.pageNo',
         },
         form: {
-          dataAt: 'data',
+          // dataAt: "data",
           // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象/空数组
           mergeData(newFormData) {
             form.data = mergeWith(
@@ -214,8 +213,8 @@ export default (
           }
 
           function GetList() {
-            getList().then((res) => {
-              afterGetList(res, trigger)
+            getList().then((data) => {
+              afterGetList(data, trigger)
             })
           }
 
@@ -243,11 +242,12 @@ export default (
         },
         openFormProxy(openForm) {
           // 打开表单后的回调
-          function callback(res?) {
+          // function callback(res?) {
+          function callback(res) {
             let endState = afterOpenForm(res)
             if (
               form.status !== 'c'
-              || currentInstance.value?.createFromCopy__
+              // || currentInstance.value?.createFromCopy__
             ) {
               endState = afterRetrieve(res)
             }
@@ -303,13 +303,11 @@ export default (
                   })
                   .catch((e) => {
                     console.error(e)
-                    // eslint-disable-next-line prefer-promise-reject-errors
-                    reject()
+                    reject(new Error(e))
                   })
               }
               else if (result === false) {
-                // eslint-disable-next-line prefer-promise-reject-errors
-                reject()
+                reject(new Error('validate Data Error'))
               }
               else {
                 proceed()
@@ -334,8 +332,25 @@ export default (
     },
   )
 
+  function initializeListFilter() {
+    const elFormRefOfListFilter = getElFormRefOfListFilter()
+    if (elFormRefOfListFilter) {
+      // Object.defineProperty 对不存在的属性无法拦截
+      Object.assign(
+        list.filter,
+        Object.fromEntries(
+          Array.from(elFormRefOfListFilter.fields || [], v => [
+            // (v as FormItemInstance).labelFor,
+            v.labelFor,
+            undefined,
+          ]),
+        ),
+      )
+    }
+  }
+
   onMounted(() => {
-    currentInstance.value = getCurrentInstance()?.proxy
+    currentInstance.value = getCurrentInstance().proxy
 
     initialListFilter = initialListFilter.bind(currentInstance.value)
     getElFormRefOfListFilter = getElFormRefOfListFilter.bind(
@@ -356,20 +371,7 @@ export default (
     beforeSubmit = beforeSubmit.bind(currentInstance.value)
     afterSubmit = afterSubmit.bind(currentInstance.value)
 
-    const elFormRefOfListFilter = getElFormRefOfListFilter()
-    if (elFormRefOfListFilter) {
-      // fix: 给筛选项赋初值，使得重置功能能够正常工作
-      // Object.defineProperty 对不存在的属性无法拦截
-      list.filter = reactive({
-        ...Object.fromEntries(
-          Array.from(elFormRefOfListFilter.fields || [], v => [
-            (v as FormItemInstance).labelFor,
-            undefined,
-          ]),
-        ),
-        ...list.filter,
-      })
-    }
+    initializeListFilter.call(currentInstance.value)
   })
 
   return toRefs(
@@ -382,12 +384,14 @@ export default (
       enable,
       disable,
       updateStatus,
-      c: (...args) => {
+      // c: (...args) => {
+      c: () => {
         form.status = 'c'
         // 复制新增需要传参，常规新增不需要
-        return openForm(
+        return openForm()
+        /* return openForm(
           ...(currentInstance.value.createFromCopy__ ? args : []),
-        )
+        ) */
       },
       r: (...args) => {
         form.status = 'r'
@@ -399,11 +403,13 @@ export default (
       },
       d,
       // 单条记录表单的标题
-      formTitle: computed(() =>
+      /* formTitle: computed(() =>
         currentInstance.value?.createFromCopy__
-          ? '复制新增'
-          : formTitleHash[form.status as string],
-      ),
+          ? "复制新增"
+          : formTitleMap[form.status]
+      ), */
+      formTitle: computed(() => formTitleMap[form.status]),
+      formTitleMap,
       // 重置筛选条件
       reset: () => {
         resetListFilter()
@@ -420,14 +426,14 @@ export default (
       // 读取列表（监听筛选条件时不需要）
       queryList: async () => {
         await validateListFilter()
-        list.filter.page = 1
+        list.filter.page.pageNo = 1
         getList()
       },
       // 当前 Vue 实例
       currentInstance,
       // 列表筛选项表单的 ref
       listFilterRef,
-      // 详情表单的 ref
+      // 详情的 ref
       formRef,
       // 校验列表筛选项
       validateListFilter,
@@ -437,6 +443,8 @@ export default (
       clearValidateOfFormData,
       // 校验详情表单
       validateFormData,
+      // 给筛选项赋初值，使得重置功能能够正常工作
+      initializeListFilter,
     }),
   )
 }

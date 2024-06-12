@@ -1,6 +1,6 @@
 <script setup>
 import { cloneDeep } from 'lodash-es'
-import useAdmateAdapter from '../../useAdmateAdapter'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 
 const {

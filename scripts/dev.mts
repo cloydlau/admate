@@ -27,7 +27,7 @@ const toPackageOptions: Record<VueVersion, Record<string, Record<string, any>>> 
       'vue': 'latest',
       'vue-router': 'latest',
       '@element-plus/icons-vue': 'latest',
-      'element-plus': 'latest',
+      'element-plus': '2.6.3',
       'primevue': 'latest',
       'quasar': 'latest',
       'ant-design-vue': 'latest',

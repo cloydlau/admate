@@ -3,6 +3,7 @@ import antfu from '@antfu/eslint-config'
 export default antfu(
   {
     formatters: true,
+    lessOpinionated: true,
   },
   {
     rules: {
@@ -10,12 +11,27 @@ export default antfu(
       'curly': ['error', 'all'],
       'no-console': 'off',
       'vue/max-attributes-per-line': ['error', { singleline: 3 }],
+      'vue/max-len': ['error', {
+        code: 160,
+        ignoreComments: true,
+        ignoreHTMLAttributeValues: true,
+        ignoreHTMLTextContents: true,
+        ignoreRegExpLiterals: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreUrls: true,
+      }],
       'vue/no-deprecated-v-bind-sync': 'off',
       'vue/no-deprecated-v-on-native-modifier': 'off',
       'vue/no-deprecated-destroyed-lifecycle': 'off',
       'vue/no-deprecated-dollar-listeners-api': 'off',
       'vue/no-deprecated-dollar-scopedslots-api': 'off',
       'vue/singleline-html-element-content-newline': 'off',
+    },
+    languageOptions: {
+      globals: {
+
+      },
     },
   },
 )
