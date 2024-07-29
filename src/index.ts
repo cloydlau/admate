@@ -169,7 +169,6 @@ export default function useAdmate({
 
   const _list: List = reactive(getInitialList())
 
-  // TODO: 为什么需要深拷贝？
   const getInitialForm = (): Form =>
     cloneDeep({
       status: '',
