@@ -1,4 +1,3 @@
-import './admate.scss'
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue'
 
 /* import type { Form, FormStatus, GetListTrigger } from "admate";
@@ -102,6 +101,11 @@ export default (
     // 参数为接口返回值
     // 可访问 this（组件实例）
     afterSubmit = function () {},
+
+    // 是否为复制新增
+    checkCopy = function () {
+      return false
+    },
   }
   /* : {
     formTitleMap?: Record<FormStatus, string>;
@@ -245,10 +249,7 @@ export default (
           // function callback(res?) {
           function callback(res) {
             let endState = afterOpenForm(res)
-            if (
-              form.status !== 'c'
-              // || currentInstance.value?.createFromCopy__
-            ) {
+            if (form.status !== 'c') {
               endState = afterRetrieve(res)
             }
 
@@ -336,16 +337,16 @@ export default (
     const elFormRefOfListFilter = getElFormRefOfListFilter()
     if (elFormRefOfListFilter) {
       // Object.defineProperty 对不存在的属性无法拦截
-      Object.assign(
-        list.filter,
-        Object.fromEntries(
+      list.filter = reactive({
+        ...Object.fromEntries(
           Array.from(elFormRefOfListFilter.fields || [], v => [
             // (v as FormItemInstance).labelFor,
             v.labelFor,
             undefined,
           ]),
         ),
-      )
+        ...list.filter,
+      })
     }
   }
 
@@ -384,14 +385,10 @@ export default (
       enable,
       disable,
       updateStatus,
-      // c: (...args) => {
-      c: () => {
+      c: (...args) => {
         form.status = 'c'
         // 复制新增需要传参，常规新增不需要
-        return openForm()
-        /* return openForm(
-          ...(currentInstance.value.createFromCopy__ ? args : []),
-        ) */
+        return openForm(...(checkCopy() ? args : []))
       },
       r: (...args) => {
         form.status = 'r'
@@ -402,12 +399,6 @@ export default (
         return openForm(...args)
       },
       d,
-      // 单条记录表单的标题
-      /* formTitle: computed(() =>
-        currentInstance.value?.createFromCopy__
-          ? "复制新增"
-          : formTitleMap[form.status]
-      ), */
       formTitle: computed(() => formTitleMap[form.status]),
       formTitleMap,
       // 重置筛选条件
