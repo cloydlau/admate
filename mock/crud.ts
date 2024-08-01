@@ -13,7 +13,7 @@ function getRandomPics(count = 10): string[] {
 
 const records = (() => {
   const result: any[] = []
-  for (let index = 0; index < 50; index++) {
+  for (let index = 0; index < 41; index++) {
     result.push({
       'id': `${index}`,
       'beginTime': '@datetime',
@@ -49,14 +49,14 @@ export default [
     url: `${API_PREFIX}/list`,
     timeout: 100,
     method: 'POST',
-    response: ({ query }) => {
-      const { page = 1, pageSize = 10 } = query
+    response: (res) => {
+      const { pageNo, pageSize } = res.body.page
       return {
         code: 0,
         data: {
-          page,
-          pageSize,
-          records,
+          page: { pageNo, pageSize },
+          total: records.length,
+          records: records.slice((pageNo - 1) * pageSize, pageNo * pageSize),
         },
       }
     },

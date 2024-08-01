@@ -1,7 +1,4 @@
 import { createApp } from 'vue'
-import router from './router/vue-router'
-
-// install()
 
 import 'uno.css'
 
@@ -13,9 +10,7 @@ import AntD from 'ant-design-vue'
 import 'quasar/src/css/index.sass'
 import { Quasar } from 'quasar'
 
-import 'primeicons/primeicons.css'
-import 'primevue/resources/themes/lara-light-indigo/theme.css'
-import 'primevue/resources/primevue.min.css'
+import Aura from '@primevue/themes/aura'
 import PrimeVue from 'primevue/config'
 import ToastService from 'primevue/toastservice'
 
@@ -24,6 +19,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import App from './index.vue'
+import router from './router/vue-router'
 
 const app = createApp(App)
   .use(router)
@@ -32,7 +28,11 @@ const app = createApp(App)
   .use(Quasar, {
     plugins: {},
   })
-  .use(PrimeVue)
+  .use(PrimeVue, {
+    theme: {
+      preset: Aura,
+    },
+  })
   .use(ToastService)
   .use(createVuetify({
     components,

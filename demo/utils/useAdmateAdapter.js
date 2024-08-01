@@ -198,6 +198,7 @@ export default (
           dataAt: 'records',
           totalAt: data => Number(data.total),
           pageNumberAt: 'page.pageNo',
+          watchFilter: false,
         },
         form: {
           // dataAt: "data",

@@ -1,6 +1,6 @@
 <script setup>
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,
@@ -58,7 +58,7 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList"
+          @click="queryList()"
         >
           查询
         </el-button>
@@ -83,11 +83,11 @@ const {
       </div>
 
       <el-pagination
-        v-model:current-page="list.filter.pageNo"
-        v-model:page-size="list.filter.pageSize"
+        v-model:current-page="list.filter.page.pageNo"
+        v-model:page-size="list.filter.page.pageSize"
         :total="list.total"
-        @current-change="queryList"
-        @size-change="queryList"
+        @current-change="getList()"
+        @size-change="getList()"
       />
     </div>
 
