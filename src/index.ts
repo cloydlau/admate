@@ -200,7 +200,12 @@ export default function useAdmate({
     const TERMINAL_STATE = conclude([state, defaultState])
     // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
     // 但是对于对象本身是可以生效的，且直接赋值反而无效
-    mergeState === 'deep' ? merge(_form, TERMINAL_STATE) : assignIn(_form, TERMINAL_STATE)
+    if (mergeState === 'deep') {
+      merge(_form, TERMINAL_STATE)
+    }
+    else {
+      assignIn(_form, TERMINAL_STATE)
+    }
   }
 
   const getList = (payload = _list.filter, payloadAs: PayloadAs): Promise<unknown> => {
@@ -291,7 +296,11 @@ export default function useAdmate({
           _getListProxy()
         }
         else {
+          getListTrigger.value = 'd'
           setValue(_list.filter, _list.pageNumberAt, currPageNumber - 1)
+          if (!_list.watchFilter) {
+            _getListProxy()
+          }
         }
       }
       else {
@@ -507,7 +516,8 @@ export default function useAdmate({
             }
             else {
               // 翻页不需要防抖
-              getListTrigger.value = 'pageNumberChange'
+              // ||= 的目的是删除当前分页最后一条记录时也会触发翻页
+              getListTrigger.value ??= 'pageNumberChange'
               _getListProxy()
             }
           },
