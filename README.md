@@ -21,8 +21,6 @@
 
 <p align="center">
   <img alt="i want it all" src="https://raw.githubusercontent.com/cloydlau/admate/main/docs/i-want-it-all.gif">
-  <br>
-  <img alt="assessment" src="https://raw.githubusercontent.com/cloydlau/admate/main/docs/assessment.png">
 </p>
 
 <br>
