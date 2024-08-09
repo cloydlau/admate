@@ -150,37 +150,25 @@ useAdmate({
 useAdmate({
   // Axios 配置
   axiosConfig: {
-    // 读取列表
-    getList: {
-      method: 'GET',
+    list: {
+      // 读取列表
+      read: {},
     },
-    // 新增一条记录（submitForm 在新增时调用）
-    c: {
-      method: 'POST',
-    },
-    // 读取一条记录（openForm 在查看、编辑时调用）
-    r: {
-      method: 'GET',
-    },
-    // 编辑一条记录（submitForm 在编辑时调用）
-    u: {
-      method: 'PUT',
-    },
-    // 删除一条记录
-    d: {
-      method: 'DELETE',
-    },
-    // 启用一条记录
-    enable: {
-      method: 'PUT',
-    },
-    // 禁用一条记录
-    disable: {
-      method: 'PUT',
-    },
-    // 变更一条记录的状态
-    updateStatus: {
-      method: 'PUT',
+    form: {
+      // 新增
+      create: {},
+      // 读取
+      read: {},
+      // 编辑
+      update: {},
+      // 删除
+      delete: {},
+      // 切换状态
+      switch: {},
+      // 启用
+      enable: {},
+      // 禁用
+      disable: {},
     },
   },
 })
@@ -192,7 +180,7 @@ useAdmate({
 
 ```ts
 useAdmate({
-  // axiosConfig 中各个接口的 URL 前缀
+  // axiosConfig 中各接口的 URL 前缀
   urlPrefix: '',
 })
 ```
@@ -203,10 +191,12 @@ useAdmate({
 useAdmate({
   urlPrefix: 'somepage',
   axiosConfig: {
-    r: {
-      // 如果某个接口的前缀不是 'somepage'，可以在 URL 前面加斜线，即可忽略该前缀
-      url: '/anotherpage/selectOne',
-    },
+    list: {
+      read: {
+        // 如果某个接口的前缀不是 'somepage'，可以在 URL 前面加斜线，即可忽略该前缀
+        url: '/anotherpage/selectOne',
+      }
+    }
   }
 })
 ```
@@ -219,52 +209,45 @@ useAdmate({
 
 ```ts
 // 配置
-const { openForm, d, enable, disable, updateStatus } = useAdmate({
+const { list, form } = useAdmate({
   axiosConfig: {
-    // 读取列表
-    getList: payload => ({
-      method: 'GET',
-      url: `module/${payload.xxx}`
-    }),
-    // 读取一条记录（openForm 在查看、编辑时调用）
-    r: payload => ({
-      method: 'GET',
-      url: `module/${payload.id}`
-    }),
-    // 编辑一条记录（submitForm 在编辑时调用）
-    u: payload => ({
-      method: 'PUT',
-      url: `module/${payload.id}`
-    }),
-    // 删除一条记录
-    d: payload => ({
-      method: 'DELETE',
-      url: `module/${payload.id}`
-    }),
-    // 启用一条记录
-    enable: payload => ({
-      method: 'PUT',
-      url: `module/${payload.id}`
-    }),
-    // 禁用一条记录
-    disable: payload => ({
-      method: 'PUT',
-      url: `module/${payload.id}`
-    }),
-    // 变更一条记录的状态
-    updateStatus: payload => ({
-      method: 'PUT',
-      url: `module/${payload.id}`
-    }),
+    form: {
+      read: payload => ({
+        method: 'GET',
+        url: `module/${payload.id}`,
+      }),
+      update: payload => ({
+        method: 'PUT',
+        url: `module/${payload.id}`,
+      }),
+      delete: payload => ({
+        method: 'DELETE',
+        url: `module/${payload.id}`,
+      }),
+      switch: payload => ({
+        method: 'PUT',
+        url: `module/${payload.id}`,
+      }),
+      enable: payload => ({
+        method: 'PUT',
+        url: `module/${payload.id}`,
+      }),
+      disable: payload => ({
+        method: 'PUT',
+        url: `module/${payload.id}`,
+      }),
+    },
   }
 })
 
 // 使用
-openForm({ id: 1 }, 'config')
-d({ id: 1 }, 'config')
-enable({ id: 1 }, 'config')
-disable({ id: 1 }, 'config')
-updateStatus({ id: 1 }, 'config')
+form.open({ id: 1 }, 'config')
+form.read({ id: 1 }, 'config')
+form.update({ id: 1 }, 'config')
+form.delete({ id: 1 }, 'config')
+form.swtich({ id: 1 }, 'config')
+form.enable({ id: 1 }, 'config')
+form.disable({ id: 1 }, 'config')
 ```
 
 <br>
@@ -279,7 +262,7 @@ updateStatus({ id: 1 }, 'config')
 
 - 局部配置
 
-`getList`、`openForm`、`d`、`updateStatus`、`enable`、`disable`、`submitForm` 的参数 1 均支持 FormData 类型
+`list.read`、`form.open`、`form.delete`、`form.switch`、`form.enable`、`form.disable`、`form.submit` 的参数 1 均支持 FormData 类型
 
 ```vue
 <!-- 示例: 局部配置 -->
@@ -299,9 +282,14 @@ FormData.from = (json) => {
 }
 
 useAdmateAdapter({
-  getListProxy(getList, trigger) {
-    getList(FormData.from(list.value.filter))
-  },
+  list: {
+    proxy: {
+      read(readList, trigger) {
+        readList(FormData.from(list.value.filter))
+      },
+    }
+  }
+
 })
 
 const FormData = window.FormData
@@ -311,13 +299,13 @@ const FormData = window.FormData
   <el-table>
     <el-table-column label="操作">
       <template #default="{ row: { id } }">
-        <el-button @click="r(FormData.from({ id }))">
+        <el-button @click="form.read(FormData.from({ id }))">
           查看
         </el-button>
-        <el-button @click="u(FormData.from({ id }))">
+        <el-button @click="form.update(FormData.from({ id }))">
           编辑
         </el-button>
-        <el-button @click="d(FormData.from({ id }))">
+        <el-button @click="form.delete(FormData.from({ id }))">
           删除
         </el-button>
       </template>
@@ -326,7 +314,7 @@ const FormData = window.FormData
 
   <el-dialog>
     <template #footer>
-      <el-button @click="() => submitForm(FormData.from(form.data))">
+      <el-button @click="() => form.submit(FormData.from(form.data))">
         确 定
       </el-button>
     </template>
@@ -429,36 +417,42 @@ useAdmate({
 
 ### 读取列表
 
-#### getList
+#### list.read
 
 获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
 ```ts
 const {
-  /**
-   * PS: 以下为原始 getList 的函数签名，如果你配置了 getListProxy，则以 getListProxy 为准
-   *
-   * @param {any} [payload = list.filter]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   * @returns {Promise<any>} 接口返回值
-   */
-  getList
+  list: {
+    /**
+     * PS: 以下为原始 getList 的函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
+     *
+     * @param {any} [payload = list.filter]
+     * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+     * @returns {Promise<any>} 接口返回值
+     */
+    read,
+  }
 } = useAdmate()
 
-getList() // 手动读取
+list.read() // 手动读取
 ```
 
-#### getListProxy
+#### list.proxy.read
 
-你可以使用 `getListProxy` 来代理 `getList`，以便在 getList 前后做一些操作，或改变 getList 的行为
+你可以使用 `list.proxy.read` 来代理 `list.read`，以便在 `list.read` 前后做一些操作，或改变 `list.read` 的行为
 
 ```ts
 useAdmate({
-  /**
-   * @param {Function} getList 被代理的原始 getList
-   * @param {string} trigger 调用动机 可能的值: 'init' 'pageNumberChange' 'filterChange' 'c' 'r' 'u' 'd' 'updateStatus' 'enable' 'disable'
-   */
-  getListProxy(getList, trigger) {},
+  list: {
+    proxy: {
+      /**
+       * @param {Function} readList 被代理的原始 readList
+       * @param {string} trigger 调用动机 可能的值: 'immediate' 'pageNumberChange' 'filterChange' 'create' 'read' 'update' 'delete' 'switch' 'enable' 'disable'
+       */
+      read(readList, trigger) {},
+    },
+  },
 })
 ```
 
@@ -466,16 +460,20 @@ useAdmate({
 // 示例: 获取列表之前，校验参数
 
 useAdmate({
-  getListProxy(getList, trigger) {
-    if (trigger === 'filterChange') {
-      listFilterRef.value.validate().then(() => {
-        getList()
-      })
+  list: {
+    proxy: {
+      read(readList, trigger) {
+        if (trigger === 'filterChange') {
+          listFilterRef.value.validate().then(() => {
+            readList()
+          })
+        }
+        else {
+          readList()
+        }
+      },
     }
-    else {
-      getList()
-    }
-  },
+  }
 })
 ```
 
@@ -483,12 +481,16 @@ useAdmate({
 // 示例: 单条记录操作成功后，弹出提示
 
 useAdmate({
-  getListProxy(getList, trigger) {
-    getList()
-    if (['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(trigger)) {
-      currentInstance.value.$message.success('操作成功')
+  list: {
+    proxy: {
+      read(readList, trigger) {
+        readList()
+        if (['create', 'upadte', 'delete', 'switch', 'enable', 'disable'].includes(trigger)) {
+          currentInstance.value.$message.success('操作成功')
+        }
+      },
     }
-  },
+  }
 })
 ```
 
@@ -496,12 +498,16 @@ useAdmate({
 // 示例: 读取列表后，修改列表数据
 
 const { list } = useAdmate({
-  getListProxy(getList, trigger) {
-    getList().then((response) => {
-      // response 为 axiosConfig.getList 的接口返回值
-      list.data = response.data?.filter(v => !v.disabled)
-    })
-  },
+  list: {
+    proxy: {
+      read(readList, trigger) {
+        readList().then((response) => {
+          // response 为 axiosConfig.list.read 的接口返回值
+          list.data = response.data?.filter(v => !v.disabled)
+        })
+      },
+    }
+  }
 })
 ```
 
@@ -511,19 +517,21 @@ const { list } = useAdmate({
 
 `list.loading`
 
-`axiosConfig.getList` 被调用时值为 `true`，否则为 `false`
+`axiosConfig.list.read` 被调用时值为 `true`，否则为 `false`
 
 ```vue
 <!-- 示例 -->
 
 <script setup>
+import { getCurrentInstance } from 'vue'
 import useAdmate from 'admate'
 
+const { proxy } = getCurrentInstance()
 const { list } = useAdmate()
 
 function handleTable() {
   list.value.loading = true
-  Vue.prototype.$POST('').finally(() => {
+  proxy.$POST('').finally(() => {
     list.value.loading = false
   })
 }
@@ -536,17 +544,17 @@ function handleTable() {
 
 <br>
 
-<a name="openForm-c"></a>
+<a name="form.open-create"></a>
 
 ## 表单
 
 ### 表单风格
 
-表单默认是对话框的风格，但也支持[独立页面](#FormDecoupled)的风格
+表单默认是对话框/抽屉的风格，但也支持[独立页面](#FormDecoupled)的风格
 
 对比
 
-- 对话框：体验好，割裂感低，表单的开闭不影响父页面状态
+- 对话框/抽屉：体验好，割裂感低，表单的开闭不影响父页面状态
 - 独立页面：体验较差，从表单返回父页面时，父页面的状态会丢失，比如列表筛选状态
 
 <br>
@@ -567,7 +575,7 @@ useAdmate({
     // 可以在这里提供表单数据的默认值
     data: {},
 
-    // 在查看、编辑表单时，可能需要调用接口（axiosConfig.r）回显表单的数据
+    // 在查看、编辑表单时，可能需要调用接口（axiosConfig.form.read）回显表单的数据
     // dataAt 用于指定接口返回值中表单数据的位置
     // 支持属性名，如 `'detail'`
     // 支持属性路径，如 `'data[0].detail'`
@@ -575,7 +583,7 @@ useAdmate({
     // 支持 Function，如 `response => response.detail`
     dataAt: undefined,
 
-    // 接口（axiosConfig.r）返回值与 form.data 合并的方式
+    // 接口（axiosConfig.form.read）返回值与 form.data 合并的方式
     mergeData: 'deep',
   },
 })
@@ -614,7 +622,7 @@ const { form } = useAdmate({
 </template>
 ```
 
-如果 axiosConfig.r 的返回值为：
+如果 axiosConfig.form.read 的返回值为：
 `{ a: {} }`
 
 如果与默认值<span style="color:red">浅合并</span>后将得到：
@@ -659,20 +667,22 @@ const { form } = useAdmate({
 
 ### 表单形态
 
-`form.status: StatusType`
+`form.status: 'create' | 'read' | 'update'`
 
 <br>
 
 ### 新增
 
-打开表单，提交时会调用 `axiosConfig.c`
+打开表单，提交时会调用 `axiosConfig.form.create`
 
 ```ts
-const { form, openForm } = useAdmate()
+const { form } = useAdmate()
 
-// 将表单形态设置为“新增”，然后打开表单
-form.status = 'c'
-openForm()
+form.create()
+
+// 等价于：将表单形态设置为“新增”，然后打开表单
+form.status = 'create'
+form.open()
 ```
 
 <br>
@@ -683,62 +693,73 @@ openForm()
 
 1. 打开表单时，和查看/编辑一样，需要调接口回显
 2. 提交表单时调用的是新增的接口
-3. 表单名称显示为 “复制新增”
-
-复制新增属于一种交叉状态，这种情况没有必要专门增加一种表单形态，可以借助一个辅助变量如 `isCopy`，用 `isCopy && form.status ==='c'` 来判断是不是复制新增，然后给 `openForm` 传参即可回显。
-
-<br>
-
-<a name="openForm-r"></a>
-
-### 查看
-
-打开表单，并调用 `axiosConfig.r` 回显表单内容
 
 ```ts
-const { form, openForm } = useAdmate()
+const { form } = useAdmate()
 
-// 将表单形态设置为“查看”，然后打开表单
-form.status = 'r'
-/**
- * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy ，则以 openFormProxy 为准
- *
- * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
- * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
- *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
- * @returns {Promise<any>} axiosConfig.r 的返回值
- */
-openForm()
+form.create(row)
+
+// 等价于：将表单形态设置为“新增”，然后打开表单并传参
+form.status = 'create'
+form.open(row)
 ```
 
 <br>
 
-<a name="openForm-u"></a>
+<a name="form.open-read"></a>
 
-### 编辑
+### 查看
 
-打开表单，并调用 `axiosConfig.r` 回显表单内容，提交时会调用 `axiosConfig.u`
+打开表单，并调用 `axiosConfig.form.read` 回显表单内容
 
 ```ts
-const { form, openForm } = useAdmate()
+const { form } = useAdmate()
 
-// 将表单形态设置为“编辑”，然后打开表单
-form.status = 'u'
+form.read()
+
+// 等价于：将表单形态设置为“查看”，然后打开表单
+form.status = 'read'
 /**
- * PS: 以下为原始 openForm 的函数签名，如果你配置了 openFormProxy，则以 openFormProxy 为准
+ * PS: 以下为原始 openForm 的函数签名，如果你配置了 form.proxy.open ，则以 form.proxy.open 为准
  *
- * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.r
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.form.read
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
  *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
  *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
  *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
  *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
- * @returns {Promise<any>} axiosConfig.r 的返回值
+ * @returns {Promise<any>} axiosConfig.form.read 的返回值
  */
-openForm()
+form.open()
+```
+
+<br>
+
+<a name="form.open-update"></a>
+
+### 编辑
+
+打开表单，并调用 `axiosConfig.form.read` 回显表单内容，提交时会调用 `axiosConfig.form.update`
+
+```ts
+const { form } = useAdmate()
+
+form.update()
+
+// 等价于：将表单形态设置为“编辑”，然后打开表单
+form.status = 'update'
+/**
+ * PS: 以下为原始 form.open 的函数签名，如果你配置了 form.proxy.open ，则以 form.proxy.open 为准
+ *
+ * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.form.read
+ * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
+ * @returns {Promise<any>} axiosConfig.form.read 的返回值
+ */
+form.open()
 ```
 
 <br>
@@ -746,17 +767,17 @@ openForm()
 ### 删除
 
 ```ts
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.d 的返回值
-   */
-  d
-} = useAdmate()
+const { form } = useAdmate()
+
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ * @returns {Promise<any>} axiosConfig.form.delete 的返回值
+ */
+form.delete()
 ```
 
 <br>
@@ -767,23 +788,23 @@ const {
 
 1. 后端提供一个统一的接口，传参指定新的状态
 
-> 使用 `updateStatus`
+> 使用 `form.switch()`
 
 ```vue
 <script setup>
 import useAdmate from 'admate'
 
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
-   */
-  updateStatus,
-} = useAdmate()
+const { form } = useAdmate()
+
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ * @returns {Promise<any>} axiosConfig.form.switch 的返回值
+ */
+form.switch()
 </script>
 
 <template>
@@ -793,7 +814,7 @@ const {
       align="center"
     >
       <template #default="{ row: { id, status } }">
-        <el-switch @change="updateStatus({ id, status: status ^ 1 })" />
+        <el-switch @change="form.switch({ id, status: status ^ 1 })" />
       </template>
     </el-table-column>
   </el-table>
@@ -802,32 +823,33 @@ const {
 
 2. 后端提供启用和停用两个接口
 
-> 使用 `enable` 和 `disable`
+> 使用 `form.enable()` 和 `form.disable()`
 
 ```vue
 <script setup>
 import useAdmate from 'admate'
 
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.enable 的返回值
-   */
-  enable,
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.disable 的返回值
-   */
-  disable
-} = useAdmate()
+const { form } = useAdmate()
+
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ * @returns {Promise<any>} axiosConfig.form.enable 的返回值
+ */
+
+form.enable()
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ * @returns {Promise<any>} axiosConfig.form.disable 的返回值
+ */
+form.disable()
 </script>
 
 <template>
@@ -837,7 +859,7 @@ const {
       align="center"
     >
       <template #default="{ row: { id, status } }">
-        <el-switch @change="[enable, disable][status]({ id })" />
+        <el-switch @change="[form.enable, form.disable][status]({ id })" />
       </template>
     </el-table-column>
   </el-table>
@@ -846,29 +868,31 @@ const {
 
 3. 后端未提供独立的接口，使用编辑接口改变状态
 
-> 把 `updateStatus` 当作 `u` 来使用
+> 把 `form.switch()` 当作 `form.update()` 来使用
 
 ```vue
 <script setup>
 import useAdmate from 'admate'
 
-const {
-  /**
-   * @param {any} [payload]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
-   *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
-   *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
-   * @returns {Promise<any>} axiosConfig.updateStatus 的返回值
-   */
-  updateStatus,
-} = useAdmate({
+const { form } = useAdmate({
   axiosConfig: {
-    updateStatus: {
-      // 按编辑接口进行配置
-    },
+    form: {
+      switch: {
+        // 按编辑接口进行配置
+      },
+    }
   },
 })
+
+/**
+ * @param {any} [payload]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默 认）
+ *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
+ *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ * @returns {Promise<any>} axiosConfig.form.switch 的返回值
+ */
+form.switch()
 </script>
 
 <template>
@@ -878,7 +902,7 @@ const {
       align="center"
     >
       <template #default="{ row }">
-        <el-switch @change="updateStatus({ ...row, status: row.status ^ 1 })" />
+        <el-switch @change="form.switch({ ...row, status: row.status ^ 1 })" />
       </template>
     </el-table-column>
   </el-table>
@@ -889,25 +913,29 @@ const {
 
 ### 打开表单
 
-#### openForm
+#### form.open
 
 打开表单，函数签名要分情况：
 
-- [新增时](#openForm-c)
-- [查看时](#openForm-r)
-- [编辑时](#openForm-u)
+- [新增时](#form.open-create)
+- [查看时](#form.open-read)
+- [编辑时](#form.open-update)
 
-#### openFormProxy
+#### form.proxy.open
 
-你可以使用 `openFormProxy` 来代理 `openForm`，以便在 openForm 前后做一些操作，或改变 openForm 的行为
+你可以使用 `form.proxy.open` 来代理 `form.open`，以便在 `form.open` 前后做一些操作，或改变 `form.open` 的行为
 
 ```ts
 useAdmate({
-  /**
-   * @param {Function} openForm 被代理的原始 openForm
-   * @returns {Promise<object> | object | void} object 为打开表单后 form 的终态
-   */
-  openFormProxy(openForm) {},
+  form: {
+    proxy: {
+      /**
+       * @param {Function} openForm 被代理的原始 openForm
+       * @returns {Promise<object> | object | void} object 为打开表单后 form 的终态
+       */
+      open(openForm) {},
+    }
+  }
 })
 ```
 
@@ -915,19 +943,23 @@ useAdmate({
 // 示例: 回显表单后，修改表单数据
 
 const { form } = useAdmate({
-  openFormProxy(openForm) {
-    // 新增时 openForm 没有返回值
-    return new Promise((resolve, reject) => {
-      openForm()?.then((response) => {
-        // response 为 axiosConfig.r 的接口返回值
-        // 修改表单数据
-        form.data.status = 1
-        resolve()
-      }).catch((e) => {
-        reject(e)
-      })
-    })
-  },
+  form: {
+    proxy: {
+      open(openForm) {
+        // 新增时 openForm 没有返回值
+        return new Promise((resolve, reject) => {
+          openForm()?.then((response) => {
+            // response 为 axiosConfig.r 的接口返回值
+            // 修改表单数据
+            form.data.status = 1
+            resolve()
+          }).catch((e) => {
+            reject(e)
+          })
+        })
+      },
+    }
+  }
 })
 ```
 
@@ -935,47 +967,59 @@ const { form } = useAdmate({
 // 示例: 回显表单后，清除校验
 
 useAdmate({
-  openFormProxy(openForm) {
-    return new Promise((resolve, reject) => {
-      openForm()?.finally(() => {
-        formRef.value.clearValidate()
-      }).then(() => {
-        resolve()
-      }).catch((e) => {
-        reject(e)
-      })
-    })
-  },
+  form: {
+    proxy: {
+      open(openForm) {
+        return new Promise((resolve, reject) => {
+          openForm()?.finally(() => {
+            formRef.value.clearValidate()
+          }).then(() => {
+            resolve()
+          }).catch((e) => {
+            reject(e)
+          })
+        })
+      },
+    }
+  }
 })
 ```
 
 ```ts
 // 示例: 回显表单后，自定义表单的开闭和读取状态
 useAdmate({
-  openFormProxy(openForm) {
-    return new Promise((resolve, reject) => {
-      // 可以在 finally 中 resolve
-      openForm().then(() => {
-        // 回显成功后，默认停止加载
-        resolve({
-          loading: false,
+  form: {
+    proxy: {
+      open(openForm) {
+        return new Promise((resolve, reject) => {
+          // 可以在 finally 中 resolve
+          openForm().then(() => {
+            // 回显成功后，默认停止加载
+            resolve({
+              loading: false,
+            })
+          }).catch(() => {
+            // 回显失败后，默认关闭表单并停止加载
+            resolve({
+              show: false,
+              loading: false,
+            })
+          })
         })
-      }).catch(() => {
-        // 回显失败后，默认关闭表单并停止加载
-        resolve({
-          show: false,
-          loading: false,
-        })
-      })
-    })
+      }
+    }
   }
 })
 
 // 也可以返回一个对象（如果没有异步操作）
 useAdmate({
-  openFormProxy(openForm) {
-    return {
-      loading: false
+  form: {
+    proxy: {
+      open(openForm) {
+        return {
+          loading: false
+        }
+      }
     }
   }
 })
@@ -987,7 +1031,7 @@ useAdmate({
 
 `form.loading`
 
-`axiosConfig.r` 被调用时值为 `true`，否则为 `false`
+`axiosConfig.form.read` 被调用时值为 `true`，否则为 `false`
 
 > 不能将该值当作表单回显结束的标志，因为复用列表数据时不会调用 axiosConfig.r
 
@@ -1011,58 +1055,66 @@ const { form } = useAdmate()
 
 ### 提交表单
 
-#### submitForm
+#### form.submit
 
-提交表单，新增时调用 `axiosConfig.c`，编辑时调用 `axiosConfig.u`
+提交表单，新增时调用 `axiosConfig.form.create`，编辑时调用 `axiosConfig.form.update`
 
 ```ts
-const {
-  /**
-   * PS: 以下为原始 submitForm 的函数签名，如果你配置了 submitFormProxy ，则以 submitFormProxy 为准
-   *
-   * @param {any} [payload = form.data]
-   * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-   * @returns {Promise<any>} 接口返回值
-   */
-  submitForm
-} = useAdmate()
+const { form } = useAdmate()
+
+/**
+ * PS: 以下为原始 form.submit 的函数签名，如果你配置了 form.proxy.submit ，则以 form.proxy.submit 为准
+ *
+ * @param {any} [payload = form.data]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} 接口返回值
+ */
+form.submit()
 ```
 
-#### submitFormProxy
+#### form.proxy.submit
 
-你可以使用 `submitFormProxy` 来代理 `submitForm`，以便在 submitForm 前后做一些操作，或改变 submitForm 的行为
+你可以使用 `form.proxy.submit` 来代理 `form.submit` ，以便在 `form.submit` 前后做一些操作，或改变 `form.submit` 的行为
 
 ```ts
 useAdmate({
-  /**
-   * @param {Function} submitForm 被代理的原始 submitForm
-   * @returns {Promise<object> | object | void} object 为提交表单后 form 的终态
-   */
-  submitFormProxy(submitForm) {}
+  form: {
+    proxy: {
+      /**
+       * @param {Function} submitForm 被代理的原始 submitForm
+       * @returns {Promise<object> | object | void} object 为提交表单后 form 的终态
+       */
+      submit(submitForm) {}
+    }
+  }
 })
 ```
 
 ```ts
 // 示例: 指定提交参数
 
-submitForm({
+form.submit({
   ...form.data,
   status: 1,
 })
 
-// submitForm 被代理时
+// form.submit 被代理时
 useAdmate({
-  submitFormProxy(submitForm) {
-    return new Promise((resolve, reject) => {
-      submitForm({
-        ...form.data,
-        status: 1,
-      }).then(() => {
-        resolve()
-      }).catch((e) => {
-        reject(e)
-      })
-    })
+  form: {
+    proxy: {
+      submit(submitForm) {
+        return new Promise((resolve, reject) => {
+          submitForm({
+            ...form.data,
+            status: 1,
+          }).then(() => {
+            resolve()
+          }).catch((e) => {
+            reject(e)
+          })
+        })
+      }
+    }
   }
 })
 ```
@@ -1071,16 +1123,20 @@ useAdmate({
 // 示例: 提交前校验表单
 
 useAdmate({
-  submitFormProxy(submitForm) {
-    return new Promise((resolve, reject) => {
-      formRef.value.validate().then(() => {
-        submitForm().then(() => {
-          resolve()
-        }).catch((e) => {
-          reject(e)
+  form: {
+    proxy: {
+      submit(submitForm) {
+        return new Promise((resolve, reject) => {
+          formRef.value.validate().then(() => {
+            submitForm().then(() => {
+              resolve()
+            }).catch((e) => {
+              reject(e)
+            })
+          })
         })
-      })
-    })
+      }
+    }
   }
 })
 ```
@@ -1090,33 +1146,41 @@ useAdmate({
 
 // 返回一个 promise
 useAdmate({
-  submitFormProxy(submitForm) {
-    return new Promise((resolve, reject) => {
-      formRef.value.validate().then(() => {
-        submitForm().then(() => {
-          // 提交成功后，默认关闭表单，并停止加载
-          resolve({
-            show: false,
-            submitting: false,
-          })
-        }).catch(() => {
-          // 提交失败后，默认仅停止加载
-          resolve({
-            show: true,
-            submitting: false,
+  form: {
+    proxy: {
+      submit(submitForm) {
+        return new Promise((resolve, reject) => {
+          formRef.value.validate().then(() => {
+            submitForm().then(() => {
+              // 提交成功后，默认关闭表单，并停止加载
+              resolve({
+                show: false,
+                submitting: false,
+              })
+            }).catch(() => {
+              // 提交失败后，默认仅停止加载
+              resolve({
+                show: true,
+                submitting: false,
+              })
+            })
           })
         })
-      })
-    })
+      }
+    }
   }
 })
 
 // 也可以返回一个对象（如果没有异步操作）
 useAdmate({
-  submitFormProxy(submitForm) {
-    return {
-      show: false,
-      submitting: false,
+  form: {
+    proxy: {
+      submit(submitForm) {
+        return {
+          show: false,
+          submitting: false,
+        }
+      }
     }
   }
 })
@@ -1128,7 +1192,7 @@ useAdmate({
 
 `form.submitting`
 
-`axiosConfig.c` 或 `axiosConfig.u` 被调用时值为 `true`，否则为 `false`
+`axiosConfig.form.create` 或 `axiosConfig.form.update` 被调用时值为 `true`，否则为 `false`
 
 ```vue
 <!-- 示例 -->
@@ -1157,10 +1221,8 @@ const { form } = useAdmate()
 ### 读取列表
 
 ```ts
-// 示例: 适配层提供 afterGetList
-
 useAdmateAdapter({}, {
-  afterGetList(res, trigger) {
+  onListRead(res, trigger) {
     // res 为接口返回值，trigger 为调用动机
     // 可访问 this（组件实例）
   }
@@ -1184,24 +1246,9 @@ watch(() => form.value.show, (n) => {
 - 读取表单后
 
 ```ts
-// 示例: 适配层提供 afterOpenForm
-
-useAdmateAdapter({}, {
-  afterOpenForm(res) {
+useAdmateAdapter({
+  onFormOpened(res) {
     // res 为接口返回值（新增时为空）
-    // 可访问 this（组件实例）
-  }
-})
-```
-
-- 读取表单后 (不含新增)
-
-```ts
-// 示例: 适配层提供 afterRetrieve
-
-useAdmateAdapter({}, {
-  afterRetrieve(res) {
-    // res 为接口返回值
     // 可访问 this（组件实例）
   }
 })
@@ -1214,10 +1261,8 @@ useAdmateAdapter({}, {
 - 提交表单前
 
 ```ts
-// 示例: 适配层提供 beforeSubmit
-
-useAdmateAdapter({}, {
-  beforeSubmit(form) {
+useAdmateAdapter({
+  onFormSubmit(form) {
     // 可访问 this（组件实例）
   }
 })
@@ -1226,10 +1271,8 @@ useAdmateAdapter({}, {
 - 提交表单后
 
 ```ts
-// 示例: 适配层提供 afterSubmit
-
-useAdmateAdapter({}, {
-  afterSubmit(res) {
+useAdmateAdapter({
+  onFormSubmitted(res) {
     // res 为接口返回值
     // 可访问 this（组件实例）
   }
@@ -1246,14 +1289,6 @@ watch(() => form.value.show, (n) => {
     // 关闭表单
   }
 })
-```
-
-<br>
-
-## 类型
-
-```ts
-type StatusType = '' | 'c' | 'r' | 'u' | string
 ```
 
 <br>

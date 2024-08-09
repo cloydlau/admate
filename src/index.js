@@ -1,49 +1,9 @@
 import { isVue3, onMounted, reactive, ref, watch } from 'vue-demi'
 import { conclude } from 'vue-global-config'
 import { assignIn, at, cloneDeep, debounce, isPlainObject, merge, set } from 'lodash-es'
-import type { AxiosInstance } from 'axios'
-import createAPIGenerator from './api-generator'
-import type { Actions, PayloadAs } from './api-generator'
+import createAPI from './api'
 
-type _GetList = (payload: any, payloadAs?: PayloadAs) => Promise<any>
-type _OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => Promise<any> | undefined
-type _SubmitForm = (params: any) => Promise<any>
-type MergeState = 'deep' | 'shallow'
-
-export type FormStatus = '' | 'c' | 'r' | 'u' | string
-export type MergeFormData = 'deep' | 'shallow' | false | ((newFormData: any) => any)
-export type GetListTrigger = 'init' | 'pageNumberChange' | 'filterChange' | 'c' | 'r' | 'u' | 'd' | 'updateStatus' | 'enable' | 'disable'
-export interface Form {
-  status?: FormStatus
-  show?: boolean
-  // closeDelay?: number | null,
-  // closed?: boolean,
-  data?: any
-  dataAt?: string | ((...args: any) => unknown) | symbol
-  mergeData?: MergeFormData
-  loading?: boolean
-  submitting?: boolean
-}
-export interface List {
-  filter: Record<keyof any, any>
-  pageNumberAt: string
-  watchFilter?: boolean
-  debounceInterval?: number
-  data?: any[]
-  dataAt?: string | ((...args: any) => unknown) | symbol
-  total?: number
-  totalAt?: string | ((...args: any) => unknown) | symbol
-  loading?: boolean
-}
-export type GetList = (...args: any) => Promise<unknown> | void
-export type OpenForm = (...args: any) => Form | Promise<any> | undefined
-export type SubmitForm = (...args: any) => Form | Promise<any> | undefined
-export type D = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-export type Enable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-export type Disable = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-export type UpdateStatus = (payload: any, payloadAs: PayloadAs) => Promise<unknown>
-
-export function getValue<V = any>(object: V, path?: string | ((object: V) => unknown) | symbol): any {
+export function getValue(object, path) {
   if (object && path) {
     switch (typeof path) {
       case 'string':
@@ -53,14 +13,14 @@ export function getValue<V = any>(object: V, path?: string | ((object: V) => unk
         return path(object)
       case 'symbol':
         if (isPlainObject(object)) {
-          return object[path as keyof typeof object]
+          return object[path]
         }
     }
   }
   return object
 }
 
-export function setValue<V = any>(object: V, path: string | ((object: V) => unknown) | symbol, value: any): any {
+export function setValue(object, path, value) {
   if (object && path) {
     switch (typeof path) {
       case 'string':
@@ -71,7 +31,7 @@ export function setValue<V = any>(object: V, path: string | ((object: V) => unkn
         return path(object)
       case 'symbol':
         if (isPlainObject(object)) {
-          object[path as keyof typeof object] = value
+          object[path] = value
         }
     }
   }
@@ -79,9 +39,9 @@ export function setValue<V = any>(object: V, path: string | ((object: V) => unkn
 }
 
 // 将接口返回值混入form.data
-function mergeFormData(_form: Form, newFormData?: any) {
+function mergeFormData(_form, newFormData) {
   if (_form.mergeData && isPlainObject(_form.data) && isPlainObject(newFormData)) {
-    // if (isProxy(_form.data)) { // vue 2中报错
+    // if (isProxy(_form.data)) { // vue 2 中报错
     if (isVue3) {
       // merge, assignIn 会改变原始对象
       // merge, assignIn 会改变原始对象
@@ -122,39 +82,16 @@ export default function useAdmate({
   axios,
   axiosConfig,
   urlPrefix,
-  form,
   list,
-  getListProxy,
-  openFormProxy,
-  submitFormProxy,
-}: {
-  axios: AxiosInstance
-  axiosConfig: Record<Actions, object | ((objForConfig: object) => object)>
-  urlPrefix: string
-  form?: Form
-  list?: List
-  getListProxy?: (getList: _GetList, trigger?: GetListTrigger) => void
-  openFormProxy?: (openForm: _OpenForm) => Promise<Form> | Form | undefined
-  submitFormProxy?: (submitForm: _SubmitForm) => Promise<Form> | Form | undefined
-}): {
-    list: List
-    getList: GetList
-    form: Form
-    openForm: OpenForm
-    submitForm: SubmitForm
-    d: D
-    enable: Enable
-    disable: Disable
-    updateStatus: UpdateStatus
-  } {
-  const apiGenerator = createAPIGenerator(axios)
-  const api = apiGenerator(urlPrefix, axiosConfig)
+  form,
+}) {
+  const api = createAPI(axios, axiosConfig, urlPrefix)
 
-  const getListTrigger = ref()
+  const readListTrigger = ref()
 
-  const getInitialList = (): List =>
+  const getInitialList = () =>
     conclude([list], {
-      default: (userProp: List) => ({
+      default: userProp => ({
         data: [],
         loading: false,
         total: 0,
@@ -167,9 +104,9 @@ export default function useAdmate({
       defaultIsDynamic: true,
     })
 
-  const _list: List = reactive(getInitialList())
+  const _list = reactive(getInitialList())
 
-  const getInitialForm = (): Form =>
+  const getInitialForm = () =>
     cloneDeep({
       status: '',
       show: false,
@@ -182,20 +119,15 @@ export default function useAdmate({
       ...form,
     })
 
-  const _form: Form = reactive(getInitialForm())
+  const _form = reactive(getInitialForm())
 
   // 设置表单的终态
   const setTerminalState = ({
-    // todo: vue 2中传参后再修改会丢失响应性
+    // todo: vue 2 中传参后再修改会丢失响应性
     // target,
     state,
     defaultState,
     mergeState = 'shallow',
-  }: {
-    target: Form | List
-    state?: Form | List
-    defaultState?: Form | List
-    mergeState?: MergeState
   }) => {
     const TERMINAL_STATE = conclude([state, defaultState])
     // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
@@ -208,11 +140,11 @@ export default function useAdmate({
     }
   }
 
-  const getList = (payload = _list.filter, payloadAs: PayloadAs): Promise<unknown> => {
+  const readList = (payload = _list.filter, payloadAs) => {
     _list.loading = true
     return api
       .getList(payload, payloadAs)
-      .then((response: unknown) => {
+      .then((response) => {
         _list.data = getValue(response, _list.dataAt) ?? []
         _list.total = _list.data?.length ? getValue(response, _list.totalAt) ?? 0 : 0
         return response
@@ -228,13 +160,13 @@ export default function useAdmate({
 
   let oldPageNumber = 1
 
-  const _getListProxy = (...args: any) => {
+  const _ReadListProxy = (...args) => {
     // console.log(`getListProxy 因 ${trigger} 被调用`)
     const newPageNumber = getValue(_list.filter, _list.pageNumberAt)
-    if (getListTrigger.value === 'filterChange' && newPageNumber !== 1) {
+    if (readListTrigger.value === 'filterChange' && newPageNumber !== 1) {
       // 如果改变的不是页码 页码重置为1 并拦截本次请求
       setValue(_list.filter, _list.pageNumberAt, 1)
-      getListTrigger.value = undefined
+      readListTrigger.value = undefined
       return
     }
 
@@ -242,14 +174,14 @@ export default function useAdmate({
 
     // args 是用户直接调用 getList 传的参，优先级低
     // args_proxy 是用户在 getListProxy 内部调用 getList 传的参，优先级高
-    const result = getListProxy
-      ? getListProxy(
-        (...args_proxy) => getList(...(args_proxy.length ? args_proxy : args) as [any, PayloadAs]),
-        getListTrigger.value,
+    const result = _list.proxy.read
+      ? _list.proxy.read(
+        (...args_proxy) => readList(...(args_proxy.length ? args_proxy : args)),
+        readListTrigger.value,
       )
-      : getList(...args as [any, PayloadAs])
+      : readList(...args)
 
-    getListTrigger.value = undefined
+    readListTrigger.value = undefined
 
     return result
 
@@ -287,50 +219,50 @@ export default function useAdmate({
   }
 
   // 删除单条记录
-  const d = (payload: any, payloadAs: PayloadAs) =>
+  _form.delete = (payload, payloadAs) =>
     api.d(payload, payloadAs).then((response) => {
       if (_list.data?.length === 1) {
         const currPageNumber = getValue(_list.filter, _list.pageNumberAt)
         if (currPageNumber === 1) {
-          getListTrigger.value = 'd'
-          _getListProxy()
+          readListTrigger.value = 'd'
+          _ReadListProxy()
         }
         else {
-          getListTrigger.value = 'd'
+          readListTrigger.value = 'd'
           setValue(_list.filter, _list.pageNumberAt, currPageNumber - 1)
           if (!_list.watchFilter) {
-            _getListProxy()
+            _ReadListProxy()
           }
         }
       }
       else {
-        getListTrigger.value = 'd'
-        _getListProxy()
+        readListTrigger.value = 'd'
+        _ReadListProxy()
       }
       return response
     })
 
   // 改变单条记录状态
-  const updateStatus = (payload: any, payloadAs: PayloadAs) =>
+  _form.switch = (payload, payloadAs) =>
     api.updateStatus(payload, payloadAs).then((response) => {
-      getListTrigger.value = 'updateStatus'
-      _getListProxy()
+      readListTrigger.value = 'updateStatus'
+      _ReadListProxy()
       return response
     })
 
   // 启用单条记录
-  const enable = (payload: any, payloadAs: PayloadAs) =>
+  _form.enable = (payload, payloadAs) =>
     api.enable(payload, payloadAs).then((response) => {
-      getListTrigger.value = 'enable'
-      _getListProxy()
+      readListTrigger.value = 'enable'
+      _ReadListProxy()
       return response
     })
 
   // 停用单条记录
-  const disable = (payload: any, payloadAs: PayloadAs) =>
+  _form.disable = (payload, payloadAs) =>
     api.disable(payload, payloadAs).then((response) => {
-      getListTrigger.value = 'disable'
-      _getListProxy()
+      readListTrigger.value = 'disable'
+      _ReadListProxy()
       return response
     })
 
@@ -345,7 +277,7 @@ export default function useAdmate({
     }
   */
 
-  const openForm: _OpenForm = (payload: any, payloadAs?: PayloadAs | 'cache') => {
+  _form.open = (payload, payloadAs) => {
     // 查看和编辑时，回显单条记录数据
     if (payload) {
       if (payloadAs === 'cache') {
@@ -355,7 +287,7 @@ export default function useAdmate({
       else {
         _form.loading = true
         _form.show = true
-        return api.r(payload, payloadAs).then((response: unknown) => {
+        return api.r(payload, payloadAs).then((response) => {
           mergeFormData(_form, getValue(response, _form.dataAt))
           return response
         })
@@ -363,25 +295,25 @@ export default function useAdmate({
     }
     else {
       // 查看时参数必传，编辑时可以不传因为可能是覆盖式编辑
-      if (_form.status === 'r' && !arguments.length) {
-        console.warn('表单状态为 \'r\' 时，openForm 的参数必传')
+      if (_form.status === 'read' && !arguments.length) {
+        console.warn('When the form status is \'read\', the parameter of `form.open` must be passed')
       }
 
       _form.show = true
     }
   }
 
-  const _openFormProxy = (...args: any) => {
+  const _openFormProxy = (...args) => {
     const result = openFormProxy
       ? openFormProxy((...args_proxy) =>
         // args 是用户直接调用 openForm 传的参，优先级低
         // args_proxy 是用户在 openFormProxy 内部调用 openForm 传的参，优先级高
-        openForm(...(args_proxy.length ? args_proxy : args) as [any, PayloadAs | 'cache']),
+        openForm(...(args_proxy.length ? args_proxy : args)),
       )
-      : openForm(...args as [any, PayloadAs | 'cache'])
+      : openForm(...args)
     if (result instanceof Promise) {
       result
-        .then((state?: Form) => {
+        .then((state) => {
           setTerminalState({
             target: _form,
             state,
@@ -390,7 +322,7 @@ export default function useAdmate({
             },
           })
         })
-        .catch((state?: Form) => {
+        .catch((state) => {
           setTerminalState({
             target: _form,
             state,
@@ -413,20 +345,20 @@ export default function useAdmate({
   }
 
   // 表单提交
-  const submitForm: _SubmitForm = (payload = _form.data, payloadAs?: PayloadAs) => {
+  const submitForm = (payload = _form.data, payloadAs) => {
     if (!_form.status || !['c', 'u'].includes(_form.status)) {
       throw new Error('submitForm can only be called when the form status is \'c\' or \'u\'')
     }
 
     _form.submitting = true
     return api[_form.status](payload, payloadAs).then((response) => {
-      getListTrigger.value = _form.status
-      _getListProxy()
+      readListTrigger.value = _form.status
+      _ReadListProxy()
       return response
     })
   }
 
-  const _submitFormProxy = (params: any) => {
+  const _submitFormProxy = (params) => {
     const result = submitFormProxy
       ? submitFormProxy((...args) =>
         // params 是用户直接调用 submitForm 传的参，优先级低
@@ -436,7 +368,7 @@ export default function useAdmate({
       : submitForm(params)
     if (result instanceof Promise) {
       result
-        .then((state?: Form) => {
+        .then((state) => {
           setTerminalState({
             target: _form,
             state,
@@ -445,7 +377,7 @@ export default function useAdmate({
             },
           })
         })
-        .catch((state?: Form) => {
+        .catch((state) => {
           setTerminalState({
             target: _form,
             state,
@@ -487,22 +419,22 @@ export default function useAdmate({
 
   // 重置所有数据
   /* const destroy = () => {
-    getListDebounced.value = null
+    readListDebounced.value = null
     Object.assign(_list, getInitialList())
     Object.assign(_form, getInitialForm())
   } */
 
   // 首次获取列表
-  getListTrigger.value = 'init'
-  _getListProxy()
+  readListTrigger.value = 'init'
+  _ReadListProxy()
 
   onMounted(() => {
     // 筛选项改变时，刷新列表
     if (_list.watchFilter) {
-      const getListDebounced = ref(
+      const readListDebounced = ref(
         debounce(() => {
-          getListTrigger.value = 'filterChange'
-          _getListProxy()
+          readListTrigger.value = 'filterChange'
+          _ReadListProxy()
         }, _list.debounceInterval),
       )
 
@@ -512,13 +444,13 @@ export default function useAdmate({
           () => _list.filter,
           () => {
             if (getValue(_list.filter, _list.pageNumberAt) === oldPageNumber) {
-              getListDebounced.value()
+              readListDebounced.value()
             }
             else {
               // 翻页不需要防抖
               // ||= 的原因是删除当前分页最后一条记录时也会触发翻页
-              getListTrigger.value ??= 'pageNumberChange'
-              _getListProxy()
+              readListTrigger.value ??= 'pageNumberChange'
+              _ReadListProxy()
             }
           },
           {
@@ -540,15 +472,5 @@ export default function useAdmate({
     //destroy()
   }) */
 
-  return {
-    list: _list,
-    getList: _getListProxy,
-    form: _form,
-    openForm: _openFormProxy,
-    submitForm: _submitFormProxy,
-    d,
-    enable,
-    disable,
-    updateStatus,
-  }
+  return { list: _list, form: _form }
 }
