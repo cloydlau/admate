@@ -16,7 +16,7 @@ export default (
     },
 
     // 是否在初始化时读取列表
-    readListInitially = true,
+    readListImmediately = true,
 
     // 列表筛选参数的初始值，用于动态获取的参数，比如时间
     // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
@@ -64,33 +64,23 @@ export default (
     // 自定义钩子函数 - 读取列表后
     // 参数1为接口返回值，参数2为触发动机
     // 可访问 this（组件实例）
-    afterReadList = function () {},
-
-    // 自定义钩子函数 - 读取表单后（新增时不触发）
-    // 参数为接口返回值
-    // 可访问 this（组件实例）
-    afterReadForm = function () {},
+    onListRead = function () {},
 
     // 自定义钩子函数 - 打开表单后
     // 参数为接口返回值（新增时为空）
     // 可访问 this（组件实例）
-    afterOpenForm = function () {},
+    onFormOpened = function () {},
 
     // 自定义钩子函数 - 提交表单前
     // 参数为 form
     // 可访问 this（组件实例）
     // 返回 false 以阻止提交
-    beforeSubmit = function () {},
+    onFormSubmit = function () {},
 
     // 自定义钩子函数 - 提交表单后
     // 参数为接口返回值
     // 可访问 this（组件实例）
-    afterSubmit = function () {},
-
-    // 是否为复制新增
-    checkCopy = function () {
-      return false
-    },
+    onFormSubmitted = function () {},
   }
   = {},
 ) => {
@@ -185,13 +175,13 @@ export default (
           watchFilter: false,
           proxy: {
             read(readList, trigger) {
-              if (!readListInitially && trigger === 'init') {
+              if (!readListImmediately && trigger === 'init') {
                 return
               }
 
               function readListWithHook() {
                 return readList().then((data) => {
-                  afterReadList(data, trigger)
+                  onListRead(data, trigger)
                   return data
                 })
               }
@@ -236,7 +226,7 @@ export default (
               // 打开表单后的回调
               // function callback(res?) {
               function callback(res) {
-                let endState = afterOpenForm(res)
+                let endState = onFormOpened(res)
                 if (form.status !== 'c') {
                   endState = afterReadForm(res)
                 }
@@ -275,16 +265,16 @@ export default (
                   submitForm()
                     .then((res) => {
                       // 返回值用于设置 form 的终态
-                      resolve(afterSubmit(res))
+                      resolve(onFormSubmitted(res))
                     })
                     .catch((e) => {
                       console.error(e)
                       // 返回值用于设置 form 的终态
-                      reject(afterSubmit(e))
+                      reject(onFormSubmitted(e))
                     })
                 }
                 validateFormData().then(async () => {
-                  const result = await beforeSubmit(form)
+                  const result = await onFormSubmit(form)
                   if (result instanceof Promise) {
                     result
                       .then(() => {
@@ -356,11 +346,11 @@ export default (
     )
     validateFormData = validateFormData.bind(currentInstance.value)
 
-    afterReadList = afterReadList.bind(currentInstance.value)
+    onListRead = onListRead.bind(currentInstance.value)
     afterReadForm = afterReadForm.bind(currentInstance.value)
-    afterOpenForm = afterOpenForm.bind(currentInstance.value)
-    beforeSubmit = beforeSubmit.bind(currentInstance.value)
-    afterSubmit = afterSubmit.bind(currentInstance.value)
+    onFormOpened = onFormOpened.bind(currentInstance.value)
+    onFormSubmit = onFormSubmit.bind(currentInstance.value)
+    onFormSubmitted = onFormSubmitted.bind(currentInstance.value)
 
     initializeListFilter.call(currentInstance.value)
   })
