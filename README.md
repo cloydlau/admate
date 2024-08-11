@@ -44,25 +44,6 @@
 
 <br>
 
-## 对比
-
-| 案例                                                                                                            | 技术栈                       |                                  业务代码量（字符数）                                   |
-| --------------------------------------------------------------------------------------------------------------- | ---------------------------- | :-------------------------------------------------------------------------------------: |
-| [常规增删查改页面](https://github.com/PanJiaChen/vue-element-admin/blob/main/src/views/table/complex-table.vue) | Vue 2 + Element              |                                         13,330                                          |
-| 常规增删查改页面                                                                                                | Vue 2 + Element + **Admate** |                                      **约 5,000**                                       |
-| 对接[支付宝进件](https://opendocs.alipay.com/pre-apis/00a8e3)                                                   | Vue 2 + Element              |   89,293<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span>   |
-| 对接[微信进件](https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_1_1.shtml)                        | Vue 2 + Element + **Admate** | **38,718**<br><span style="color:rgba(28,31,35,.6);font-size:12px;">（表单部分）</span> |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element              |                                         425,885                                         |
-| 电商后台的商品管理                                                                                              | Vue 2 + Element + **Admate** |                                       **235,979**                                       |
-
-<br>
-
-## 架构
-
-![架构图](https://raw.githubusercontent.com/cloydlau/admate/main/docs/architecture-diagram.png)
-
-<br>
-
 ## 安装
 
 ```shell
