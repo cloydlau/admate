@@ -834,7 +834,7 @@ import useAdmate from 'admate'
 const { form } = useAdmate({
   axiosConfig: {
     form: {
-      u: {
+      update: {
         // ...
       },
       switch: {
