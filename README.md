@@ -29,7 +29,7 @@
 
 - 🖖 **Vue 2.6/2.7/3 一体通用** - 零成本升级
 - 🔓 **解耦合 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码如 Vuetify，Element，AntDesignVue，Quasar 和 PrimeVue
-- 🤝 **后台模板友好** - 可集成进任意管理后台模板如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a>
+- 🤝 **后台模板友好** - 可集成进任意管理后台模板如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a>，<a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a> 或 <a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a>
 - 🌐 **规整统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
@@ -165,10 +165,6 @@ useAdmate({
       delete: {},
       // 切换状态
       switch: {},
-      // 启用
-      enable: {},
-      // 禁用
-      disable: {},
     },
   },
 })
@@ -228,14 +224,6 @@ const { list, form } = useAdmate({
         method: 'PUT',
         url: `module/${payload.id}`,
       }),
-      enable: payload => ({
-        method: 'PUT',
-        url: `module/${payload.id}`,
-      }),
-      disable: payload => ({
-        method: 'PUT',
-        url: `module/${payload.id}`,
-      }),
     },
   }
 })
@@ -246,8 +234,6 @@ form.read({ id: 1 }, 'config')
 form.update({ id: 1 }, 'config')
 form.delete({ id: 1 }, 'config')
 form.swtich({ id: 1 }, 'config')
-form.enable({ id: 1 }, 'config')
-form.disable({ id: 1 }, 'config')
 ```
 
 <br>
@@ -262,7 +248,7 @@ form.disable({ id: 1 }, 'config')
 
 - 局部配置
 
-`list.read`、`form.open`、`form.delete`、`form.switch`、`form.enable`、`form.disable`、`form.submit` 的参数 1 均支持 FormData 类型
+`list.read`、`form.open`、`form.delete`、`form.switch`、`form.submit` 的参数 1 均支持 FormData 类型
 
 ```vue
 <!-- 示例: 局部配置 -->
@@ -448,7 +434,7 @@ useAdmate({
     proxy: {
       /**
        * @param {Function} readList 被代理的原始 readList
-       * @param {string} trigger 调用动机 可能的值: 'immediate' 'pageNumberChange' 'filterChange' 'create' 'read' 'update' 'delete' 'switch' 'enable' 'disable'
+       * @param {string} trigger 调用动机 可能的值: 'immediate' 'pageNumberChange' 'filterChange' 'create' 'read' 'update' 'delete' 'switch'
        */
       read(readList, trigger) {},
     },
@@ -485,7 +471,7 @@ useAdmate({
     proxy: {
       read(readList, trigger) {
         readList()
-        if (['create', 'upadte', 'delete', 'switch', 'enable', 'disable'].includes(trigger)) {
+        if (['create', 'upadte', 'delete', 'switch'].includes(trigger)) {
           currentInstance.value.$message.success('操作成功')
         }
       },
@@ -788,8 +774,6 @@ form.delete()
 
 1. 后端提供一个统一的接口，传参指定新的状态
 
-> 使用 `form.switch()`
-
 ```vue
 <script setup>
 import useAdmate from 'admate'
@@ -823,13 +807,20 @@ form.switch()
 
 2. 后端提供启用和停用两个接口
 
-> 使用 `form.enable()` 和 `form.disable()`
-
 ```vue
 <script setup>
 import useAdmate from 'admate'
 
-const { form } = useAdmate()
+const { form } = useAdmate({
+  axiosConfig: {
+    form: {
+      switch: ({ id, status }) => ({
+        method: 'PUT',
+        url: `${status === 1 ? 'enable' : `disable`}/${id}`,
+      }),
+    }
+  },
+})
 
 /**
  * @param {any} [payload]
@@ -837,19 +828,9 @@ const { form } = useAdmate()
  *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
  *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
  *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
- * @returns {Promise<any>} axiosConfig.form.enable 的返回值
+ * @returns {Promise<any>} axiosConfig.form.switch 的返回值
  */
-
-form.enable()
-/**
- * @param {any} [payload]
- * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
- * @returns {Promise<any>} axiosConfig.form.disable 的返回值
- */
-form.disable()
+form.switch()
 </script>
 
 <template>
@@ -859,7 +840,7 @@ form.disable()
       align="center"
     >
       <template #default="{ row: { id, status } }">
-        <el-switch @change="[form.enable, form.disable][status]({ id })" />
+        <el-switch @change="form.switch({ id, status: status ^ 1 }, 'config')" />
       </template>
     </el-table-column>
   </el-table>
@@ -868,8 +849,6 @@ form.disable()
 
 3. 后端未提供独立的接口，使用编辑接口改变状态
 
-> 把 `form.switch()` 当作 `form.update()` 来使用
-
 ```vue
 <script setup>
 import useAdmate from 'admate'
@@ -877,6 +856,9 @@ import useAdmate from 'admate'
 const { form } = useAdmate({
   axiosConfig: {
     form: {
+      u: {
+        // ...
+      },
       switch: {
         // 按编辑接口进行配置
       },
