@@ -162,12 +162,12 @@ useAdmate({
 // 示例: URL 前缀不统一
 
 useAdmate({
-  urlPrefix: 'somepage',
+  urlPrefix: 'module1',
   axiosConfig: {
     list: {
       read: {
         // 如果某个接口的前缀不是 'somepage'，可以在 URL 前面加斜线，即可忽略该前缀
-        url: '/anotherpage/selectOne',
+        url: '/module2/selectOne',
       }
     }
   }
@@ -183,23 +183,24 @@ useAdmate({
 ```ts
 // 配置
 const { list, form } = useAdmate({
+  urlPrefix: 'module',
   axiosConfig: {
     form: {
-      read: payload => ({
+      read: ({ id }) => ({
         method: 'GET',
-        url: `module/${payload.id}`,
+        url: id,
       }),
-      update: payload => ({
+      update: ({ id }) => ({
         method: 'PUT',
-        url: `module/${payload.id}`,
+        url: id,
       }),
-      delete: payload => ({
+      delete: ({ id }) => ({
         method: 'DELETE',
-        url: `module/${payload.id}`,
+        url: id,
       }),
-      switch: payload => ({
+      switch: ({ id }) => ({
         method: 'PUT',
-        url: `module/${payload.id}`,
+        url: id,
       }),
     },
   }
