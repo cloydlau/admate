@@ -12,7 +12,6 @@ export default {
 
 <template>
   <div>
-    Vue 2 UI Framework demo:
     <span
       v-for="({ path }, i) of routes"
       :key="i"

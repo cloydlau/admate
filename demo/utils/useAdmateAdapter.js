@@ -1,9 +1,13 @@
-import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue-demi'
 import { FaMessageBox } from 'faim'
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
+// import VueCompositionAPI from '@vue/composition-api'
 import useAdmate from '../../src'
 import http from '@/utils/http'
+
+// Vue@2.6 or earlier only
+// Vue.use(VueCompositionAPI)
 
 export default (
   admateConfig,
