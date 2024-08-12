@@ -8,16 +8,6 @@ import http from '@/utils/http'
 export default (
   admateConfig,
   {
-    // 表单标题
-    formTitleMap = {
-      create: '新增',
-      read: '查看',
-      update: '编辑',
-    },
-
-    // 是否在初始化时读取列表
-    readListImmediately = true,
-
     // 列表筛选参数的初始值，用于动态获取的参数，比如时间
     // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
     // 所以需要调方法动态获取
@@ -36,10 +26,26 @@ export default (
       return getElFormRefOfListFilter()?.validate()
     },
 
+    // 清除列表筛选项校验
+    // 可访问 this（组件实例）
+    clearValidateOfListFilter = function () {
+      return getElFormRefOfListFilter()?.clearValidate()
+    },
+
     // 重置列表筛选项
     // 可访问 this（组件实例）
     resetListFilter = function () {
       return getElFormRefOfListFilter().resetFields()
+    },
+
+    // 是否在初始化时读取列表
+    readListImmediately = true,
+
+    // 表单标题
+    formTitleMap = {
+      create: '新增',
+      read: '查看',
+      update: '编辑',
     },
 
     // 获取详情的表单 ref
@@ -49,22 +55,27 @@ export default (
       return this?.$refs.formRef
     },
 
-    // 清除详情表单校验
-    // 可访问 this（组件实例）
-    clearValidateOfFormData = function () {
-      return getElFormRefOfFormData()?.clearValidate()
-    },
-
     // 校验详情表单
     // 可访问 this（组件实例）
     validateFormData = function () {
       return getElFormRefOfFormData().validate()
     },
 
+    // 清除详情表单校验
+    // 可访问 this（组件实例）
+    clearValidateOfFormData = function () {
+      return getElFormRefOfFormData()?.clearValidate()
+    },
+
     // 自定义钩子函数 - 读取列表后
     // 参数1为接口返回值，参数2为触发动机
     // 可访问 this（组件实例）
     onListRead = function () {},
+
+    // 自定义钩子函数 - 读取表单后（新增时不触发）
+    // 参数为接口返回值
+    // 可访问 this（组件实例）
+    onFormRead = function () {},
 
     // 自定义钩子函数 - 打开表单后
     // 参数为接口返回值（新增时为空）
@@ -98,29 +109,8 @@ export default (
         axios: http,
         axiosConfig: {
           list: {
-            create: {
-              method: 'POST',
-            },
             read: {
               url: 'list',
-              method: 'POST',
-            },
-            update: {
-              method: 'POST',
-            },
-            delete: {
-              method: 'POST',
-            },
-            updateStatus: {
-              url: 'status',
-              method: 'POST',
-            },
-            enable: {
-              url: 'enable',
-              method: 'POST',
-            },
-            disable: {
-              url: 'disable',
               method: 'POST',
             },
           },
@@ -137,16 +127,8 @@ export default (
             delete: {
               method: 'POST',
             },
-            updateStatus: {
+            switch: {
               url: 'status',
-              method: 'POST',
-            },
-            enable: {
-              url: 'enable',
-              method: 'POST',
-            },
-            disable: {
-              url: 'disable',
               method: 'POST',
             },
           },
@@ -228,7 +210,7 @@ export default (
               function callback(res) {
                 let endState = onFormOpened(res)
                 if (form.status !== 'c') {
-                  endState = afterReadForm(res)
+                  endState = onFormRead(res)
                 }
 
                 // 回显表单后，清除校验
@@ -347,7 +329,7 @@ export default (
     validateFormData = validateFormData.bind(currentInstance.value)
 
     onListRead = onListRead.bind(currentInstance.value)
-    afterReadForm = afterReadForm.bind(currentInstance.value)
+    onFormRead = onFormRead.bind(currentInstance.value)
     onFormOpened = onFormOpened.bind(currentInstance.value)
     onFormSubmit = onFormSubmit.bind(currentInstance.value)
     onFormSubmitted = onFormSubmitted.bind(currentInstance.value)
@@ -357,27 +339,18 @@ export default (
 
   return toRefs(
     reactive({
+      // 列表
       list,
-      form: {
-        ...form,
-        create: (...args) => {
-          form.status = 'c'
-          // 复制新增需要传参，常规新增不需要
-          return form.open(...(checkCopy() ? args : []))
-        },
-        read: (...args) => {
-          form.status = 'r'
-          return form.open(...args)
-        },
-        update: (...args) => {
-          form.status = 'u'
-          return form.open(...args)
-        },
-      },
-      formTitle: computed(() => formTitleMap[form.status]),
-      formTitleMap,
-      // 重置筛选条件
-      reset: () => {
+      // 列表筛选项表单的 ref
+      listFilterRef,
+      // 给筛选项赋初值，使得重置功能能够正常工作
+      initializeListFilter,
+      // 校验列表筛选项
+      validateListFilter,
+      // 清除列表筛选项校验
+      clearValidateOfListFilter,
+      // 重置列表
+      resetList: () => {
         resetListFilter()
         if (initialListFilter) {
           list.filter = {
@@ -389,28 +362,20 @@ export default (
           list.read()
         }
       },
-      // 读取列表（监听筛选条件时不需要）
+      // 校验筛选项并读取列表首页
       queryList: async () => {
         await validateListFilter()
         list.filter.page.pageNo = 1
         list.read()
       },
-      // 当前 Vue 实例
-      currentInstance,
-      // 列表筛选项表单的 ref
-      listFilterRef,
+      // 表单
+      form,
       // 详情的 ref
       formRef,
-      // 校验列表筛选项
-      validateListFilter,
-      // 重置列表筛选项
-      resetListFilter,
-      // 清除详情表单校验
-      clearValidateOfFormData,
-      // 校验详情表单
-      validateFormData,
-      // 给筛选项赋初值，使得重置功能能够正常工作
-      initializeListFilter,
+      // 表单标题
+      formTitle: computed(() => formTitleMap[form.status]),
+      // 表单标题字典
+      formTitleMap,
     }),
   )
 }

@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
-  中后台 CRUD 前端框架，极致简洁的基础上不向灵活性妥协，
+  中后台 CRUD 前端元框架，极致简洁的基础上不向灵活性妥协，
   <br>
   致力于攻克「页面重复度高，提取公共代码却难以兼顾定制化需求」的痛点。
 </p>
@@ -1206,9 +1206,24 @@ watch(() => form.value.show, (n) => {
 - 读取表单后
 
 ```ts
+// 示例: 适配层提供 onFormOpened
+
 useAdmateAdapter({
   onFormOpened(res) {
     // res 为接口返回值（新增时为空）
+    // 可访问 this（组件实例）
+  }
+})
+```
+
+- 读取表单后 (不含新增)
+
+```ts
+// 示例: 适配层提供 onFormRead
+
+useAdmateAdapter({}, {
+  onFormRead(res) {
+    // res 为接口返回值
     // 可访问 this（组件实例）
   }
 })
