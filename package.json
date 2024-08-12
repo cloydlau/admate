@@ -1,7 +1,7 @@
 {
   "name": "admate",
   "PascalCasedName": "Admate",
-  "version": "0.10.2",
+  "version": "1.0.0-alpha.0",
   "private": false,
   "description": "Admin CRUD frontend meta framework for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": {

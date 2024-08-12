@@ -35,7 +35,7 @@ export default {
   build: {
     lib: {
       name,
-      entry: 'src/index.ts',
+      entry: 'src/index.js',
     },
     sourcemap: true,
     rollupOptions: {
