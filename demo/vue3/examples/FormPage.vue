@@ -1,48 +1,56 @@
 <script setup>
-import { ref } from 'vue'
+import Vue, { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
-const formRef = ref(null)
+const formRef = ref()
 const route = useRoute()
 const router = useRouter()
 
+const back = function () {
+  router.push('/form-decoupled')
+}
+
 const {
   form,
-  openForm,
   formTitle,
-  submitForm,
   validateFormData,
-  currentInstance,
 } = useAdmateAdapter({
-  urlPrefix: route.query.urlPrefix,
-  getListProxy(getList, trigger) {
-    // 不需要获取列表
+  axiosConfig: {
+    urlPrefix: route.query.urlPrefix,
   },
-  submitFormProxy(submitForm) {
-    return new Promise((resolve, reject) => {
-      validateFormData().then(() => {
-        submitForm().then(() => {
-          currentInstance.value.$message.success('操作成功')
-          back()
-        }).catch(() => {
-          reject()
+  list: {
+    proxy: {
+      read() {
+        // 不需要获取列表
+      },
+    },
+  },
+  form: {
+    ...JSON.parse(route.query.form),
+    proxy: {
+      submit(submitForm) {
+        return new Promise((resolve, reject) => {
+          validateFormData().then(() => {
+            submitForm().then(() => {
+              Vue.prototype.$message.success('操作成功')
+              back()
+            }).catch(() => {
+              // eslint-disable-next-line prefer-promise-reject-errors
+              reject()
+            })
+          })
         })
-      })
-    })
+      },
+    },
   },
-  form: JSON.parse(route.query.form),
 }, {
   getElFormRefOfFormData() {
     return formRef.value
   },
 })
 
-openForm.value()
-
-const back = function () {
-  router.push('/form-decoupled')
-}
+form.value.open()
 </script>
 
 <template>
@@ -67,7 +75,7 @@ const back = function () {
       v-if="form.status !== 'r' && !form.loading"
       type="primary"
       :loading="form.submitting"
-      @click="() => { submitForm() }"
+      @click="form.submit()"
     >
       确 定
     </el-button>

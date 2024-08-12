@@ -1,23 +1,18 @@
 <script setup>
-import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import { API_PREFIX as urlPrefix } from '../../mock/crud'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,
-  form,
-  getList,
-  c,
-  r,
-  u,
-  d,
-  updateStatus,
-  submitForm,
-  formTitle,
-  queryList,
   listFilterRef,
+  queryList,
+  form,
   formRef,
+  formTitle,
 } = useAdmateAdapter({
-  urlPrefix,
+  axiosConfig: {
+    urlPrefix,
+  },
 }, {
   getElFormRefOfFormData() {
     return formRef.value
@@ -45,6 +40,7 @@ const {
         <el-select
           v-model="list.filter.status"
           placeholder="状态"
+          w="180px!"
         >
           <el-option
             v-for="(v, i) of ['停用', '启用']"
@@ -76,7 +72,7 @@ const {
       <div>
         <el-button
           type="primary"
-          @click="c"
+          @click="form.create()"
         >
           新增
         </el-button>
@@ -86,8 +82,8 @@ const {
         v-model:current-page="list.filter.page.pageNo"
         v-model:page-size="list.filter.page.pageSize"
         :total="list.total"
-        @current-change="getList()"
-        @size-change="getList()"
+        @current-change="list.read()"
+        @size-change="list.read()"
       />
     </div>
 
@@ -103,19 +99,19 @@ const {
         <template #default="{ row }">
           <el-button
             text
-            @click="r(row)"
+            @click="form.read(row)"
           >
             查看
           </el-button>
           <el-button
             text
-            @click="u(row)"
+            @click="form.update(row)"
           >
             编辑
           </el-button>
           <el-button
             text
-            @click="d(row)"
+            @click="form.delete(row)"
           >
             删除
           </el-button>
@@ -131,7 +127,7 @@ const {
         ref="formRef"
         v-loading="form.loading"
         :model="form.data"
-        :disabled="form.status === 'r' || form.submitting"
+        :disabled="form.status === 'read' || form.submitting"
       >
         <el-form-item
           label="姓名"
@@ -146,10 +142,10 @@ const {
           取 消
         </el-button>
         <el-button
-          v-if="form.status !== 'r' && !form.loading"
+          v-if="form.status !== 'read' && !form.loading"
           type="primary"
           :loading="form.submitting"
-          @click="() => { submitForm() }"
+          @click="form.submit()"
         >
           确 定
         </el-button>

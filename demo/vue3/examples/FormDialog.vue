@@ -4,8 +4,9 @@ import { ref } from 'vue'
 const props = defineProps({
   form: Object,
   formTitle: String,
-  submitForm: Function,
 })
+
+const { form, formTitle } = props
 
 const elFormRef = ref()
 </script>
@@ -19,7 +20,7 @@ const elFormRef = ref()
       ref="elFormRef"
       v-loading="form.loading"
       :model="form.data"
-      :disabled="form.status === 'r' || form.submitting"
+      :disabled="form.status === 'read' || form.submitting"
     >
       <el-form-item
         label="姓名"
@@ -32,16 +33,13 @@ const elFormRef = ref()
     <template #footer>
       <el-button @click="form.show = false">取 消</el-button>
       <el-button
-        v-if="form.status !== 'r' && !form.loading"
+        v-if="form.status !== 'read' && !form.loading"
         type="primary"
         :loading="form.submitting"
-        @click="() => { submitForm() }"
+        @click="form.submit()"
       >
         确 定
       </el-button>
     </template>
   </el-dialog>
 </template>
-
-<style lang="scss" scoped>
-</style>

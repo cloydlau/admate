@@ -39,53 +39,52 @@ export function setValue(object, path, value) {
 }
 
 // 将接口返回值混入form.data
-function mergeFormData(_form, newFormData) {
-  if (_form.mergeData && isPlainObject(_form.data) && isPlainObject(newFormData)) {
-    // if (isProxy(_form.data)) { // vue 2 中报错
+function mergeFormData(formExported, newFormData) {
+  if (formExported.mergeData && isPlainObject(formExported.data) && isPlainObject(newFormData)) {
+    // if (isProxy(formExported.data)) { // vue 2 中报错
     if (isVue3) {
       // merge, assignIn 会改变原始对象
       // merge, assignIn 会改变原始对象
-      if (_form.mergeData === 'deep') {
-        merge(_form.data, newFormData)
+      if (formExported.mergeData === 'deep') {
+        merge(formExported.data, newFormData)
       }
-      else if (_form.mergeData === 'shallow') {
-        assignIn(_form.data, newFormData)
+      else if (formExported.mergeData === 'shallow') {
+        assignIn(formExported.data, newFormData)
       }
-      else if (typeof _form.mergeData === 'function') {
-        _form.mergeData(newFormData)
+      else if (typeof formExported.mergeData === 'function') {
+        formExported.mergeData(newFormData)
       }
     }
     else {
       // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
       // https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1
       // 可选择直接赋值，或者 Vue.set
-      if (_form.mergeData === 'deep') {
-        _form.data = merge(cloneDeep(_form.data), newFormData)
+      if (formExported.mergeData === 'deep') {
+        formExported.data = merge(cloneDeep(formExported.data), newFormData)
       }
-      else if (_form.mergeData === 'shallow') {
-        _form.data = {
-          ..._form.data,
+      else if (formExported.mergeData === 'shallow') {
+        formExported.data = {
+          ...formExported.data,
           ...newFormData,
         }
       }
-      else if (typeof _form.mergeData === 'function') {
-        _form.mergeData(newFormData)
+      else if (typeof formExported.mergeData === 'function') {
+        formExported.mergeData(newFormData)
       }
     }
   }
   else {
-    _form.data = newFormData
+    formExported.data = newFormData
   }
 }
 
 export default function useAdmate({
   axios,
   axiosConfig,
-  urlPrefix,
   list,
   form,
 }) {
-  const api = createAPI(axios, axiosConfig, urlPrefix)
+  const api = createAPI(axios, axiosConfig)
 
   const readListTrigger = ref()
 
@@ -104,7 +103,7 @@ export default function useAdmate({
       defaultIsDynamic: true,
     })
 
-  const _list = reactive(getInitialList())
+  const listExported = reactive(getInitialList())
 
   const getInitialForm = () =>
     cloneDeep({
@@ -119,10 +118,10 @@ export default function useAdmate({
       ...form,
     })
 
-  const _form = reactive(getInitialForm())
+  const formExported = reactive(getInitialForm())
 
   // 设置表单的终态
-  const setTerminalState = ({
+  const setTerminalFormState = ({
     // todo: vue 2 中传参后再修改会丢失响应性
     // target,
     state,
@@ -133,50 +132,48 @@ export default function useAdmate({
     // merge, assignIn, Object.assign 对对象属性的修改在 vue 2中无法触发更新
     // 但是对于对象本身是可以生效的，且直接赋值反而无效
     if (mergeState === 'deep') {
-      merge(_form, TERMINAL_STATE)
+      merge(formExported, TERMINAL_STATE)
     }
     else {
-      assignIn(_form, TERMINAL_STATE)
+      assignIn(formExported, TERMINAL_STATE)
     }
   }
 
-  const readList = (payload = _list.filter, payloadAs) => {
-    _list.loading = true
-    return api
-      .getList(payload, payloadAs)
+  const readList = (payload = listExported.filter, payloadAs) => {
+    listExported.loading = true
+    return api.list.read(payload, payloadAs)
       .then((response) => {
-        _list.data = getValue(response, _list.dataAt) ?? []
-        _list.total = _list.data?.length ? getValue(response, _list.totalAt) ?? 0 : 0
+        listExported.data = getValue(response, listExported.dataAt) ?? []
+        listExported.total = listExported.data?.length ? getValue(response, listExported.totalAt) ?? 0 : 0
         return response
       })
       .catch(() => {
-        // _list.data.length = 0 // _list.data 可能为空
-        _list.data = []
+        // listExported.data.length = 0 // listExported.data 可能为空
+        listExported.data = []
       })
       .finally(() => {
-        _list.loading = false
+        listExported.loading = false
       })
   }
 
   let oldPageNumber = 1
 
-  const _ReadListProxy = (...args) => {
-    // console.log(`getListProxy 因 ${trigger} 被调用`)
-    const newPageNumber = getValue(_list.filter, _list.pageNumberAt)
+  listExported.read = (...args) => {
+    const newPageNumber = getValue(listExported.filter, listExported.pageNumberAt)
     if (readListTrigger.value === 'filterChange' && newPageNumber !== 1) {
-      // 如果改变的不是页码 页码重置为1 并拦截本次请求
-      setValue(_list.filter, _list.pageNumberAt, 1)
+      // 如果改变的不是页码，页码重置为1，并拦截本次请求
+      setValue(listExported.filter, listExported.pageNumberAt, 1)
       readListTrigger.value = undefined
       return
     }
 
     oldPageNumber = newPageNumber
 
-    // args 是用户直接调用 getList 传的参，优先级低
-    // args_proxy 是用户在 getListProxy 内部调用 getList 传的参，优先级高
-    const result = _list.proxy.read
-      ? _list.proxy.read(
-        (...args_proxy) => readList(...(args_proxy.length ? args_proxy : args)),
+    // args 是用户直接调用 list.read 传的参，优先级低
+    // argsProxy 是用户在 list.proxy.read 内部调用 readList 传的参，优先级高
+    const result = listExported.proxy.read
+      ? listExported.proxy.read(
+        (...argsProxy) => readList(...(argsProxy.length ? argsProxy : args)),
         readListTrigger.value,
       )
       : readList(...args)
@@ -191,16 +188,16 @@ export default function useAdmate({
       // 在catch中能拿到用户reject或者在catch中return的参数
       // 在finally中拿不到参数
       result.then((state?: List) => {
-        setTerminalState({
-          target: _list,
+        setTerminalFormState({
+          target: listExported,
           state,
           defaultState: {
             loading: false
           }
         })
       }).catch((state?: List) => {
-        setTerminalState({
-          target: _list,
+        setTerminalFormState({
+          target: listExported,
           state,
           defaultState: {
             loading: false
@@ -208,8 +205,8 @@ export default function useAdmate({
         })
       })
     } else {
-      setTerminalState({
-        target: _list,
+      setTerminalFormState({
+        target: listExported,
         state: result,
         defaultState: {
           loading: false
@@ -219,50 +216,34 @@ export default function useAdmate({
   }
 
   // 删除单条记录
-  _form.delete = (payload, payloadAs) =>
-    api.d(payload, payloadAs).then((response) => {
-      if (_list.data?.length === 1) {
-        const currPageNumber = getValue(_list.filter, _list.pageNumberAt)
+  formExported.delete = (payload, payloadAs) =>
+    api.form.delete(payload, payloadAs).then((response) => {
+      if (listExported.data?.length === 1) {
+        const currPageNumber = getValue(listExported.filter, listExported.pageNumberAt)
         if (currPageNumber === 1) {
-          readListTrigger.value = 'd'
-          _ReadListProxy()
+          readListTrigger.value = 'delete'
+          listExported.read()
         }
         else {
-          readListTrigger.value = 'd'
-          setValue(_list.filter, _list.pageNumberAt, currPageNumber - 1)
-          if (!_list.watchFilter) {
-            _ReadListProxy()
+          readListTrigger.value = 'delete'
+          setValue(listExported.filter, listExported.pageNumberAt, currPageNumber - 1)
+          if (!listExported.watchFilter) {
+            listExported.read()
           }
         }
       }
       else {
-        readListTrigger.value = 'd'
-        _ReadListProxy()
+        readListTrigger.value = 'delete'
+        listExported.read()
       }
       return response
     })
 
   // 改变单条记录状态
-  _form.switch = (payload, payloadAs) =>
-    api.updateStatus(payload, payloadAs).then((response) => {
-      readListTrigger.value = 'updateStatus'
-      _ReadListProxy()
-      return response
-    })
-
-  // 启用单条记录
-  _form.enable = (payload, payloadAs) =>
-    api.enable(payload, payloadAs).then((response) => {
-      readListTrigger.value = 'enable'
-      _ReadListProxy()
-      return response
-    })
-
-  // 停用单条记录
-  _form.disable = (payload, payloadAs) =>
-    api.disable(payload, payloadAs).then((response) => {
-      readListTrigger.value = 'disable'
-      _ReadListProxy()
+  formExported.switch = (payload, payloadAs) =>
+    api.form.switch(payload, payloadAs).then((response) => {
+      readListTrigger.value = 'switch'
+      listExported.read()
       return response
     })
 
@@ -277,45 +258,45 @@ export default function useAdmate({
     }
   */
 
-  _form.open = (payload, payloadAs) => {
+  const openForm = (payload, payloadAs) => {
     // 查看和编辑时，回显单条记录数据
     if (payload) {
       if (payloadAs === 'cache') {
-        mergeFormData(_form, cloneDeep(payload))
-        _form.show = true
+        mergeFormData(formExported, cloneDeep(payload))
+        formExported.show = true
       }
       else {
-        _form.loading = true
-        _form.show = true
-        return api.r(payload, payloadAs).then((response) => {
-          mergeFormData(_form, getValue(response, _form.dataAt))
+        formExported.loading = true
+        formExported.show = true
+        return api.form.read(payload, payloadAs).then((response) => {
+          mergeFormData(formExported, getValue(response, formExported.dataAt))
           return response
         })
       }
     }
     else {
       // 查看时参数必传，编辑时可以不传因为可能是覆盖式编辑
-      if (_form.status === 'read' && !arguments.length) {
+      if (formExported.status === 'read' && !arguments.length) {
         console.warn('When the form status is \'read\', the parameter of `form.open` must be passed')
       }
 
-      _form.show = true
+      formExported.show = true
     }
   }
 
-  const _openFormProxy = (...args) => {
-    const result = openFormProxy
-      ? openFormProxy((...args_proxy) =>
-        // args 是用户直接调用 openForm 传的参，优先级低
-        // args_proxy 是用户在 openFormProxy 内部调用 openForm 传的参，优先级高
-        openForm(...(args_proxy.length ? args_proxy : args)),
+  formExported.open = (...args) => {
+    const result = form.proxy.open
+      ? form.proxy.open((...argsProxy) =>
+        // args 是用户直接调用 form.open 传的参，优先级低
+        // argsProxy 是用户在 form.proxy.open 内部调用 openForm 传的参，优先级高
+        openForm(...(argsProxy.length ? argsProxy : args)),
       )
       : openForm(...args)
     if (result instanceof Promise) {
       result
         .then((state) => {
-          setTerminalState({
-            target: _form,
+          setTerminalFormState({
+            target: formExported,
             state,
             defaultState: {
               loading: false,
@@ -323,8 +304,8 @@ export default function useAdmate({
           })
         })
         .catch((state) => {
-          setTerminalState({
-            target: _form,
+          setTerminalFormState({
+            target: formExported,
             state,
             defaultState: {
               show: false,
@@ -333,8 +314,8 @@ export default function useAdmate({
         })
     }
     else {
-      setTerminalState({
-        target: _form,
+      setTerminalFormState({
+        target: formExported,
         state: result,
         defaultState: {
           loading: false,
@@ -344,33 +325,48 @@ export default function useAdmate({
     return result
   }
 
+  formExported.create = (...args) => {
+    formExported.status = 'create'
+    formExported.open(...args)
+  }
+
+  formExported.read = (...args) => {
+    formExported.status = 'read'
+    formExported.open(...args)
+  }
+
+  formExported.update = (...args) => {
+    formExported.status = 'update'
+    formExported.open(...args)
+  }
+
   // 表单提交
-  const submitForm = (payload = _form.data, payloadAs) => {
-    if (!_form.status || !['c', 'u'].includes(_form.status)) {
-      throw new Error('submitForm can only be called when the form status is \'c\' or \'u\'')
+  const submitForm = (payload = formExported.data, payloadAs) => {
+    if (!formExported.status || !['create', 'update'].includes(formExported.status)) {
+      throw new Error('submitForm can only be called when the form status is \'create\' or \'update\'')
     }
 
-    _form.submitting = true
-    return api[_form.status](payload, payloadAs).then((response) => {
-      readListTrigger.value = _form.status
-      _ReadListProxy()
+    formExported.submitting = true
+    return api.form[formExported.status](payload, payloadAs).then((response) => {
+      readListTrigger.value = formExported.status
+      listExported.read()
       return response
     })
   }
 
-  const _submitFormProxy = (params) => {
-    const result = submitFormProxy
-      ? submitFormProxy((...args) =>
-        // params 是用户直接调用 submitForm 传的参，优先级低
-        // args 是用户在 submitFormProxy 内部调用 submitForm 传的参，优先级高
-        args.length ? submitForm(...args) : submitForm(params),
+  formExported.submit = (...args) => {
+    const result = form.proxy.submit
+      ? form.proxy.submit((...argsProxy) =>
+        // params 是用户直接调用 form.submit 传的参，优先级低
+        // args 是用户在 form.proxy.submit 内部调用 submitForm 传的参，优先级高
+        submitForm(...(argsProxy.length ? argsProxy : args)),
       )
-      : submitForm(params)
+      : submitForm(...args)
     if (result instanceof Promise) {
       result
         .then((state) => {
-          setTerminalState({
-            target: _form,
+          setTerminalFormState({
+            target: formExported,
             state,
             defaultState: {
               show: false,
@@ -378,8 +374,8 @@ export default function useAdmate({
           })
         })
         .catch((state) => {
-          setTerminalState({
-            target: _form,
+          setTerminalFormState({
+            target: formExported,
             state,
             defaultState: {
               submitting: false,
@@ -388,8 +384,8 @@ export default function useAdmate({
         })
     }
     else {
-      setTerminalState({
-        target: _form,
+      setTerminalFormState({
+        target: formExported,
         state: result,
         defaultState: {
           show: false,
@@ -400,17 +396,17 @@ export default function useAdmate({
   }
 
   watch(
-    () => _form.show,
+    () => formExported.show,
     (newShow) => {
       if (!newShow) {
         // 表单关闭时，重置表单
         // 可能会有关闭动画，所以加延迟
         setTimeout(() => {
-          Object.assign(_form, {
+          Object.assign(formExported, {
             ...getInitialForm(),
             // 不能重置被监听的 show
             // 因为重置是异步的，如果在此 500ms 期间 show 被外部赋为 true，将导致死循环
-            show: _form.show,
+            show: formExported.show,
           })
         }, 500)
       }
@@ -420,37 +416,37 @@ export default function useAdmate({
   // 重置所有数据
   /* const destroy = () => {
     readListDebounced.value = null
-    Object.assign(_list, getInitialList())
-    Object.assign(_form, getInitialForm())
+    Object.assign(listExported, getInitialList())
+    Object.assign(formExported, getInitialForm())
   } */
 
   // 首次获取列表
-  readListTrigger.value = 'init'
-  _ReadListProxy()
+  readListTrigger.value = 'immediate'
+  listExported.read()
 
   onMounted(() => {
     // 筛选项改变时，刷新列表
-    if (_list.watchFilter) {
+    if (listExported.watchFilter) {
       const readListDebounced = ref(
         debounce(() => {
           readListTrigger.value = 'filterChange'
-          _ReadListProxy()
-        }, _list.debounceInterval),
+          listExported.read()
+        }, listExported.debounceInterval),
       )
 
       // 异步的目的：避免 onMounted 时给 list.filter 赋初值触发 watch，该 watch 应仅由用户操作触发
       setTimeout(() => {
         watch(
-          () => _list.filter,
+          () => listExported.filter,
           () => {
-            if (getValue(_list.filter, _list.pageNumberAt) === oldPageNumber) {
+            if (getValue(listExported.filter, listExported.pageNumberAt) === oldPageNumber) {
               readListDebounced.value()
             }
             else {
               // 翻页不需要防抖
               // ||= 的原因是删除当前分页最后一条记录时也会触发翻页
               readListTrigger.value ??= 'pageNumberChange'
-              _ReadListProxy()
+              listExported.read()
             }
           },
           {
@@ -472,5 +468,5 @@ export default function useAdmate({
     //destroy()
   }) */
 
-  return { list: _list, form: _form }
+  return { list: listExported, form: formExported }
 }

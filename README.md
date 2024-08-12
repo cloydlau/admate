@@ -24,7 +24,7 @@
 ## 特性
 
 - 🖖 **Vue 2.6/2.7/3 一体通用** - 零成本升级
-- 🔓 **解耦合 UI 框架** - 只要技术栈是 Vue + Axios 便可使用，提供主流 UI 框架示例代码如 Vuetify，Element，AntDesignVue，Quasar 和 PrimeVue
+- 🔓 **解耦合 UI 框架** - 只要技术栈是 Vue + Axios 便可使用
 - 🤝 **后台模板友好** - 可集成进任意管理后台模板如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a>，<a href="https://github.com/PanJiaChen/vue-element-admin">vue-element-admin</a> 或 <a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a>
 - 🌐 **规整统一的页面代码风格** - 避免了每个页面的代码风格五花八门、难以维护
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
@@ -55,56 +55,6 @@ npm i admate
 - vue
 - ~~@vue/composition-api~~：仅 Vue 2.6 或更早版本需要
 
-### 搭配 Vuetify
-
-<img src="https://img.shields.io/github/stars/vuetifyjs/vuetify?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/vuetify.svg?logo=npm&color=cb3837">
-
-[Vuetify 3 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Vuetify.vue)
-
-[Vuetify 2 (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/Vuetify.vue)
-
-[Vuetify 2 (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/Vuetify.vue)
-
-### 搭配 ElementPlus
-
-<img src="https://img.shields.io/github/stars/element-plus/element-plus?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/element-plus.svg?logo=npm&color=cb3837">
-
-[ElementPlus (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/ElementPlus.vue)
-
-### 搭配 Element
-
-<img src="https://img.shields.io/github/stars/ElemeFE/element?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/element-ui.svg?logo=npm&color=cb3837">
-
-[Element (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/Element.vue)
-
-[Element (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/Element.vue)
-
-### 搭配 Quasar
-
-<img src="https://img.shields.io/github/stars/quasarframework/quasar?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/quasar.svg?logo=npm&color=cb3837">
-
-[Quasar 2 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/Quasar.vue)
-
-Quasar 1 不支持 Vite，暂无示例
-
-### 搭配 AntDesignVue
-
-<img src="https://img.shields.io/github/stars/vueComponent/ant-design-vue?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/ant-design-vue.svg?logo=npm&color=cb3837">
-
-[AntDesignVue 2 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/AntDesignVue.vue)
-
-[AntDesignVue 1 (Vue 2.7) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.7/UseUIFramework/AntDesignVue.vue)
-
-[AntDesignVue 1 (Vue 2.6) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue2.6/UseUIFramework/AntDesignVue.vue)
-
-### 搭配 PrimeVue
-
-<img src="https://img.shields.io/github/stars/primefaces/primevue?color=9f7be1&logo=github&style=flat">&nbsp;<img src="https://img.shields.io/npm/dm/primevue.svg?logo=npm&color=cb3837">
-
-[PrimeVue 3 (Vue 3) 示例](https://github.com/cloydlau/admate/blob/main/demo/vue3/UseUIFramework/PrimeVue.vue)
-
-PrimeVue 2 不支持 Vite，暂无示例
-
 <br>
 
 ## 请求配置
@@ -127,10 +77,14 @@ useAdmate({
 useAdmate({
   // Axios 配置
   axiosConfig: {
+    // 各接口的 URL 前缀
+    urlPrefix: '',
+    // 列表相关接口
     list: {
       // 读取列表
       read: {},
     },
+    // 表单相关接口
     form: {
       // 新增
       create: {},
@@ -147,23 +101,12 @@ useAdmate({
 })
 ```
 
-<br>
-
-### urlPrefix
-
-```ts
-useAdmate({
-  // axiosConfig 中各接口的 URL 前缀
-  urlPrefix: '',
-})
-```
-
 ```ts
 // 示例: URL 前缀不统一
 
 useAdmate({
-  urlPrefix: 'module1',
   axiosConfig: {
+    urlPrefix: 'module1',
     list: {
       read: {
         // 如果某个接口的前缀不是 'somepage'，可以在 URL 前面加斜线，即可忽略该前缀
@@ -183,8 +126,8 @@ useAdmate({
 ```ts
 // 配置
 const { list, form } = useAdmate({
-  urlPrefix: 'module',
   axiosConfig: {
+    urlPrefix: 'module',
     form: {
       read: ({ id }) => ({
         method: 'GET',
@@ -386,19 +329,15 @@ useAdmate({
 获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
 ```ts
-const {
-  list: {
-    /**
-     * PS: 以下为原始 getList 的函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
-     *
-     * @param {any} [payload = list.filter]
-     * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
-     * @returns {Promise<any>} 接口返回值
-     */
-    read,
-  }
-} = useAdmate()
+const { list } = useAdmate()
 
+/**
+ * PS: 以下为原始 getList 的函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
+ *
+ * @param {any} [payload = list.filter]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} 接口返回值
+ */
 list.read() // 手动读取
 ```
 

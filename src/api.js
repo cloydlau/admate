@@ -10,31 +10,43 @@ const createURL = (urlPrefix, url) =>
           + url
     : urlPrefix
 
-export default function createAPI(axios, axiosConfig, urlPrefix) {
+function configToCaller(axios, urlPrefix, config) {
+  return config
+    ? (payload, payloadAs) => {
+        const configComputed = typeof config === 'function' ? config(payload) : config
+
+        if (payload) {
+          payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(configComputed.method?.toUpperCase() || '')
+            ? 'data'
+            : 'params'
+          if (payloadAs === 'data') {
+            configComputed.data ??= payload
+          }
+          else if (payloadAs === 'params') {
+            configComputed.params ??= payload
+          }
+        }
+
+        configComputed.url = createURL(urlPrefix, configComputed.url)
+
+        return axios(configComputed)
+      }
+    : () => {}
+}
+
+export default function createAPI(axios, axiosConfig) {
   // cancelAllRequest() // 嵌套使用 Admate 时，可能导致将父级的请求取消掉
   // source = CancelToken.source()
 
-  const api = {}
-  for (const listOrForm in axiosConfig) {
-    for (const k in listOrForm) {
-      api[k] = (payload, payloadAs) => {
-        let configObj
-        if (axiosConfig) {
-          configObj = typeof axiosConfig[k] === 'function' ? axiosConfig[k] : axiosConfig[k]
-        }
+  const api = {
+    list: {
+      read: configToCaller(axios, axiosConfig.urlPrefix, axiosConfig.list.read),
+    },
+    form: {},
+  }
 
-        payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(configObj.method?.toUpperCase() || '')
-          ? 'data'
-          : 'params'
-
-        return axios({
-          ...(payloadAs === 'data' && { data: payload }),
-          ...(payloadAs === 'params' && { params: payload }),
-          ...configObj,
-          url: createURL(urlPrefix, configObj.url),
-        })
-      }
-    }
+  for (const k in axiosConfig.form) {
+    api.form[k] = configToCaller(axios, axiosConfig.urlPrefix, axiosConfig.form[k])
   }
 
   return api

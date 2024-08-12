@@ -157,7 +157,7 @@ export default (
           watchFilter: false,
           proxy: {
             read(readList, trigger) {
-              if (!readListImmediately && trigger === 'init') {
+              if (!readListImmediately && trigger === 'immediate') {
                 return
               }
 
@@ -180,11 +180,7 @@ export default (
                 }
               }
               else {
-                if (
-                  ['c', 'u', 'd', 'updateStatus', 'enable', 'disable'].includes(
-                    trigger,
-                  )
-                ) {
+                if (['create', 'update', 'delete', 'switch'].includes(trigger)) {
                   FaMessageBox.success('操作成功')
                 }
                 return readListWithHook()
@@ -209,7 +205,7 @@ export default (
               // function callback(res?) {
               function callback(res) {
                 let endState = onFormOpened(res)
-                if (form.status !== 'c') {
+                if (form.status !== 'create') {
                   endState = onFormRead(res)
                 }
 
@@ -363,10 +359,10 @@ export default (
         }
       },
       // 校验筛选项并读取列表首页
-      queryList: async () => {
+      queryList: async (...args) => {
         await validateListFilter()
         list.filter.page.pageNo = 1
-        list.read()
+        list.read(...args)
       },
       // 表单
       form,

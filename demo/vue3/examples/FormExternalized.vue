@@ -1,24 +1,18 @@
 <script setup>
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 import FormDialog from './FormDialog.vue'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,
-  form,
-  getList,
-  c,
-  r,
-  u,
-  d,
-  updateStatus,
-  submitForm,
-  formTitle,
-  queryList,
   listFilterRef,
+  form,
   formRef,
+  formTitle,
 } = useAdmateAdapter({
-  urlPrefix,
+  axiosConfig: {
+    urlPrefix,
+  },
 }, {
   getElFormRefOfFormData() {
     return formRef.value.$refs.elFormRef
@@ -59,7 +53,7 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList"
+          @click="queryList()"
         >
           查询
         </el-button>
@@ -77,7 +71,7 @@ const {
       <div>
         <el-button
           type="primary"
-          @click="c"
+          @click="form.create()"
         >
           新增
         </el-button>
@@ -87,8 +81,8 @@ const {
         v-model:current-page="list.filter.pageNo"
         v-model:page-size="list.filter.pageSize"
         :total="list.total"
-        @current-change="queryList"
-        @size-change="queryList"
+        @current-change="list.read()"
+        @size-change="list.read()"
       />
     </div>
 
@@ -104,19 +98,19 @@ const {
         <template #default="{ row }">
           <el-button
             type="text"
-            @click="r(row)"
+            @click="form.read(row)"
           >
             查看
           </el-button>
           <el-button
             type="text"
-            @click="u(row)"
+            @click="form.update(row)"
           >
             编辑
           </el-button>
           <el-button
             type="text"
-            @click="d(row)"
+            @click="form.delete(row)"
           >
             删除
           </el-button>
@@ -128,7 +122,7 @@ const {
       ref="formRef"
       v-model:form="form"
       :form-title="formTitle"
-      :submit-form="submitForm"
+      :submit-form="form.submit"
     />
   </div>
 </template>

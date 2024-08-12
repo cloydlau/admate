@@ -1,35 +1,34 @@
 <script setup>
 import { toRaw } from 'vue'
 import { useRouter } from 'vue-router'
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const router = useRouter()
 
 const {
   list,
-  form,
-  getList,
-  c,
-  r,
-  u,
-  d,
-  updateStatus,
-  submitForm,
-  formTitle,
-  queryList,
   listFilterRef,
+  queryList,
+  form,
 } = useAdmateAdapter({
-  urlPrefix,
-  openFormProxy(openForm) {
-    router.push({
-      path: '/form-page',
-      query: {
-        urlPrefix,
-        form: JSON.stringify(toRaw(form.value)),
-      },
-    })
+  axiosConfig: {
+    urlPrefix,
   },
+  form: {
+    proxy: {
+      open() {
+        router.push({
+          path: '/form-page',
+          query: {
+            urlPrefix,
+            form: JSON.stringify(toRaw(form.value)),
+          },
+        })
+      },
+    },
+  },
+
 })
 </script>
 
@@ -66,7 +65,7 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList"
+          @click="queryList()"
         >
           查询
         </el-button>
@@ -84,7 +83,7 @@ const {
       <div>
         <el-button
           type="primary"
-          @click="c"
+          @click="form.create()"
         >
           新增
         </el-button>
@@ -94,8 +93,8 @@ const {
         v-model:current-page="list.filter.pageNo"
         v-model:page-size="list.filter.pageSize"
         :total="list.total"
-        @current-change="queryList"
-        @size-change="queryList"
+        @current-change="list.read()"
+        @size-change="list.read()"
       />
     </div>
 
@@ -111,19 +110,19 @@ const {
         <template #default="{ row }">
           <el-button
             type="text"
-            @click="r(row)"
+            @click="form.read(row)"
           >
             查看
           </el-button>
           <el-button
             type="text"
-            @click="u(row)"
+            @click="form.update(row)"
           >
             编辑
           </el-button>
           <el-button
             type="text"
-            @click="d(row)"
+            @click="form.delete(row)"
           >
             删除
           </el-button>

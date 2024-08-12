@@ -1,28 +1,8 @@
 export default [
   {
-    path: '/vuetify',
-    component: () =>
-      import('../UseUIFramework/Vuetify.vue'),
-  },
-  {
-    path: '/ant-design-vue',
-    component: () =>
-      import('../UseUIFramework/AntDesignVue.vue'),
-  },
-  {
     path: '/element-plus',
     component: () =>
-      import('../UseUIFramework/ElementPlus.vue'),
-  },
-  {
-    path: '/quasar',
-    component: () =>
-      import('../UseUIFramework/Quasar.vue'),
-  },
-  {
-    path: '/prime-vue',
-    component: () =>
-      import('../UseUIFramework/PrimeVue.vue'),
+      import('../Page.vue'),
   },
   {
     path: '/form-externalized',

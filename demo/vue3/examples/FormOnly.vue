@@ -1,37 +1,46 @@
 <script>
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 export default {
   setup: () => {
     const {
-      u,
       form,
       formRef,
       validateFormData,
-      submitForm,
     } = useAdmateAdapter({
-      urlPrefix,
-      getListProxy(getList, trigger) { },
-      submitFormProxy(submitForm) {
-        return new Promise((resolve, reject) => {
-          validateFormData().then(() => {
-            submitForm().then(() => {
-              console.log('操作成功')
+      axiosConfig: {
+        urlPrefix,
+      },
+      list: {
+        proxy: {
+          read() { },
+        },
+      },
+      form: {
+        proxy: {
+          submit(submitForm) {
+            return new Promise((resolve, reject) => {
+              validateFormData().then(() => {
+                submitForm().then(() => {
+                  console.log('操作成功')
 
-              resolve({
-                show: true,
-                submitting: false,
+                  resolve({
+                    show: true,
+                    submitting: false,
+                  })
+
+                  setTimeout(() => {
+                    form.value.update({})
+                  }, 0)
+                }).catch(() => {
+                  // eslint-disable-next-line prefer-promise-reject-errors
+                  reject()
+                })
               })
-
-              setTimeout(() => {
-                u.value({})
-              }, 0)
-            }).catch(() => {
-              reject()
             })
-          })
-        })
+          },
+        },
       },
     }, {
       getElFormRefOfFormData() {
@@ -39,12 +48,11 @@ export default {
       },
     })
 
-    u.value({})
+    form.value.update({})
 
     return {
       form,
       formRef,
-      submitForm,
     }
   },
 }
@@ -64,7 +72,7 @@ export default {
         ref="formRef"
         v-loading="form.loading"
         :model="form.data"
-        :disabled="form.status === 'r' || form.submitting"
+        :disabled="form.status === 'read' || form.submitting"
       >
         <el-form-item
           label="姓名"
@@ -76,10 +84,10 @@ export default {
       </el-form>
       <template #footer>
         <el-button
-          v-if="form.status !== 'r' && !form.loading"
+          v-if="form.status !== 'read' && !form.loading"
           type="primary"
           :loading="form.submitting"
-          @click="() => { submitForm() }"
+          @click="form.submit()"
         >
           确 定
         </el-button>
