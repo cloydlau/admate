@@ -211,7 +211,7 @@ form.open({ id: 1 }, 'config')
 form.read({ id: 1 }, 'config')
 form.update({ id: 1 }, 'config')
 form.delete({ id: 1 }, 'config')
-form.swtich({ id: 1 }, 'config')
+form.switch({ id: 1 }, 'config')
 ```
 
 <br>
