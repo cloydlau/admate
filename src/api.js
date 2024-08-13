@@ -11,25 +11,34 @@ const createURL = (urlPrefix, url) =>
     : urlPrefix
 
 function configToCaller(axios, urlPrefix, config) {
+  // 如果配置非函数，则不需要每次调用接口都重新计算 URL
+  let url
+  if (!(typeof config === 'function')) {
+    url = createURL(urlPrefix, config.url)
+  }
+
   return config
     ? (payload, payloadAs) => {
-        const configComputed = typeof config === 'function' ? config(payload) : config
+        let configComputed = config
+        if (typeof config === 'function') {
+          configComputed = config(payload)
+          url = createURL(urlPrefix, configComputed.url)
+        }
 
         if (payload) {
           payloadAs ??= METHODS_WITH_REQUEST_BODY.includes(configComputed.method?.toUpperCase() || '')
             ? 'data'
             : 'params'
-          if (payloadAs === 'data') {
-            configComputed.data = payload
-          }
-          else if (payloadAs === 'params') {
-            configComputed.params = payload
-          }
         }
 
-        configComputed.url = createURL(urlPrefix, configComputed.url)
-
-        return axios(configComputed)
+        return axios({
+          ...payload && {
+            ...(payloadAs === 'data' && { data: payload }),
+            ...(payloadAs === 'params' && { params: payload }),
+          },
+          ...configComputed,
+          url,
+        })
       }
     : () => {}
 }
