@@ -20,10 +20,10 @@ function configToCaller(axios, urlPrefix, config) {
             ? 'data'
             : 'params'
           if (payloadAs === 'data') {
-            configComputed.data ??= payload
+            configComputed.data = payload
           }
           else if (payloadAs === 'params') {
-            configComputed.params ??= payload
+            configComputed.params = payload
           }
         }
 
