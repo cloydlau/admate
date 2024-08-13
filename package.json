@@ -1,7 +1,7 @@
 {
   "name": "admate",
   "PascalCasedName": "Admate",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "private": false,
   "description": "Admin CRUD frontend meta framework for Vue 2.6/2.7/3, extremely concise without losing flexibility.",
   "author": {
@@ -92,7 +92,7 @@
     "esno": "^4.7.0",
     "faim": "^0.9.1",
     "kolorist": "^1.8.0",
-    "lint-staged": "^15.2.8",
+    "lint-staged": "^15.2.9",
     "lodash-es": "^4.17.21",
     "magicast": "^0.3.4",
     "mockjs": "^1.1.0",
