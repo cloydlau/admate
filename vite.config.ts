@@ -29,7 +29,7 @@ export default {
     alias,
   },
   optimizeDeps: {
-    include: ['faim > mime', 'faim > qrcode', 'faim > sweetalert2', 'faim > upng-js'],
+    include: ['faim > qrcode', 'faim > sweetalert2', 'faim > upng-js'],
     exclude: ['vue-demi'],
   },
   build: {

@@ -56,7 +56,7 @@ export default (
     // 可访问 this（组件实例）
     // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
     getElFormRefOfFormData = function () {
-      return this?.$refs.formRef
+      return this?.$refs.faFormDialogRef.$refs.elFormRef
     },
 
     // 校验详情表单
@@ -104,7 +104,7 @@ export default (
   // 列表筛选项的 ref
   const listFilterRef = ref()
   // 详情的 ref
-  const formRef = ref()
+  const faFormDialogRef = ref()
 
   // 初始化 admate
   const { list, form } = useAdmate(
@@ -376,7 +376,7 @@ export default (
       // 表单
       form,
       // 详情的 ref
-      formRef,
+      faFormDialogRef,
       // 表单标题
       formTitle: computed(() => formTitleMap[form.status]),
       // 表单标题字典
