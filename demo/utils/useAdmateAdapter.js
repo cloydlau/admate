@@ -365,8 +365,13 @@ export default (
       // 校验筛选项并读取列表首页
       queryList: async (...args) => {
         await validateListFilter()
-        list.filter.page.pageNo = 1
-        list.read(...args)
+        if (list.watchFilter && list.filter.page.pageNo !== 1) {
+          list.filter.page.pageNo = 1
+        }
+        else {
+          list.filter.page.pageNo = 1
+          list.read(...args)
+        }
       },
       // 表单
       form,
