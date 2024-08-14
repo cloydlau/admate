@@ -1,14 +1,16 @@
 const METHODS_WITH_REQUEST_BODY = ['PUT', 'POST', 'DELETE', 'PATCH']
 
 const createURL = (urlPrefix, url) =>
-  url
-    ? url.startsWith('/')
-      ? url
-      : (urlPrefix.endsWith('/')
-          ? urlPrefix
-          : `${urlPrefix}/`)
-          + url
-    : urlPrefix
+  urlPrefix
+    ? url
+      ? url.startsWith('/')
+        ? url
+        : (urlPrefix.endsWith('/')
+            ? urlPrefix
+            : `${urlPrefix}/`)
+            + url
+      : urlPrefix
+    : url
 
 function configToCaller(axios, urlPrefix, config) {
   // 如果配置非函数，则不需要每次调用接口都重新计算 URL
