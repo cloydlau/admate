@@ -63,8 +63,8 @@ const {
       </div>
 
       <el-pagination
-        :current-page.sync="list.filter.pageNo"
-        :page-size.sync="list.filter.pageSize"
+        :current-page.sync="list.filter.page.pageNo"
+        :page-size.sync="list.filter.page.pageSize"
         :total="list.total"
         @current-change="list.read()"
         @size-change="list.read()"
@@ -72,8 +72,8 @@ const {
     </div>
 
     <el-table
+      v-loading="list.loading"
       :data="list.data"
-      :loading="list.loading"
     >
       <el-table-column
         prop="name"

@@ -18,7 +18,7 @@ const {
 </script>
 
 <template>
-  <div class="p-20px">
+  <div p-20px>
     <el-form
       ref="listFilterRef"
       :model="list.filter"
@@ -52,7 +52,7 @@ const {
       </el-form-item>
     </el-form>
 
-    <div class="flex justify-between my-10px">
+    <div flex justify-between my-10px>
       <div>
         <el-button
           type="primary"
