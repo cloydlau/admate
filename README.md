@@ -196,7 +196,6 @@ useAdmateAdapter({
       },
     }
   }
-
 })
 
 const FormData = window.FormData
