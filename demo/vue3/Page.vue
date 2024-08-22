@@ -89,12 +89,14 @@ const {
           </el-button>
           <el-button
             text
+            type="primary"
             @click="form.update(row)"
           >
             编辑
           </el-button>
           <el-button
             text
+            type="danger"
             @click="form.delete(row)"
           >
             删除

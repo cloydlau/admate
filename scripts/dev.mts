@@ -80,7 +80,7 @@ async function dev() {
   spawn('git', ['pull'], { stdio: 'inherit' })
 
   console.log(cyan(`Switching to Vue ${targetVersion}...`))
-  const mod = await loadFile('./vite.config.ts')
+  const mod = await loadFile('./vite.config.mts')
 
   // imported 表示命名导入的值，默认导入是 default
   // k 和 mod.imports[k].local 和 constructor 三者一致，表示导入取的别名
@@ -123,8 +123,8 @@ async function dev() {
     })
   }
 
-  await writeFile(mod as unknown as ASTNode, './vite.config.ts')
-  spawn('npx', ['eslint', './vite.config.ts', '--fix'], { stdio: 'inherit' })
+  await writeFile(mod as unknown as ASTNode, './vite.config.mts')
+  spawn('npx', ['eslint', './vite.config.mts', '--fix'], { stdio: 'inherit' })
 
   let isDepsChanged = false
 

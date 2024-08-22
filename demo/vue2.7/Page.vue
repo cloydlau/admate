@@ -83,18 +83,21 @@ const {
         <template #default="{ row }">
           <el-button
             type="text"
+            color="[var(--el-button-text-color)]!"
             @click="form.read(row)"
           >
             查看
           </el-button>
           <el-button
             type="text"
+            color="[var(--el-color-primary)]!"
             @click="form.update(row)"
           >
             编辑
           </el-button>
           <el-button
             type="text"
+            color="[var(--el-color-danger)]!"
             @click="form.delete(row)"
           >
             删除
