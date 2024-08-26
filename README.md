@@ -77,7 +77,7 @@ useAdmate({
   // Axios 配置
   axiosConfig: {
     // 各接口的 URL 前缀
-    urlPrefix: '',
+    urlPrefix: `${import.meta.env.VITE_BASE_URL}/module`,
     // 列表相关接口
     list: {
       // 读取列表
@@ -126,7 +126,7 @@ useAdmate({
 // 配置
 const { list, form } = useAdmate({
   axiosConfig: {
-    urlPrefix: 'module',
+    urlPrefix: `${import.meta.env.VITE_BASE_URL}/module`,
     form: {
       read: ({ id }) => ({
         method: 'GET',
