@@ -3,7 +3,7 @@ import { conclude } from 'vue-global-config'
 import { assignIn, at, cloneDeep, debounce, isPlainObject, merge, set } from 'lodash-es'
 import createAPI from './api'
 
-export function getValue(object, path) {
+function getValue(object, path) {
   if (object && path) {
     switch (typeof path) {
       case 'string':
@@ -20,7 +20,7 @@ export function getValue(object, path) {
   return object
 }
 
-export function setValue(object, path, value) {
+function setValue(object, path, value) {
   if (object && path) {
     switch (typeof path) {
       case 'string':
