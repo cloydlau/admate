@@ -206,39 +206,24 @@ export default (
           proxy: {
             open(openForm) {
               // 打开表单后的回调
-              // function callback(res?) {
-              function callback(res) {
-                let endState = onFormOpened(res)
-                if (form.status !== 'create') {
-                  endState = onFormRead(res)
-                }
-
-                // 回显表单后，清除校验
-                setTimeout(() => {
-                  clearValidateOfFormData()
-                }, 0)
-
-                return endState
-              }
-
               const promise = openForm()
               if (promise) {
                 return new Promise((resolve, reject) => {
                   promise
                     .then((res) => {
                       // 返回值用于设置 form 的终态
-                      resolve(callback(res))
+                      resolve(openFormCallback(res))
                     })
                     .catch((e) => {
                       console.error(e)
                       // 返回值用于设置 form 的终态
-                      reject(callback(e))
+                      reject(openFormCallback(e))
                     })
                 })
               }
               else {
                 // 新增、复用列表数据时 openForm 没有返回值
-                return callback()
+                return openFormCallback()
               }
             },
             submit(submitForm) {
@@ -282,6 +267,20 @@ export default (
       admateConfig,
     ),
   )
+
+  function openFormCallback(res) {
+    let endState = onFormOpened(res)
+    if (form.status !== 'create') {
+      endState = onFormRead(res)
+    }
+
+    // 回显表单后，清除校验
+    setTimeout(() => {
+      clearValidateOfFormData()
+    }, 0)
+
+    return endState
+  }
 
   // 关闭表单时，清除校验
   watch(
