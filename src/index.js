@@ -482,7 +482,7 @@ export default function useAdmate({
             }
             else {
               // 翻页不需要防抖
-              // ||= 的原因是删除当前分页最后一条记录时也会触发翻页
+              // ??= 的原因是删除当前分页最后一条记录时也会触发翻页
               readListTrigger.value ??= 'pageNumberChange'
               listExported.read()
             }

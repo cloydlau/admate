@@ -1,6 +1,6 @@
 <script>
-import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
+import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 
 export default {
   setup: () => {
@@ -43,7 +43,7 @@ export default {
         },
       },
     }, {
-      getElFormRefOfFormData() {
+      getFormDataRef() {
         return formRef.value
       },
     })

@@ -1,15 +1,12 @@
 <script setup>
-import { API_PREFIX as urlPrefix } from '../../mock/crud'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
+import { API_PREFIX as urlPrefix } from '../../mock/crud'
 
 const {
   list,
   listFilterRef,
-  queryList,
-  resetList,
   form,
   faFormDialogRef,
-  formTitle,
 } = useAdmateAdapter({
   axiosConfig: {
     urlPrefix,
@@ -42,11 +39,11 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList()"
+          @click="list.search()"
         >
           查询
         </el-button>
-        <el-button @click="resetList()">
+        <el-button @click="list.reset()">
           重置
         </el-button>
       </el-form-item>
@@ -66,8 +63,8 @@ const {
         :current-page.sync="list.filter.page.pageNo"
         :page-size.sync="list.filter.page.pageSize"
         :total="list.total"
-        @current-change="list.read()"
-        @size-change="list.read()"
+        @current-change="!list.watchFilter && list.read()"
+        @size-change="!list.watchFilter && list.read()"
       />
     </div>
 
@@ -111,7 +108,7 @@ const {
       v-model="form.data"
       :readonly="form.status === 'read'"
       :show.sync="form.show"
-      :title="formTitle"
+      :title="form.title"
       :retrieving="form.loading"
       :confirm="form.submit"
     >

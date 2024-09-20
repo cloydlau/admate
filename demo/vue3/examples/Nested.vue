@@ -1,6 +1,6 @@
 <script setup>
-import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 import useAdmateAdapter from '@/utils/useAdmateAdapter'
+import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 
 const { list } = useAdmateAdapter({
   axiosConfig: {
@@ -37,7 +37,7 @@ const SubPage = reactive({
     },
   }, {
     readListImmediately: false,
-    getElFormRefOfListFilter: () => SubPage_listFilterRef.value,
+    getListFilterRef: () => SubPage_listFilterRef.value,
   }),
 })
 </script>
@@ -68,7 +68,7 @@ const SubPage = reactive({
     <el-dialog
       v-model="SubPage.show"
       title="子页面"
-      @closed="SubPage.resetList()"
+      @closed="SubPage.list.reset()"
     >
       <el-form
         ref="SubPage_listFilterRef"

@@ -1,20 +1,19 @@
 <script setup>
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
 import FormDialog from './FormDialog.vue'
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const {
   list,
   listFilterRef,
   form,
   formRef,
-  formTitle,
 } = useAdmateAdapter({
   axiosConfig: {
     urlPrefix,
   },
 }, {
-  getElFormRefOfFormData() {
+  getFormDataRef() {
     return formRef.value.$refs.elFormRef
   },
 })
@@ -53,14 +52,12 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList()"
+          @click="list.search()"
         >
           查询
         </el-button>
         <el-button
-          @click="() => {
-            listFilterRef.resetFields()
-          }"
+          @click="list.reset()"
         >
           重置
         </el-button>
@@ -121,7 +118,7 @@ const {
     <FormDialog
       ref="formRef"
       v-model:form="form"
-      :form-title="formTitle"
+      :form-title="form.title"
       :submit-form="form.submit"
     />
   </div>

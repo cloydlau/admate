@@ -1,3 +1,4 @@
+import type { SemVer } from 'semver'
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -10,7 +11,6 @@ import Components from 'unplugin-vue-components/vite'
 import dts from 'vite-plugin-dts'
 import { viteMockServe } from 'vite-plugin-mock'
 import { version } from 'vue'
-import type { SemVer } from 'semver'
 import { name, PascalCasedName } from './package.json'
 
 const { major, minor } = parse(version) as SemVer

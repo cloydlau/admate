@@ -169,7 +169,7 @@ form.switch({ id: 1 }, 'config')
 
 - 局部配置
 
-`list.read`、`form.open`、`form.delete`、`form.switch`、`form.submit` 的参数 1 均支持 FormData 类型
+`list.read`、`list.search`、`list.reset`、`form.open`、`form.delete`、`form.switch`、`form.submit` 的参数 1 均支持 FormData 类型
 
 ```vue
 <!-- 示例: 局部配置 -->
@@ -325,13 +325,13 @@ useAdmate({
 
 #### list.read
 
-获取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
+读取列表，在首次进入页面、列表筛选参数改变、单条记录增删查改后会被调用
 
 ```ts
 const { list } = useAdmate()
 
 /**
- * PS: 以下为原始 getList 的函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
+ * PS: 以下为原始函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
  *
  * @param {any} [payload = list.filter]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
@@ -376,7 +376,7 @@ list.reset() // 手动重置
 
 #### list.proxy.read
 
-你可以使用 `list.proxy.read` 来代理 `list.read`，以便在 `list.read` 前后做一些操作，或改变 `list.read` 的行为
+你可以使用 `list.proxy.read` 来代理 `list.read`，以便在 `list.read` 前后执行一些操作，或改变 `list.read` 的行为
 
 ```ts
 useAdmate({
@@ -393,7 +393,7 @@ useAdmate({
 ```
 
 ```ts
-// 示例: 获取列表之前，校验参数
+// 示例: 读取列表之前，校验参数
 
 useAdmate({
   list: {
@@ -908,7 +908,7 @@ form.switch()
 
 #### form.proxy.open
 
-你可以使用 `form.proxy.open` 来代理 `form.open`，以便在 `form.open` 前后做一些操作，或改变 `form.open` 的行为
+你可以使用 `form.proxy.open` 来代理 `form.open`，以便在 `form.open` 前后执行一些操作，或改变 `form.open` 的行为
 
 ```ts
 useAdmate({
@@ -1059,7 +1059,7 @@ form.submit()
 
 #### form.proxy.submit
 
-你可以使用 `form.proxy.submit` 来代理 `form.submit` ，以便在 `form.submit` 前后做一些操作，或改变 `form.submit` 的行为
+你可以使用 `form.proxy.submit` 来代理 `form.submit` ，以便在 `form.submit` 前后执行一些操作，或改变 `form.submit` 的行为
 
 ```ts
 useAdmate({

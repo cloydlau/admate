@@ -1,15 +1,14 @@
 <script setup>
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import { toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import { API_PREFIX as urlPrefix } from '../../../mock/crud'
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const router = useRouter()
 
 const {
   list,
   listFilterRef,
-  queryList,
   form,
 } = useAdmateAdapter({
   axiosConfig: {
@@ -65,14 +64,12 @@ const {
         <el-button
           v-if="!list.watchFilter"
           type="primary"
-          @click="queryList()"
+          @click="list.search()"
         >
           查询
         </el-button>
         <el-button
-          @click="() => {
-            listFilterRef.resetFields()
-          }"
+          @click="list.reset()"
         >
           重置
         </el-button>

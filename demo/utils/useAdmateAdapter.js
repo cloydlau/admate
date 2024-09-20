@@ -1,10 +1,10 @@
-import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue-demi'
+import http from '@/utils/http'
 import { FaMessageBox } from 'faim'
 import { cloneDeep, merge, mergeWith } from 'lodash-es'
 import qs from 'qs'
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch } from 'vue-demi'
 // import VueCompositionAPI from '@vue/composition-api'
 import useAdmate from '../../src'
-import http from '@/utils/http'
 
 // Vue@2.6 or earlier only
 // Vue.use(VueCompositionAPI)
@@ -12,69 +12,63 @@ import http from '@/utils/http'
 export default (
   admateConfig,
   {
-    // 列表筛选参数的初始值，用于动态获取的参数，比如时间
-    // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
-    // 所以需要调方法动态获取
-    // 可访问 this（组件实例）
-    initialListFilter = function () {},
-
     // 获取列表筛选项的表单 ref
     // 可访问 this（组件实例）
-    getElFormRefOfListFilter = function () {
-      return this.$refs.listFilterRef
+    getListFilterRef = function () {
+      return this?.$refs.listFilterRef
     },
 
     // 校验列表筛选项
     // 可访问 this（组件实例）
     validateListFilter = function () {
-      return getElFormRefOfListFilter()?.validate()
+      return getListFilterRef()?.validate()
     },
 
     // 清除列表筛选项校验
     // 可访问 this（组件实例）
-    clearValidateOfListFilter = function () {
-      return getElFormRefOfListFilter()?.clearValidate()
+    clearListFilterValidate = function () {
+      return getListFilterRef()?.clearValidate()
     },
 
     // 重置列表筛选项
     // 可访问 this（组件实例）
-    resetListFilter = function () {
-      return getElFormRefOfListFilter().resetFields()
+    resetListFilterFields = function () {
+      return getListFilterRef().resetFields()
     },
 
     // 是否在初始化时读取列表
     readListImmediately = true,
 
-    // 表单标题
-    formTitleMap = {
-      create: '新增',
-      read: '查看',
-      update: '编辑',
-    },
-
     // 获取详情的表单 ref
     // 可访问 this（组件实例）
     // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
-    getElFormRefOfFormData = function () {
+    getFormDataRef = function () {
       return this?.$refs.faFormDialogRef.$refs.elFormRef
     },
 
     // 校验详情表单
     // 可访问 this（组件实例）
     validateFormData = function () {
-      return getElFormRefOfFormData().validate()
+      return getFormDataRef().validate()
     },
 
     // 清除详情表单校验
     // 可访问 this（组件实例）
-    clearValidateOfFormData = function () {
-      return getElFormRefOfFormData()?.clearValidate()
+    clearFormDataValidate = function () {
+      return getFormDataRef()?.clearValidate()
     },
 
     // 自定义钩子函数 - 读取列表后
     // 参数1为接口返回值，参数2为触发动机
     // 可访问 this（组件实例）
     onListRead = function () {},
+
+    // 自定义钩子函数 - 重置列表后
+    // 可用于重设动态获取的参数，比如时间
+    // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
+    // 所以需要调函数动态获取
+    // 可访问 this（组件实例）
+    onListReset = function () {},
 
     // 自定义钩子函数 - 读取表单后（新增时不触发）
     // 参数为接口返回值
@@ -146,9 +140,6 @@ export default (
               pageSize: 10,
             },
 
-            // 动态的默认参数
-            ...initialListFilter(),
-
             // 支持路由传参
             // 因为 qs 支持数组，所以没有使用 vue-router
             // 跳转方式：
@@ -165,7 +156,8 @@ export default (
                 return
               }
 
-              function readListWithHook() {
+              async function readListWithHook() {
+                await validateListFilter()
                 return readList().then((data) => {
                   onListRead(data, trigger)
                   return data
@@ -190,9 +182,18 @@ export default (
                 return readListWithHook()
               }
             },
+            reset() {
+              resetListFilterFields()
+              onListReset()
+              // 如果分页组件不归属于表单，则表单重置时页码不会被重置，需调用 list.search
+              if (!list.watchFilter) {
+                list.search()
+              }
+            },
           },
         },
         form: {
+          title: computed(() => ({ create: '新增', read: '查看', update: '编辑' }[form.status])),
           // dataAt: "data",
           // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象/空数组
           mergeData(newFormData) {
@@ -276,7 +277,7 @@ export default (
 
     // 回显表单后，清除校验
     setTimeout(() => {
-      clearValidateOfFormData()
+      clearFormDataValidate()
     }, 0)
 
     return endState
@@ -288,14 +289,14 @@ export default (
     (n) => {
       if (!n) {
         setTimeout(() => {
-          clearValidateOfFormData()
+          clearFormDataValidate()
         }, 150)
       }
     },
   )
 
   function initializeListFilter() {
-    const elFormRefOfListFilter = getElFormRefOfListFilter()
+    const elFormRefOfListFilter = getListFilterRef()
     if (elFormRefOfListFilter) {
       // Object.defineProperty 对不存在的属性无法拦截
       list.filter = reactive({
@@ -314,20 +315,16 @@ export default (
   onMounted(() => {
     currentInstance.value = getCurrentInstance().proxy
 
-    initialListFilter = initialListFilter.bind(currentInstance.value)
-    getElFormRefOfListFilter = getElFormRefOfListFilter.bind(
-      currentInstance.value,
-    )
+    getListFilterRef = getListFilterRef.bind(currentInstance.value)
     validateListFilter = validateListFilter.bind(currentInstance.value)
-    resetListFilter = resetListFilter.bind(currentInstance.value)
+    resetListFilterFields = resetListFilterFields.bind(currentInstance.value)
 
-    getElFormRefOfFormData = getElFormRefOfFormData.bind(currentInstance.value)
-    clearValidateOfFormData = clearValidateOfFormData.bind(
-      currentInstance.value,
-    )
+    getFormDataRef = getFormDataRef.bind(currentInstance.value)
+    clearFormDataValidate = clearFormDataValidate.bind(currentInstance.value)
     validateFormData = validateFormData.bind(currentInstance.value)
 
     onListRead = onListRead.bind(currentInstance.value)
+    onListReset = onListReset.bind(currentInstance.value)
     onFormRead = onFormRead.bind(currentInstance.value)
     onFormOpened = onFormOpened.bind(currentInstance.value)
     onFormSubmit = onFormSubmit.bind(currentInstance.value)
@@ -347,39 +344,11 @@ export default (
       // 校验列表筛选项
       validateListFilter,
       // 清除列表筛选项校验
-      clearValidateOfListFilter,
-      // 重置列表
-      resetList: () => {
-        resetListFilter()
-        if (initialListFilter) {
-          list.filter = {
-            ...list.filter,
-            ...initialListFilter(),
-          }
-        }
-        if (!list.watchFilter) {
-          list.read()
-        }
-      },
-      // 校验筛选项并读取列表首页
-      queryList: async (...args) => {
-        await validateListFilter()
-        if (list.watchFilter && list.filter.page.pageNo !== 1) {
-          list.filter.page.pageNo = 1
-        }
-        else {
-          list.filter.page.pageNo = 1
-          list.read(...args)
-        }
-      },
+      clearListFilterValidate,
       // 表单
       form,
       // 详情的 ref
       faFormDialogRef,
-      // 表单标题
-      formTitle: computed(() => formTitleMap[form.status]),
-      // 表单标题字典
-      formTitleMap,
     }),
   )
 }

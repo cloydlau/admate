@@ -3,10 +3,9 @@ import { ref } from 'vue'
 
 const props = defineProps({
   form: Object,
-  formTitle: String,
 })
 
-const { form, formTitle } = props
+const { form } = props
 
 const elFormRef = ref()
 </script>
@@ -14,7 +13,7 @@ const elFormRef = ref()
 <template>
   <el-dialog
     v-model="form.show"
-    :title="formTitle"
+    :title="form.title"
   >
     <el-form
       ref="elFormRef"

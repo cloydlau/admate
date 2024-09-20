@@ -1,7 +1,7 @@
 <script setup>
+import useAdmateAdapter from '@/utils/useAdmateAdapter'
 import Vue, { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import useAdmateAdapter from '@/utils/useAdmateAdapter'
 
 const formRef = ref()
 const route = useRoute()
@@ -13,7 +13,6 @@ const back = function () {
 
 const {
   form,
-  formTitle,
   validateFormData,
 } = useAdmateAdapter({
   axiosConfig: {
@@ -45,7 +44,7 @@ const {
     },
   },
 }, {
-  getElFormRefOfFormData() {
+  getFormDataRef() {
     return formRef.value
   },
 })
@@ -55,7 +54,7 @@ form.value.open()
 
 <template>
   <div class="p-20px">
-    <h2>{{ formTitle }}</h2>
+    <h2>{{ form.title }}</h2>
     <el-form
       ref="formRef"
       v-loading="form.loading"
