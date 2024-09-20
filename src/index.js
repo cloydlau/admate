@@ -1,6 +1,6 @@
+import { assignIn, at, cloneDeep, debounce, isPlainObject, merge, set } from 'lodash-es'
 import { isVue3, onMounted, reactive, ref, watch } from 'vue-demi'
 import { conclude } from 'vue-global-config'
-import { assignIn, at, cloneDeep, debounce, isPlainObject, merge, set } from 'lodash-es'
 import createAPI from './api'
 
 function getValue(object, path) {
@@ -115,6 +115,7 @@ export default function useAdmate({
       mergeData: 'deep',
       loading: false,
       submitting: false,
+      title: '',
       ...form,
     })
 

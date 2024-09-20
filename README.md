@@ -425,8 +425,8 @@ const { list } = useAdmate({
 <!-- 示例 -->
 
 <script setup>
-import { getCurrentInstance } from 'vue'
 import useAdmate from 'admate'
+import { getCurrentInstance } from 'vue'
 
 const { proxy } = getCurrentInstance()
 const { list } = useAdmate()
@@ -570,6 +570,24 @@ const { form } = useAdmate({
 ### 表单形态
 
 `form.status: 'create' | 'read' | 'update'`
+
+<br>
+
+### 表单标题
+
+`form.title: string`
+
+```ts
+// 示例: 根据表态形态生成对应的标题
+
+import { computed } from 'vue'
+
+const { form } = useAdmate({
+  form: {
+    title: computed(() => ({ create: '新增', read: '查看', update: '编辑' }[form.status])),
+  },
+})
+```
 
 <br>
 
