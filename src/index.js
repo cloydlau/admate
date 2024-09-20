@@ -216,6 +216,19 @@ export default function useAdmate({
     } */
   }
 
+  // 列表筛选，页码重置
+  listExported.search = (...args) => {
+    if (getValue(listExported.filter, listExported.pageNumberAt) === 1) {
+      listExported.read(...args)
+    }
+    else {
+      setValue(listExported.filter, listExported.pageNumberAt, 1)
+      if (!listExported.watchFilter) {
+        listExported.read(...args)
+      }
+    }
+  }
+
   // 删除单条记录
   formExported.delete = (payload, payloadAs) =>
     api.form.delete(payload, payloadAs).then((response) => {

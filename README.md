@@ -340,6 +340,23 @@ const { list } = useAdmate()
 list.read() // 手动读取
 ```
 
+#### list.search
+
+重置页码后执行 `list.read` ，用于筛选条件改变后检索列表
+
+```ts
+const { list } = useAdmate()
+
+/**
+ * PS: 以下为原始函数签名，如果你配置了 list.proxy.read ，则以 list.proxy.read 为准
+ *
+ * @param {any} [payload = list.filter]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} 接口返回值
+ */
+list.search() // 手动检索
+```
+
 #### list.proxy.read
 
 你可以使用 `list.proxy.read` 来代理 `list.read`，以便在 `list.read` 前后做一些操作，或改变 `list.read` 的行为
