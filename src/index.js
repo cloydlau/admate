@@ -94,16 +94,17 @@ export default function useAdmate({
         data: [],
         loading: false,
         total: 0,
-        ...userProp?.pageNumberAt && {
-          filter: setValue({}, userProp.pageNumberAt, 1),
-        },
+        filter: setValue({}, userProp?.pageNumberAt, 1),
         watchFilter: true,
         debounceInterval: 300,
+        proxy: {},
       }),
       defaultIsDynamic: true,
     })
 
-  const listExported = reactive(getInitialList())
+  const initialList = getInitialList()
+  const initialListFilter = cloneDeep(initialList.filter)
+  const listExported = reactive(initialList)
 
   const getInitialForm = () =>
     cloneDeep({
@@ -116,6 +117,7 @@ export default function useAdmate({
       loading: false,
       submitting: false,
       title: '',
+      proxy: {},
       ...form,
     })
 
@@ -155,6 +157,13 @@ export default function useAdmate({
       .finally(() => {
         listExported.loading = false
       })
+  }
+
+  const resetList = (payload, payloadAs) => {
+    listExported.filter = cloneDeep(initialListFilter)
+    if (!listExported.watchFilter) {
+      readList(payload = listExported.filter, payloadAs)
+    }
   }
 
   let oldPageNumber = 1
@@ -214,6 +223,21 @@ export default function useAdmate({
         }
       })
     } */
+  }
+
+  // 列表重置
+  listExported.reset = (...args) => {
+    // args 是用户直接调用 list.reset 传的参，优先级低
+    // argsProxy 是用户在 list.proxy.reset 内部调用 resetList 传的参，优先级高
+    const result = listExported.proxy.reset
+      ? listExported.proxy.reset(
+        (...argsProxy) => resetList(...(argsProxy.length ? argsProxy : args)),
+      )
+      : resetList(...args)
+
+    readListTrigger.value = undefined
+
+    return result
   }
 
   // 列表筛选，页码重置

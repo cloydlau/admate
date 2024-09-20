@@ -357,6 +357,23 @@ const { list } = useAdmate()
 list.search() // 手动检索
 ```
 
+#### list.reset
+
+重置筛选条件后执行 `list.read`
+
+```ts
+const { list } = useAdmate()
+
+/**
+ * PS: 以下为原始函数签名，如果你配置了 list.proxy.reset ，则以 list.proxy.reset 为准
+ *
+ * @param {any} [payload = list.filter]
+ * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ * @returns {Promise<any>} 接口返回值
+ */
+list.reset() // 手动重置
+```
+
 #### list.proxy.read
 
 你可以使用 `list.proxy.read` 来代理 `list.read`，以便在 `list.read` 前后做一些操作，或改变 `list.read` 的行为
@@ -424,6 +441,41 @@ const { list } = useAdmate({
           // response 为 axiosConfig.list.read 的接口返回值
           list.data = response.data?.filter(v => !v.disabled)
         })
+      },
+    }
+  }
+})
+```
+
+#### list.proxy.reset
+
+你可以使用 `list.proxy.reset` 来代理 `list.reset`，以便在 `list.reset` 前后执行一些操作，或改变 `list.reset` 的行为
+
+```ts
+useAdmate({
+  list: {
+    proxy: {
+      /**
+       * @param {Function} resetList 被代理的原始 resetList
+       */
+      reset(resetList) {},
+    },
+  },
+})
+```
+
+```ts
+// 示例: 使用 UI 组件库的表单重置函数来重置筛选条件
+
+useAdmate({
+  list: {
+    proxy: {
+      reset(resetList) {
+        listFilterElFormRef.value.resetFields()
+        // 如果分页组件不归属于表单，则表单重置时页码不会被重置，需调用 list.search
+        if (!list.watchFilter) {
+          list.search()
+        }
       },
     }
   }
