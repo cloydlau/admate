@@ -193,7 +193,6 @@ export default (
           },
         },
         form: {
-          title: computed(() => ({ create: '新增', read: '查看', update: '编辑' }[form.status])),
           // dataAt: "data",
           // 接口返回值中嵌套的对象可能为 null，会覆盖默认值中的空对象/空数组
           mergeData(newFormData) {
@@ -268,6 +267,9 @@ export default (
       admateConfig,
     ),
   )
+
+  // 兼容 Vue 2，Vue 3 的话直接传参配置就好
+  form.title ||= computed(() => ({ create: '新增', read: '查看', update: '编辑' }[form.status]))
 
   function openFormCallback(res) {
     let endState = onFormOpened(res)
