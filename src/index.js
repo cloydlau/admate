@@ -96,7 +96,7 @@ export default function useAdmate({
         total: 0,
         filter: setValue({}, userProp?.pageNumberAt, 1),
         watchFilter: true,
-        debounceInterval: 300,
+        debounce: 300,
         proxy: {},
       }),
       defaultIsDynamic: true,
@@ -469,7 +469,7 @@ export default function useAdmate({
         debounce(() => {
           readListTrigger.value = 'filterChange'
           listExported.read()
-        }, listExported.debounceInterval),
+        }, listExported.debounce),
       )
 
       // 异步的目的：避免 onMounted 时给 list.filter 赋初值触发 watch，该 watch 应仅由用户操作触发
