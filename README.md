@@ -25,7 +25,7 @@
 ## 特性
 
 - 🖖 **Vue 2.6/2.7/3 一体通用** - 零成本升级
-- 🤸 **跨平台** - 解耦合 UI 框架，极低成本接入任何 Vue 生态中后台模板/框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a>
+- 🤸 **跨框架** - 解耦合 UI 框架，极低成本接入任何 Vue 生态中后台模板/框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a>
 - 🌐 **规整统一的页面代码风格** - 避免各个页面的代码风格五花八门，提升可读性、降低维护成本
 - 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
 - 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
