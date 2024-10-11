@@ -1,7 +1,6 @@
-// pnpm i esno prompts semver cross-spawn kolorist del open -D -w
-
 import fs from 'node:fs'
 import spawn from 'cross-spawn'
+import { deleteAsync } from 'del'
 import { cyan } from 'kolorist'
 import prompts from 'prompts'
 import * as semver from 'semver'
@@ -30,7 +29,9 @@ async function release() {
   }
 
   console.log(cyan('\nAnalyzing types...'))
-  if (spawn.sync('npx', ['attw', '$(npm pack)'], { stdio: 'inherit' }).status === 1) {
+  const attw = spawn.sync('npx', ['attw', '$(npm pack)'], { stdio: 'inherit' })
+  await deleteAsync(['./*.tgz'])
+  if (attw.status === 1) {
     return
   }
 
