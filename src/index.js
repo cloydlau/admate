@@ -116,7 +116,7 @@ export default function useAdmate({
       mergeData: 'deep',
       loading: false,
       submitting: false,
-      title: '',
+      title: '', // throw TypeError: 'set' on proxy: trap returned falsish for property 'title' when closing form, see https://github.com/vuejs/core/issues/12138
       proxy: {},
       ...form,
     })

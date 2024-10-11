@@ -8,7 +8,6 @@ import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import UnpluginUnused from 'unplugin-unused/vite'
 import Components from 'unplugin-vue-components/vite'
-import dts from 'vite-plugin-dts'
 import { viteMockServe } from 'vite-plugin-mock'
 import { version } from 'vue'
 import { name, PascalCasedName } from './package.json'
@@ -59,7 +58,6 @@ export default {
       },
     },
     UnpluginUnused(),
-    dts({ rollupTypes: true }),
     AutoImport({
       // targets to transform
       include: [

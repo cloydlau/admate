@@ -21,7 +21,6 @@
     "esModuleInterop": true
   },
   "include": [
-    "src",
-    "__tests__"
+    "src"
   ]
 }
