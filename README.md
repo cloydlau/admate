@@ -25,23 +25,20 @@
 
 ## 特性
 
-- 🖖 **Vue 2.6/2.7/3 一体通用** - 零成本升级
-- 🤸 **跨框架** - 解耦合 UI 框架，极低成本接入任何 Vue 生态中后台模板/框架如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>，<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a> 或 <a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a>
-- 🌐 **规整统一的页面代码风格** - 避免各个页面的代码风格五花八门，提升可读性、降低维护成本
-- 🥥 **模块级别的请求配置** - 虽然 Axios 支持全局配置，由于同模块内请求配置相似，接口前缀通常是一致的，所以往往还需要模块级别的配置
-- 🪝 **量身打造的生命周期** - 代理模式 + 控制反转，定制属于你的生命周期行为
-- 🍪 **贴心而不武断的逻辑封装**
-  - 列表筛选：支持监听筛选参数 (防抖控制接口调用频率) 的方式，也支持点击读取按钮触发的方式
-  - 表单展现风格：支持对话框的风格，也支持独立页面的风格
-  - 单条记录状态：支持调用 “编辑接口” 改变状态，也支持调用独立的 “更新状态接口” 指定新状态，也支持分别调用 “启用接口” 和 “停用接口” 改变状态
-  - 加载状态：提供列表读取状态、表单读取状态、表单提交状态的响应式变量
-- 🧹 **缜密周全的收尾工作，无后顾之忧**
-  - 关闭表单时，自动将表单绑定的数据恢复至初始状态 (不是直接清空)
-  - 删除当前分页最后一条记录时，自动切换至上一页 (如果当前不在第一页)
-- 🔌 **开箱即用的[适配层示例](https://github.com/cloydlau/admate/blob/main/demo/utils/useAdmateAdapter.js)**
-  - 列表筛选参数重置 & 参数校验
-  - 支持 URL 传参指定筛选项默认值
-  - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
+- Vue 2.6/2.7/3 一体通用
+- 符合直觉的行为抽象
+- 贴心却不武断的数据与状态管理
+- 保姆级收尾工作，无后顾之忧
+
+<br>
+
+## 对比中后台模板
+
+中后台模板如 <a href="https://github.com/pure-admin/vue-pure-admin">vue-pure-admin</a>、<a href="https://github.com/vbenjs/vue-vben-admin">vue-vben-admin</a>、<a href="https://github.com/yudaocode/yudao-ui-admin-vue3">yudao-ui-admin-vue3</a> 等的定位是中后台一整套解决方案，跟 UI 框架、CSS 框架高度耦合。
+
+视图层面的技术百家争鸣、日新月异，但 CRUD 逻辑是亘古不变的，这正是 Admate 的发力点。
+
+Admate 专注逻辑层面，轻量化、侵入性低，可独立使用，也支持跟任意中后台模板搭配使用。
 
 <br>
 
@@ -55,6 +52,50 @@ npm i admate
 
 - vue
 - ~~@vue/composition-api~~：仅 Vue 2.6 或更早版本需要
+
+<br>
+
+## 阶梯式的配置作用域
+
+### 全局配置
+
+1. 建立全局适配层
+
+   示例: [src/utils/useAdmateAdapter.js](https://github.com/cloydlau/admate/blob/main/demo/utils/useAdmateAdapter.js)
+
+   - 量身打造生命周期行为
+   - 列表筛选参数重置 & 参数校验
+   - 支持 URL 传参指定筛选项默认值
+   - 支持动态生成筛选项默认值，使用场景举例：日期/时间类的参数，如果其默认值为当前最新时刻，重置筛选项时会重置到已过期的时刻
+
+2. 在页面中导入使用
+
+   示例: [src/views/Page.vue](https://github.com/cloydlau/admate/blob/main/demo/vue3/Page.vue)
+
+### 模块级配置
+
+1. 按模块拆分适配层，每个模块拥有自己的适配层
+
+   比如:
+
+   - src/views/system/useAdmateAdapter.js
+   - src/views/infra/useAdmateAdapter.js
+
+2. 在页面中导入对应模块的适配层
+
+### 页面级配置
+
+```ts
+const { list, listFilterRef, form, faFormDialogRef } = useAdmateAdapter({
+  // ...Admate 配置
+}, {
+  // ...Admate 适配层配置
+})
+```
+
+### 接口级配置
+
+示例: [接口级请求配置](#接口级请求配置)
 
 <br>
 
@@ -115,6 +156,74 @@ useAdmate({
       }
     }
   }
+})
+```
+
+#### 全局请求配置
+
+```ts
+// src/http/index.js
+
+const axiosInstance = axios.create({
+  headers: {
+    xxx: 'xxx',
+  },
+})
+```
+
+#### 页面级请求配置
+
+```ts
+const headers = {
+  xxx: 'xxx',
+}
+
+const { list, listFilterRef, form, faFormDialogRef } = useAdmateAdapter({
+  axiosConfig: {
+    urlPrefix,
+    list: {
+      read: {
+        url: 'page',
+        headers,
+      },
+    },
+    form: {
+      create: {
+        url: 'create',
+        headers,
+      },
+      read: {
+        url: 'get',
+        headers,
+      },
+      update: {
+        url: 'update',
+        headers,
+      },
+      delete: {
+        url: 'delete',
+        headers,
+      },
+    },
+  },
+})
+```
+
+#### 接口级请求配置
+
+```ts
+const { list, listFilterRef, form, faFormDialogRef } = useAdmateAdapter({
+  axiosConfig: {
+    urlPrefix,
+    form: {
+      create: {
+        url: 'create',
+        headers: {
+          xxx: 'xxx',
+        },
+      },
+    },
+  },
 })
 ```
 
@@ -535,6 +644,10 @@ function handleTable() {
 
 `form.show: boolean`
 
+> [!Tip]
+>
+> 表单关闭时，表单数据自动恢复至初始状态（不是直接清空）
+
 <br>
 
 ### 表单数据
@@ -769,6 +882,10 @@ const { form } = useAdmate()
  */
 form.delete()
 ```
+
+> [!Tip]
+>
+> 删除非首页最后一条记录时，自动切换至上一页
 
 <br>
 
@@ -1234,7 +1351,7 @@ watch(() => form.value.show, (n) => {
 ```ts
 // 示例: 适配层提供 onFormOpened
 
-useAdmateAdapter({
+useAdmateAdapter({}, {
   onFormOpened(res) {
     // res 为接口返回值（新增时为空）
     // 可访问 this（组件实例）
@@ -1262,7 +1379,7 @@ useAdmateAdapter({}, {
 - 提交表单前
 
 ```ts
-useAdmateAdapter({
+useAdmateAdapter({}, {
   onFormSubmit(form) {
     // 可访问 this（组件实例）
   }
@@ -1272,7 +1389,7 @@ useAdmateAdapter({
 - 提交表单后
 
 ```ts
-useAdmateAdapter({
+useAdmateAdapter({}, {
   onFormSubmitted(res) {
     // res 为接口返回值
     // 可访问 this（组件实例）
