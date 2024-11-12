@@ -494,7 +494,14 @@ useAdmate({
     proxy: {
       /**
        * @param {Function} readList 被代理的原始 readList
-       * @param {string} trigger 调用动机 可能的值: 'immediate' 'pageNumberChange' 'filterChange' 'create' 'read' 'update' 'delete' 'switch'
+       * @param {string} trigger 调用动机 可能的值：
+       *   'immediate': 初始化立即查询列表
+       *   'pageNumberChange': 页码改变触发查询列表
+       *   'filterChange': 筛选项（含分页大小）改变触发查询列表
+       *   'create': 表单新增触发查询列表
+       *   'update': 表单编辑触发查询列表
+       *   'delete': 表单删除触发查询列表
+       *   'switch': 表单状态变更触发查询列表
        */
       read(readList, trigger) {},
     },
