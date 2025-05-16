@@ -13,25 +13,25 @@ export default (
   admateConfig,
   {
     // 获取列表筛选项的表单 ref
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     getListFilterRef = function () {
       return this?.$refs.listFilterRef
     },
 
     // 校验列表筛选项
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     validateListFilter = function () {
       return getListFilterRef()?.validate()
     },
 
     // 清除列表筛选项校验
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     clearListFilterValidate = function () {
       return getListFilterRef()?.clearValidate()
     },
 
     // 重置列表筛选项
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     resetListFilterFields = function () {
       return getListFilterRef().resetFields()
     },
@@ -40,55 +40,72 @@ export default (
     readListImmediately = true,
 
     // 获取详情的表单 ref
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     // this 判空原因：只有表单没有列表时，openForm 会在 setup 时执行
     getFormDataRef = function () {
       return this?.$refs.faFormDialogRef.$refs.elFormRef
     },
 
     // 校验详情表单
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     validateFormData = function () {
       return getFormDataRef().validate()
     },
 
     // 清除详情表单校验
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     clearFormDataValidate = function () {
       return getFormDataRef()?.clearValidate()
     },
 
     // 自定义钩子函数 - 读取列表后
     // 参数1为接口返回值，参数2为触发动机
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     onListRead = function () {},
 
     // 自定义钩子函数 - 重置列表后
     // 可用于重设动态获取的参数，比如时间
     // 时间类的参数，如果直接绑定在 list.filter 中，在重置时，时间不会更新
     // 所以需要调函数动态获取
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     onListReset = function () {},
 
-    // 自定义钩子函数 - 读取表单后（新增时不触发）
-    // 参数为接口返回值
-    // 可访问 this（组件实例）
+    /**
+     * 自定义钩子函数 - 读取表单后（新增时不触发）
+     * 参数为接口返回值
+     * Options API 中可访问 this（组件实例）
+     *
+     * 修改接口返回值示例：
+     *
+     * Vue 3 方式：
+     *   onFormRead: () => { form.value.data.status = 1 }
+     *
+     * Vue 2.7 方式：
+     *   import { set } from 'vue'
+     *   onFormRead: () => { set(form.value.data, 'status', 1) }
+     *
+     * Options API 方式：
+     *   onFormRead() { this.$set(this.form.data, 'status', 1) }
+     *
+     * 自定义表单终态方式：
+     *   onFormRead: (data) => ({ data: { ..._data, status: 1 } })
+     */
     onFormRead = function () {},
 
     // 自定义钩子函数 - 打开表单后
     // 参数为接口返回值（新增时为空）
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     onFormOpened = function () {},
 
     // 自定义钩子函数 - 提交表单前
     // 参数为 form
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     // 返回 false 以阻止提交
     onFormSubmit = function () {},
 
     // 自定义钩子函数 - 提交表单后
     // 参数为接口返回值
-    // 可访问 this（组件实例）
+    // Options API 中可访问 this（组件实例）
     onFormSubmitted = function () {},
   }
   = {},
