@@ -138,7 +138,7 @@ async function release() {
   }
 
   console.log(cyan('\nPublishing to npm...'))
-  if (spawn.sync('npm', ['publish', '--registry=https://registry.npmjs.org'], { stdio: 'inherit' }).status === 1) {
+  if (spawn.sync('npm', ['publish', '--registry=https://registry.npmjs.org', '--tag=latest'], { stdio: 'inherit' }).status === 1) {
     return
   }
 
