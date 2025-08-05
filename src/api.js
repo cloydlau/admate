@@ -8,22 +8,22 @@ const createURL = (urlPrefix, url) =>
         : (urlPrefix.endsWith('/')
             ? urlPrefix
             : `${urlPrefix}/`)
-            + url
+          + url
       : urlPrefix
     : url
 
 function configToCaller(axios, urlPrefix, config) {
-  // 如果配置非函数，则不需要每次调用接口都重新计算 URL
-  let url
-  if (!(typeof config === 'function')) {
-    url = createURL(urlPrefix, config.url)
-  }
+  let url = createURL(urlPrefix, config.url)
 
   return config
     ? (payload, payloadAs) => {
         let configComputed = config
-        if (typeof config === 'function') {
-          configComputed = config(payload)
+
+        if (payloadAs === 'config') {
+          configComputed = {
+            ...config,
+            ...payload,
+          }
           url = createURL(urlPrefix, configComputed.url)
         }
 

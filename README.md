@@ -62,7 +62,6 @@ npm i admate
 1. 建立全局适配层
 
    示例: [src/utils/useAdmateAdapter.js](https://github.com/cloydlau/admate/blob/main/demo/utils/useAdmateAdapter.js)
-
    - 量身打造生命周期行为
    - 列表筛选参数重置 & 参数校验
    - 支持 URL 传参指定筛选项默认值
@@ -77,7 +76,6 @@ npm i admate
 1. 按模块拆分适配层，每个模块拥有自己的适配层
 
    比如:
-
    - src/views/system/useAdmateAdapter.js
    - src/views/infra/useAdmateAdapter.js
 
@@ -238,33 +236,15 @@ const { list, listFilterRef, form, faFormDialogRef } = useAdmateAdapter({
 const { list, form } = useAdmate({
   axiosConfig: {
     urlPrefix: `${import.meta.env.VITE_BASE_URL}/module`,
-    form: {
-      read: ({ id }) => ({
-        method: 'GET',
-        url: id,
-      }),
-      update: ({ id }) => ({
-        method: 'PUT',
-        url: id,
-      }),
-      delete: ({ id }) => ({
-        method: 'DELETE',
-        url: id,
-      }),
-      switch: ({ id }) => ({
-        method: 'PUT',
-        url: id,
-      }),
-    },
   }
 })
 
 // 使用
-form.open({ id: 1 }, 'config')
-form.read({ id: 1 }, 'config')
-form.update({ id: 1 }, 'config')
-form.delete({ id: 1 }, 'config')
-form.switch({ id: 1 }, 'config')
+form.open({ method: 'GET', url: id }, 'config')
+form.read({ method: 'GET', url: id }, 'config')
+form.update({ method: 'PUT', url: id }, 'config')
+form.delete({ method: 'DELETE', url: id }, 'config')
+form.switch({ method: 'PUT', url: id }, 'config')
 ```
 
 <br>
@@ -445,6 +425,9 @@ const { list } = useAdmate()
  *
  * @param {any} [payload = list.filter]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} 接口返回值
  */
 list.read() // 手动读取
@@ -462,6 +445,9 @@ const { list } = useAdmate()
  *
  * @param {any} [payload = list.filter]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} 接口返回值
  */
 list.search() // 手动检索
@@ -479,6 +465,9 @@ const { list } = useAdmate()
  *
  * @param {any} [payload = list.filter]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} 接口返回值
  */
 list.reset() // 手动重置
@@ -834,9 +823,9 @@ form.status = 'read'
  *
  * @param {any} [payload] 如果 payload 不为空，则会调用 axiosConfig.form.read
  * @param {'data'|'params'|'config'|'cache'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  *   'cache': 将 payload 直接用作表单数据（不调用读取单条记录的接口）
  * @returns {Promise<any>} axiosConfig.form.read 的返回值
  */
@@ -882,9 +871,9 @@ const { form } = useAdmate()
 /**
  * @param {any} [payload]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} axiosConfig.form.delete 的返回值
  */
 form.delete()
@@ -911,9 +900,9 @@ const { form } = useAdmate()
 /**
  * @param {any} [payload]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} axiosConfig.form.switch 的返回值
  */
 form.switch()
@@ -939,23 +928,14 @@ form.switch()
 <script setup>
 import useAdmate from 'admate'
 
-const { form } = useAdmate({
-  axiosConfig: {
-    form: {
-      switch: ({ id, status }) => ({
-        method: 'PUT',
-        url: `${status === 1 ? 'enable' : `disable`}/${id}`,
-      }),
-    }
-  },
-})
+const { form } = useAdmate()
 
 /**
  * @param {any} [payload]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} axiosConfig.form.switch 的返回值
  */
 form.switch()
@@ -968,7 +948,9 @@ form.switch()
       align="center"
     >
       <template #default="{ row: { id, status } }">
-        <el-switch @change="form.switch({ id, status: status ^ 1 }, 'config')" />
+        <el-switch
+          @change="form.switch({ method: 'PUT', url: `${status === 0 ? 'enable' : `disable`}/${id}` }, 'config')"
+        />
       </template>
     </el-table-column>
   </el-table>
@@ -997,9 +979,9 @@ const { form } = useAdmate({
 /**
  * @param {any} [payload]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
- *   'data': 将 payload 用作请求配置的 `data` 参数（请求方式为 POST / PATCH / PUT / DELETE 时默 认）
- *   'params': 将 payload 用作请求配置的 `params` 参数（请求方式为 GET / HEAD 时默认）
- *   'config': 将 payload 仅用于构建请求配置（详见 RESTful 章节）
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} axiosConfig.form.switch 的返回值
  */
 form.switch()
@@ -1177,6 +1159,9 @@ const { form } = useAdmate()
  *
  * @param {any} [payload = form.data]
  * @param {'data'|'params'|'config'} [payloadAs] 指定 payload 的用途
+ *   'data': 将 payload 用作请求体参数（请求方式为 POST/PATCH/PUT/DELETE 时默认）
+ *   'params': 将 payload 用作 URL 参数（请求方式为 GET/HEAD 时默认）
+ *   'config': 将 payload 用作请求配置（若 axiosConfig 中已存在对应配置，则与其进行浅合并）
  * @returns {Promise<any>} 接口返回值
  */
 form.submit()
